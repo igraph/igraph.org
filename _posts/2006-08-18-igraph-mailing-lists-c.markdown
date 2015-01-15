@@ -2,7 +2,10 @@
 layout: cnewstemp
 title: igraph mailing lists
 date: August 18, 2006
-category: c
+categories:
+- c
+- r
+- python
 ---
 
 igraph mailing lists
