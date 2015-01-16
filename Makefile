@@ -124,9 +124,9 @@ $(PY)/stamp:
 
 core: stamp
 
-HTML= index.html _layouts/default.html _layouts/newstemp.html \
-	_layouts/manual.html c/news.html c/index.html \
-	r/news.html r/index.html python/news.html python/index.html
+HTML= index.html _layouts/default.html \
+	_layouts/manual.html c/index.html \
+	r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 
