@@ -1,5 +1,5 @@
 
-all: core c r python
+all: core
 
 .PHONY: all core c r python
 
@@ -124,7 +124,7 @@ $(PY)/stamp:
 
 core: stamp
 
-HTML= index.html _layouts/default.html \
+HTML= index.html news.html _layouts/default.html \
 	_layouts/manual.html c/index.html \
 	r/index.html python/index.html
 
@@ -142,9 +142,9 @@ stamp: $(HTML) $(CSS) $(POSTS)
 ######################################################################
 ## Deployment
 
-deploy: core-deploy c-deploy r-deploy python-deploy
+deploy: core-deploy
 
-test: core-deploy-test c-deploy-test r-deploy-test python-deploy-test
+test: core-deploy-test
 
 core-deploy:
 	rsync -avz --delete --exclude /python --exclude /r --exclude /c \
