@@ -4,10 +4,12 @@ all: core
 .PHONY: all core c r python
 
 CVERSION?=0.7.1
-RVERSION?=0.7.1
+RVERSION?=1.0.0
 PYVERSION?=0.7.0
 
-REPO=https://github.com/igraph/igraph
+CREPO=https://github.com/igraph/igraph
+RREPO=https://github.com/igraph/rigraph
+PYREPO=https://github.com/igraph/python-igraph
 TMP:=$(shell mktemp -d /tmp/.XXXXX)
 
 ######################################################################
@@ -41,7 +43,7 @@ $(C)/doc/Makefile: $(C)/stamp
 $(C)/stamp:
 	rm -rf $(C)
 	mkdir -p $(C)
-	cd $(C) && git clone --branch $(CVERSION) --depth 1 $(REPO) .
+	cd $(C) && git clone --branch $(CVERSION) --depth 1 $(CREPO) .
 	touch $@
 
 $(C)/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
@@ -58,25 +60,26 @@ R=_build/r
 r: core r/doc/stamp r/doc/igraph.pdf
 
 r/doc/stamp: $(R)/stamp
-	cd $(R)/interfaces/R && make && \
+	cd ${R} && make && \
 	R CMD INSTALL --html --no-R --no-configure --no-inst \
-	  --no-libs --no-exec --no-test-load -l $(TMP) igraph
+	  --no-libs --no-exec --no-test-load -l $(TMP) .
 	rm -rf r/doc
 	mkdir -p r/doc
-	$(R)/tools/rhtml.sh $(TMP)/igraph/html r/doc
+	$(R)/cigraph/tools/rhtml.sh $(TMP)/igraph/html r/doc
 	ln -s 00Index.html r/doc/index.html
 	touch r/doc/stamp
 
 r/doc/igraph.pdf: r/doc/stamp
 	mkdir -p r/doc
-	cd $(R)/interfaces/R/ && make
-	R CMD Rd2pdf --no-preview --force -o r/doc/igraph.pdf \
-	  $(R)/interfaces/R/igraph
+	cd $(R) && make
+	R CMD Rd2pdf --no-preview --force -o r/doc/igraph.pdf $(R)
 
 $(R)/stamp:
 	rm -rf $(R)
 	mkdir -p $(R)
-	cd $(R) && git clone --branch $(RVERSION) --depth 1 $(REPO) .
+	cd $(R) && git clone --branch $(RVERSION) --depth 1 $(RREPO) .
+	git submodule init
+	git submodule update
 	touch $@
 
 ######################################################################
