@@ -142,38 +142,3 @@ stamp: $(HTML) $(CSS) $(POSTS)
 	jekyll build
 	touch stamp
 
-######################################################################
-## Deployment
-
-deploy: core-deploy
-
-test: core-deploy-test
-
-core-deploy:
-	rsync -avz --delete --exclude /python --exclude /r --exclude /c \
-		_site/* igraph.org:www/
-
-c-deploy:
-	rsync -avz --delete _site/c igraph.org:www/
-
-r-deploy:
-	rsync -avz --delete _site/r igraph.org:www/
-
-python-deploy:
-	rsync -avz --delete _site/python igraph.org:www/
-
-core-deploy-test:
-	rsync -avz --delete --exclude /python --exclude /r --exclude /c \
-		_site/* igraph.org:www2/www-test/
-
-c-deploy-test:
-	rsync -avz --delete _site/c igraph.org:www2/www-test/
-
-r-deploy-test:
-	rsync -avz --delete _site/r igraph.org:www2/www-test/
-
-python-deploy-test:
-	rsync -avz --delete _site/python igraph.org:www2/www-test/
-
-.PHONY: deploy core-deploy c-deploy r-deploy python-deploy \
-	test core-deploy-test c-deploy-test r-deploy-test python-deploy-test
