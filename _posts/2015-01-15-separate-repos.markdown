@@ -1,14 +1,14 @@
 ---
-title: Repositories at Github
+title: Repositories at GitHub
 date: 2015-01-16
 ---
 
-Repositories at Github
+Repositories at GitHub
 ======================
 
 January 16, 2015
 
-A couple of days ago we changed how we use Github for igraph
+A couple of days ago we changed how we use GitHub for igraph
 development. Our goal is to make igraph development more accessible, and
 our build process simpler. Instead of using a common repository for
 everything, we now use separate repos for the igraph C library, the R
