@@ -65,7 +65,7 @@ r/doc/stamp: $(R)/stamp
 	  --no-libs --no-exec --no-test-load -l $(TMP) .
 	rm -rf r/doc
 	mkdir -p r/doc
-	$(C)/tools/rhtml.sh $(TMP)/igraph/html r/doc
+	_tools/rhtml.sh $(TMP)/igraph/html r/doc
 	ln -s 00Index.html r/doc/index.html
 	touch r/doc/stamp
 	rm -rf $(TMP)
@@ -99,7 +99,7 @@ python/doc/python-igraph.pdf: $(PY)/doc/api/pdf/api.pdf
 python/doc/stamp: $(PY)/stamp
 	mkdir -p python/doc
 	cp -r $(PY)/doc/api/html/ python/doc
-	# $(PY)/tools/pyhtml.sh python/doc
+	_tools/pyhtml.sh python/doc
 	touch $@
 
 $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
@@ -120,7 +120,7 @@ $(PY)/stamp:
 	cd $(PY) && git clone --branch $(PYVERSION) --depth 1 $(PYREPO) . && \
 	    git submodule init && \
 	    git submodule update
-	pip install --user epydoc sphinx-build sphinx_bootstrap_theme
+	pip install --user epydoc Sphinx sphinx_bootstrap_theme
 	touch $@
 
 ######################################################################
