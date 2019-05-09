@@ -103,9 +103,9 @@ python/doc/stamp: $(PY)/stamp
 	touch $@
 
 $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
-	cd $(PY) && rm -f igraphcore && ln -s ../c igraphcore
+	cd $(PY) && rm -f igraphcore
 	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && \
-		python setup.py build --no-pkg-config --no-progress-bar
+		python setup.py build --c-core-version=$(CVERSION) --no-pkg-config --no-progress-bar --static
 	cd $(PY) && scripts/mkdoc.sh
 
 python/doc/tutorial/stamp: $(PY)/stamp
