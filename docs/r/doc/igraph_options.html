@@ -8,14 +8,6 @@
 
 
 
-  
-  
-  
-  
-  
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -86,6 +78,9 @@
 		  <a href="/python"><i class="icon-fixed-width icon-python"></i>
 		    python-igraph</a></li>
 		<li>
+		  <a href="http://szhorvat.net/mathematica/IGraphM"><i class="icon-fixed-width icon-python"></i>
+		    IGraph/M</a></li>
+		<li>
 		  <a href="/c"><i class="icon-fixed-width icon-c"></i>
 		    igraph C library</a></li>
 		<li class="divider"></li>
@@ -93,9 +88,6 @@
 		  <a href="https://github.com/igraph/igraphdata">
 		    <i class="icon-fixed-width icon-rlogo"></i>
 		    igraphdata R package <i class="fa fa-github"></i></a></li>
-		<li>
-		  <a href="http://nexus.igraph.org">
-		    <i class="fa fa-times"></i>Nexus network repository</a></li>
               </ul>
             </li>
             <li>
@@ -156,6 +148,12 @@ igraph_opt(x, default = NULL)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>A list may be given as the only argument, or any number of
+arguments may be in the <code>name=value</code> form, or no argument at all may be
+given. See the Value and Details sections for explanation.</p>
+</td></tr>
 <tr valign="top"><td><code>x</code></td>
 <td>
 <p>A character string holding an option name.</p>
@@ -165,12 +163,6 @@ igraph_opt(x, default = NULL)
 <p>If the specified option is not set in the options list, this
 value is returned. This facilitates retrieving an option and checking
 whether it is set and setting it separately if not.</p>
-</td></tr>
-<tr valign="top"><td><code>...</code></td>
-<td>
-<p>A list may be given as the only argument, or any number of
-arguments may be in the <code>name=value</code> form, or no argument at all may be
-given. See the Value and Details sections for explanation.</p>
 </td></tr>
 </table>
 
@@ -233,6 +225,13 @@ graph attributes when printing graphs. Defaults to <code>FALSE</code>.</p>
 <dt>print.vertex.attributes</dt><dd><p>Logical constant, whether to print
 vertex attributes when printing graphs. Defaults to <code>FALSE</code>.</p>
 </dd>
+<dt>return.vs.es</dt><dd><p>Whether functions that return a set or sequence
+of vertices/edges should return formal vertex/edge sequence
+objects. This option was introduced in igraph version 1.0.0 and
+defaults to TRUE. If your package requires the old behavior,
+you can set it to FALSE in the <code>.onLoad</code> function of
+your package, without affecting other packages.</p>
+</dd>
 <dt>sparsematrices</dt><dd><p>Whether to use the <code>Matrix</code> package for
 (sparse) matrices. It is recommended, if the user works with
 larger graphs.</p>
@@ -252,9 +251,9 @@ attributes if the graph is modified. The default value is
 
 <h3>Value</h3>
 
-<p><code>igraph_options</code> returns a list with the updated values of the
-parameters. If the argument list is not empty, the returned list is
-invisible.
+<p><code>igraph_options</code> returns a list with the old values of the
+updated parameters, invisibly. Without any arguments, it returns the
+values of all options.
 </p>
 <p>For <code>igraph_opt</code>, the current value set for option <code>x</code>, or
 <code>NULL</code> if the option is unset.
@@ -272,19 +271,27 @@ invisible.
 <p><code>igraph_options</code> is similar to <code><a "href="http://www.inside-r.org/r-doc/base/options">options</a></code> and
 <code>igraph_opt</code> is similar to <code><a "href="http://www.inside-r.org/r-doc/base/options">getOption</a></code>.
 </p>
+<p>Other igraph options: <code><a href="with_igraph_opt.html">with_igraph_opt</a></code>
+</p>
 
 
 <h3>Examples</h3>
 
 <pre>
+
 oldval &lt;- igraph_opt("verbose")
-igraph_options(verbose=TRUE)
+igraph_options(verbose = TRUE)
 layout_with_kk(make_ring(10))
-igraph_options(verbose=oldval)
-#'
+igraph_options(verbose = oldval)
+
+oldval &lt;- igraph_options(verbose = TRUE, sparsematrices = FALSE)
+make_ring(10)[]
+igraph_options(oldval)
+igraph_opt("verbose")
+
 </pre>
 
-<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4.1 <a href="00Index.html">Index</a>]</div>
 
 
 

@@ -8,14 +8,6 @@
 
 
 
-  
-  
-  
-  
-  
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -86,6 +78,9 @@
 		  <a href="/python"><i class="icon-fixed-width icon-python"></i>
 		    python-igraph</a></li>
 		<li>
+		  <a href="http://szhorvat.net/mathematica/IGraphM"><i class="icon-fixed-width icon-python"></i>
+		    IGraph/M</a></li>
+		<li>
 		  <a href="/c"><i class="icon-fixed-width icon-c"></i>
 		    igraph C library</a></li>
 		<li class="divider"></li>
@@ -93,9 +88,6 @@
 		  <a href="https://github.com/igraph/igraphdata">
 		    <i class="icon-fixed-width icon-rlogo"></i>
 		    igraphdata R package <i class="fa fa-github"></i></a></li>
-		<li>
-		  <a href="http://nexus.igraph.org">
-		    <i class="fa fa-times"></i>Nexus network repository</a></li>
               </ul>
             </li>
             <li>
@@ -196,22 +188,8 @@ then supply <code>FALSE</code> here.</p>
 
 <h3>Format</h3>
 
-<pre>List of 14
- $ bmat   : chr "I"
- $ n      : num 0
- $ which  : chr "XX"
- $ nev    : num 1
- $ tol    : num 0
- $ ncv    : num 3
- $ ldv    : num 0
- $ ishift : num 1
- $ maxiter: num 1000
- $ nb     : num 1
- $ mode   : num 1
- $ start  : num 0
- $ sigma  : num 0
- $ sigmai : num 0
-</pre>
+<p>An object of class <code>list</code> of length 14.</p>
+
 
 <h3>Details</h3>
 
@@ -254,15 +232,15 @@ constant with exactly two characters.
 <p>Possible values for symmetric input matrices: </p>
 
 <dl>
-<dt>list(list(&quot;LA&quot;))</dt><dd><p>Compute <code>nev</code> largest (algebraic) eigenvalues.</p>
+<dt>&quot;LA&quot;</dt><dd><p>Compute <code>nev</code> largest (algebraic) eigenvalues.</p>
 </dd>
-<dt>list(list(&quot;SA&quot;))</dt><dd><p>Compute <code>nev</code> smallest (algebraic)
+<dt>&quot;SA&quot;</dt><dd><p>Compute <code>nev</code> smallest (algebraic)
 eigenvalues.</p>
-</dd> <dt>list(list(&quot;LM&quot;))</dt><dd><p>Compute <code>nev</code> largest (in
+</dd> <dt>&quot;LM&quot;</dt><dd><p>Compute <code>nev</code> largest (in
 magnitude) eigenvalues.</p>
-</dd> <dt>list(list(&quot;SM&quot;))</dt><dd><p>Compute <code>nev</code> smallest
+</dd> <dt>&quot;SM&quot;</dt><dd><p>Compute <code>nev</code> smallest
 (in magnitude) eigenvalues.</p>
-</dd> <dt>list(list(&quot;BE&quot;))</dt><dd><p>Compute <code>nev</code>
+</dd> <dt>&quot;BE&quot;</dt><dd><p>Compute <code>nev</code>
 eigenvalues, half from each end of the spectrum. When <code>nev</code> is odd,
 compute one more from the high end than from the low end.</p>
 </dd> </dl>
@@ -270,18 +248,18 @@ compute one more from the high end than from the low end.</p>
 <p>Possible values for non-symmetric input matrices: </p>
 
 <dl>
-<dt>list(list(&quot;LM&quot;))</dt><dd><p>Compute <code>nev</code> eigenvalues of largest
+<dt>&quot;LM&quot;</dt><dd><p>Compute <code>nev</code> eigenvalues of largest
 magnitude.</p>
-</dd> <dt>list(list(&quot;SM&quot;))</dt><dd><p>Compute <code>nev</code> eigenvalues of
+</dd> <dt>&quot;SM&quot;</dt><dd><p>Compute <code>nev</code> eigenvalues of
 smallest magnitude.</p>
-</dd> <dt>list(list(&quot;LR&quot;))</dt><dd><p>Compute <code>nev</code> eigenvalues
+</dd> <dt>&quot;LR&quot;</dt><dd><p>Compute <code>nev</code> eigenvalues
 of largest real part.</p>
-</dd> <dt>list(list(&quot;SR&quot;))</dt><dd><p>Compute <code>nev</code>
+</dd> <dt>&quot;SR&quot;</dt><dd><p>Compute <code>nev</code>
 eigenvalues of smallest real part.</p>
-</dd> <dt>list(list(&quot;LI&quot;))</dt><dd><p>Compute
+</dd> <dt>&quot;LI&quot;</dt><dd><p>Compute
 <code>nev</code> eigenvalues of largest imaginary part.</p>
 </dd>
-<dt>list(list(&quot;SI&quot;))</dt><dd><p>Compute <code>nev</code> eigenvalues of smallest imaginary
+<dt>&quot;SI&quot;</dt><dd><p>Compute <code>nev</code> eigenvalues of smallest imaginary
 part.</p>
 </dd> </dl>
 
@@ -436,6 +414,7 @@ functions in igraph which use ARPACK. The ARPACK homepage is at
 <h3>Examples</h3>
 
 <pre>
+
 # Identity matrix
 f &lt;- function(x, extra=NULL) x
 arpack(f, options=list(n=10, nev=2, ncv=4), sym=TRUE)
@@ -459,15 +438,16 @@ eigen(laplacian_matrix(make_star(10, mode="undirected")))
 ## First three eigenvalues of the adjacency matrix of a graph
 ## We need the 'Matrix' package for this
 if (require(Matrix)) {
+  set.seed(42)
   g &lt;- sample_gnp(1000, 5/1000)
   M &lt;- as_adj(g, sparse=TRUE)
   f2 &lt;- function(x, extra=NULL) { cat("."); as.vector(M %*% x) }
   baev &lt;- arpack(f2, sym=TRUE, options=list(n=vcount(g), nev=3, ncv=8,
-                                  which="LM", maxiter=200))
+                                  which="LM", maxiter=2000))
 }
 </pre>
 
-<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4.1 <a href="00Index.html">Index</a>]</div>
 
 
 

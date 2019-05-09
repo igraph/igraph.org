@@ -8,14 +8,6 @@
 
 
 
-  
-  
-  
-  
-  
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -86,6 +78,9 @@
 		  <a href="/python"><i class="icon-fixed-width icon-python"></i>
 		    python-igraph</a></li>
 		<li>
+		  <a href="http://szhorvat.net/mathematica/IGraphM"><i class="icon-fixed-width icon-python"></i>
+		    IGraph/M</a></li>
+		<li>
 		  <a href="/c"><i class="icon-fixed-width icon-c"></i>
 		    igraph C library</a></li>
 		<li class="divider"></li>
@@ -93,9 +88,6 @@
 		  <a href="https://github.com/igraph/igraphdata">
 		    <i class="icon-fixed-width icon-rlogo"></i>
 		    igraphdata R package <i class="fa fa-github"></i></a></li>
-		<li>
-		  <a href="http://nexus.igraph.org">
-		    <i class="fa fa-times"></i>Nexus network repository</a></li>
               </ul>
             </li>
             <li>
@@ -148,8 +140,8 @@ graphs from adjacency matrices.
 
 <pre>
 graph_from_adjacency_matrix(adjmatrix, mode = c("directed", "undirected",
-  "max", "min", "upper", "lower", "plus"), weighted = NULL, diag = TRUE,
-  add.colnames = NULL, add.rownames = NA)
+  "max", "min", "upper", "lower", "plus"), weighted = NULL,
+  diag = TRUE, add.colnames = NULL, add.rownames = NA)
 
 from_adjacency(...)
 </pre>
@@ -224,24 +216,24 @@ element of the adjacency matrix gives the number of edges to create between
 the two corresponding vertices.  The details depend on the value of the
 <code>mode</code> argument: </p>
  <dl>
-<dt>list(&quot;directed&quot;)</dt><dd><p>The graph will be
+<dt>&quot;directed&quot;</dt><dd><p>The graph will be
 directed and a matrix element gives the number of edges between two
 vertices.</p>
-</dd> <dt>list(&quot;undirected&quot;)</dt><dd><p>This is exactly the same as <code>max</code>,
+</dd> <dt>&quot;undirected&quot;</dt><dd><p>This is exactly the same as <code>max</code>,
 for convenience. Note that it is <em>not</em> checked whether the matrix is
 symmetric.</p>
-</dd> <dt>list(&quot;max&quot;)</dt><dd><p>An undirected graph will be created and
+</dd> <dt>&quot;max&quot;</dt><dd><p>An undirected graph will be created and
 <code>max(A(i,j), A(j,i))</code> gives the number of edges.</p>
 </dd>
-<dt>list(&quot;upper&quot;)</dt><dd><p>An undirected graph will be created, only the upper
+<dt>&quot;upper&quot;</dt><dd><p>An undirected graph will be created, only the upper
 right triangle (including the diagonal) is used for the number of edges.</p>
 </dd>
-<dt>list(&quot;lower&quot;)</dt><dd><p>An undirected graph will be created, only the lower
+<dt>&quot;lower&quot;</dt><dd><p>An undirected graph will be created, only the lower
 left triangle (including the diagonal) is used for creating the edges.</p>
 </dd>
-<dt>list(&quot;min&quot;)</dt><dd><p>undirected graph will be created with <code>min(A(i,j),
+<dt>&quot;min&quot;</dt><dd><p>undirected graph will be created with <code>min(A(i,j),
 A(j,i))</code> edges between vertex <code>i</code> and <code>j</code>.</p>
-</dd> <dt>list(&quot;plus&quot;)</dt><dd>
+</dd> <dt>&quot;plus&quot;</dt><dd>
 <p>undirected graph will be created with <code>A(i,j)+A(j,i)</code> edges between
 vertex <code>i</code> and <code>j</code>.</p>
 </dd> </dl>
@@ -251,23 +243,23 @@ matrix give the weights of the edges (if they are not zero).  The details
 depend on the value of the <code>mode</code> argument: </p>
 
 <dl>
-<dt>list(&quot;directed&quot;)</dt><dd><p>The graph will be directed and a matrix element
+<dt>&quot;directed&quot;</dt><dd><p>The graph will be directed and a matrix element
 gives the edge weights.</p>
-</dd> <dt>list(&quot;undirected&quot;)</dt><dd><p>First we check that the
+</dd> <dt>&quot;undirected&quot;</dt><dd><p>First we check that the
 matrix is symmetric. It is an error if not. Then only the upper triangle is
 used to create a weighted undirected graph.</p>
-</dd> <dt>list(&quot;max&quot;)</dt><dd><p>An
+</dd> <dt>&quot;max&quot;</dt><dd><p>An
 undirected graph will be created and <code>max(A(i,j), A(j,i))</code> gives the
 edge weights.</p>
-</dd> <dt>list(&quot;upper&quot;)</dt><dd><p>An undirected graph will be created,
+</dd> <dt>&quot;upper&quot;</dt><dd><p>An undirected graph will be created,
 only the upper right triangle (including the diagonal) is used (for the edge
 weights).</p>
-</dd> <dt>list(&quot;lower&quot;)</dt><dd><p>An undirected graph will be created, only
+</dd> <dt>&quot;lower&quot;</dt><dd><p>An undirected graph will be created, only
 the lower left triangle (including the diagonal) is used for creating the
 edges.</p>
-</dd> <dt>list(&quot;min&quot;)</dt><dd><p>An undirected graph will be created,
+</dd> <dt>&quot;min&quot;</dt><dd><p>An undirected graph will be created,
 <code>min(A(i,j), A(j,i))</code> gives the edge weights.</p>
-</dd> <dt>list(&quot;plus&quot;)</dt><dd><p>An
+</dd> <dt>&quot;plus&quot;</dt><dd><p>An
 undirected graph will be created, <code>A(i,j)+A(j,i)</code> gives the edge
 weights.</p>
 </dd> </dl>
@@ -296,6 +288,7 @@ create graphs.
 <h3>Examples</h3>
 
 <pre>
+
 adjm &lt;- matrix(sample(0:1, 100, replace=TRUE, prob=c(0.9,0.1)), nc=10)
 g1 &lt;- graph_from_adjacency_matrix( adjm )
 adjm &lt;- matrix(sample(0:5, 100, replace=TRUE,
@@ -335,9 +328,10 @@ rownames(adjm) &lt;- sample(letters, nrow(adjm))
 colnames(adjm) &lt;- seq(ncol(adjm))
 g10 &lt;- graph_from_adjacency_matrix(adjm, weighted=TRUE, add.rownames="code")
 summary(g10)
+
 </pre>
 
-<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4.1 <a href="00Index.html">Index</a>]</div>
 
 
 
