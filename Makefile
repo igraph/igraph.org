@@ -110,8 +110,8 @@ $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
 
 python/doc/tutorial/stamp: $(PY)/stamp
 	mkdir -p python/doc/tutorial
-	cd $(PY)/doc && python -m sphinx.cmd.build source api/tutorial
-	cp -r $(PY)/doc/api/tutorial/ python/doc/tutorial/
+	cd $(PY)/doc && python -m sphinx.cmd.build source tutorial
+	cp -r $(PY)/doc/tutorial/ python/doc/tutorial/
 	touch $@
 
 $(PY)/stamp:
@@ -142,4 +142,3 @@ stamp: $(HTML) $(CSS) $(POSTS)
 	echo $(PYVERSION) > _includes/igraph-pyversion
 	jekyll build
 	touch stamp
-

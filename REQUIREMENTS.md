@@ -32,6 +32,10 @@ Requirements for building the Python-related pages
 * Python 2.x or 3.x
 * `epydoc`
 * `sphinx`
+* `sphinx_bootstrap_theme`
+
+The requirements are installed automatically by the Makefile if you have Python
+on your system.
 
 Requirements for building the R-related pages
 ---------------------------------------------
