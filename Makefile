@@ -3,9 +3,9 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.7.1
+CVERSION?=master
 RVERSION?=1.2.4.1
-PYVERSION?=0.7.1.post6
+PYVERSION?=master
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
@@ -85,6 +85,9 @@ $(R)/stamp:
 ######################################################################
 ## Python stuff
 
+# TODO(ntamas): switch to doing everything in a virtualenv once we switched
+# from Epydoc to Sphinx so we can build stuff in Python 3
+
 ARCHFLAGS=-Wno-error=unused-command-line-argument
 
 PY=_build/python
@@ -96,16 +99,15 @@ python/doc/python-igraph.pdf: $(PY)/doc/api/pdf/api.pdf
 	mkdir -p python/doc
 	cp $< $@
 
-python/doc/stamp: $(PY)/stamp
+python/doc/stamp: $(PY)/doc/api/html/index.html
 	mkdir -p python/doc
 	cp -r $(PY)/doc/api/html/ python/doc
 	_tools/pyhtml.sh python/doc
 	touch $@
 
-$(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
+$(PY)/doc/api/html/index.html $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
 	cd $(PY) && rm -f igraphcore
-	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && \
-		python setup.py build --c-core-version=$(CVERSION) --no-pkg-config --no-progress-bar --static
+	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && python setup.py build
 	cd $(PY) && scripts/mkdoc.sh
 
 python/doc/tutorial/stamp: $(PY)/stamp
@@ -118,9 +120,8 @@ $(PY)/stamp:
 	rm -rf $(PY)
 	mkdir -p $(PY)
 	cd $(PY) && git clone --branch $(PYVERSION) --depth 1 $(PYREPO) . && \
-	    git submodule init && \
-	    git submodule update
-	pip install --user epydoc Sphinx sphinx_bootstrap_theme
+	    git submodule update --init
+	cd $(PY) && pip install --user epydoc Sphinx sphinx_bootstrap_theme
 	touch $@
 
 ######################################################################

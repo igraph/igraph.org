@@ -3,7 +3,11 @@
 module Jekyll
   module ExcerptFilter
     def extract_excerpt(input, url)
-      input=input.split("</h1>", 2)[1]
+      parts = input.split("</h1>", 2)
+      if parts.length() > 1
+        input = parts[1]
+      end
+
       re = %r{<!--more(?<read_more_message> ...*)?-->}
       m = input.match re
 
