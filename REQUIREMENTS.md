@@ -5,26 +5,7 @@ The igraph homepage is built using Jekyll. Install
 [Jekyll](https://jekyllrb.com) if you don't have it yet. Further requirements
 are listed below.
 
-You need so install the following RubyGems (e.g. using `gem install`):
-- `addressable-2.6.0`
-- `bundler-2.1.4`
-- `concurrent-ruby-1.1.5`
-- `eventmachine-1.2.7`
-- `ffi-1.10.0`
-- `i18n-0.9.5`
-- `rb-fsevent-0.10.3`
-- `rb-inotify-0.10.0`
-- `sass-listen-4.0.0`
-- `sass-3.7.4`
-- `ruby_dep-1.5.0`
-- `jekyll-watch-2.2.1`
-- `liquid-4.0.3`
-- `pathutil-0.16.2`
-- `safe_yaml-1.0.5`
-- `jekyll-3.8.5`
-- `jekyll-sitemap-1.3.1`
-- `multi_json-1.13.1`
-- `pygments.rb-1.2.1`
+You need so install RubyGems using `gem install`.
 
 The homepage itself will be built in `docs/`. The contents of `docs/` is exactly
 the same as what is shown at `igraph.org`. Instead of running Jekyll manually,
