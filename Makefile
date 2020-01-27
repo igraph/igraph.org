@@ -130,7 +130,7 @@ $(PY)/stamp:
 core: stamp
 
 HTML= index.html news.html _layouts/default.html \
-	_layouts/manual.html c/index.html \
+	_layouts/manual.html c/index.html c/compilation-windows.html \
 	r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
