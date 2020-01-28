@@ -6,7 +6,7 @@ tags: mathematica
 
 [IGraph/M](http://szhorvat.net/mathematica/IGraphM), a Mathematica interface for
 igraph is now officially one of the supported higher-level interfaces for igraph.
-We would like to thank [Szabolcs Horvát](http://http://szhorvat.net/) for all
+We would like to thank [Szabolcs Horvát](http://szhorvat.net/) for all
 his efforts dedicated to supporting igraph from Mathematica!
 
 New releases of [IGraph/M](http://szhorvat.net/mathematica/IGraphM) will be
