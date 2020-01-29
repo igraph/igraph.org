@@ -5,7 +5,7 @@ all: core
 
 CVERSION?=0.8.0
 RVERSION?=1.2.4.1
-PYVERSION?=0.7.1.post6
+PYVERSION?=master
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
