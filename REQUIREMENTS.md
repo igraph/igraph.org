@@ -5,6 +5,8 @@ The igraph homepage is built using Jekyll. Install
 [Jekyll](https://jekyllrb.com) if you don't have it yet. Further requirements
 are listed below.
 
+You need so install RubyGems using `gem install`.
+
 The homepage itself will be built in `docs/`. The contents of `docs/` is exactly
 the same as what is shown at `igraph.org`. Instead of running Jekyll manually,
 you should call:
