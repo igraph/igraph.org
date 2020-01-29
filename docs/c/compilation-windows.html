@@ -1,0 +1,284 @@
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico" type="image/png" />
+
+    <title>igraph library</title>
+
+    <!-- Bootstrap core CSS -->
+	<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="//fonts.googleapis.com/css?family=Lato:300,400,700"
+          rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/fonts/font-mfizz/font-mfizz.css">
+    <link href="/css/affix.css" rel="stylesheet">
+    <link href="/css/syntax.css" rel="stylesheet">
+    <link href="/css/other.css" rel="stylesheet">
+    <link href="/fonts/fonts.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements 
+         and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/js/html5shiv.js"></script>
+      <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1392972-5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-1392972-5');
+    </script>
+
+    
+  </head>
+
+  <body class="cc">
+  <div id="wrap">
+    <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top">
+      <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="/img/igraph_logo_white.svg" width="35"> igraph
+      </a>
+
+      
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="/c">igraph library</a></li>
+      </ul>
+      
+
+      <div>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" id="productsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Products</a>
+            <div class="dropdown-menu" aria-labelledby="productsDropdown">
+              <a class="dropdown-item" href="/r">igraph R package</a>
+              <a class="dropdown-item" href="/python">python-igraph</a>
+              <a class="dropdown-item" href="http://szhorvat.net/mathematica/IGraphM">IGraph/M</a>
+              <a class="dropdown-item" href="/c">igraph C library</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="https://github.com/igraph/igraphdata">igraphdata R package <i class="fa fa-github"></i></a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/news.html"><i class="fa fa-rss"></i> News</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://igraph.discourse.group"><i class="fa fa-comments"></i> Forum</a>
+          </li>		
+          <li class-"nav-item">
+            <a class="nav-link" href="https://github.com/igraph"><i class="fa fa-github"></i> On GitHub</a>
+          </li>
+        </ul>
+      </div>
+      </div>
+    </nav>
+    
+    
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-4">Compiling the igraph library in Windows</h1>
+        <p class="lead">Compile using <code>msys2</code> or MSVC.</p>
+      </div>
+      <canvas id="jumbotron-anim"></canvas>
+    </div>
+
+    
+
+    <div class="container">
+
+  <div id="readme">
+
+    <p>There are two ways to compile <code>igraph</code> on Windows. You can either build from the released source code, or you can
+      build from the <code>git</code> repository. Compiling from the released source code is sometimes easier, as it
+      already provides a project file that can be used to compile with Microsoft Visual C++ (MSVC). Of course,
+      compilation from the released source code is limited to released versions, while compilation from the
+      <code>git</code> repository allows you to also compile development versions. Compilation can always be done using
+      MinGW, but if you want to use <code>igraph</code> with Python (e.g. as an external library for
+      <code>python-igraph</code>) you have to use MSVC. Each Python version requires a specific version of MSVC, please
+      see the Python <a href="https://wiki.python.org/moin/WindowsCompilers" rel="nofollow">website</a> for more
+      details. Preparing a project file to compile with MSVC is again done using MinGW (<code>msys2</code>).</p>
+    <p>In summary, there are two routes to compiling <code>igraph</code>:</p>
+    <ol>
+      <li>Compile using <code>msys2</code></li>
+      <li>Compile using Microsoft Visual C++
+        <ul>
+          <li>If no project file is provided, this should be generated using <code>msys2</code>.</li>
+        </ul>
+      </li>
+    </ol>
+    <p>More detailed instructions are provided below.</p>
+
+    <h1><a id="user-content-compilation-using-msys2" class="anchor" 
+        href="#compilation-using-msys2"></a>Compilation using <code>msys2</code></h1>
+    <h2><a id="user-content-configuration-of-msys2" class="anchor" 
+        href="#configuration-of-msys2"></a>Installation and configuration of <code>msys2</code></h2>
+    <p>We recommend to use <a href="https://www.msys2.org/" rel="nofollow"><code>msys2</code></a> to compile
+      <code>igraph</code>, because it includes <a href="http://mingw-w64.org/" rel="nofollow">MinGW-w64</a>, which
+      supports compiling both for 32- and 64-bit targets. The old <a href="http://mingw.org/" rel="nofollow">MinGW</a>
+      project only provides a 32-bit version.</p>
+    <p>The instructions below assume that you want to compile for a 64-bit target.</p>
+    <p>After installing <code>msys2</code>, first make sure that it is up-to-date. You can do so by opening an
+      <code>msys2</code> <code>bash</code> terminal and run:</p>
+    <pre><code>pacman -Syuu
+</code></pre>
+    <p>You may be requested to close and restart the <code>msys2</code> <code>bash</code> terminal at several points.
+      Please repeat executing <code>pacman -Syuu</code> until it says there are no longer any packages to update. More
+      details regarding the installation of <code>msys2</code> are available from their <a
+        href="https://github.com/msys2/msys2/wiki/MSYS2-installation">Wiki</a>.</p>
+    <p>Compilation of <code>igraph</code> requires the installation of a number of packages, namely:</p>
+    <ul>
+      <li><code>autoconf</code></li>
+      <li><code>automake</code></li>
+      <li><code>bison</code></li>
+      <li><code>flex</code></li>
+      <li><code>libtool</code></li>
+      <li><code>make</code></li>
+      <li><code>mingw-w64-x86_64-toolchain</code></li>
+      <li><code>mingw-w64-x86_64-libxml2</code></li>
+      <li><code>git</code></li>
+      <li><code>zip</code></li>
+    </ul>
+    <p>The <code>mingw-w64-x86_64-toolchain</code> also includes the optional <a href="https://gmplib.org/"
+        rel="nofollow">Gnu Multiple Precision</a> package <code>mingw-w64-x86_64-gmp</code>. This enables extended
+      functionality in <code>igraph</code>.</p>
+    <p>You can install these packages by running the following command in an <code>msys2</code> terminal:</p>
+    <pre><code>pacman -S autoconf automake bison flex libtool make mingw-w64-x86_64-toolchain mingw-w64-x86_64-libxml2 mingw-w64-x86_64-gmp git zip
+</code></pre>
+    <p>Once everything is installed you need to open the <code>msys2</code> "MinGW 64-bit" terminal
+      (<code>mingw64.exe</code>).</p>
+
+    <h2><a id="user-content-compilation" class="anchor"  href="#compilation"></a>Compilation</h2>
+    <p>You can either download the <a href="https://igraph.org/c/#downloads" rel="nofollow">source code archive of the
+        latest release</a> or clone the <a href="https://github.com/igraph/igraph"><code>git</code> repository</a> using
+      <code>git clone https://github.com/igraph/igraph.git</code>. When cloning from GitHub, please ensure that you run
+      <code>git config --global core.autocrlf false</code> before cloning the repository. Otherwise, you might run into
+      problems with line endings.</p>
+    <p>After extracting the source code, open a <code>bash</code> terminal (from either <code>msys2</code> or
+      <code>cygwin</code>) and change to the directory in which the source code is located. When using
+      <code>msys2</code>, use the "MSYS2 MinGW 64-bit" terminal, and <em>not</em> the "MSYS2 MSYS" one.</p>
+    <p>If you have cloned the source code from the <code>git</code> repository, you must first create the build scripts
+      by running</p>
+    <pre><code>./bootstrap.sh
+</code></pre>
+    <p>Compilation is done with the usual steps of</p>
+    <pre><code>./configure
+make
+</code></pre>
+    <p>If you have multiple cores, for example 4, you can run <code>make -j4</code> to speed up the compilation
+      substantially.</p>
+    <p>You can install the library by running <code>make install</code>. If you prefer to install it in a specific
+      location, you can specify <code>--prefix=[DIRECTORY]</code> to <code>./configure</code>, in which case the library
+      will be installed into the <code>bin</code>, <code>lib</code> and <code>include</code> subdirectories of
+      <code>[DIRECTORY]</code>. If you just need the built <code>dll</code> file, this is located in
+      <code>src/.libs/libigraph-0.dll</code>.</p>
+    <p>You may optionally run the test suite using <code>make check</code>. Before doing this, ensure that the directory
+      containing <code>libigraph-0.dll</code> is in the <code>PATH</code>. This can be achieved for example using the
+      command</p>
+    <pre><code>export PATH=$PATH:`realpath src/.libs`
+</code></pre>
+    <h2><a id="user-content-preparing-the-msvc-project-file" class="anchor" 
+        href="#preparing-the-msvc-project-file"></a>Preparing the MSVC project file</h2>
+    <p>If you intend to compile with Microsoft Visual C++, you will need a project file for Microsoft Visual C++. This
+      can be done by following the above steps, except for the last step, and then creating the MSVC project file using</p>
+    <pre><code>./configure
+make msvc
+</code></pre>
+    <p>The necessary source code for compilation with MSVC is then contained in the newly created
+      <code>igraph-[VERSION]-msvc</code> directory, where <code>[VERSION]</code> refers to the version that you are
+      compiling.</p>
+    <h1><a id="user-content-compilation-using-msvc" class="anchor" 
+        href="#compilation-using-msvc"></a>Compilation using MSVC</h1>
+    <p>Compilation using MSVC is primarily necessary for use with Python, in particular for <code>python-igraph</code>.
+      Note that different versions of Python require different versions of MSVC. See <a
+        href="https://wiki.python.org/moin/WindowsCompilers" rel="nofollow">the Python website</a> for more details.</p>
+    <p>The provided project file is still provided in an older MSVC format. To use it with more recent versions of MSVC,
+      you will have to upgrade the project file. Note that this can only be done if you have the the full Microsoft
+      Visual Studio installed. You can install the Community edition, which is <a
+        href="https://visualstudio.microsoft.com/downloads/" rel="nofollow">freely available</a>. The Microsoft Visual C++ Build Tools that
+      are available do not allow you to upgrade the project file, which is necessary to be able to compile
+      <code>igraph</code> correctly.</p>
+    <p>Compilation can be done in two ways. The easiest way for most users is to open the project
+      solution file (<code>igraph.sln</code>) in the Visual Studio IDE. It will ask you to convert it to the current
+      format, and you should be able to compile it, once it is converted.</p>
+    <p>Alternatively, you can compile via the command line. In that case, open the "Developer Command Prompt", and
+      depending on your version of MSVC, you should do the following</p>
+    <p>MSVC 9.0</p>
+    <pre><code>vcbuild.exe /upgrade
+vcbuild.exe igraph.vcproj "Release|x64"
+</code></pre>
+    <p>MSVC 10.0</p>
+    <pre><code>VCUpgrade.exe /overwrite ig.vcproj
+msbuild.exe igraph.vcxproj
+</code></pre>
+    <p>MSVC 14.x</p>
+    <pre><code>devenv /upgrade igraph.vcproj
+msbuild.exe igraph.vcxproj
+</code></pre>
+    <p>By default, compilation on Windows targets a static library (<code>.lib</code>), which is necessary for the
+      compilation of <code>python-igraph</code>. To import the static library, you have to make sure to specify</p>
+    <pre><code>#define IGRAPH_STATIC 1
+</code></pre>
+    <p>before you include</p>
+    <pre><code>#include "igraph.h"
+</code></pre>
+    <p>Alternatively, you can reconfigure the MSVC project to compile a dynamic library (<code>.dll</code>), in
+      which case the <code>IGRAPH_STATIC</code> definition should <em>not</em> be included.</p>
+    <p>A small test project is included in the <code>igraphtest</code> subdirectory of the
+      <code>igraph-[VERSION]-msvc</code> directory.</p>
+    <h1><a id="user-content-compilation-problems" class="anchor" 
+        href="#compilation-problems"></a>Compilation problems</h1>
+    <p>If you have any problems with compilation on Windows, please post a message on <a
+        href="https://igraph.discourse.group/" rel="nofollow">the igraph support forum</a> or file an issue at <a
+        href="https://github.com/igraph/igraph">https://github.com/igraph/igraph</a>
+    </p>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer"><div class="container-fluid">
+      <p class="text-muted credit">
+      &copy; 2003 &ndash; 2020 The igraph core team.
+            &bull; Code licensed under 
+            <a href="http://www.gnu.org/licenses/gpl-2.0.html">
+            GNU GPL 2</a> or later, documentation under 
+            <a href="http://www.gnu.org/copyleft/fdl.html">
+              GNU FDL.</a>
+      </p>
+    </div></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script src="/js/affix.js"></script>
+    <script src="/js/jumbotron.js"></script>
+    <script src="/js/toggle.js"></script>
+
+    
+  </body>
+</html>
