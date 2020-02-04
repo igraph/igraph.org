@@ -129,7 +129,7 @@ $(PY)/stamp:
 
 core: stamp
 
-HTML= index.html news.html _layouts/default.html \
+HTML= index.html news.html code-of-conduct.html _layouts/default.html \
 	_layouts/manual.html c/index.html c/compilation-windows.html \
 	r/index.html python/index.html
 
