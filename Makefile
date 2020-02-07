@@ -4,7 +4,7 @@ all: core
 .PHONY: all core c r python
 
 CVERSION?=0.8.0
-RVERSION?=1.2.4.1
+RVERSION?=1.2.4.2
 PYVERSION?=master
 
 CREPO=https://github.com/igraph/igraph
