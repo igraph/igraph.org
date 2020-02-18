@@ -1,4 +1,4 @@
-x=function(){
+var startAnimation = function(){
 // Background animation for the jumbotron.
 // Taken from https://codepen.io/jkiss/pen/OVEeqK
 
@@ -267,6 +267,10 @@ canvas.addEventListener('mousemove', function(e){
     mouse_ball.y = e.clientY - rect.top;
 });
 
-window.addEventListener('DOMContentLoaded', startCanvasAnimation);
+function startAnimation() {
+    window.addEventListener('DOMContentLoaded', startCanvasAnimation);
+}
+
+return startAnimation;
 
 }();
