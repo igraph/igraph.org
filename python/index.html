@@ -15,10 +15,8 @@ animated_header: true
           <li class="nav-item">
             <a class="nav-link" href="#startpy"><i class="fa fa-fw icon-python"></i> Get started</a>
             <ul class="nav">
-              <li class="nav-item"><a class="nav-link" href="#pyreq">Requirements</a></li>
               <li class="nav-item"><a class="nav-link" href="#pyinstall">Installation</a></li>
-              <li class="nav-item"><a class="nav-link" href="#pyinstallosx">Installation on Mac OS X</a></li>
-              <li class="nav-item"><a class="nav-link" href="#pyinstallwin">Installation on Windows</a></li>
+              <li class="nav-item"><a class="nav-link" href="#pycompile">Compiling from source</a></li>
               <li class="nav-item"><a class="nav-link" href="#pydoc1">Tutorials</a></li>
             </ul>
           </li>
@@ -65,65 +63,193 @@ animated_header: true
             Get started</h1>
         </div>
 
-        <h3><span id="pyreq" class="anchor">&nbsp;</span>Requirements</h3>
-        <p>On Linux (and other Unix-like systems), you will need a C and a C++
-          compiler, the tool <code>make</code> and the development header files
-          for your version of Python. On Debian and Ubuntu Linux the
-          <code>build-essential</code> and <code>python-dev</code> packages install
-          these. You will also need <code>libxml2-dev</code> and <code>zlib1g-dev</code>
-          for GraphML support.
-        </p>
-        <p>On Mac OS X, you can get a working C and C++ compiler as well as
-          <code>make</code> by installing XCode or the XCode Command Line Tools.
-        </p>
-        <p>See also the platform-specific installation instructions below.</p>
-
         <h3><span id="pyinstall" class="anchor">&nbsp;</span>
            Installation</h3>
         <p>
           igraph is on the <a href="https://pypi.org/project/python-igraph">Python
-          Package Index</a> so it can be installed using <code>pip</code> or
-          <code>easy_install</code>:
+          Package Index</a> with pre-compiled wheels for most Python distributions
+          and platforms, so in most cases it can simply be installed using
+          <code>pip</code>:
         </p>
         <p>
         {% highlight console %}
 $ pip install python-igraph
 {% endhighlight %}
         </p>
-        <p>If the C core of igraph has already been installed to a
-        location that can be detected using <code>pkg-config</code>,
-        <code>pip</code> will compile and link the extension to the
-        C core that you have installed. If the C core is not installed
-        or is installed in a location that cannot be detected using
-        <code>pkg-config</code>, <code>pip</code> will attempt to
-        download a matching version of the C core and compile it together
-        with the Python interface. Note that this will not work on Windows;
-        you are advised to download and run one of the Python wheels that
-        Christoph Gohlke provides on <a href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-igraph">his website</a>.
+        <p>The command above should attempt to download a pre-compiled wheel if
+        your platform and Python version are among the supported ones. Currently
+        we aim to support Windows, Linux and macOS for at least the three most
+        recent minor versions of Python 3.x. If you are still using Python 2.7,
+        <code>python-igraph</code> 0.8.0 is the latest version that you should
+        attempt to install.</p>
+        <p>In cases where we don't provide a pre-compiled wheel, the command
+        above will attempt to compile the Python interface of igraph during
+        installation. See the next section about the requirements for compiling
+        <code>python-igraph</code> from source.
+
+        <h3><span id="pycompile" class="anchor">&nbsp;</span>Compiling from source</h3>
+
+        <p>In general, you will need a working C and C++ compiler, a POSIX-compatible
+          shell environment (<a href="https://www.msys2.org/">MSYS2</a> on Windows
+          is okay), <code>make</code>, and the development header files for your
+          version of Python. You will also need <a href="https://xmlsoft.org/"><code>libxml2</code></a>
+          for GraphML support. <code>libxml2</code> might have additional
+          dependencies depending on your platform; for instance, you also
+          need <code>zlib1g-dev</code> on Linux; more about these in the
+          platform-specific instructions below.</p>
+
+        <p>The source code of the Python interface bundles a matching version of
+          the C core of the igraph library, and this will be linked to the
+          compiled Python interface statically during the build process, so
+          if everything is installed properly, you can simply run the following
+          command even if we provide no matching pre-compiled wheel:</p>
+
+        <p>
+          {% highlight console %}
+$ pip install python-igraph
+{% endhighlight %}
         </p>
 
-        <h3><span id="pyinstallosx" class="anchor">&nbsp;</span>
-          Installation on Mac OS X</h3>
+        <p>However, if the C core of igraph has already been installed to a
+          location that can be discovered using <code>pkg-config</code>,
+          you can also instruct the setup script to use <code>pkg-config</code>
+          instead of compiling the bundled version with
+          <code>pip</code> will compile and link the extension to the
+          C core that you have installed. First you need to download and extract
+          the source code of the Python interface:</p>
+
         <p>
-        Instead of letting <code>pip</code> compile the C core for you,
-        you can install <a href="http://brew.sh/">Homebrew</a> and
-        the <code>igraph</code> formula. This will ensure
-        that the C core is found by <code>pip</code> so running
-        <code>pip install python-igraph</code> will compile the Python interface
-        only and link it to the C core.
+          {% highlight console %}
+$ pip download --no-deps --no-binary :all: python-igraph
+$ tar -xvvzf python-igraph-{% include igraph-pyversion -%}.tar.gz
+$ cd python-igraph-{% include igraph-pyversion %}
+{% endhighlight %}
+          </p>
+
+        <p>Next, make sure that <code>pkg-config</code> can correctly report
+          the compilation flags needed to link to <code>igraph</code>; the
+          following command should list a bunch of compiler and linker flags
+          instead of reporting an error:</p>
+
+        <p>
+          {% highlight console %}
+$ pkg-config --cflags --libs igraph
+{% endhighlight %}
+          </p>
+
+        <p>Finally, ask the setup script to compile <code>python-igraph</code>
+          and use <code>pkg-config</code> for the detection of the C core:</p>
+
+          <p>
+            {% highlight console %}
+$ python setup.py build --use-pkg-config
+$ python setup.py install
+{% endhighlight %}
+            </p>
+
+        <p>See the sections below for additional, platform-specific instructions.</p>
+
+        <h3><span id="pycompilelinux" class="anchor">&nbsp;</span>
+          Compilation on Linux</h3>
+
+        <p>On Debian and Ubuntu Linux, installing <code>build-essential</code>,
+          <code>python-dev</code> (or <code>python3.X-dev</code> for your
+          matching version of Python), <code>libxml2-dev</code> and
+          <code>zlib1g-dev</code> should be enough to get you started. The
+          latter two are needed only if you need GraphML support. Running
+          <code>pip install --user python-igraph</code> after having installed
+          all these dependencies should then work out-of-the-box.
         </p>
 
-        <h3><span id="pyinstallwin" class="anchor">&nbsp;</span>
-          Installation on Windows</h3>
+        <p>If you are using some other Linux distribution, try to find the
+          packages equivalent to the ones mentioned above; in general, you will
+          need the usual development tools (at least a C and C++ compiler
+          and <code>make</code>), the development headers for your Python
+          version, and the development headers for <code>libxml2</code> if you
+          need GraphML support. Feel free to send us a message in the
+          <a href="https://igraph.discourse.group">discussion forum</a> if you
+          can provide more specific instructions for a popular Linux flavour
+          that we have not listed here.
+        </p>
+
+        <h3><span id="pycompileosx" class="anchor">&nbsp;</span>
+          Compilation on macOS</h3>
+
+        <p>On macOS, you can get a working C and C++ compiler as well as
+        <code>make</code> by installing XCode or the XCode Command Line Tools.
+        Running <code>pip install python-igraph</code> should then work
+        out-of-the-box.
+        </p>
+
         <p>
-          The preferred way to install the Python interface on Windows is to
-          download one of the unofficial installers built by
-          <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#python-igraph">Christoph Gohlke</a>.
-          (Thanks Christoph!). We do not provide "official" installers for
-          Windows as we don't use Windows ourselves and we would not be able
-          to test them before release. Note that the automatic compilation of
-          the C core when running <code>pip install python-igraph</code> will
-          <em>not</em> work on Windows!
+        You can also install a pre-compiled version of the C core of igraph from
+        <a href="http://brew.sh/">Homebrew</a>. This can be used in conjunction
+        with <code>pkg-config</code> as outlined in the section about
+        <a href="#pycompile">compiling from source</a> to link the Python interface
+        to the C core installed from Homebrew.</p>
+
+        <h3><span id="pycompilewin" class="anchor">&nbsp;</span>
+          Compilation on Windows</h3>
+        <p>
+          Compilation on Windows is more complicated than on other platforms
+          because the C core of igraph needs to be built in a POSIX shell-like
+          environment at the moment, but the Python interface has to be compiled
+          with Microsoft Visual C instead (like all other Python extensions).
+          Ideally, you should be able to use one of the pre-compiled wheels,
+          but in case you can't, here is a rough outline of how we managed
+          to get it work in our continuous integration environment. As we do
+          not use Windows regularly, these instructions might need small tweaks;
+          any improvements are appreciated in our
+          <a href="https://igraph.discourse.group">discussion forum</a>.
+        </p>
+
+        <p>
+          First, you need to follow the <a href="https://wiki.python.org/moin/WindowsCompilers">instructions</a>
+          on the Python wiki to install the version of the Microsoft Visual
+          C++ Compiler that matches your Python version.
+        </p>
+
+        <p>
+          Next, you also need to download <a href="https://www.msys2.org/">MSYS2</a>,
+          which provides a shell environment in which the C core of igraph
+          can be compiled.
+        </p>
+
+        <p>
+          Then you need to install a bunch of dependencies in MSYS2. Open up the
+          MSYS2 shell and run the following command:
+        </p>
+
+        <p>
+          {% highlight console %}
+$ pacman --needed --noconfirm -Sy pacman-mirrors
+$ pacman --noconfirm -Sy
+$ pacman --noconfirm -S autoconf automake bison flex \
+        libtool mingw-w64-x86_64-libtool zip \
+        mingw-w64-i686-libxml2 mingw-w64-x86_64-libxml2
+{% endhighlight %}
+          </p>
+
+        <p>Then you need to download the <em>source code</em> of <code>python-igraph</code>
+          from <a href="https://pypi.python.org/pypi/python-igraph">PyPI</a> and extract it to a folder. Open the MSYS2 shell, enter this
+          folder and run <code>python setup.py build_c_core</code>. This should
+          compile the C core of the Python interface with MSYS2.
+          <em>You are not done yet, read on.</em>
+        </p>
+
+        <p>Once the C core is compiled, you need to switch back to the "regular"
+          WIndows shell, make sure that the Visual C compiler is on your PATH
+          (typically there are scripts in the Visual Studio installation that
+          let you launch a development shell with MSVC on your PATH), and then
+          run <code>python setup.py build</code>, followed by
+          <code>python setup.py install</code>.
+        </p>
+
+        <p><em>Note that the instructions above work in our CI environment, but
+          your environment might be different from ours so these instructions
+          might require small tweaks.</em> Improvements are welcome; please open a
+          thread in our <a href="https://igraph.discourse.group">discussion forum</a>
+          if you can add more specific instructions.
         </p>
 
         <h3><span id="pydoc1" class="anchor">&nbsp;</span>Tutorials</h3>
@@ -226,11 +352,11 @@ $ pip install python-igraph
         <h3><span id="contributebugs" class="anchor">&nbsp;</span>
           Report bugs</h3>
 
-        <p>Report bugs or suggest new features or algorithms in the 
+        <p>Report bugs or suggest new features or algorithms in the
           <a href="https://github.com/igraph/python-igraph/issues">
           GitHub issue tracker</a>.
         </p>
-        
+
         <div class="page-header">
           <h1><span id="contribute" class="anchor">&nbsp;</span>Contribute</h1>
         </div>
@@ -238,10 +364,10 @@ $ pip install python-igraph
         <p>
           Your contribution is more than welcome!
         </p>
-        
+
         <!-- <h3><span id="contributewiki" class="anchor">&nbsp;</span> -->
         <!--   Improve the wiki</h3> -->
-        
+
         <!-- <p>Add your work to the gallery in the -->
         <!--   <a href="https://github.com/igraph/igraph/wiki"> -->
         <!--         igraph wiki</a>. -->
@@ -249,7 +375,7 @@ $ pip install python-igraph
 
         <h3><span id="contributecode" class="anchor">&nbsp;</span>
           Contribute code</h3>
-          
+
         <p>Send a pull request on <a href="https://github.com/igraph/python-igraph">
                 GitHub.</a> Please note that igraph can contain only
           code that is compatible with its GPL license.

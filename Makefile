@@ -138,8 +138,8 @@ CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 POSTS= $(wildcard _posts/*)
 
 stamp: $(HTML) $(CSS) $(POSTS)
-	echo $(CVERSION) > _includes/igraph-cversion
-	echo $(RVERSION) > _includes/igraph-rversion
-	echo $(PYVERSION) > _includes/igraph-pyversion
+	printf "$(CVERSION)" > _includes/igraph-cversion
+	printf "$(RVERSION)" > _includes/igraph-rversion
+	printf "$(PYVERSION)" > _includes/igraph-pyversion
 	jekyll build
 	touch stamp
