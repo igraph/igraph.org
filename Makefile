@@ -3,7 +3,7 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.8.0
+CVERSION?=0.8.1
 RVERSION?=1.2.4.2
 PYVERSION?=0.8.0
 
