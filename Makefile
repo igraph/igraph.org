@@ -3,9 +3,9 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.8.1
+CVERSION?=0.8.2
 RVERSION?=1.2.4.2
-PYVERSION?=0.8.0
+PYVERSION?=0.8.2
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
