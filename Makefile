@@ -6,6 +6,8 @@ all: core
 CVERSION?=0.8.2
 RVERSION?=1.2.4.2
 PYVERSION?=0.8.2
+# optional variable so we can update the Python docs without making a release
+PYCOMMITHASH?=ab6d22b
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
@@ -121,8 +123,13 @@ python/doc/tutorial/stamp: $(PY)/stamp
 $(PY)/stamp:
 	rm -rf $(PY)
 	mkdir -p $(PY)
-	cd $(PY) && git clone --branch $(PYVERSION) --depth 1 $(PYREPO) . && \
-	    git submodule update --init
+	cd $(PY) && ( \
+		if [ "x$(PYCOMMITHASH)" != x ]; then \
+			git clone $(PYREPO) . && git reset --hard $(PYCOMMITHASH); \
+		else \
+			git clone --branch $(PYVERSION) --depth 1 $(PYREPO) .; \
+		fi \
+	) && git submodule update --init
 	cd $(PY) && pip install --user epydoc Sphinx sphinx_bootstrap_theme
 	touch $@
 
