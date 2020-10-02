@@ -138,16 +138,16 @@
 <div class="titlepage"><div><div><h1 class="title">
 <a name="igraph-Isomorphism"></a>Chapter 16. Graph Isomorphism</h1></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383481759936">1. The simple interface</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383480500368">2. The BLISS algorithm</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383453685184">3. The VF2 algorithm</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383440586240">4. The LAD algorithm</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383440370112">5. Functions for graphs with 3 or 4 vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#idm383440295360">6. Utility functions</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-simple-interface">1. The simple interface</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#bliss-algorithm">2. The BLISS algorithm</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#vf2-algorithm">3. The VF2 algorithm</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#lad-algorithm">4. The LAD algorithm</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for graphs with 3 or 4 vertices</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-utility-functions">6. Utility functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383481759936"></a>1. The simple interface</h2></div></div></div>
+<a name="isomorphism-simple-interface"></a>1. The simple interface</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic">1.1. <code class="function">igraph_isomorphic</code> —  Decides whether two graphs are isomorphic</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic">1.2. <code class="function">igraph_subisomorphic</code> — Decide subgraph isomorphism</a></span></dt>
@@ -172,7 +172,7 @@ See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_34" title="5
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic"></a>1.1. <code class="function">igraph_isomorphic</code> —  Decides whether two graphs are isomorphic</h3></div></div></div>
-<a class="indexterm" name="idm383479689792"></a><p>
+<a class="indexterm" name="idm446194003472"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isomorphic(const igraph_t *graph1, const igraph_t *graph2,
@@ -186,11 +186,19 @@ int igraph_isomorphic(const igraph_t *graph1, const igraph_t *graph2,
 
 </p>
 <p>
-From Wikipedia: The graph isomorphism problem or GI problem is the
-graph theory problem of determining whether, given two graphs G1
-and G2, it is possible to permute (or relabel) the vertices of one
-graph so that it is equal to the other. Such a permutation is
-called a graph isomorphism.</p>
+In simple terms, two graphs are isomorphic if they become indistinguishable
+from each other once their vertex labels are removed (rendering the vertices
+within each graph indistiguishable). More precisely, two graphs are isomorphic
+if there is a one-to-one mapping from the vertices of the first one
+to the vertices of the second such that it transforms the edge set of the
+first graph into the edge set of the second. This mapping is called
+an <span class="emphasis"><em>isomorphism.</em></span>
+
+</p>
+<p>Currently, this function supports simple graphs and graphs
+with self-loops, but does not support multigraphs.
+
+</p>
 <p>This function decides which graph isomorphism algorithm to be
 used based on the input graphs. Right now it does the following:
 </p>
@@ -198,6 +206,10 @@ used based on the input graphs. Right now it does the following:
 <li class="listitem"><p>
 If one graph is directed and the other undirected then an
    error is triggered.
+
+</p></li>
+<li class="listitem"><p>
+If one of the graphs has multi-edges then an error is triggered.
 
 </p></li>
 <li class="listitem"><p>
@@ -216,8 +228,9 @@ Otherwise BLISS is used, see <a class="link" href="igraph-Isomorphism.html#igrap
 </p></li>
 </ol></div>
 <p>
+
 </p>
-<p> Please call the VF2 and BLISS functions directly if you need
+<p>Please call the VF2 and BLISS functions directly if you need
 something more sophisticated, e.g. you need the isomorphic mapping.
 
 </p>
@@ -290,7 +303,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_subisomorphic"></a>1.2. <code class="function">igraph_subisomorphic</code> — Decide subgraph isomorphism</h3></div></div></div>
-<a class="indexterm" name="idm383480137168"></a><p>
+<a class="indexterm" name="idm446189356320"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_subisomorphic(const igraph_t *graph1, const igraph_t *graph2,
@@ -361,7 +374,7 @@ Time complexity: exponential.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383480500368"></a>2. The BLISS algorithm</h2></div></div></div>
+<a name="bliss-algorithm"></a>2. The BLISS algorithm</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_bliss_sh_t">2.1. <code class="function">igraph_bliss_sh_t</code> — Splitting heuristics for BLISS</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_bliss_info_t">2.2. <code class="function">igraph_bliss_info_t</code> — Information about a BLISS run</a></span></dt>
@@ -393,7 +406,7 @@ BLISS version 0.73 is included in igraph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bliss_sh_t"></a>2.1. <code class="function">igraph_bliss_sh_t</code> — Splitting heuristics for BLISS</h3></div></div></div>
-<a class="indexterm" name="idm383480326128"></a><p>
+<a class="indexterm" name="idm446190313296"></a><p>
 </p>
 <pre class="programlisting">
 typedef enum { IGRAPH_BLISS_F = 0, IGRAPH_BLISS_FL,
@@ -463,7 +476,7 @@ typedef enum { IGRAPH_BLISS_F = 0, IGRAPH_BLISS_FL,
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bliss_info_t"></a>2.2. <code class="function">igraph_bliss_info_t</code> — Information about a BLISS run</h3></div></div></div>
-<a class="indexterm" name="idm383480171712"></a><p>
+<a class="indexterm" name="idm446193721952"></a><p>
 </p>
 <pre class="programlisting">
 typedef struct igraph_bliss_info_t {
@@ -545,7 +558,7 @@ for details about the algorithm and these parameters.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_canonical_permutation"></a>2.3. <code class="function">igraph_canonical_permutation</code> — Canonical permutation using BLISS</h3></div></div></div>
-<a class="indexterm" name="idm383480423200"></a><p>
+<a class="indexterm" name="idm446200351600"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_canonical_permutation(const igraph_t *graph, const igraph_vector_int_t *colors,
@@ -631,7 +644,7 @@ Time complexity: exponential, in practice it is fast for many graphs.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic_bliss"></a>2.4. <code class="function">igraph_isomorphic_bliss</code> — Graph isomorphism via BLISS</h3></div></div></div>
-<a class="indexterm" name="idm383479667248"></a><p>
+<a class="indexterm" name="idm446200074336"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isomorphic_bliss(const igraph_t *graph1, const igraph_t *graph2,
@@ -761,7 +774,7 @@ Time complexity: exponential, but in practice it is quite fast.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_automorphisms"></a>2.5. <code class="function">igraph_automorphisms</code> — Number of automorphisms using BLISS</h3></div></div></div>
-<a class="indexterm" name="idm383480310912"></a><p>
+<a class="indexterm" name="idm446182469872"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_automorphisms(const igraph_t *graph, const igraph_vector_int_t *colors,
@@ -840,7 +853,7 @@ Time complexity: exponential, in practice it is fast for many graphs.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_automorphism_group"></a>2.6. <code class="function">igraph_automorphism_group</code> — Automorphism group generators using BLISS</h3></div></div></div>
-<a class="indexterm" name="idm383480534400"></a><p>
+<a class="indexterm" name="idm446182452928"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_automorphism_group(
@@ -927,7 +940,7 @@ Time complexity: exponential, in practice it is fast for many graphs.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383453685184"></a>3. The VF2 algorithm</h2></div></div></div>
+<a name="vf2-algorithm"></a>3. The VF2 algorithm</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_vf2">3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2">3.2. <code class="function">igraph_count_isomorphisms_vf2</code> — Number of isomorphisms via VF2</a></span></dt>
@@ -959,7 +972,7 @@ of the user to pass in valid input.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic_vf2"></a>3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2</h3></div></div></div>
-<a class="indexterm" name="idm383453681488"></a><p>
+<a class="indexterm" name="idm446182432048"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
@@ -1129,7 +1142,7 @@ Time complexity: exponential, what did you expect?
 </p>
 <div class="hideshow" onClick="toggle(this)">
 <div class="example">
-<a name="idm383453641792"></a><p class="title"><b>Example 16.1.  File <code class="code">examples/simple/igraph_isomorphic_vf2.c</code></b></p>
+<a name="idm446182392016"></a><p class="title"><b>Example 16.1.  File <code class="code">examples/simple/igraph_isomorphic_vf2.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -1417,7 +1430,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_count_isomorphisms_vf2"></a>3.2. <code class="function">igraph_count_isomorphisms_vf2</code> — Number of isomorphisms via VF2</h3></div></div></div>
-<a class="indexterm" name="idm383453475072"></a><p>
+<a class="indexterm" name="idm446182843264"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_count_isomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
@@ -1546,7 +1559,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_get_isomorphisms_vf2"></a>3.3. <code class="function">igraph_get_isomorphisms_vf2</code> — Collect the isomorphic mappings</h3></div></div></div>
-<a class="indexterm" name="idm383453446192"></a><p>
+<a class="indexterm" name="idm446182814256"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_get_isomorphisms_vf2(const igraph_t *graph1,
@@ -1682,7 +1695,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isohandler_t"></a>3.4. <code class="function">igraph_isohandler_t</code> — Callback type, called when an isomorphism was found</h3></div></div></div>
-<a class="indexterm" name="idm383440811584"></a><pre class="programlisting">
+<a class="indexterm" name="idm446182651328"></a><pre class="programlisting">
 typedef igraph_bool_t igraph_isohandler_t(const igraph_vector_t *map12,
         const igraph_vector_t *map21, void *arg);
 </pre>
@@ -1742,7 +1755,7 @@ See the details at the documentation of <a class="link" href="igraph-Isomorphism
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isocompat_t"></a>3.5. <code class="function">igraph_isocompat_t</code> — Callback type, called to check whether two vertices or edges are compatible</h3></div></div></div>
-<a class="indexterm" name="idm383440797120"></a><pre class="programlisting">
+<a class="indexterm" name="idm446182636864"></a><pre class="programlisting">
 typedef igraph_bool_t igraph_isocompat_t(const igraph_t *graph1,
         const igraph_t *graph2,
         const igraph_integer_t g1_num,
@@ -1829,7 +1842,7 @@ logical value, giving whether the two vertices match.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic_function_vf2"></a>3.6. <code class="function">igraph_isomorphic_function_vf2</code> — The generic VF2 interface</h3></div></div></div>
-<a class="indexterm" name="idm383440778224"></a><p>
+<a class="indexterm" name="idm446182617936"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isomorphic_function_vf2(const igraph_t *graph1, const igraph_t *graph2,
@@ -1984,7 +1997,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_subisomorphic_vf2"></a>3.7. <code class="function">igraph_subisomorphic_vf2</code> — Decide subgraph isomorphism using VF2</h3></div></div></div>
-<a class="indexterm" name="idm383440739184"></a><p>
+<a class="indexterm" name="idm446182577088"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_subisomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
@@ -2130,7 +2143,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_count_subisomorphisms_vf2"></a>3.8. <code class="function">igraph_count_subisomorphisms_vf2</code> — Number of subgraph isomorphisms using VF2</h3></div></div></div>
-<a class="indexterm" name="idm383440698992"></a><p>
+<a class="indexterm" name="idm446182536896"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_count_subisomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
@@ -2261,7 +2274,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_get_subisomorphisms_vf2"></a>3.9. <code class="function">igraph_get_subisomorphisms_vf2</code> — Return all subgraph isomorphic mappings</h3></div></div></div>
-<a class="indexterm" name="idm383440666432"></a><p>
+<a class="indexterm" name="idm446182796096"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_get_subisomorphisms_vf2(const igraph_t *graph1,
@@ -2397,7 +2410,7 @@ Time complexity: exponential.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_subisomorphic_function_vf2"></a>3.10. <code class="function">igraph_subisomorphic_function_vf2</code> — Generic VF2 function for subgraph isomorphism problems</h3></div></div></div>
-<a class="indexterm" name="idm383440628448"></a><p>
+<a class="indexterm" name="idm446182894256"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_subisomorphic_function_vf2(const igraph_t *graph1,
@@ -2550,7 +2563,7 @@ Time complexity: exponential.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383440586240"></a>4. The LAD algorithm</h2></div></div></div>
+<a name="lad-algorithm"></a>4. The LAD algorithm</h2></div></div></div>
 <div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic_lad">4.1. <code class="function">igraph_subisomorphic_lad</code> — Check subgraph isomorphism with the LAD algorithm</a></span></dt></dl></div>
 <p>
 The LAD algorithm can search for a subgraph in a larger graph, or check
@@ -2572,7 +2585,7 @@ LAD works with both directed and undirected graphs. Only simple graphs are suppo
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_subisomorphic_lad"></a>4.1. <code class="function">igraph_subisomorphic_lad</code> — Check subgraph isomorphism with the LAD algorithm</h3></div></div></div>
-<a class="indexterm" name="idm383440580736"></a><p>
+<a class="indexterm" name="idm446182767232"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_subisomorphic_lad(const igraph_t *pattern, const igraph_t *target,
@@ -2709,7 +2722,7 @@ Time complexity: exponential.
 </p>
 <div class="hideshow" onClick="toggle(this)">
 <div class="example">
-<a name="idm383440552016"></a><p class="title"><b>Example 16.2.  File <code class="code">examples/simple/igraph_subisomorphic_lad.c</code></b></p>
+<a name="idm446182738512"></a><p class="title"><b>Example 16.2.  File <code class="code">examples/simple/igraph_subisomorphic_lad.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -3047,7 +3060,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383440370112"></a>5. Functions for graphs with 3 or 4 vertices</h2></div></div></div>
+<a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for graphs with 3 or 4 vertices</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of a graph with 3 or 4 vertices</a></span></dt>
@@ -3057,7 +3070,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic_34"></a>5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</h3></div></div></div>
-<a class="indexterm" name="idm383440367904"></a><p>
+<a class="indexterm" name="idm446168710992"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isomorphic_34(const igraph_t *graph1, const igraph_t *graph2,
@@ -3070,7 +3083,8 @@ int igraph_isomorphic_34(const igraph_t *graph1, const igraph_t *graph2,
 
 
 This function uses precomputed indices to decide isomorphism
-problems for graphs with only 3 or 4 vertices.
+problems for graphs with only 3 or 4 vertices. Multi-edges
+and self-loops are ignored by this function.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -3125,7 +3139,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isoclass"></a>5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of a graph with 3 or 4 vertices</h3></div></div></div>
-<a class="indexterm" name="idm383440353968"></a><p>
+<a class="indexterm" name="idm446168696960"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isoclass(const igraph_t *graph, igraph_integer_t *isoclass);
@@ -3155,6 +3169,10 @@ graph, the last isomorphism class is the full graph. The number of
 isomorphism class for directed graphs with three vertices is 16
 (between 0 and 15), for undirected graph it is only 4. For graphs
 with four vertices it is 218 (directed) and 11 (undirected).
+
+</p>
+<p>
+Multi-edges and self-loops are ignored by this function.
 
 </p>
 <p><b>Arguments: </b>
@@ -3225,7 +3243,7 @@ Time complexity: O(|E|), the number of edges in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isoclass_subgraph"></a>5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</h3></div></div></div>
-<a class="indexterm" name="idm383440334128"></a><p>
+<a class="indexterm" name="idm446168676800"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isoclass_subgraph(const igraph_t *graph, igraph_vector_t *vids,
@@ -3313,7 +3331,7 @@ and n is the number of vertices in <code class="constant">vids</code>.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isoclass_create"></a>5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</h3></div></div></div>
-<a class="indexterm" name="idm383440314560"></a><p>
+<a class="indexterm" name="idm446168657232"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_isoclass_create(igraph_t *graph, igraph_integer_t size,
@@ -3407,7 +3425,7 @@ of edges in the graph to create.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="idm383440295360"></a>6. Utility functions</h2></div></div></div>
+<a name="isomorphism-utility-functions"></a>6. Utility functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_permute_vertices">6.1. <code class="function">igraph_permute_vertices</code> — Permute the vertices</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_simplify_and_colorize">6.2. <code class="function">igraph_simplify_and_colorize</code> —  Simplify the graph and compute self-loop and edge multiplicities.</a></span></dt>
@@ -3415,7 +3433,7 @@ of edges in the graph to create.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_permute_vertices"></a>6.1. <code class="function">igraph_permute_vertices</code> — Permute the vertices</h3></div></div></div>
-<a class="indexterm" name="idm383440293184"></a><p>
+<a class="indexterm" name="idm446168635472"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_permute_vertices(const igraph_t *graph, igraph_t *res,
@@ -3489,7 +3507,7 @@ vertices and edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_simplify_and_colorize"></a>6.2. <code class="function">igraph_simplify_and_colorize</code> —  Simplify the graph and compute self-loop and edge multiplicities.</h3></div></div></div>
-<a class="indexterm" name="idm383440278400"></a><p>
+<a class="indexterm" name="idm446168620688"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_simplify_and_colorize(
