@@ -5,9 +5,9 @@ all: core
 
 CVERSION?=0.8.3
 RVERSION?=1.2.4.2
-PYVERSION?=0.8.2
+PYVERSION?=0.8.3
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=9b0bdfa
+PYCOMMITHASH?=ab40867
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
@@ -107,6 +107,7 @@ python/doc/stamp: $(PY)/doc/api/html/index.html
 	mkdir -p python/doc
 	cp -r $(PY)/doc/api/html/ python/doc
 	_tools/pyhtml.sh python/doc
+	git restore python/doc/index.html
 	touch $@
 
 $(PY)/doc/api/html/index.html $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
