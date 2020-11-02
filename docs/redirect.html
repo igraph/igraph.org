@@ -124,6 +124,10 @@
         <ul class="nav bs-sidenav">
           
             <li class="nav-item">
+              <a class="nav-link" href="/2020/10/08/igraph-0.8.3-python.html">python-igraph 0.8.3</a>
+            </li>
+          
+            <li class="nav-item">
               <a class="nav-link" href="/2020/10/02/igraph-0.8.3-c.html">C/igraph 0.8.3</a>
             </li>
           
@@ -159,10 +163,6 @@
               <a class="nav-link" href="/2015/01/16/separate-repos.html">Repositories at GitHub</a>
             </li>
           
-            <li class="nav-item">
-              <a class="nav-link" href="/2014/04/21/igraph-0.7.1-r.html">R/igraph 0.7.1</a>
-            </li>
-          
           <li class="nav-item">
             <a class="nav-link" href="news.html">All news &#8594;</a>
           </li>
@@ -176,6 +176,72 @@
   <div class="page-header">
     <h1>Recent news</h1>
   </div>
+
+  
+
+  <div class="post-header">
+    <h2>
+      <span id="/2020/10/08/igraph-0.8.3-python" class="anchor">&nbsp;</span>
+      <a href="/2020/10/08/igraph-0.8.3-python.html">python-igraph 0.8.3</a>
+    </h2>
+	<div class="post-time"><time class="text-muted">Oct 8th, 2020</time></div>
+  </div>
+
+  <p><a href="https://igraph.org/python/">python-igraph</a> 0.8.3, the third bugfix release of
+the 0.8 series, has arrived.</p>
+
+<p>The preferred way of installing the Python interface is via <code>pip</code>; typing
+<code>pip install python-igraph</code> should install a pre-compiled Python wheel on most
+supported platforms (Windows, Linux and macOS). The pre-compiled wheels and the
+source code are also available from the <a href="https://pypi.org/project/python-igraph/0.8.3/">Python Package Index
+page</a>.</p>
+
+<p>This release brings <code>python-igraph</code> up-to-date with igraph 0.8.3, and it also
+contains bug fixes and performance improvements. This release will also be the
+last one whose version number is deliberately in sync with the version number
+of the C core. The changelog is below.</p>
+
+<h4>Added</h3>
+
+<ul>
+<li><p><code>Graph.community_leiden()</code> now supports a negative number of iterations; it will keep on iterating until the algorithm reaches a stable partition.</p></li>
+<li><p><code>Graph.Incidence()</code> now supports weighted graphs, thanks to <a href="https://github.com/PuneethaPai/">@PuneethaPai</a></p></li>
+<li><p>You can now create a <code>Graph</code> object from a <code>pandas</code> dataframe with <code>Graph.DataFrame</code>, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+<li><p>Added conversion to/from <code>networkx</code> and <code>graph-tool</code> with <code>Graph.{to,from}_{networkx,graph_tool}</code>, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+<li><p><code>Graph.add_edges()</code> and <code>Graph.add_vertices()</code> now supports specifying attributes for the newly added vertices and edges, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+<li><p>Added <code>Graph.dfs()</code> and <code>Graph.dfsiter()</code>, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+<li><p>Added <code>Graph.bridges()</code> to get the bridges of a graph.</p></li>
+<li><p>Added <code>Graph.clear()</code> to remove all edges, vertices and graph attributes in a single call, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+</ul>
+
+<h3>Changed</h3>
+
+<ul>
+<li><p>Upgraded igraph C library to 0.8.3.</p></li>
+<li><p>Graph union and intersection now supports graphs with vertex names, thanks to <a href="https://github.com/iosonofabio/">@iosonofabio</a></p></li>
+<li><p><code>Graph.delete_vertices(None)</code> and <code>Graph.delete_edges(None)</code> are now deprecated; use <code>Graph.delete_vertices()</code> and <code>Graph.delete_edges()</code> (without a positional argument) instead to delete all vertices or edges. The old syntax will be removed in 0.9.</p></li>
+</ul>
+
+<h3>Fixed</h3>
+
+<ul>
+<li><p><code>setup.py</code> now works on Windows with MinGW, thanks to <a href="https://github.com/Parakoopa/">@Parakoopa</a></p></li>
+<li><p><code>Graph.difference()</code> now treats loop edges correctly</p></li>
+<li><p><code>summary()</code> does not fail with non-string vertex names any more, thanks to <a href="https://github.com/deeenes/">@deeenes</a></p></li>
+<li><p>The Reingold-Tilford layout should not produce edge crossings on tree graphs any more.</p></li>
+<li><p>The postprocessing step of <code>Graph.biconnected_components()</code> is much faster now (#281); the earlier version was responsible for a significant speed difference between the C core and the Python interface.</p></li>
+</ul>
+
+<h3>Other</h4>
+
+<ul>
+<li><p>Various documentation improvements, thanks to <a href="https://github.com/chrisfalter/">@chrisfalter</a>, <a href="https://github.com/iosonofabio/">@iosonofabio</a>, <a href="https://github.com/kmankinen/">@kmankinen</a>, <a href="https://github.com/remysucre/">@remysucre</a>, <a href="https://github.com/szhorvat/">@szhorvat</a></p></li>
+<li><p><code>Graph.complementer()</code> now allows keyword arguments (it used to support positional arguments only).</p></li>
+<li><p>Dropped support for Python 3.5, added support for Python 3.9.</p></li>
+</ul>
+
+
+  <hr class="news-separator">
 
   
 
@@ -503,53 +569,6 @@ loosely coupled parts in their own packages and repositories.</p>
 <li>python-igraph: <a href="https://github.com/igraph/python-igraph">https://github.com/igraph/python-igraph</a></li>
 <li>igraphdata R package: <a href="https://github.com/igraph/igraphdata">https://github.com/igraph/igraphdata</a></li>
 <li>igraph.org homepage: <a href="https://github.com/igraph/igraph.org">https://github.com/igraph/igraph.org</a></li>
-</ul>
-
-
-  <hr class="news-separator">
-
-  
-
-  <div class="post-header">
-    <h2>
-      <span id="/2014/04/21/igraph-0.7.1-r" class="anchor">&nbsp;</span>
-      <a href="/2014/04/21/igraph-0.7.1-r.html">R/igraph 0.7.1</a>
-    </h2>
-	<div class="post-time"><time class="text-muted">Apr 21st, 2014</time></div>
-  </div>
-
-  <h3>Release Notes</h3>
-
-<p>Some bug fixes, to make sure that the code included in
-&#39;Statistical Analysis of Network Data with R&#39; works. See
-<a href="https://github.com/kolaczyk/sand">https://github.com/kolaczyk/sand</a></p>
-
-<p>Detailed changes:</p>
-
-<ul>
-<li>Graph drawing: fix labels of curved edges, issue #181.</li>
-<li>Graph drawing: allow fixing edge labels at given positions,
-issue #181.</li>
-<li>Drop the &#39;type&#39; vertex attribute after bipartite projection,
-the projections are not bipartite any more, issue #255.</li>
-<li>Print logical attributes in header properly (i.e. encoded by <code>l</code>,
-not <code>x</code>,  which is for complex attributes. Issue #578.</li>
-<li>Add a constructor for <code>communities</code> objects, see <code>create.communities()</code>.
-Issue #547.</li>
-<li>Better error handling in the GraphML parser.</li>
-<li>GraphML reader is a bit more lenient now; makes it possible to read
-GraphML files saved from yWorks apps.</li>
-<li>Fixed a bug in <code>constaint()</code>, issue #580.</li>
-<li>Bipartite projection now detects invalid edges instead of giving
-a cryptic error, issue #543.</li>
-<li>Fixed the <code>simplify</code> argument of <code>graph.formula()</code>, which was
-broken, issue #586.</li>
-<li>The function <code>crossing()</code> adds better names to the result,
-fixes issue #587.</li>
-<li>The <code>sir()</code> function gives an error if the input graph is
-not simple, fixes issue #582.</li>
-<li>Calling igraph functions from igraph callbacks is not allowed now,
-fixes issue #571.</li>
 </ul>
 
 
