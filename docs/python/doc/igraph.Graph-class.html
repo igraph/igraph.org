@@ -546,7 +546,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="igraph.Graph-class.html#add_vertices" class="summary-sig-name">add_vertices</a>(<span class="summary-sig-arg">n</span>)</span><br />
+          <td><span class="summary-sig"><a href="igraph.Graph-class.html#add_vertices" class="summary-sig-name">add_vertices</a>(<span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">attributes</span>=<span class="summary-sig-default">None</span>)</span><br />
       Adds some vertices to the graph.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="igraph-pysrc.html#Graph.add_vertices">source&nbsp;code</a></span>
@@ -879,7 +880,7 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="igraph.Graph-class.html#get_adjacency_sparse" class="summary-sig-name">get_adjacency_sparse</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">attribute</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Returns the adjacency matrix of a graph as scipy csr matrix.</td>
+      Returns the adjacency matrix of a graph as a SciPy CSR matrix.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="igraph-pysrc.html#Graph.get_adjacency_sparse">source&nbsp;code</a></span>
             
@@ -931,6 +932,7 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="igraph.Graph-class.html#get_all_simple_paths" class="summary-sig-name">get_all_simple_paths</a>(<span class="summary-sig-arg">v</span>,
         <span class="summary-sig-arg">to</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cutoff</span>=<span class="summary-sig-default">-1</span>,
         <span class="summary-sig-arg">mode</span>=<span class="summary-sig-default">OUT</span>)</span><br />
       Calculates all the simple paths from a given node to some other nodes
       (or all of them) in a graph.</td>
@@ -2132,7 +2134,8 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="igraph.Graph-class.html#union" class="summary-sig-name">union</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">other</span>)</span><br />
+        <span class="summary-sig-arg">other</span>,
+        <span class="summary-sig-arg">byname</span>=<span class="summary-sig-default">&quot;auto&quot;</span>)</span><br />
       Creates the union of two (or more) graphs.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="igraph-pysrc.html#Graph.union">source&nbsp;code</a></span>
@@ -2150,7 +2153,8 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="igraph.Graph-class.html#intersection" class="summary-sig-name">intersection</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">other</span>)</span><br />
+        <span class="summary-sig-arg">other</span>,
+        <span class="summary-sig-arg">byname</span>=<span class="summary-sig-default">&quot;auto&quot;</span>)</span><br />
       Creates the intersection of two (or more) graphs.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="igraph-pysrc.html#Graph.intersection">source&nbsp;code</a></span>
@@ -3126,7 +3130,8 @@ object --+
           <td><span class="summary-sig"><a href="igraph.Graph-class.html#Incidence" class="summary-sig-name">Incidence</a>(<span class="summary-sig-arg">matrix</span>,
         <span class="summary-sig-arg">directed</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">mode</span>=<span class="summary-sig-default">ALL</span>,
-        <span class="summary-sig-arg">multiple</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">multiple</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">weighted</span>=<span class="summary-sig-default">None</span>)</span><br />
       Creates a bipartite graph from an incidence matrix.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="igraph-pysrc.html#Graph.Incidence">source&nbsp;code</a></span>
@@ -3143,7 +3148,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="igraph.Graph-class.html#DataFrame" class="summary-sig-name">DataFrame</a>(<span class="summary-sig-arg">directed</span>=<span class="summary-sig-default">True</span>,
+          <td><span class="summary-sig"><a href="igraph.Graph-class.html#DataFrame" class="summary-sig-name">DataFrame</a>(<span class="summary-sig-arg">edges</span>,
+        <span class="summary-sig-arg">directed</span>=<span class="summary-sig-default">True</span>,
         <span class="summary-sig-arg">vertices</span>=<span class="summary-sig-default">None</span>)</span><br />
       Generates a graph from one or two dataframes.</td>
           <td align="right" valign="top">
@@ -3861,6 +3867,8 @@ object --+
         <li><strong class="pname"><code>es</code></strong> - the list of edges to be added. Every edge is represented with a 
           tuple containing the vertex IDs or names of the two endpoints. 
           Vertices are enumerated from zero.</li>
+        <li><strong class="pname"><code>attributes</code></strong> - dict of sequences, all of length equal to the number of edges to 
+          be added, containing the attributes of the new edges.</li>
     </ul></dd>
     <dt>Overrides:
         <a href="igraph.GraphBase-class.html#add_edges">GraphBase.add_edges</a>
@@ -3905,35 +3913,30 @@ object --+
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_vertices</span>(<span class="sig-arg">n</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_vertices</span>(<span class="sig-arg">n</span>,
+        <span class="sig-arg">attributes</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="igraph-pysrc.html#Graph.add_vertices">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-Adds some vertices to the graph.
-
-@param n: the number of vertices to be added, or the name of a single
-  vertex to be added, or a sequence of strings, each corresponding to the
-  name of a vertex to be added. Names will be assigned to the C{name}
-  vertex attribute.
-@params attributes: dict of sequences, all of length equal to the
-  number of vertices to be added, containing the attributes of the new
-  vertices. If n is a string (so a single vertex is added), then the
-  values of this dict are the attributes themselves, but if n=1 then
-  they have to be lists of length 1.
-
-Note that if n is a sequence of strings, indicating the names of the
-new vertices, and attributes has a key 'name', the two conflict. In
-that case the attribute will be applied.
-
-</pre>
+  <p>Adds some vertices to the graph.</p>
+  <p>Note that if <code>n</code> is a sequence of strings, indicating the 
+  names of the new vertices, and attributes has a key <code>name</code>, 
+  the two conflict. In that case the attribute will be applied.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>n</code></strong> - the number of vertices to be added</li>
+        <li><strong class="pname"><code>n</code></strong> - the number of vertices to be added, or the name of a single 
+          vertex to be added, or a sequence of strings, each corresponding 
+          to the name of a vertex to be added. Names will be assigned to 
+          the <code>name</code> vertex attribute.</li>
+        <li><strong class="pname"><code>attributes</code></strong> - dict of sequences, all of length equal to the number of vertices 
+          to be added, containing the attributes of the new vertices. If n 
+          is a string (so a single vertex is added), then the values of 
+          this dict are the attributes themselves, but if n=1 then they 
+          have to be lists of length 1.</li>
     </ul></dd>
     <dt>Overrides:
         <a href="igraph.GraphBase-class.html#add_vertices">GraphBase.add_vertices</a>
@@ -4516,7 +4519,7 @@ that case the attribute will be applied.
     </td>
   </tr></table>
   
-  <p>Returns the adjacency matrix of a graph as scipy csr matrix.</p>
+  <p>Returns the adjacency matrix of a graph as a SciPy CSR matrix.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -4527,8 +4530,7 @@ that case the attribute will be applied.
           edge.</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd>the adjacency matrix as a <code 
-          class="link">scipy.sparse.csr_matrix</code>.</dd>
+        <dd>the adjacency matrix as a <code>scipy.sparse.csr_matrix</code>.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -4598,6 +4600,7 @@ that case the attribute will be applied.
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">get_all_simple_paths</span>(<span class="sig-arg">v</span>,
         <span class="sig-arg">to</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">cutoff</span>=<span class="sig-default">-1</span>,
         <span class="sig-arg">mode</span>=<span class="sig-default">OUT</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -6245,33 +6248,28 @@ that case the attribute will be applied.
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-Converts the graph to graph-tool
-
-@param graph_attributes: dictionary of graph attributes to transfer.
-  Keys are attributes from the graph, values are data types (see
-  below). C{None} means no graph attributes are transferred.
-@param vertex_attributes: dictionary of vertex attributes to transfer.
-  Keys are attributes from the vertices, values are data types (see
-  below). C{None} means no vertex attributes are transferred.
-@param edge_attributes: dictionary of edge attributes to transfer.
-  Keys are attributes from the edges, values are data types (see
-  below). C{None} means no vertex attributes are transferred.
-
-Data types: graph-tool only accepts specific data types. See the
-following web page for a list:
-
-https://graph-tool.skewed.de/static/doc/quickstart.html
-
-NOTE: because of the restricted data types in graph-tool, vertex and
-edge attributes require to be type-consistent across all vertices or
-edges. If you set the property for only some vertices/edges, the other
-will be tagged as None in python-igraph, so they can only be converted
-to graph-tool with the type 'object' and any other conversion will
-fail.
-
-</pre>
+  <p>Converts the graph to graph-tool</p>
+  <p>Data types: graph-tool only accepts specific data types. See the 
+  following web page for a list:</p>
+  <p>https://graph-tool.skewed.de/static/doc/quickstart.html</p>
+  <p>Note: because of the restricted data types in graph-tool, vertex and 
+  edge attributes require to be type-consistent across all vertices or 
+  edges. If you set the property for only some vertices/edges, the other 
+  will be tagged as None in python-igraph, so they can only be converted to
+  graph-tool with the type 'object' and any other conversion will fail.</p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>graph_attributes</code></strong> - dictionary of graph attributes to transfer. Keys are attributes 
+          from the graph, values are data types (see below). 
+          <code>None</code> means no graph attributes are transferred.</li>
+        <li><strong class="pname"><code>vertex_attributes</code></strong> - dictionary of vertex attributes to transfer. Keys are attributes 
+          from the vertices, values are data types (see below). 
+          <code>None</code> means no vertex attributes are transferred.</li>
+        <li><strong class="pname"><code>edge_attributes</code></strong> - dictionary of edge attributes to transfer. Keys are attributes 
+          from the edges, values are data types (see below). 
+          <code>None</code> means no vertex attributes are transferred.</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -7457,7 +7455,8 @@ fail.
   <h3 class="epydoc"><span class="sig"><span class="sig-name">Incidence</span>(<span class="sig-arg">matrix</span>,
         <span class="sig-arg">directed</span>=<span class="sig-default">False</span>,
         <span class="sig-arg">mode</span>=<span class="sig-default">ALL</span>,
-        <span class="sig-arg">multiple</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">multiple</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">weighted</span>=<span class="sig-default">None</span>)</span>
     <br /><em class="fname">Class Method</em>
   </h3>
   </td><td align="right" valign="top"
@@ -7511,7 +7510,8 @@ fail.
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">DataFrame</span>(<span class="sig-arg">directed</span>=<span class="sig-default">True</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">DataFrame</span>(<span class="sig-arg">edges</span>,
+        <span class="sig-arg">directed</span>=<span class="sig-default">True</span>,
         <span class="sig-arg">vertices</span>=<span class="sig-default">None</span>)</span>
     <br /><em class="fname">Class Method</em>
   </h3>
@@ -8328,7 +8328,7 @@ fail.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>graphs</code></strong> - graph or list of graphs to be united with the current one.</li>
+        <li><strong class="pname"><code>other</code></strong> - graph or list of graphs to be united with the current one.</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>the disjoint union graph</dd>
@@ -8343,7 +8343,8 @@ fail.
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">union</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">other</span>)</span>
+        <span class="sig-arg">other</span>,
+        <span class="sig-arg">byname</span>=<span class="sig-default">&quot;auto&quot;</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="igraph-pysrc.html#Graph.union">source&nbsp;code</a></span>&nbsp;
@@ -8354,7 +8355,7 @@ fail.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>graphs</code></strong> - graph or list of graphs to be united with the current one.</li>
+        <li><strong class="pname"><code>other</code></strong> - graph or list of graphs to be united with the current one.</li>
         <li><strong class="pname"><code>byname</code></strong> - whether to use vertex names instead of ids. See <a 
           href="igraph.operators-module.html#union" 
           class="link">igraph.union</a> for details.</li>
@@ -8372,7 +8373,8 @@ fail.
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">intersection</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">other</span>)</span>
+        <span class="sig-arg">other</span>,
+        <span class="sig-arg">byname</span>=<span class="sig-default">&quot;auto&quot;</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="igraph-pysrc.html#Graph.intersection">source&nbsp;code</a></span>&nbsp;
@@ -9416,7 +9418,7 @@ fail.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Oct  8 16:27:30 2020
+    Generated by Epydoc 3.0.1 on Thu Oct  8 17:36:53 2020
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
