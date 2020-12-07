@@ -3,11 +3,11 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.8.4
+CVERSION?=0.8.5
 RVERSION?=1.2.4.2
 PYVERSION?=0.8.3
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=ea43a54
+PYCOMMITHASH?=39a3bcf
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
