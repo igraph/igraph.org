@@ -149,7 +149,11 @@
 <li><a class="reference internal" href="#igraph-on-linux"><em>igraph</em> on Linux</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#compiling-igraph-from-source">Compiling <em>igraph</em> from source</a></li>
+<li><a class="reference internal" href="#compiling-python-igraph-from-source">Compiling |python-igraph| from source</a><ul>
+<li><a class="reference internal" href="#compiling-using-pip">Compiling using pip</a></li>
+<li><a class="reference internal" href="#compiling-step-by-step">Compiling step by step</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -170,8 +174,8 @@ are often called <em>binary packages</em>, while the raw source code is usually 
 <p>In general, you should almost always opt for the binary package unless a binary package is
 not available for your platform or you have some local modifications that you want to
 incorporate into <em>igraph</em>’s source. <a class="reference internal" href="#installation-from-a-binary-package">Installation from a binary package</a> tells you how to
-install <em>igraph</em> from a precompiled binary package on various platforms. <a class="reference internal" href="#compiling-igraph-from-source">Compiling igraph
-from source</a> tells you how to compile <em>igraph</em> from the source package.</p>
+install <em>igraph</em> from a precompiled binary package on various platforms. <a href="#id30"><span class="problematic" id="id31">`Compiling igraph
+from source`_</span></a> tells you how to compile <em>igraph</em> from the source package.</p>
 </div>
 <div class="section" id="installation-from-a-binary-package">
 <h2>Installation from a binary package<a class="headerlink" href="#installation-from-a-binary-package" title="Permalink to this headline">¶</a></h2>
@@ -182,20 +186,28 @@ that you install it from the <a class="reference external" href="http://pypi.pyt
 and macOS. Currently there are binary packages for Python 2.7, and Python 3.5 through 3.8, but
 note that support for Python 2.7 will be discontinued with the version 0.9.0 release of
 <em>igraph</em>’s Python interface.</p>
+<p>To install <a href="#id6"><span class="problematic" id="id7">|python-igraph|</span></a> globally, use the following command (you probably need
+administrator/root priviledges):</p>
+<blockquote>
+<div>$ pip install python-igraph</div></blockquote>
 <p>Many users like to install packages into a project-specific <a class="reference external" href="https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments">virtual environment</a>.
 A variation of the following commands should work on most platforms:</p>
 <blockquote>
 <div>$ python -m venv venv
 $ source venv/bin/activate
 $ pip install python-igraph</div></blockquote>
-<p>To test the installed package, launch Python within the virtual environment and run the
-following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">igraph.test</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">igraph</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">run_tests</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>The above commands run the bundled test cases to ensure that everything is fine with your
-<em>igraph</em> installation.</p>
+<p>Alternatively, if you do not want to activate the virtualenv, you can call the <cite>pip</cite> executable
+in it directly:</p>
+<blockquote>
+<div>$ python -m venv venv
+$ venv/bin/pip install python-igraph</div></blockquote>
+<p>The unit tests of <cite>python-igraph</cite> are implemented with the standard <cite>unittest</cite> module so you can
+run them like this from your virtualenv:</p>
+<blockquote>
+<div>$ python -m unittest discover</div></blockquote>
+<p>As usual, you can also do this without activating the virtualenv:</p>
+<blockquote>
+<div>$ venv/bin/python -m unittest discover</div></blockquote>
 </div>
 <div class="section" id="installing-igraph-via-conda">
 <h3>Installing <em>igraph</em> via Conda<a class="headerlink" href="#installing-igraph-via-conda" title="Permalink to this headline">¶</a></h3>
@@ -214,7 +226,7 @@ using conda. That can be achieved by running the following command:</p>
 </div>
 <div class="section" id="igraph-on-windows">
 <h3><em>igraph</em> on Windows<a class="headerlink" href="#igraph-on-windows" title="Permalink to this headline">¶</a></h3>
-<p>There is a Windows installer for <em>igraph</em>’s Python interface on the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python Package Index</a> (see <a class="reference internal" href="#installing-igraph-from-the-python-package-index">Installing igraph from the Python Package
+<p>Precompiled Windows wheels for <em>igraph</em>’s Python interface are available on the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python Package Index</a> (see <a class="reference internal" href="#installing-igraph-from-the-python-package-index">Installing igraph from the Python Package
 Index</a>).</p>
 <p>TODO: Check if Windows still requires special steps to get PyCairo running.</p>
 <p>Graph plotting in <em>igraph</em> is implemented using a third-party package called <a class="reference external" href="http://www.cairographics.org">Cairo</a>. If you want to create publication-quality plots in <em>igraph</em>
@@ -234,9 +246,8 @@ suitable for your Windows platform (32-bit or 64-bit) and the version of Python 
 </div>
 <div class="section" id="igraph-on-macos">
 <h3><em>igraph</em> on macOS<a class="headerlink" href="#igraph-on-macos" title="Permalink to this headline">¶</a></h3>
-<p>The Mac installer for <em>igraph</em>’s Python interface on the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python Package Index</a> works for Intel-based Macs only. PowerPC
-users should compile the package themselves (see <a class="reference internal" href="#compiling-igraph-from-source">Compiling igraph from source</a>).</p>
-<p>TODO: Check if PyCairo on Mac still requires using Brew</p>
+<p>Precompiled macOS wheels for <em>igraph</em>’s Python interface are available on the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python Package Index</a>  (see <a class="reference internal" href="#installing-igraph-from-the-python-package-index">Installing igraph from the Python Package
+Index</a>).</p>
 <p>Graph plotting in <em>igraph</em> is implemented using a third-party package called <a class="reference external" href="http://www.cairographics.org">Cairo</a>. If you want to create publication-quality plots in <em>igraph</em>
 on macOS, you must also install Cairo and its Python bindings. The Cairo project does not
 provide pre-compiled binaries for macOS, but the <cite>Homebrew package manager
@@ -255,15 +266,87 @@ can run:</p>
 <div class="section" id="igraph-on-linux">
 <h3><em>igraph</em> on Linux<a class="headerlink" href="#igraph-on-linux" title="Permalink to this headline">¶</a></h3>
 <p><em>igraph</em>’s Python interface and its dependencies have been packaged for most popular Linux
-distributions, including Arch Linux, Debian, Fedora, GNU Guix, NixOS, and Ubuntu. Because
-distribution packages are often outdated, you may choose to install <em>igraph</em> from the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python
-Package Index</a> instead to get a more recent
-release (see <a class="reference internal" href="#installing-igraph-from-the-python-package-index">Installing igraph from the Python Package Index</a>).</p>
+distributions, including Arch Linux, Debian, Fedora, GNU Guix, NixOS, and Ubuntu.
+<a href="#id8"><span class="problematic" id="id9">|python-igraph|</span></a> and its underlying <em>igraph</em> C core are usually in two different packages, but
+your package manager should take care of that dependency for you.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Distribution packages can be outdated: if you find that’s the case for you, you may
+choose to install <em>igraph</em> from the <a class="reference external" href="http://pypi.python.org/pypi/python-igraph">Python Package Index</a>
+instead to get a more recent release (see <a class="reference internal" href="#installing-igraph-from-the-python-package-index">Installing igraph from the Python Package Index</a>).</p>
 </div>
 </div>
-<div class="section" id="compiling-igraph-from-source">
-<h2>Compiling <em>igraph</em> from source<a class="headerlink" href="#compiling-igraph-from-source" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
+</div>
+<div class="section" id="compiling-python-igraph-from-source">
+<h2>Compiling <a href="#id10"><span class="problematic" id="id11">|python-igraph|</span></a> from source<a class="headerlink" href="#compiling-python-igraph-from-source" title="Permalink to this headline">¶</a></h2>
+<p><a href="#id12"><span class="problematic" id="id13">|python-igraph|</span></a> binds itself into the main <em>igraph</em> library using some glue code written in C, so you’ll need
+both a C compiler and the library itself. Source tarballs of <a href="#id14"><span class="problematic" id="id15">|python-igraph|</span></a> obtained from PyPI already
+contain a matching version of the C core of <em>igraph</em>.</p>
+<p>There are two common scenarios to compile <a href="#id16"><span class="problematic" id="id17">|python-igraph|</span></a> from source:</p>
+<ol class="arabic simple">
+<li>Your would like to use the latest development version from Github, usually to try out some recently
+added features</li>
+<li>The PyPI repository does not include precompiled binaries for your system. This can happen if your operating
+system is not covered by our continuous development.</li>
+</ol>
+<p>Both will be covered in the next sections.</p>
+<div class="section" id="compiling-using-pip">
+<h3>Compiling using pip<a class="headerlink" href="#compiling-using-pip" title="Permalink to this headline">¶</a></h3>
+<p>If you want the development version of <a href="#id18"><span class="problematic" id="id19">|python-igraph|</span></a>, call:</p>
+<blockquote>
+<div>$ pip install git+https://github.com/igraph/python-igraph</div></blockquote>
+<p><cite>pip</cite> is smart enough to download the sources from Github, initialize the submodule for the <em>igraph</em> C core,
+compile it, and then compile <a href="#id20"><span class="problematic" id="id21">|python-igraph|</span></a> against it and install it. As above, a virtual environment is
+a commonly used sandbox to test experimental packages.</p>
+<p>If you want the latest release from PyPI but prefer to (or have to) install from source, call:</p>
+<blockquote>
+<div>$ pip install –no-binary ‘:all:’ python-igraph</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If there is no binary for your system anyway, you can just try without the <cite>–no-binary</cite> option and
+obtain the same result.</p>
+</div>
+</div>
+<div class="section" id="compiling-step-by-step">
+<h3>Compiling step by step<a class="headerlink" href="#compiling-step-by-step" title="Permalink to this headline">¶</a></h3>
+<p>This section should be rarely used in practice but explains how to compile and install <a href="#id22"><span class="problematic" id="id23">|python-igraph|</span></a> step
+by step without <cite>pip</cite>.</p>
+<p>First, obtain the bleeding-edge source code from Github:</p>
+<blockquote>
+<div>$ git clone <a class="reference external" href="https://github.com/igraph/python-igraph.git">https://github.com/igraph/python-igraph.git</a></div></blockquote>
+<p>or download a recent release from <cite>PyPI &lt;https://pypi.org/project/python-igraph/#files&gt;</cite> or from the
+<cite>Github releases page &lt;https://github.com/igraph/python-igraph/releases/&gt;</cite>. Decompress the archive if
+needed.</p>
+<p>Second, go into the folder:</p>
+<blockquote>
+<div>$ cd python-igraph</div></blockquote>
+<p>(it might have a slightly different name depending on the release).</p>
+<p>Third, if you cloned the source from Github, initialize the <cite>git</cite> submodule for the <em>igraph</em> C core:</p>
+<blockquote>
+<div>$ git submodule update –init</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you prefer to compile and link <a href="#id24"><span class="problematic" id="id25">|python-igraph|</span></a> against an existing <em>igraph</em> C core, for instance
+the one you installed with your package manager, you can skip the <cite>git</cite> submodule initialization step. If you
+downloaded a tarball, you also need to remove the <cite>vendor/source/igraph</cite> folder because the setup script
+will look for the vendored <em>igraph</em> copy first. However, a particular version of <a href="#id26"><span class="problematic" id="id27">|python-igraph|</span></a> is guaranteed
+to work only with the version of the C core that is bundled with it (or with the revision that the <cite>git</cite>
+submodule points to).</p>
+</div>
+<p>Fourth, call the standard Python <cite>setup.py</cite> script, e.g. for compiling:</p>
+<blockquote>
+<div>$ python setup.py build</div></blockquote>
+<p>(press Enter when prompted). That will compile the <a href="#id28"><span class="problematic" id="id29">|python-igraph|</span></a> package in a subfolder called
+<cite>build/lib.&lt;your system-your Python version&gt;</cite>, e.g. <cite>build/lib.linux-x86_64-3.8</cite>. You can add
+that folder to your <cite>PYTHONPATH</cite> if you want to import directly from it, or you can call the <cite>setup.py</cite>
+script to install it from there:</p>
+<blockquote>
+<div>$ python setup.py install</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <cite>setup.py</cite> script takes a number of options to customize the install location.</p>
+</div>
+</div>
 </div>
 </div>
 

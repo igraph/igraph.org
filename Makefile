@@ -7,7 +7,7 @@ CVERSION?=0.8.5
 RVERSION?=1.2.4.2
 PYVERSION?=0.8.3
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=39a3bcf
+PYCOMMITHASH?=381a466
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
