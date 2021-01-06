@@ -4,7 +4,7 @@ all: core
 .PHONY: all core c r python
 
 CVERSION?=0.8.5
-RVERSION?=1.2.4.2
+RVERSION?=1.2.6
 PYVERSION?=0.8.3
 # optional variable so we can update the Python docs without making a release
 PYCOMMITHASH?=381a466
