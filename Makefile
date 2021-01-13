@@ -6,6 +6,9 @@ all: core
 CVERSION?=0.8.5
 RVERSION?=1.2.6
 PYVERSION?=0.8.3
+
+# optional variable so we can update the C docs without making a release
+CCOMMITHASH?=4e4c80b
 # optional variable so we can update the Python docs without making a release
 PYCOMMITHASH?=381a466
 
@@ -46,7 +49,13 @@ $(C)/doc/Makefile: $(C)/stamp
 $(C)/stamp:
 	rm -rf $(C)
 	mkdir -p $(C)
-	cd $(C) && git clone --branch $(CVERSION) --depth 1 $(CREPO) .
+	cd $(C) && ( \
+		if [ "x$(CCOMMITHASH)" != x ]; then \
+			git clone $(CREPO) . && git reset --hard $(CCOMMITHASH); \
+		else \
+			git clone --branch $(CVERSION) --depth 1 $(CREPO) .; \
+		fi \
+	)
 	touch $@
 
 $(C)/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
