@@ -27,8 +27,6 @@ c/doc/stamp: $(C)/doc/jekyll/stamp
 	rm -rf c/doc
 	mkdir -p c
 	cp -r $(C)/doc/jekyll c/doc
-	# the next line won't be needed from the next igraph release (0.8.3 or 0.9.0)
-	for i in c/doc/*.html; do sed -e 's/layout: manual/layout: c-manual/' $$i >$$i.tmp; mv $$i.tmp $$i; done
 
 c/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.pdf c/doc/stamp
 	cp $(C)/doc/igraph-docs.pdf c/doc/
