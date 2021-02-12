@@ -35,7 +35,7 @@ c/doc/igraph.info: $(C)/doc/igraph.info c/doc/stamp
 	cp $(C)/doc/igraph.info c/doc/
 
 $(C)/doc/jekyll/stamp:  $(C)/doc/html/stamp
-	cd $(C)/doc && make jekyll
+	python3 _tools/jekyllify-c-docs.py $(C) && touch $(C)/doc/jekyll/stamp
 
 $(C)/doc/html/stamp: $(C)/doc/Makefile
 	cd $(C)/doc && make html
