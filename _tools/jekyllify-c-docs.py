@@ -63,10 +63,8 @@ def main():
     if not doc_dir.exists():
         fail(f"Build the HTML docs first; {doc_dir} does not exist")
 
-    rmtree(jekyll_dir)
-
     if jekyll_dir.exists():
-        print(repr(options))
+        rmtree(jekyll_dir)
 
     copytree(doc_dir, jekyll_dir)
 
