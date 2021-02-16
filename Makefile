@@ -8,7 +8,7 @@ RVERSION?=1.2.6
 PYVERSION?=0.8.3
 
 # optional variable so we can update the C docs without making a release
-# CCOMMITHASH?=724ad1f97
+CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
 PYCOMMITHASH?=381a466
 
