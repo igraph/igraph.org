@@ -127,28 +127,35 @@
         
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Error.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Structural.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Data-structures.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Visitors.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Memory"></a>Chapter 6. Memory (de)allocation</h1></div></div></div>
-<div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Memory.html#igraph_malloc">1. <code class="function">igraph_malloc</code> — Allocate memory that can be safely deallocated by igraph functions</a></span></dt>
-<dt><span class="section"><a href="igraph-Memory.html#igraph_free">2. <code class="function">igraph_free</code> — Deallocate memory that was allocated by igraph functions</a></span></dt>
-</dl></div>
+<a name="igraph-Cycles"></a>Chapter 14. Graph cycles</h1></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Cycles.html#idm210871908944">1. Eulerian cycles and paths</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph_malloc"></a>1. <code class="function">igraph_malloc</code> — Allocate memory that can be safely deallocated by igraph functions</h2></div></div></div>
-<a class="indexterm" name="idm210879408464"></a><p>
+<a name="idm210871908944"></a>1. Eulerian cycles and paths</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path</a></span></dt>
+</dl></div>
+<p>These functions calculate whether an Eulerian path or cycle exists
+and if so, can find them.</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_is_eulerian"></a>1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists</h3></div></div></div>
+<a class="indexterm" name="idm210867852352"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void *igraph_malloc(size_t n);
+int igraph_is_eulerian(const igraph_t *graph, igraph_bool_t *has_path, igraph_bool_t *has_cycle);
 </pre></div>
 <p>
 </p>
@@ -156,12 +163,9 @@ void *igraph_malloc(size_t n);
 
 
 
-Some igraph functions, such as <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_free_all" title="2.16.4. igraph_vector_ptr_free_all — Frees all the elements of a pointer vector."><code class="function">igraph_vector_ptr_free_all()</code></a> and
-<a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a> can free memory that may have been
-allocated by the user.  <code class="constant">igraph_malloc</code>() works exactly like <code class="constant">malloc</code>()
-from the C standard library, but it is guaranteed that it can be safely
-paired with the <code class="constant">free</code>() function used by igraph internally (which is
-also user-accessible through <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions"><code class="function">igraph_free()</code></a>).
+
+An Eulerian path traverses each edge of the graph precisely once. A closed
+Eulerian path is referred to as an Eulerian cycle.
 
 </p>
 <p><b>Arguments: </b>
@@ -171,12 +175,26 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 <col align="left" valign="top">
 <col>
 </colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  Number of bytes to be allocated.
+  The graph object.
 </p></td>
-</tr></tbody>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>has_path</code></em>:</span></p></td>
+<td><p>
+  Pointer to a Boolean, will be set to true if an Eulerian path exists.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>has_cycle</code></em>:</span></p></td>
+<td><p>
+  Pointer to a Boolean, will be set to true if an Eulerian cycle exists.
+</p></td>
+</tr>
+</tbody>
 </table></div>
 <p>
 </p>
@@ -189,37 +207,26 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Pointer to the piece of allocated memory.
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>, not enough memory for
+        temporary data.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions"><code class="function">igraph_free()</code></a>
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
  
 </p>
 </div>
 <div class="section">
-<div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph_free"></a>2. <code class="function">igraph_free</code> — Deallocate memory that was allocated by igraph functions</h2></div></div></div>
-<a class="indexterm" name="idm210879393744"></a><p>
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_eulerian_cycle"></a>1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle</h3></div></div></div>
+<a class="indexterm" name="idm210880855776"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void igraph_free(void *p);
+int igraph_eulerian_cycle(const igraph_t *graph, igraph_vector_t *edge_res, igraph_vector_t *vertex_res);
 </pre></div>
 <p>
 </p>
@@ -227,43 +234,13 @@ void igraph_free(void *p);
 
 
 
-Some igraph functions return a pointer vector (igraph_vector_ptr_t)
-containing pointers to other igraph or other data types. These data
-types are dynamically allocated and have to be deallocated
-manually, if the user does not need them any more. This can be done
-by calling igraph_free on them.
+
+Finds an Eulerian cycle, if it exists. An Eulerian cycle is a closed path
+that traverses each edge precisely once.
 
 </p>
 <p>
-Here is a complete example on how to use <code class="constant">igraph_free</code> properly.
-</p>
-<pre class="programlisting">
-#include &lt;igraph.h&gt;
-
-int main(void)
-{
-   igraph_t graph;
-   igraph_vector_ptr_t seps;
-   long int i;
-
-   igraph_famous(&amp;graph, "tutte");
-   igraph_vector_ptr_init(&amp;seps, 0);
-   igraph_minimum_size_separators(&amp;graph, &amp;seps);
-
-   for (i=0; i&lt;igraph_vector_ptr_size(&amp;seps); i++) {
-     igraph_vector_t *v=VECTOR(seps)[i];
-     igraph_vector_print(v);
-     igraph_vector_destroy(v);
-     igraph_free(v);
-   }
-
-   igraph_vector_ptr_destroy(&amp;seps);
-   igraph_destroy(&amp;graph);
-   return 0;
-}
-</pre>
-<p>
-
+This function uses Hierholzer's algorithm.
 
 </p>
 <p><b>Arguments: </b>
@@ -273,12 +250,30 @@ int main(void)
 <col align="left" valign="top">
 <col>
 </colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  Pointer to the piece of memory to be deallocated.
+  The graph object.
 </p></td>
-</tr></tbody>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of edges
+                belonging to the cycle will be stored here. May be <code class="constant">NULL</code>
+                if it is not needed by the caller.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of vertices
+                  belonging to the cycle will be stored here. May be <code class="constant">NULL</code>
+                  if it is not needed by the caller.
+</p></td>
+</tr>
+</tbody>
 </table></div>
 <p>
 </p>
@@ -290,17 +285,104 @@ int main(void)
 </colgroup>
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td>
+<p>
+  Error code:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOMEM</code></span></p></td>
 <td><p>
-  Error code, currently always zero, meaning success.
-  </p></td>
+
+          not enough memory for temporary data.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
+<td><p>
+
+          graph does not have an Eulerian cycle.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+  </p>
+</td>
 </tr></tbody>
 </table></div>
 <p>
 
-Time complexity: platform dependent, ideally it should be O(1).
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_eulerian_path"></a>1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path</h3></div></div></div>
+<a class="indexterm" name="idm210880606560"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_eulerian_path(const igraph_t *graph, igraph_vector_t *edge_res, igraph_vector_t *vertex_res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+Finds an Eulerian path, if it exists. An Eulerian path traverses
+each edge precisely once.
 
 </p>
-<p><b>See also: </b></p>
+<p>
+This function uses Hierholzer's algorithm.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of edges
+                belonging to the path will be stored here. May be <code class="constant">NULL</code>
+                if it is not needed by the caller.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of vertices
+                  belonging to the path will be stored here. May be <code class="constant">NULL</code>
+                  if it is not needed by the caller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -308,19 +390,51 @@ Time complexity: platform dependent, ideally it should be O(1).
 </colgroup>
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td>
+<p>
+  Error code:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOMEM</code></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Memory.html#igraph_malloc" title="1. igraph_malloc — Allocate memory that can be safely deallocated by igraph functions"><code class="function">igraph_malloc()</code></a>
-  </p></td>
+
+          not enough memory for temporary data.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
+<td><p>
+
+          graph does not have an Eulerian path.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+  </p>
+</td>
 </tr></tbody>
 </table></div>
 <p>
+
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
  
 </p>
+</div>
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Error.html"><b>← Chapter 5. Error Handling</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Data-structures.html"><b>Chapter 7. Data structure library: vector, matrix, other data types →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Structural.html"><b>← Chapter 13. Structural Properties of Graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Visitors.html"><b>Chapter 15. Graph visitors →</b></a></td>
 </tr></table>
 
 

@@ -125,8 +125,9 @@
     <div class="col-md-12">
       <div class="bs-docs-section">
         
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Structural.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Cycles.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
@@ -136,7 +137,7 @@
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Visitors"></a>Chapter 14. Graph visitors</h1></div></div></div>
+<a name="igraph-Visitors"></a>Chapter 15. Graph visitors</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Visitors.html#breadth-first-search">1. Breadth-first search</a></span></dt>
 <dt><span class="section"><a href="igraph-Visitors.html#depth-first-search">2. Depth-first search</a></span></dt>
@@ -147,12 +148,13 @@
 <a name="breadth-first-search"></a>1. Breadth-first search</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Visitors.html#igraph_bfs">1.1. <code class="function">igraph_bfs</code> — Breadth-first search</a></span></dt>
-<dt><span class="section"><a href="igraph-Visitors.html#igraph_bfshandler_t">1.2. <code class="function">igraph_bfshandler_t</code> — Callback type for BFS function</a></span></dt>
+<dt><span class="section"><a href="igraph-Visitors.html#igraph_bfs_simple">1.2. <code class="function">igraph_bfs_simple</code> — Breadth-first search, single-source version</a></span></dt>
+<dt><span class="section"><a href="igraph-Visitors.html#igraph_bfshandler_t">1.3. <code class="function">igraph_bfshandler_t</code> — Callback type for BFS function</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bfs"></a>1.1. <code class="function">igraph_bfs</code> — Breadth-first search</h3></div></div></div>
-<a class="indexterm" name="idm481343127360"></a><p>
+<a class="indexterm" name="idm210855667840"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_bfs(const igraph_t *graph,
@@ -181,6 +183,12 @@ user is not interested in, in this case they will be ignored.
 If not all vertices can be reached from the supplied root vertex,
 then additional root vertices will be used, in the order of their
 vertex ids.
+
+</p>
+<p>
+Consider using <a class="link" href="igraph-Visitors.html#igraph_bfs_simple" title="1.2. igraph_bfs_simple — Breadth-first search, single-source version"><code class="function">igraph_bfs_simple</code></a> instead if you set most of the output
+arguments provided by this function to a null pointer.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -290,7 +298,7 @@ vertex ids.
 <td><p><span class="term"><em class="parameter"><code>callback</code></em>:</span></p></td>
 <td><p>
   If not null, then it should be a pointer to a
-       function of type <a class="link" href="igraph-Visitors.html#igraph_bfshandler_t" title="1.2. igraph_bfshandler_t — Callback type for BFS function"><code class="function">igraph_bfshandler_t</code></a>. This function
+       function of type <a class="link" href="igraph-Visitors.html#igraph_bfshandler_t" title="1.3. igraph_bfshandler_t — Callback type for BFS function"><code class="function">igraph_bfshandler_t</code></a>. This function
        will be called, whenever a new vertex is visited.
 </p></td>
 </tr>
@@ -325,84 +333,12 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="idm481372069344"></a><p class="title"><b>Example 14.1.  File <code class="code">examples/simple/igraph_bfs.c</code></b></p>
+<a name="idm210855633552"></a><p class="title"><b>Example 15.1.  File <code class="code">examples/simple/igraph_bfs.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
 <span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-void <span class="strong"><strong>vector_print</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v) {
-    long int i;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Gives the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v); i++) {
-        <span class="strong"><strong>printf</strong></span>(" %li", (long int) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i]);
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-}
-
-int <span class="strong"><strong>main</strong></span>() {
-
-    igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vids, layers, parents;
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vids, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;layers, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;parents, 0);
-    <span class="strong"><strong>igraph_i_bfs</strong></span>(&amp;g, 0, IGRAPH_ALL, &amp;vids, &amp;layers, &amp;parents);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;vids);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;layers);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;parents);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 20, 2, IGRAPH_TREE_UNDIRECTED);
-    <span class="strong"><strong>igraph_i_bfs</strong></span>(&amp;g, 0, IGRAPH_ALL, &amp;vids, &amp;layers, &amp;parents);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;vids);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;layers);
-    <span class="strong"><strong>vector_print</strong></span>(&amp;parents);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vids);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;layers);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;parents);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="idm481343035536"></a><p class="title"><b>Example 14.2.  File <code class="code">examples/simple/igraph_bfs2.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2009-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
+<span class="emphasis"><em>   Copyright (C) 2009-2021  The igraph development team</em></span>
 
 <span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
 <span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
@@ -438,14 +374,15 @@ int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t graph, ring;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> order, rank, father, pred, succ, dist;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> restricted;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> roots;
-    long int i;
 
+    <span class="emphasis"><em>/* Create a disjoint union of two rings */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union" title="1.1. igraph_disjoint_union — Creates the union of two disjoint graphs">igraph_disjoint_union</a></strong></span>(&amp;graph, &amp;ring, &amp;ring);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
 
+    <span class="emphasis"><em>/* Initialize the vectors where the result will be stored. Any of these</em></span>
+<span class="emphasis"><em>     * can be omitted and replaced with a null pointer when calling</em></span>
+<span class="emphasis"><em>     * igraph_bfs() */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;order, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;rank, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;father, 0);
@@ -453,11 +390,13 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;succ, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;dist, 0);
 
+    <span class="emphasis"><em>/* Now call the BFS function */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span>0, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
                <span class="emphasis"><em>/*unreachable=*/</em></span> 1, <span class="emphasis"><em>/*restricted=*/</em></span> 0,
                &amp;order, &amp;rank, &amp;father, &amp;pred, &amp;succ, &amp;dist,
                <span class="emphasis"><em>/*callback=*/</em></span> 0, <span class="emphasis"><em>/*extra=*/</em></span> 0);
 
+    <span class="emphasis"><em>/* Print the results */</em></span>
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;order);
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;rank);
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;father);
@@ -465,6 +404,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;succ);
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;dist);
 
+    <span class="emphasis"><em>/* Cleam up after ourselves */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;order);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;rank);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;father);
@@ -472,56 +412,73 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;succ);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;dist);
 
-    <span class="emphasis"><em>/* Test the callback */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> 0, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="idm210855589872"></a><p class="title"><b>Example 15.2.  File <code class="code">examples/simple/igraph_bfs_callback.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2009-2021  The igraph development team</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+igraph_bool_t <span class="strong"><strong>bfs_callback</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph,
+                           igraph_integer_t vid,
+                           igraph_integer_t pred,
+                           igraph_integer_t succ,
+                           igraph_integer_t rank,
+                           igraph_integer_t dist,
+                           void *extra) {
+    <span class="strong"><strong>printf</strong></span>(" %li", (long int) vid);
+    <span class="strong"><strong>return</strong></span> 0;
+}
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_t graph, ring;
+
+    <span class="emphasis"><em>/* Create a disjoint union of two rings */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union" title="1.1. igraph_disjoint_union — Creates the union of two disjoint graphs">igraph_disjoint_union</a></strong></span>(&amp;graph, &amp;ring, &amp;ring);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
+
+    <span class="emphasis"><em>/* Now call the BFS function */</em></span>
+    <span class="strong"><strong>printf</strong></span>("(");
+    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span>0, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
                <span class="emphasis"><em>/*unreachable=*/</em></span> 1, <span class="emphasis"><em>/*restricted=*/</em></span> 0,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
+               <span class="emphasis"><em>/*order=*/</em></span> 0, <span class="emphasis"><em>/*rank=*/</em></span> 0, <span class="emphasis"><em>/*father=*/</em></span> 0, <span class="emphasis"><em>/*pred=*/</em></span> 0,
+               <span class="emphasis"><em>/*succ=*/</em></span> 0, <span class="emphasis"><em>/*dist=*/</em></span> 0,
+               <span class="emphasis"><em>/*callback=*/</em></span> bfs_callback, <span class="emphasis"><em>/*extra=*/</em></span> 0);
+    <span class="strong"><strong>printf</strong></span>(" )\n");
 
-    <span class="emphasis"><em>/* Test different roots */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> 2, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
-               <span class="emphasis"><em>/*unreachable=*/</em></span> 1, <span class="emphasis"><em>/*restricted=*/</em></span> 0,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="emphasis"><em>/* Test restricted */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;restricted, 0);
-    <span class="strong"><strong>for</strong></span> (i = 5; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="2.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph); i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(&amp;restricted, i);
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> 5, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
-               <span class="emphasis"><em>/*unreachable=*/</em></span> 1, &amp;restricted,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="emphasis"><em>/* Root not in restricted set */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> 4, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
-               <span class="emphasis"><em>/*unreachable=*/</em></span> 1, &amp;restricted,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> 3, <span class="emphasis"><em>/*roots=*/</em></span> 0, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
-               <span class="emphasis"><em>/*unreachable=*/</em></span> 0, &amp;restricted,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="emphasis"><em>/* Multiple root vertices */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;roots, 3);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(roots)[0] = 3;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(roots)[1] = 4;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(roots)[2] = 6;
-    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search">igraph_bfs</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*root=*/</em></span> -1, &amp;roots, <span class="emphasis"><em>/*neimode=*/</em></span> IGRAPH_OUT,
-               <span class="emphasis"><em>/*unreachable=*/</em></span> 0, &amp;restricted,
-               0, 0, 0, 0, 0, 0, &amp;bfs_callback, 0);
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;roots);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;restricted);
+    <span class="emphasis"><em>/* Cleam up after ourselves */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -537,8 +494,184 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_bfshandler_t"></a>1.2. <code class="function">igraph_bfshandler_t</code> — Callback type for BFS function</h3></div></div></div>
-<a class="indexterm" name="idm481343346592"></a><pre class="programlisting">
+<a name="igraph_bfs_simple"></a>1.2. <code class="function">igraph_bfs_simple</code> — Breadth-first search, single-source version</h3></div></div></div>
+<a class="indexterm" name="idm210855557920"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_bfs_simple(igraph_t *graph, igraph_integer_t vid, igraph_neimode_t mode,
+                      igraph_vector_t *vids, igraph_vector_t *layers,
+                      igraph_vector_t *parents);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+An alternative breadth-first search implementation to cater for the
+simpler use-cases when only a single breadth-first search has to be conducted
+from a source node and most of the output arguments from <a class="link" href="igraph-Visitors.html#igraph_bfs" title="1.1. igraph_bfs — Breadth-first search"><code class="function">igraph_bfs</code></a>
+are not needed. It is allowed to supply null pointers as
+the output arguments the user is not interested in, in this case they will
+be ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vid</code></em>:</span></p></td>
+<td><p>
+  The id of the root vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  For directed graphs, it defines which edges to follow.
+       <code class="constant">IGRAPH_OUT</code> means following the direction of the edges,
+       <code class="constant">IGRAPH_IN</code> means the opposite, and
+       <code class="constant">IGRAPH_ALL</code> ignores the direction of the edges.
+       This parameter is ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
+<td><p>
+  If not a null pointer, then an initialized vector must be passed
+       here. The ids of the vertices visited during the traversal will be
+       stored here, in the same order as they were visited.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>layers</code></em>:</span></p></td>
+<td><p>
+  If not a null pointer, then an initialized vector must be
+       passed here. The i-th element of the vector will contain the index
+       into <code class="constant">vids</code> where the vertices that are at distance i from the root
+       are stored. In other words, if you are interested in the vertices that
+       are at distance i from the root, you need to look in the <code class="constant">vids</code>
+       vector from <code class="constant">layers</code>[i] to <code class="constant">layers</code>[i+1].
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>parents</code></em>:</span></p></td>
+<td><p>
+  If not a null pointer, then an initialized vector must be
+       passed here. The vector will be resized so its length is equal to the
+       number of nodes, and it will contain the index of the parent node for
+       each <span class="emphasis"><em>visited</em></span> node. The values in the vector are undefined for
+       vertices that were <span class="emphasis"><em>not</em></span> visited.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number of vertices and
+edges.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="idm210855535616"></a><p class="title"><b>Example 15.3.  File <code class="code">examples/simple/igraph_bfs_simple.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2009-2021  The igraph development team</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+void <span class="strong"><strong>vector_print</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v) {
+    long int i;
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v); i++) {
+        <span class="strong"><strong>printf</strong></span>(" %li", (long int) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i]);
+    }
+    <span class="strong"><strong>printf</strong></span>("\n");
+}
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t g;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vids, layers, parents;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 0);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vids, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;layers, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;parents, 0);
+
+    <span class="strong"><strong><a class="link" href="igraph-Visitors.html#igraph_bfs_simple" title="1.2. igraph_bfs_simple — Breadth-first search, single-source version">igraph_bfs_simple</a></strong></span>(&amp;g, 0, IGRAPH_ALL, &amp;vids, &amp;layers, &amp;parents);
+
+    <span class="strong"><strong>vector_print</strong></span>(&amp;vids);
+    <span class="strong"><strong>vector_print</strong></span>(&amp;layers);
+    <span class="strong"><strong>vector_print</strong></span>(&amp;parents);
+    
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vids);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;layers);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;parents);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_bfshandler_t"></a>1.3. <code class="function">igraph_bfshandler_t</code> — Callback type for BFS function</h3></div></div></div>
+<a class="indexterm" name="idm210855503648"></a><pre class="programlisting">
 typedef igraph_bool_t igraph_bfshandler_t(const igraph_t *graph,
         igraph_integer_t vid,
         igraph_integer_t pred,
@@ -664,7 +797,7 @@ the following arguments:
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_dfs"></a>2.1. <code class="function">igraph_dfs</code> — Depth-first search</h3></div></div></div>
-<a class="indexterm" name="idm481343323552"></a><p>
+<a class="indexterm" name="idm210855476544"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_dfs(const igraph_t *graph, igraph_integer_t root,
@@ -692,6 +825,7 @@ user is not interested in, in this case they will be ignored.
 If not all vertices can be reached from the supplied root vertex,
 then additional root vertices will be used, in the order of their
 vertex ids.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -810,7 +944,7 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_dfshandler_t"></a>2.2. <code class="function">igraph_dfshandler_t</code> — Callback type for the DFS function</h3></div></div></div>
-<a class="indexterm" name="idm481343296864"></a><p>
+<a class="indexterm" name="idm210855445072"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 typedef igraph_bool_t igraph_dfshandler_t(const igraph_t *graph,
@@ -915,7 +1049,7 @@ completed. These callbacks must be of type <code class="constant">igraph_dfshand
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_random_walk"></a>3.1. <code class="function">igraph_random_walk</code> — Perform a random walk on a graph</h3></div></div></div>
-<a class="indexterm" name="idm481343277968"></a><p>
+<a class="indexterm" name="idm210855422816"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_random_walk(const igraph_t *graph, igraph_vector_t *walk,
@@ -1015,7 +1149,7 @@ walk, and <code class="constant">d</code> is the total degree of the visited nod
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_random_edge_walk"></a>3.2. <code class="function">igraph_random_edge_walk</code> —  Perform a random walk on a graph and return the traversed edges</h3></div></div></div>
-<a class="indexterm" name="idm481343257856"></a><p>
+<a class="indexterm" name="idm210855398992"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_random_edge_walk(const igraph_t *graph,
@@ -1054,17 +1188,18 @@ the <em class="parameter"><code>mode</code></em> argument.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  A vector of non-negative edge weights.
-  It is assumed that at least one strictly positive weight is found among the
-  outgoing edges of each vertex.  If it is a NULL pointer, all edges are considered
-  to have equal weight.
+  A vector of non-negative edge weights. It is assumed
+  that at least one strictly positive weight is found among the
+  outgoing edges of each vertex. Additionally, no edge weight may
+  be NaN. If either case does not hold, an error is returned. If it
+  is a NULL pointer, all edges are considered to have equal weight.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edgewalk</code></em>:</span></p></td>
 <td><p>
-  An initialized vector; the indices of traversed edges are stored here.
-  It will be resized as needed.
+  An initialized vector; the indices of traversed
+  edges are stored here. It will be resized as needed.
 </p></td>
 </tr>
 <tr>
@@ -1125,8 +1260,8 @@ the <em class="parameter"><code>mode</code></em> argument.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Structural.html"><b>← Chapter 13. Structural Properties of Graphs</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Cliques.html"><b>Chapter 15. Cliques and Independent Vertex Sets →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Cycles.html"><b>← Chapter 14. Graph cycles</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Cliques.html"><b>Chapter 16. Cliques and Independent Vertex Sets →</b></a></td>
 </tr></table>
 
 

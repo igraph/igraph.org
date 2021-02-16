@@ -3,12 +3,12 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.8.5
+CVERSION?=0.9.0
 RVERSION?=1.2.6
 PYVERSION?=0.8.3
 
 # optional variable so we can update the C docs without making a release
-CCOMMITHASH?=4e4c80b
+# CCOMMITHASH?=724ad1f97
 # optional variable so we can update the Python docs without making a release
 PYCOMMITHASH?=381a466
 
@@ -21,28 +21,24 @@ PYREPO=https://github.com/igraph/python-igraph
 
 C=_build/c
 
-c: core c/doc/stamp c/doc/igraph.info c/doc/igraph-docs.pdf
+c: core c/doc/stamp c/doc/igraph-docs.pdf
 
-c/doc/stamp: $(C)/doc/jekyll/stamp
+c/doc/stamp: $(C)/build/doc/jekyll/stamp
 	rm -rf c/doc
 	mkdir -p c
-	cp -r $(C)/doc/jekyll c/doc
+	cp -r $(C)/build/doc/jekyll c/doc
 
-c/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.pdf c/doc/stamp
-	cp $(C)/doc/igraph-docs.pdf c/doc/
+c/doc/igraph-docs.pdf: $(C)/build/doc/igraph-docs.pdf c/doc/stamp
+	cp $(C)/build/doc/igraph-docs.pdf c/doc/
 
-c/doc/igraph.info: $(C)/doc/igraph.info c/doc/stamp
-	cp $(C)/doc/igraph.info c/doc/
+$(C)/build/doc/jekyll/stamp: $(C)/build/doc/html/stamp
+	python3 _tools/jekyllify-c-docs.py $(C)/build && touch $(C)/build/doc/jekyll/stamp
 
-$(C)/doc/jekyll/stamp:  $(C)/doc/html/stamp
-	python3 _tools/jekyllify-c-docs.py $(C) && touch $(C)/doc/jekyll/stamp
+$(C)/build/doc/html/stamp: $(C)/build/CMakeCache.txt
+	cd $(C)/build && make html
 
-$(C)/doc/html/stamp: $(C)/doc/Makefile
-	cd $(C)/doc && make html
-
-$(C)/doc/Makefile: $(C)/stamp
-	cd $(C) && ./bootstrap.sh
-	cd $(C) && ./configure
+$(C)/build/CMakeCache.txt: $(C)/stamp
+	cd $(C) && mkdir build && cd build && cmake .. 
 
 $(C)/stamp:
 	rm -rf $(C)
@@ -56,11 +52,8 @@ $(C)/stamp:
 	)
 	touch $@
 
-$(C)/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
-	cd $(C)/doc && make igraph-docs.pdf
-
-$(C)/doc/igraph.info: $(C)/doc/igraph-docs.xml c/doc/stamp
-	cd $(C)/doc && make igraph.info
+$(C)/build/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
+	cd $(C)/build && make pdf
 
 ######################################################################
 ## R stuff
