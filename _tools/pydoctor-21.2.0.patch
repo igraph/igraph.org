@@ -103,7 +103,7 @@ index 09402c9..46b52db 100644
              if os.path.isdir(fullname):
                  initname = os.path.join(fullname, '__init__.py')
 diff --git a/pydoctor/templatewriter/pages/__init__.py b/pydoctor/templatewriter/pages/__init__.py
-index d348711..307afc6 100644
+index d348711..6e66830 100644
 --- a/pydoctor/templatewriter/pages/__init__.py
 +++ b/pydoctor/templatewriter/pages/__init__.py
 @@ -27,7 +27,7 @@ def format_decorators(obj: Union[model.Function, model.Attribute]) -> Iterator[A
@@ -115,3 +115,24 @@ index d348711..307afc6 100644
  
  class DocGetter:
      def get(self, ob, summary=False):
+@@ -282,6 +282,11 @@ class ClassPage(CommonPage):
+                 self.baselists.append((baselist, attrs))
+         self.overridenInCount = 0
+ 
++    def children(self):
++        return sorted((o for o in self.ob.contents.values()
++                       if o.name != '__init__' and o.isVisible),
++                      key=lambda o2:(-o2.privacyClass.value, o2.fullName()))
++
+     def extras(self):
+         r = super().extras()
+ 
+@@ -343,7 +348,7 @@ class ClassPage(CommonPage):
+         return [item.clone().fillSlots(
+                           baseName=self.baseName(b),
+                           baseTable=ChildTable(self.docgetter, self.ob,
+-                                               sorted(attrs, key=lambda o:-o.privacyClass.value)))
++                                               sorted(attrs, key=lambda o:(-o.privacyClass.value, o.fullName()))))
+                 for b, attrs in baselists]
+ 
+     def baseName(self, data):
