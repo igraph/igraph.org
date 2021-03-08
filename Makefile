@@ -5,12 +5,12 @@ all: core
 
 CVERSION?=0.9.0
 RVERSION?=1.2.6
-PYVERSION?=0.8.3
+PYVERSION?=0.9.0
 
 # optional variable so we can update the C docs without making a release
 CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=381a466
+PYCOMMITHASH?=a92409f
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
@@ -89,35 +89,28 @@ $(R)/stamp:
 ######################################################################
 ## Python stuff
 
-# TODO(ntamas): switch to doing everything in a virtualenv once we switched
-# from Epydoc to Sphinx so we can build stuff in Python 3
-
 ARCHFLAGS=-Wno-error=unused-command-line-argument
 
 PY=_build/python
 
-python: core python/doc/python-igraph.pdf python/doc/stamp \
-	python/doc/tutorial/stamp
+python: core python/doc/api/stamp python/doc/tutorial/stamp
 
-python/doc/python-igraph.pdf: $(PY)/doc/api/pdf/api.pdf
-	mkdir -p python/doc
-	cp $< $@
-
-python/doc/stamp: $(PY)/doc/api/html/index.html
-	mkdir -p python/doc
-	cp -r $(PY)/doc/api/html/ python/doc
-	_tools/pyhtml.sh python/doc
-	git restore python/doc/index.html
+python/doc/api/stamp: $(PY)/doc/api/html/index.html
+	rm -rf python/doc/api
+	mkdir -p python/doc/api
+	cp -r $(PY)/doc/api/html/ python/doc/api
+	_tools/pyhtml.sh python/doc/api
 	touch $@
 
-$(PY)/doc/api/html/index.html $(PY)/doc/api/pdf/api.pdf: $(PY)/stamp
-	cd $(PY) && rm -f igraphcore
-	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && python setup.py build
-	cd $(PY) && scripts/mkdoc.sh
+$(PY)/doc/api/html/index.html: $(PY)/stamp
+	cd $(PY) && rm -f vendor/build/igraph vendor/install/igraph
+	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
+	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && .venv/bin/python setup.py build
+	cd $(PY) && .venv/bin/python setup.py install && scripts/mkdoc.sh
 
 python/doc/tutorial/stamp: $(PY)/stamp
 	mkdir -p python/doc/tutorial
-	cd $(PY)/doc && python -m sphinx.cmd.build source tutorial
+	cd $(PY)/doc && ../.venv/bin/python -m sphinx.cmd.build source tutorial
 	cp -r $(PY)/doc/tutorial/ python/doc/tutorial/
 	touch $@
 
@@ -131,7 +124,9 @@ $(PY)/stamp:
 			git clone --branch $(PYVERSION) --depth 1 $(PYREPO) .; \
 		fi \
 	) && git submodule update --init
-	cd $(PY) && pip install --user epydoc Sphinx sphinx_bootstrap_theme
+	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
+	cd $(PY) && .venv/bin/pip install pydoctor Sphinx sphinxbootstrap4theme
+	_tools/patch-pydoctor.sh $(PY) || true
 	touch $@
 
 ######################################################################
@@ -140,8 +135,7 @@ $(PY)/stamp:
 core: stamp
 
 HTML= index.html news.html code-of-conduct.html _layouts/default.html \
-	_layouts/manual.html c/index.html c/compilation-windows.html \
-	r/index.html python/index.html
+	_layouts/manual.html c/index.html r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 

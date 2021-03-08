@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Convert HTML files created by epydoc, to files to be used as 
+## Convert HTML files created by PyDoctor, to files to be used as 
 ## Jekyll inputs
 
 if [ "$#" -ne 1 ] || ! [ -d "$1" ]; then
@@ -13,17 +13,17 @@ dir=$1
 inhtml=`ls $dir/*.html`
 
 header='---
-layout: epydoc
-title: python-igraph manual
-mainheader: python-igraph manual
-lead: For using igraph from Python
+layout: pydoctor
+title: python-igraph API reference
+mainheader: python-igraph API reference
+lead: List of all classes, functions and methods in python-igraph
 ---
 '
 
 tmpfile=`mktemp /tmp/XXXXXX`
 
-for ih in ${inhtml}; do
-    hf=`basename ${ih}`
+find $dir -name '*.html' -print0 | while IFS= read -r -d '' ih; do
+    hf=`basename "${ih}"`
 
     printf "%b" "Converting ${hf}..."
     
@@ -34,23 +34,14 @@ for ih in ${inhtml}; do
     echo '{% raw %}' >> ${tmpfile}
 
     # Main text
-    cat ${ih} |
+    cat "${ih}" |
 
     # Strip header and footer
-    sed -n '1h;1!H;${;g;s/.*<body\([^>]*\)>/<div\1/g;p;}' |
+    sed -n '1h;1!H;${;g;s/.*<body\([^>]*\)>/<div\1>/g;p;}' |
     sed -n '1h;1!H;${;g;s/<\/body>.*/<\/div>/;p;}' |
 
-    # Take out links to frames / no frames
-    sed -n '1h;1!H;${;g;s/\[[^[]*frames.html[^[]*]//;p;}' |
-
-    # Repair a bug in epydoc
-    sed 's/^<\/div>\(<a name=\)/\1/' |
-
-    # Remove link from navbar
-    sed 's/<a class="navbar" [^>]*_top[^>]*igraph\.org[^>]*>[^<]*<\/a>//' |
-
-    # Remove navbar class, replace with epynavbar
-    sed 's/class="navbar"/class="epynavbar"/g' |
+    # Remove navbar class, replace with pydoctor-navbar
+    sed 's/class="navbar navbar-default"/class="pydoctor-navbar navbar-default"/g' |
 
     # Done 
     cat >> ${tmpfile}
@@ -59,9 +50,9 @@ for ih in ${inhtml}; do
     echo '{% endraw %}' >> ${tmpfile}
     
     # Replace
-    cp ${tmpfile} ${ih}
+    cp ${tmpfile} "${ih}"
     
-    printf "Done.\n"
+    printf " done.\n"
     
 done;
 

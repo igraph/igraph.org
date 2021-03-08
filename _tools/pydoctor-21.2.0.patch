@@ -1,0 +1,117 @@
+diff --git a/pydoctor/astbuilder.py b/pydoctor/astbuilder.py
+index febfb17..161bb5b 100644
+--- a/pydoctor/astbuilder.py
++++ b/pydoctor/astbuilder.py
+@@ -189,7 +189,7 @@ class ModuleVistor(ast.NodeVisitor):
+             self.newAttr = None
+ 
+     def visit_Module(self, node: ast.Module) -> None:
+-        assert self.module.docstring is None
++        # assert self.module.docstring is None
+ 
+         self.builder.push(self.module, 0)
+         if len(node.body) > 0 and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Str):
+diff --git a/pydoctor/epydoc2stan.py b/pydoctor/epydoc2stan.py
+index fc5421d..e3c4100 100644
+--- a/pydoctor/epydoc2stan.py
++++ b/pydoctor/epydoc2stan.py
+@@ -184,6 +184,11 @@ class _EpydocLinker(DocstringLinker):
+             target = src.resolveName(identifier)
+             if target is not None:
+                 return target
++            if isinstance(src, model.Class):
++                for base in src.allbases():
++                    target = base.resolveName(identifier)
++                    if target is not None:
++                        return target
+             src = src.parent
+ 
+         # Walk up the object tree again and see if 'identifier' refers to an
+@@ -465,7 +470,7 @@ class FieldHandler:
+ 
+     def handleUnknownField(self, field: Field) -> None:
+         name = field.tag
+-        field.report(f"Unknown field '{name}'" )
++        # field.report(f"Unknown field '{name}'" )
+         self.unknowns[name].append(FieldDesc(name=field.arg, body=field.format()))
+ 
+     def handle(self, field: Field) -> None:
+diff --git a/pydoctor/model.py b/pydoctor/model.py
+index 09402c9..46b52db 100644
+--- a/pydoctor/model.py
++++ b/pydoctor/model.py
+@@ -15,7 +15,7 @@ import platform
+ import sys
+ import types
+ from enum import Enum
+-from inspect import Signature
++from inspect import signature, Signature
+ from optparse import Values
+ from pathlib import Path
+ from typing import (
+@@ -527,7 +527,8 @@ class Function(Inheritable):
+     is_async: bool
+     annotations: Mapping[str, Optional[ast.expr]]
+     decorators: Optional[Sequence[ast.expr]]
+-    signature: Signature
++    signature: Optional[Signature]
++    text_signature: str = ""
+ 
+     def setup(self) -> None:
+         super().setup()
+@@ -808,15 +809,25 @@ class System:
+ 
+     def _introspectThing(self, thing: object, parent: Documentable, parentMod: _ModuleT) -> None:
+         for k, v in thing.__dict__.items():
+-            if (isinstance(v, (types.BuiltinFunctionType, types.FunctionType))
++            # TODO(ntamas): MethodDescriptorType and ClassMethodDescriptorType are Python 3.7 only.
++            if (isinstance(v, (types.BuiltinFunctionType, types.FunctionType, types.MethodDescriptorType, types.ClassMethodDescriptorType))
+                     # In PyPy 7.3.1, functions from extensions are not
+                     # instances of the above abstract types.
+-                    or v.__class__.__name__ == 'builtin_function_or_method'):
++                    or (hasattr(v, "__class__") and v.__class__.__name__ == 'builtin_function_or_method')):
+                 f = self.Function(self, k, parent)
+                 f.parentMod = parentMod
+                 f.docstring = v.__doc__
+                 f.decorators = None
+-                f.signature = Signature()
++                try:
++                    f.signature = signature(v)
++                except Exception:
++                    f.text_signature = (getattr(v, "__text_signature__") or "") + " (INVALID)"
++                    f.signature = None
++                        
++                f.is_async = False
++                f.annotations = {
++                    name: None for name in (f.signature.parameters if f.signature else {})
++                }
+                 self.addObject(f)
+             elif isinstance(v, type):
+                 c = self.Class(self, k, parent)
+@@ -851,7 +862,12 @@ class System:
+         package_name = os.path.basename(dirpath)
+         package_full_name = prefix + package_name
+         package = self.ensurePackage(package_full_name)
+-        for fname in sorted(os.listdir(dirpath)):
++        all_files = sorted(os.listdir(dirpath))
++        if "_igraph.py" in all_files:
++            index = all_files.index("_igraph.py")
++            del all_files[index:(index+1)]
++            all_files.insert(index - 1, "_igraph.py")
++        for fname in all_files:
+             fullname = os.path.join(dirpath, fname)
+             if os.path.isdir(fullname):
+                 initname = os.path.join(fullname, '__init__.py')
+diff --git a/pydoctor/templatewriter/pages/__init__.py b/pydoctor/templatewriter/pages/__init__.py
+index d348711..307afc6 100644
+--- a/pydoctor/templatewriter/pages/__init__.py
++++ b/pydoctor/templatewriter/pages/__init__.py
+@@ -27,7 +27,7 @@ def format_decorators(obj: Union[model.Function, model.Attribute]) -> Iterator[A
+ 
+ def signature(function: model.Function) -> str:
+     """Return a nicely-formatted source-like function signature."""
+-    return str(function.signature)
++    return str(function.signature) if function.signature else function.text_signature or "(...)"
+ 
+ class DocGetter:
+     def get(self, ob, summary=False):
