@@ -152,18 +152,21 @@
 <dt><span class="section"><a href="igraph-Advanced.html#thread-safe-rng">1.3. Thread-safety of random number generators</a></span></dt>
 </dl></div>
 <p>
-  The igraph library is considered thread-safe on platforms that 
-  support thread-local storage. This currently includes Linux and MS
-  Windows operating systems, but not Mac OSX. The best way to check 
-  whether an igraph build is thread-safe is checking the 
+  The igraph library is considered thread-safe if it has been compiled
+  with thread-local storage enabled, i.e. the <code class="literal">IGRAPH_ENABLE_TLS</code>
+  setting was toggled to <code class="literal">ON</code> and the current platform
+  supports this feature. To check whether an igraph build is thread-safe, use the
   <a class="link" href="igraph-Advanced.html#IGRAPH_THREAD_SAFE" title="1.1. IGRAPH_THREAD_SAFE — Specifies whether igraph was built in thread-safe mode.">
     <code class="function">IGRAPH_THREAD_SAFE</code>
-  </a> macro.
+  </a> 
+  macro. When linking to external versions of igraph's dependencies, it is
+  the responsibility of the user to check that these dependencies were also
+  compiled to be thread-safe.
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_THREAD_SAFE"></a>1.1. <code class="function">IGRAPH_THREAD_SAFE</code> — Specifies whether igraph was built in thread-safe mode.</h3></div></div></div>
-<a class="indexterm" name="idm197739186032"></a><p>
+<a class="indexterm" name="idm367177042160"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_THREAD_SAFE 
@@ -232,8 +235,8 @@ If an igraph function supports progress reporting, then it
 calls the installed progress handler periodically, and passes a
 percentage value to it, the percentage of computation already
 performed. To install a progress handler, you need to call
-<a class="link" href="igraph-Advanced.html#igraph_set_progress_handler" title="2.2.2. igraph_set_progress_handler — Install a progress handler, or remove the current handler"><code class="function">igraph_set_progress_handler()</code></a>. Currently there is a single
-pre-defined progress handler, called <a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler"><code class="function">igraph_progress_handler_stderr()</code></a>.
+<a class="link" href="igraph-Advanced.html#igraph_set_progress_handler" title="2.2.2. igraph_set_progress_handler — ."><code class="function">igraph_set_progress_handler()</code></a>. Currently there is a single
+pre-defined progress handler, called <a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler."><code class="function">igraph_progress_handler_stderr()</code></a>.
 </p>
 </div>
 <div class="section">
@@ -241,13 +244,13 @@ pre-defined progress handler, called <a class="link" href="igraph-Advanced.html#
 <a name="setting-up-progress-handlers"></a>2.2. Setting up progress handlers</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Advanced.html#igraph_progress_handler_t">2.2.1. <code class="function">igraph_progress_handler_t</code> —  Type of progress handler functions</a></span></dt>
-<dt><span class="section"><a href="igraph-Advanced.html#igraph_set_progress_handler">2.2.2. <code class="function">igraph_set_progress_handler</code> — Install a progress handler, or remove the current handler</a></span></dt>
-<dt><span class="section"><a href="igraph-Advanced.html#igraph_progress_handler_stderr">2.2.3. <code class="function">igraph_progress_handler_stderr</code> — A simple predefined progress handler</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#igraph_set_progress_handler">2.2.2. <code class="function">igraph_set_progress_handler</code> — .</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#igraph_progress_handler_stderr">2.2.3. <code class="function">igraph_progress_handler_stderr</code> —  A simple predefined progress handler.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_progress_handler_t"></a>2.2.1. <code class="function">igraph_progress_handler_t</code> —  Type of progress handler functions</h4></div></div></div>
-<a class="indexterm" name="idm197709643312"></a><pre class="programlisting">
+<a class="indexterm" name="idm367259663760"></a><pre class="programlisting">
 typedef int igraph_progress_handler_t(const char *message, igraph_real_t percent,
                                       void *data);
 </pre>
@@ -256,7 +259,7 @@ typedef int igraph_progress_handler_t(const char *message, igraph_real_t percent
 
 This is the type of the igraph progress handler functions.
 There is currently one such predefined function,
-<a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler"><code class="function">igraph_progress_handler_stderr()</code></a>, but the user can
+<a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler."><code class="function">igraph_progress_handler_stderr()</code></a>, but the user can
 write and set up more sophisticated ones.
 </p>
 <p><b>Arguments: </b>
@@ -306,7 +309,7 @@ write and set up more sophisticated ones.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   If the return value of the progress handler is not
-    IGRAPH_SUCCESS (=0), then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> returns the
+    <code class="constant">IGRAPH_SUCCESS</code>, then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> returns the
     error code <code class="constant">IGRAPH_INTERRUPTED</code>. The <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report progress."><code class="function">IGRAPH_PROGRESS()</code></a>
     macro frees all memory and finishes the igraph function with
     error code <code class="constant">IGRAPH_INTERRUPTED</code> in this case.
@@ -319,8 +322,8 @@ write and set up more sophisticated ones.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_set_progress_handler"></a>2.2.2. <code class="function">igraph_set_progress_handler</code> — Install a progress handler, or remove the current handler</h4></div></div></div>
-<a class="indexterm" name="idm197709387008"></a><p>
+<a name="igraph_set_progress_handler"></a>2.2.2. <code class="function">igraph_set_progress_handler</code> — .</h4></div></div></div>
+<a class="indexterm" name="idm367259645280"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_progress_handler_t *
@@ -331,9 +334,10 @@ igraph_set_progress_handler(igraph_progress_handler_t new_handler);
 <p>
 
 
+ Install a progress handler, or remove the current handler.
 
 There is a single simple predefined progress handler:
-<a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler"><code class="function">igraph_progress_handler_stderr()</code></a>.
+<a class="link" href="igraph-Advanced.html#igraph_progress_handler_stderr" title="2.2.3. igraph_progress_handler_stderr — A simple predefined progress handler."><code class="function">igraph_progress_handler_stderr()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -375,8 +379,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_progress_handler_stderr"></a>2.2.3. <code class="function">igraph_progress_handler_stderr</code> — A simple predefined progress handler</h4></div></div></div>
-<a class="indexterm" name="idm197709559248"></a><p>
+<a name="igraph_progress_handler_stderr"></a>2.2.3. <code class="function">igraph_progress_handler_stderr</code> —  A simple predefined progress handler.</h4></div></div></div>
+<a class="indexterm" name="idm367259632976"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_progress_handler_stderr(const char *message, igraph_real_t percent,
@@ -404,7 +408,7 @@ the percentage complete value in a short message to standard error.
 <td><p>
   A string describing the function or algorithm
     that is reporting the progress. Current igraph functions
-    always use the name <em class="parameter"><code>message</code></em> argument if reporting from the
+    always use the same <em class="parameter"><code>message</code></em> argument if reporting from the
     same function.
 </p></td>
 </tr>
@@ -459,7 +463,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="IGRAPH_PROGRESS"></a>2.3.1. <code class="function">IGRAPH_PROGRESS</code> —  Report progress.</h4></div></div></div>
-<a class="indexterm" name="idm197709542464"></a><p>
+<a class="indexterm" name="idm367259616688"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_PROGRESS(message, percent, data)
@@ -525,7 +529,7 @@ The standard way to report progress from an igraph function
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_progress"></a>2.3.2. <code class="function">igraph_progress</code> — Report progress</h4></div></div></div>
-<a class="indexterm" name="idm197709457824"></a><p>
+<a class="indexterm" name="idm367259602736"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_progress(const char *message, igraph_real_t percent, void *data);
@@ -601,7 +605,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_progressf"></a>2.3.3. <code class="function">igraph_progressf</code> — Report progress, printf-like version</h4></div></div></div>
-<a class="indexterm" name="idm197709929280"></a><p>
+<a class="indexterm" name="idm367259586496"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_progressf(const char *message, igraph_real_t percent, void *data,
@@ -692,7 +696,7 @@ the <em class="parameter"><code>message</code></em> string, currently 1000 chara
 <p>
 To write a new progress handler, one needs to create a function of
 type <a class="link" href="igraph-Advanced.html#igraph_progress_handler_t" title="2.2.1. igraph_progress_handler_t — Type of progress handler functions"><code class="function">igraph_progress_handler_t</code></a>. The new progress handler
-can then be installed with the <a class="link" href="igraph-Advanced.html#igraph_set_progress_handler" title="2.2.2. igraph_set_progress_handler — Install a progress handler, or remove the current handler"><code class="function">igraph_set_progress_handler()</code></a>
+can then be installed with the <a class="link" href="igraph-Advanced.html#igraph_set_progress_handler" title="2.2.2. igraph_set_progress_handler — ."><code class="function">igraph_set_progress_handler()</code></a>
 function.
 </p>
 <p>
@@ -725,8 +729,8 @@ log-linear time complexity, as these are fast, even with a large
 amount of data. For functions with quadratic or higher time
 complexity make sure that the time complexity of the progress
 reporting is constant or at least linear. In practice this means
-having at most O(n) progress checks and at most 100 \reg
-igraph_progress() calls.
+having at most O(n) progress checks and at most 100
+<a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> calls.
 </p>
 </div>
 <div class="section">
@@ -781,7 +785,7 @@ Igraph functions report their status via a call to the
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_status_handler_t"></a>3.2.1. <code class="function">igraph_status_handler_t</code> — The type of the igraph status handler functions</h4></div></div></div>
-<a class="indexterm" name="idm197706294160"></a><pre class="programlisting">
+<a class="indexterm" name="idm367134698608"></a><pre class="programlisting">
 typedef int igraph_status_handler_t(const char *message, void *data);
 </pre>
 <p>
@@ -817,7 +821,7 @@ typedef int igraph_status_handler_t(const char *message, void *data);
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_set_status_handler"></a>3.2.2. <code class="function">igraph_set_status_handler</code> — Install of uninstall a status handler function.</h4></div></div></div>
-<a class="indexterm" name="idm197706286864"></a><p>
+<a class="indexterm" name="idm367134602240"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_status_handler_t *
@@ -870,7 +874,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_status_handler_stderr"></a>3.2.3. <code class="function">igraph_status_handler_stderr</code> — A simple predefined status handler function.</h4></div></div></div>
-<a class="indexterm" name="idm197706278544"></a><p>
+<a class="indexterm" name="idm367134593040"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_status_handler_stderr(const char *message, void *data);
@@ -941,7 +945,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="IGRAPH_STATUS"></a>3.3.1. <code class="function">IGRAPH_STATUS</code> — Report the status of an igraph function.</h4></div></div></div>
-<a class="indexterm" name="idm197706268176"></a><p>
+<a class="indexterm" name="idm367134581600"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_STATUS(message, data)
@@ -1004,7 +1008,7 @@ signal the three major steps.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="IGRAPH_STATUSF"></a>3.3.2. <code class="function">IGRAPH_STATUSF</code> — Report the status from an igraph function</h4></div></div></div>
-<a class="indexterm" name="idm197706257856"></a><p>
+<a class="indexterm" name="idm367134570304"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_STATUSF(args)
@@ -1059,7 +1063,7 @@ is called with the given arguments.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_status"></a>3.3.3. <code class="function">igraph_status</code> — Report status from an igraph function.</h4></div></div></div>
-<a class="indexterm" name="idm197706246560"></a><p>
+<a class="indexterm" name="idm367134557664"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_status(const char *message, void *data);
@@ -1126,7 +1130,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_statusf"></a>3.3.4. <code class="function">igraph_statusf</code> — Report status, more flexible printf-like version.</h4></div></div></div>
-<a class="indexterm" name="idm197706233584"></a><p>
+<a class="indexterm" name="idm367134543216"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_statusf(const char *message, void *data, ...);

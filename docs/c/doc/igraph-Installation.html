@@ -323,7 +323,7 @@ $ cmake --install .
         With Visual Studio, the steps to build igraph are generally the
         same as above. However, since the Visual Studio CMake generator is
         a multi-configuration one, we must specify the configuration
-        (typically Release or Debug) with each build command using the 
+        (typically Release or Debug) with each build command using the
         <code class="literal">--config</code> option:
       </p>
 <pre class="programlisting">
@@ -374,15 +374,13 @@ cmake --build . --target check --config Release
           <code class="literal">vcpkg.exe install libxml2:x64-windows</code> and to
           install <code class="literal">libxml2</code> as a static library, use
           <code class="literal">vcpkg.exe install libxml2:x64-windows-static</code>.
+          In addition, there is the possibility to use a static library
+          with dynamic runtime linking using the
+          <code class="literal">x64-windows-static-md</code> triplet.
         </p>
 <p>
           There are some known issues with igraph when using certain external packages
-          from vcpkg. When building with an external
-          <code class="literal">suitesparse</code> shared library, the
-          <code class="literal">suitesparse</code> library is not copied over to the
-          build directory, resulting in failing tests, see issue
-          <a class="ulink" href="https://github.com/igraph/igraph/issues/1492" target="_top">#1492</a>.
-          When building against OpenBLAS, this results a few differences
+          from vcpkg. When building against OpenBLAS, this results in a few differences
           in some unit tests, see issue
           <a class="ulink" href="https://github.com/igraph/igraph/issues/1491" target="_top">#1491</a>.
         </p>
@@ -568,14 +566,41 @@ pacman -S \
 </p>
 <pre class="programlisting">
 $ cmake .. \
-    -DIGRAPH_USE_INTERNAL_BLAS=0 \
-    -DIGRAPH_USE_INTERNAL_LAPACK=0 \
-    -DIGRAPH_USE_INTERNAL_ARPACK=0 \
-    -DIGRAPH_USE_INTERNAL_GLPK=0 \
-    -DIGRAPH_USE_INTERNAL_CXSPARSE=0 \
-    -DIGRAPH_USE_INTERNAL_GMP=0 \
+    -DIGRAPH_USE_INTERNAL_BLAS=OFF \
+    -DIGRAPH_USE_INTERNAL_LAPACK=OFF \
+    -DIGRAPH_USE_INTERNAL_ARPACK=OFF \
+    -DIGRAPH_USE_INTERNAL_GLPK=OFF \
+    -DIGRAPH_USE_INTERNAL_CXSPARSE=OFF \
+    -DIGRAPH_USE_INTERNAL_GMP=OFF \
     -DBLA_VENDOR=OpenBLAS \
-    -DIGRAPH_GRAPHML_SUPPORT=1
+    -DIGRAPH_GRAPHML_SUPPORT=ON
+</pre>
+<p>
+  </p>
+<p>
+    When building igraph with an internal ARPACK, LAPACK or BLAS, it
+    makes use of f2c, which compiles and runs the <code class="literal">arithchk</code>
+    program at build time to detect the floating point characteristics of the
+    current system. It writes the results into the <code class="literal">arith.h</code>
+    header. Since running this program is not possible when cross-compiling,
+    igraph's build system allows specifying a pre-generated version of this
+    header file through the <code class="literal">F2C_EXTERNAL_ARITH_HEADER</code>
+    CMake option. An example version of this header follows for the
+    x86_64 and arm64 target architecures on macOS. Warning: Do not use this
+    version of <code class="literal">arith.h</code> on other systems or architectures.
+  </p>
+<p>
+</p>
+<pre class="programlisting">
+#define IEEE_8087
+#define Arith_Kind_ASL 1
+#define Long int
+#define Intcast (int)(long)
+#define Double_Align
+#define X64_bit_pointers
+#define NANCHECK
+#define QNaN0 0x0
+#define QNaN1 0x7ff80000
 </pre>
 <p>
   </p>
@@ -591,7 +616,11 @@ $ cmake .. \
 <li class="listitem"><p>
         Link-time optimizaton noticeably improves the performance of
         some igraph functions. To enable it, use
-        <code class="literal">-DIGRAPH_ENABLE_LTO=1</code>.
+        <code class="literal">-DIGRAPH_ENABLE_LTO=ON</code>.
+        The <code class="literal">AUTO</code> setting is also supported, and will
+        enable link-time optimization only if the current compiler
+        supports it. Note that this is detected by CMake, and the
+        detection is not always accurate.
       </p></li>
 <li class="listitem"><p>
         We saw occasional hangs on Windows when igraph was built for a

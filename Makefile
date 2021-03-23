@@ -3,12 +3,12 @@ all: core
 
 .PHONY: all core c r python
 
-CVERSION?=0.9.0
+CVERSION?=0.9.1
 RVERSION?=1.2.6
 PYVERSION?=0.9.0
 
 # optional variable so we can update the C docs without making a release
-CCOMMITHASH?=8bca587ad
+# CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
 PYCOMMITHASH?=a92409f
 
