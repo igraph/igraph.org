@@ -5,12 +5,12 @@ all: core
 
 CVERSION?=0.9.1
 RVERSION?=1.2.6
-PYVERSION?=0.9.0
+PYVERSION?=0.9.1
 
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=a92409f
+# PYCOMMITHASH?=a92409f
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
@@ -103,8 +103,8 @@ python/doc/api/stamp: $(PY)/doc/api/html/index.html
 	touch $@
 
 $(PY)/doc/api/html/index.html: $(PY)/stamp
-	cd $(PY) && rm -f vendor/build/igraph vendor/install/igraph
-	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
+	cd $(PY) && rm -rf vendor/build/igraph vendor/install/igraph
+	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; .venv/bin/pip install -U pydoctor wheel; fi
 	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && .venv/bin/python setup.py build
 	cd $(PY) && .venv/bin/python setup.py install && scripts/mkdoc.sh
 
