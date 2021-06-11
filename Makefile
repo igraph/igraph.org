@@ -5,7 +5,7 @@ all: core
 
 CVERSION?=0.9.4
 RVERSION?=1.2.6
-PYVERSION?=0.9.1
+PYVERSION?=0.9.4
 
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
@@ -104,7 +104,6 @@ python/doc/api/stamp: $(PY)/doc/api/html/index.html
 
 $(PY)/doc/api/html/index.html: $(PY)/stamp
 	cd $(PY) && rm -rf vendor/build/igraph vendor/install/igraph
-	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; .venv/bin/pip install -U pydoctor wheel; fi
 	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && .venv/bin/python setup.py build
 	cd $(PY) && .venv/bin/python setup.py install && scripts/mkdoc.sh
 
@@ -125,7 +124,7 @@ $(PY)/stamp:
 		fi \
 	) && git submodule update --init
 	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
-	cd $(PY) && .venv/bin/pip install pydoctor Sphinx sphinxbootstrap4theme
+	cd $(PY) && .venv/bin/pip install pydoctor wheel Sphinx sphinxbootstrap4theme
 	_tools/patch-pydoctor.sh $(PY) || true
 	touch $@
 
