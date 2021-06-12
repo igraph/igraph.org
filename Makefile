@@ -5,7 +5,7 @@ all: core
 
 CVERSION?=0.9.4
 RVERSION?=1.2.6
-PYVERSION?=0.9.5
+PYVERSION?=0.9.6
 
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
