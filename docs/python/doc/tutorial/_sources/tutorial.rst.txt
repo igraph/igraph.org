@@ -24,8 +24,8 @@ Starting |igraph|
 ordinary Python module at the Python prompt::
 
   $ python
-  Python 2.7.1 (r271:86832, Jun 16 2011, 16:59:05)
-  [GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2335.15.00)] on darwin
+  Python 3.9.6 (default, Jun 29 2021, 05:25:02)
+  [Clang 12.0.5 (clang-1205.0.22.9)] on darwin
   Type "help", "copyright", "credits" or "license" for more information.
   >>> import igraph
 
@@ -57,7 +57,7 @@ When you start the script, you will see something like this::
 
   $ igraph
   No configuration file, using defaults
-  igraph 0.6 running inside Python 2.7.1 (r271:86832, Jun 16 2011, 16:59:05)
+  igraph 0.9.4 running inside Python 3.9.6 (default, Jun 29 2021, 05:25:02)
   Type "copyright", "credits" or "license" for more information.
   >>>
 
@@ -682,9 +682,6 @@ Method name                          Short name      Algorithm description
 ``layout_fruchterman_reingold_3d``   ``fr3d``,       Fruchterman-Reingold force-directed algorithm
                                      ``fr_3d``       in three dimensions
 ------------------------------------ --------------- ---------------------------------------------
-``layout_grid_fruchterman_reingold`` ``grid_fr``     Fruchterman-Reingold force-directed algorithm
-                                                     with grid heuristics for large graphs
------------------------------------- --------------- ---------------------------------------------
 ``layout_kamada_kawai``              ``kk``          Kamada-Kawai force-directed algorithm
 ------------------------------------ --------------- ---------------------------------------------
 ``layout_kamada_kawai_3d``           ``kk3d``,       Kamada-Kawai force-directed algorithm
@@ -827,6 +824,8 @@ Attribute name  Keyword argument       Purpose
 =============== ====================== ==========================================
 ``color``       ``vertex_color``       Color of the vertex
 --------------- ---------------------- ------------------------------------------
+``font``        ``vertex_font``        Font family of the vertex
+--------------- ---------------------- ------------------------------------------
 ``label``       ``vertex_label``       Label of the vertex
 --------------- ---------------------- ------------------------------------------
 ``label_angle`` ``vertex_label_angle`` The placement of the vertex label on the
@@ -873,6 +872,8 @@ Attribute name  Keyword argument       Purpose
                                        make multiple edges visible. See also the
                                        ``autocurve`` keyword argument to
                                        :func:`plot`.
+--------------- ---------------------- ------------------------------------------
+``font``        ``edge_font``          Font family of the edge
 --------------- ---------------------- ------------------------------------------
 ``arrow_size``  ``edge_arrow_size``    Size (length) of the arrowhead on the edge
                                        if the graph is directed, relative to 15
@@ -1009,20 +1010,18 @@ Pickled graph    ``pickle``    :meth:`Graph.Read_Pickle`    :meth:`Graph.write_p
 
 As an exercise, download the graph representation of the well-known
 `Zachary karate club study <http://nexus.igraph.org/api/dataset?id=1&format=GraphML>`_
-from igraph's own graph repository called `Nexus <http://nexus.igraph.org>`_,
-unzip it and try to load it into |igraph|. Since it is a GraphML file, you must
-must use the GraphML reader method from the table above (make sure you use the
-appropriate path to the downloaded file):
+from :download:`this file </assets/zachary.zip>`, unzip it and try to load it into
+|igraph|. Since it is a GraphML file, you must use the GraphML reader method from
+the table above (make sure you use the appropriate path to the downloaded file):
 
->>> karate = Graph.Read_GraphML("karate.GraphML")
+>>> karate = Graph.Read_GraphML("zachary.graphml")
 >>> summary(karate)
 IGRAPH UNW- 34 78 -- Zachary's karate club network
-+ attr: Author (g), Citation (g), name (g), Faction (v), id (v), name (v), weight (e)
 
 If you want to convert the very same graph into, say, Pajek's format, you can do it
 with the Pajek writer method from the table above:
 
->>> karate.write_pajek("karate.net")
+>>> karate.write_pajek("zachary.net")
 
 .. note:: Most of the formats have their own limitations; for instance, not all of
    them can store attributes. Your best bet is probably GraphML or GML if you
@@ -1041,9 +1040,9 @@ the preferred format is again inferred from the extension. The format detection 
 :func:`load` and :meth:`Graph.save` can be overridden by the ``format`` keyword
 argument which accepts the short names of the formats from the above table:
 
->>> karate = load("karate.GraphML")
->>> karate.save("karate.net")
->>> karate.save("karate.my_extension", format="gml")
+>>> karate = load("zachary.graphml")
+>>> karate.save("zachary.net")
+>>> karate.save("zachary.my_extension", format="gml")
 
 
 Where to go next
