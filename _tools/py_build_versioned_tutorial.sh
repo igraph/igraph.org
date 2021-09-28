@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 PY=${1}
 PYVERSIONS=${2}

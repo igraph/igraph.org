@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 CFOLDER=${1}
 CVERSIONS=${2}

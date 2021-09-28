@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 PY=${1}
 PYVERSIONS=${2}
@@ -47,7 +48,13 @@ for i in "${!PYVERSIONS[@]}"; do
 
   echo "Build docs"
 
+  # Old docs use epydoc, which is python2 only. So fix that
+  sed -i 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
+
   scripts/mkdoc.sh
+
+  # Restore initial file, to ensure a clean tree for future git checkout
+  git checkout HEAD scripts/mkdoc.sh
 
   echo "Copy docs"
 

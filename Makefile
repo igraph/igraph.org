@@ -1,7 +1,7 @@
 
 all: core
 
-.PHONY: all core c r python
+.PHONY: all core c r python devserver
 
 # Default doc version
 CVERSION?=0.9.4
@@ -11,8 +11,8 @@ PYVERSION?=0.9.6
 # Available versions
 CVERSIONS?='0.8.1 0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
-PYVERSIONS?='0.8.1 0.9.0 0.9.6 master develop'
-PYCVERSIONS?='0.8.1 0.9.0 0.9.6 0.9.6 develop'
+PYVERSIONS?='0.9.0 0.9.6 master develop'
+PYCVERSIONS?='0.9.0 0.9.4 0.9.4 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -137,8 +137,8 @@ $(PY)/stamp:
 		fi \
 	) && git submodule update --init
 	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
-	cd $(PY) && .venv/bin/pip install pydoctor==21.2.0 wheel Sphinx sphinxbootstrap4theme
-	#_tools/patch-pydoctor.sh $(PY) || true
+	cd $(PY) && .venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme
+	_tools/patch-pydoctor.sh $(PY) || true
 	touch $@
 
 ######################################################################
@@ -162,3 +162,7 @@ stamp: $(HTML) $(CSS) $(POSTS)
 	printf "$(PYVERSIONS)" > _includes/igraph-pyversions
 	bundle exec jekyll build
 	touch stamp
+
+devserver: stamp
+	bundle exec jekyll serve -d docs
+	

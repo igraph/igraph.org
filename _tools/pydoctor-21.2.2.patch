@@ -1,8 +1,8 @@
 diff --git a/pydoctor/astbuilder.py b/pydoctor/astbuilder.py
-index febfb17..161bb5b 100644
+index 6b274c9..393ddab 100644
 --- a/pydoctor/astbuilder.py
 +++ b/pydoctor/astbuilder.py
-@@ -189,7 +189,7 @@ class ModuleVistor(ast.NodeVisitor):
+@@ -188,7 +188,7 @@ class ModuleVistor(ast.NodeVisitor):
              self.newAttr = None
  
      def visit_Module(self, node: ast.Module) -> None:
@@ -12,10 +12,10 @@ index febfb17..161bb5b 100644
          self.builder.push(self.module, 0)
          if len(node.body) > 0 and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Str):
 diff --git a/pydoctor/epydoc2stan.py b/pydoctor/epydoc2stan.py
-index fc5421d..e3c4100 100644
+index 1b418ae..841c773 100644
 --- a/pydoctor/epydoc2stan.py
 +++ b/pydoctor/epydoc2stan.py
-@@ -184,6 +184,11 @@ class _EpydocLinker(DocstringLinker):
+@@ -191,6 +191,11 @@ class _EpydocLinker(DocstringLinker):
              target = src.resolveName(identifier)
              if target is not None:
                  return target
@@ -27,7 +27,7 @@ index fc5421d..e3c4100 100644
              src = src.parent
  
          # Walk up the object tree again and see if 'identifier' refers to an
-@@ -465,7 +470,7 @@ class FieldHandler:
+@@ -528,7 +533,7 @@ class FieldHandler:
  
      def handleUnknownField(self, field: Field) -> None:
          name = field.tag
@@ -37,10 +37,10 @@ index fc5421d..e3c4100 100644
  
      def handle(self, field: Field) -> None:
 diff --git a/pydoctor/model.py b/pydoctor/model.py
-index 09402c9..46b52db 100644
+index d233639..a14a4df 100644
 --- a/pydoctor/model.py
 +++ b/pydoctor/model.py
-@@ -15,7 +15,7 @@ import platform
+@@ -14,7 +14,7 @@ import platform
  import sys
  import types
  from enum import Enum
@@ -49,7 +49,7 @@ index 09402c9..46b52db 100644
  from optparse import Values
  from pathlib import Path
  from typing import (
-@@ -527,7 +527,8 @@ class Function(Inheritable):
+@@ -514,7 +514,8 @@ class Function(Inheritable):
      is_async: bool
      annotations: Mapping[str, Optional[ast.expr]]
      decorators: Optional[Sequence[ast.expr]]
@@ -59,7 +59,7 @@ index 09402c9..46b52db 100644
  
      def setup(self) -> None:
          super().setup()
-@@ -808,15 +809,25 @@ class System:
+@@ -776,15 +777,24 @@ class System:
  
      def _introspectThing(self, thing: object, parent: Documentable, parentMod: _ModuleT) -> None:
          for k, v in thing.__dict__.items():
@@ -80,7 +80,6 @@ index 09402c9..46b52db 100644
 +                except Exception:
 +                    f.text_signature = (getattr(v, "__text_signature__") or "") + " (INVALID)"
 +                    f.signature = None
-+                        
 +                f.is_async = False
 +                f.annotations = {
 +                    name: None for name in (f.signature.parameters if f.signature else {})
@@ -88,25 +87,21 @@ index 09402c9..46b52db 100644
                  self.addObject(f)
              elif isinstance(v, type):
                  c = self.Class(self, k, parent)
-@@ -851,7 +862,12 @@ class System:
-         package_name = os.path.basename(dirpath)
-         package_full_name = prefix + package_name
-         package = self.ensurePackage(package_full_name)
--        for fname in sorted(os.listdir(dirpath)):
-+        all_files = sorted(os.listdir(dirpath))
-+        if "_igraph.py" in all_files:
-+            index = all_files.index("_igraph.py")
-+            del all_files[index:(index+1)]
-+            all_files.insert(index - 1, "_igraph.py")
-+        for fname in all_files:
-             fullname = os.path.join(dirpath, fname)
-             if os.path.isdir(fullname):
-                 initname = os.path.join(fullname, '__init__.py')
+@@ -912,7 +922,8 @@ class System:
+             mod.state = ProcessingState.PROCESSED
+             head = self.processing_modules.pop()
+             assert head == mod.fullName()
+-        self.unprocessed_modules.remove(mod)
++        if mod in self.unprocessed_modules:
++            self.unprocessed_modules.remove(mod)
+         self.progress(
+             'process',
+             self.module_count - len(self.unprocessed_modules),
 diff --git a/pydoctor/templatewriter/pages/__init__.py b/pydoctor/templatewriter/pages/__init__.py
-index d348711..6e66830 100644
+index e5f4050..3d326b3 100644
 --- a/pydoctor/templatewriter/pages/__init__.py
 +++ b/pydoctor/templatewriter/pages/__init__.py
-@@ -27,7 +27,7 @@ def format_decorators(obj: Union[model.Function, model.Attribute]) -> Iterator[A
+@@ -49,7 +49,7 @@ def format_decorators(obj: Union[model.Function, model.Attribute]) -> Iterator[A
  
  def signature(function: model.Function) -> str:
      """Return a nicely-formatted source-like function signature."""
@@ -114,25 +109,4 @@ index d348711..6e66830 100644
 +    return str(function.signature) if function.signature else function.text_signature or "(...)"
  
  class DocGetter:
-     def get(self, ob, summary=False):
-@@ -282,6 +282,11 @@ class ClassPage(CommonPage):
-                 self.baselists.append((baselist, attrs))
-         self.overridenInCount = 0
- 
-+    def children(self):
-+        return sorted((o for o in self.ob.contents.values()
-+                       if o.name != '__init__' and o.isVisible),
-+                      key=lambda o2:(-o2.privacyClass.value, o2.fullName()))
-+
-     def extras(self):
-         r = super().extras()
- 
-@@ -343,7 +348,7 @@ class ClassPage(CommonPage):
-         return [item.clone().fillSlots(
-                           baseName=self.baseName(b),
-                           baseTable=ChildTable(self.docgetter, self.ob,
--                                               sorted(attrs, key=lambda o:-o.privacyClass.value)))
-+                                               sorted(attrs, key=lambda o:(-o.privacyClass.value, o.fullName()))))
-                 for b, attrs in baselists]
- 
-     def baseName(self, data):
+     """L{epydoc2stan} bridge."""

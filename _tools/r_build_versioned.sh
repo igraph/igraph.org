@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 RFOLDER=${1}
 RVERSIONS=${2}
