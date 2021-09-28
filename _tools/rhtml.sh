@@ -11,7 +11,7 @@ fi
 indir=$1
 outdir=$2
 
-inhtml=`ls $indir/*.html`
+inhtml=`ls $indir/*/*.html`
 
 header='---
 layout: manual

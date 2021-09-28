@@ -80,7 +80,7 @@ r/doc/stamp: $(R)/stamp
 	cp -r $(R)/build/doc/pdf r/doc/
 	mkdir -p r/doc/jekyll
 	_tools/rhtml.sh r/doc/html r/doc/jekyll
-	ln -s 00Index.html r/doc/index.html
+	ln -s r/doc/html/$(RVERSION)/00Index.html r/doc/index.html
 	touch r/doc/stamp
 	rm -rf $(TMP)
 
