@@ -3,10 +3,18 @@ all: core
 
 .PHONY: all core c r python
 
+# Default doc version
 CVERSION?=0.9.4
 RVERSION?=1.2.6
 PYVERSION?=0.9.6
 
+# Available versions
+CVERSIONS?='0.8.1 0.9.0 0.9.4 master develop'
+RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
+PYVERSIONS?='0.8.1 0.9.0 0.9.6 master develop'
+PYCVERSIONS?='0.8.1 0.9.0 0.9.6 0.9.6 develop'
+
+# FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
@@ -21,69 +29,67 @@ PYREPO=https://github.com/igraph/python-igraph
 
 C=_build/c
 
+clean_c:
+	rm -rf c/doc
+	rm -rf $(C)
+
 c: core c/doc/stamp c/doc/igraph-docs.pdf
 
 c/doc/stamp: $(C)/build/doc/jekyll/stamp
 	rm -rf c/doc
-	mkdir -p c
-	cp -r $(C)/build/doc/jekyll c/doc
+	mkdir -p c/doc
+	cp -r $(C)/build/doc/jekyll c/doc/
+	cp -r $(C)/build/doc/pdf c/doc/
 
-c/doc/igraph-docs.pdf: $(C)/build/doc/igraph-docs.pdf c/doc/stamp
-	cp $(C)/build/doc/igraph-docs.pdf c/doc/
+c/doc/igraph-docs.pdf: $(C)/build/doc/stamp
+	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/doc/
 
-$(C)/build/doc/jekyll/stamp: $(C)/build/doc/html/stamp
-	python3 _tools/jekyllify-c-docs.py $(C)/build && touch $(C)/build/doc/jekyll/stamp
+$(C)/build/doc/jekyll/stamp: $(C)/build/doc/stamp
+	python3 _tools/jekyllify-c-docs.py $(C)/build $(CVERSIONS) && touch $(C)/build/doc/jekyll/stamp
 
-$(C)/build/doc/html/stamp: $(C)/build/CMakeCache.txt
-	cd $(C)/build && make html
-
-$(C)/build/CMakeCache.txt: $(C)/stamp
-	cd $(C) && mkdir build && cd build && cmake .. 
+$(C)/build/doc/stamp: $(C)/stamp
+	_tools/c_build_versioned.sh $(C) $(CVERSIONS)
+	touch $@
 
 $(C)/stamp:
-	rm -rf $(C)
 	mkdir -p $(C)
-	cd $(C) && ( \
+	cd $(C) && git status || ( \
 		if [ "x$(CCOMMITHASH)" != x ]; then \
 			git clone $(CREPO) . && git reset --hard $(CCOMMITHASH); \
 		else \
-			git clone --branch $(CVERSION) --depth 1 $(CREPO) .; \
+			git clone $(CREPO) .; \
 		fi \
 	)
 	touch $@
-
-$(C)/build/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
-	cd $(C)/build && make pdf
 
 ######################################################################
 ## R stuff
 
 R=_build/r
 
+
+clean_r:
+	rm -rf r/doc
+	rm -rf $(R)
+
 r: core r/doc/stamp r/doc/igraph.pdf
 
 r/doc/stamp: $(R)/stamp
-	$(eval TMP := $(shell mktemp -d /tmp/.XXXXX))
-	cd ${R} && \
-	R CMD INSTALL --html --no-R --no-configure --no-inst \
-	  --no-libs --no-exec --no-test-load -l $(TMP) .
-	rm -rf r/doc
 	mkdir -p r/doc
-	_tools/rhtml.sh $(TMP)/igraph/html r/doc
+	cp -r $(R)/build/doc/html r/doc/
+	cp -r $(R)/build/doc/pdf r/doc/
+	mkdir -p r/doc/jekyll
+	_tools/rhtml.sh r/doc/html r/doc/jekyll
 	ln -s 00Index.html r/doc/index.html
 	touch r/doc/stamp
 	rm -rf $(TMP)
 
 r/doc/igraph.pdf: r/doc/stamp
-	mkdir -p r/doc
-	R CMD Rd2pdf --no-preview --force -o r/doc/igraph.pdf $(R)
+	cp r/doc/pdf/$(RVERSION)/igraph.pdf r/doc/
 
 $(R)/stamp:
-	rm -rf $(R)
 	mkdir -p $(R)
-	cd $(R) && \
-		curl -s https://cran.r-project.org/src/contrib/igraph_$(RVERSION).tar.gz \
-		| tar --strip-components 1 -xzf -
+	_tools/r_build_versioned.sh $(R) $(RVERSIONS) $(RVERSION)
 	touch $@
 
 ######################################################################
@@ -93,39 +99,46 @@ ARCHFLAGS=-Wno-error=unused-command-line-argument
 
 PY=_build/python
 
+clean_python:
+	rm -rf python/doc/api
+	rm -rf python/doc/tutorial
+	rm -rf $(PY)
+
 python: core python/doc/api/stamp python/doc/tutorial/stamp
 
-python/doc/api/stamp: $(PY)/doc/api/html/index.html
+python/doc/api/stamp: $(PY)/doc/api/stamp
 	rm -rf python/doc/api
 	mkdir -p python/doc/api
-	cp -r $(PY)/doc/api/html/ python/doc/api
+	cp -r $(PY)/doc/api_versions/* python/doc/api/
 	_tools/pyhtml.sh python/doc/api
 	touch $@
 
-$(PY)/doc/api/html/index.html: $(PY)/stamp
-	cd $(PY) && rm -rf vendor/build/igraph vendor/install/igraph
-	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && .venv/bin/python setup.py build
-	cd $(PY) && .venv/bin/python setup.py install && scripts/mkdoc.sh
+$(PY)/doc/api/stamp: $(PY)/stamp
+	export ARCHFLAGS=$(ARCHFLAGS) && _tools/py_build_versioned_api.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
+	touch $@
 
-python/doc/tutorial/stamp: $(PY)/stamp
+python/doc/tutorial/stamp: $(PY)/doc/tutorial/stamp
+	rm -rf python/doc/tutorial
 	mkdir -p python/doc/tutorial
-	cd $(PY)/doc && ../.venv/bin/python -m sphinx.cmd.build source tutorial
-	cp -r $(PY)/doc/tutorial/ python/doc/tutorial/
+	cp -r $(PY)/doc/tutorial_versions/* python/doc/tutorial/
+	touch $@
+
+$(PY)/doc/tutorial/stamp: $(PY)/stamp
+	_tools/py_build_versioned_tutorial.sh $(PY) $(PYVERSIONS)
 	touch $@
 
 $(PY)/stamp:
-	rm -rf $(PY)
 	mkdir -p $(PY)
-	cd $(PY) && ( \
+	cd $(PY) && git status || ( \
 		if [ "x$(PYCOMMITHASH)" != x ]; then \
 			git clone $(PYREPO) . && git reset --hard $(PYCOMMITHASH); \
 		else \
-			git clone --branch $(PYVERSION) --depth 1 $(PYREPO) .; \
+			git clone $(PYREPO) .; \
 		fi \
 	) && git submodule update --init
 	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
-	cd $(PY) && .venv/bin/pip install pydoctor wheel Sphinx sphinxbootstrap4theme
-	_tools/patch-pydoctor.sh $(PY) || true
+	cd $(PY) && .venv/bin/pip install pydoctor==21.2.0 wheel Sphinx sphinxbootstrap4theme
+	#_tools/patch-pydoctor.sh $(PY) || true
 	touch $@
 
 ######################################################################
@@ -144,5 +157,8 @@ stamp: $(HTML) $(CSS) $(POSTS)
 	printf "$(CVERSION)" > _includes/igraph-cversion
 	printf "$(RVERSION)" > _includes/igraph-rversion
 	printf "$(PYVERSION)" > _includes/igraph-pyversion
+	printf "$(CVERSIONS)" > _includes/igraph-cversions
+	printf "$(RVERSIONS)" > _includes/igraph-rversions
+	printf "$(PYVERSIONS)" > _includes/igraph-pyversions
 	bundle exec jekyll build
 	touch stamp
