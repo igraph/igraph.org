@@ -2,8 +2,7 @@
 """Script that takes the generated C HTML documentation from igraph and converts
 it into a format suitable for Jekyll.
 
-Usage:
-    jekyllify-c-docs.py <folder-of-the-igraph-source-tree>
+See Makefile for usage.
 """
 
 import sys
@@ -21,8 +20,6 @@ mainheader: igraph Reference Manual
 lead: For using the igraph C library
 vmenu: true
 doctype: doc/jekyll/
----
-
 """
 
 
@@ -34,19 +31,21 @@ def fail(msg, code=1):
 def process_html_file(path, version):
     tmp_path = path.with_suffix(".html.tmp")
     with tmp_path.open("w") as outfp:
+        outfp.write(BANNER)
+        outfp.write(f'langversion: {version}\n---\n\n')
+        outfp.write("{% raw %}\n")
+
         with path.open("r") as fp:
             in_body = False
             for line in fp:
                 if not in_body:
                     if line.startswith("<body"):
                         in_body = True
-                        outfp.write(BANNER)
-                        outfp.write("{% raw %}\n")
                 else:
                     if line.startswith("</body"):
                         in_body = False
                         outfp.write("{% endraw %}\n")
-
+                        break
                 if in_body:
                     outfp.write(line)
 
@@ -60,9 +59,10 @@ def main():
     options = parser.parse_args()
 
     source_dir = Path(options.source_dir)
-    versions = options.versions
-    doc_dir = source_dir / "doc" / "html"
-    jekyll_dir = source_dir / "doc" / "jekyll"
+    versions = options.versions.split()
+    doc_dir = source_dir / "html"
+    jekyll_dir = source_dir / "jekyll"
+
 
     if not doc_dir.exists():
         fail(f"Build the HTML docs first; {doc_dir} does not exist")
@@ -74,7 +74,9 @@ def main():
 
     for version in versions:
         jekyll_dir_version = jekyll_dir / version
+        print(jekyll_dir_version)
         for html_file in jekyll_dir_version.glob("*.html"):
+            print(html_file)
             process_html_file(html_file, version)
 
 

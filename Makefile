@@ -9,12 +9,10 @@ RVERSION?=1.2.6
 PYVERSION?=0.9.6
 
 # Available versions
-CVERSIONS?='0.8.1 0.9.0 0.9.4 master develop'
+CVERSIONS?='0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
 PYVERSIONS?='0.9.0 0.9.6 master develop'
 PYCVERSIONS?='0.9.0 0.9.4 0.9.4 develop'
-#PYVERSIONS?='0.9.0'
-#PYCVERSIONS?='0.9.0'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -37,17 +35,15 @@ clean_c:
 
 c: core c/doc/stamp c/doc/igraph-docs.pdf
 
-c/doc/stamp: $(C)/build/doc/jekyll/stamp
+c/doc/stamp: $(C)/build/doc/stamp
 	rm -rf c/doc
-	mkdir -p c/doc
-	cp -r $(C)/build/doc/jekyll c/doc/
+	mkdir -p c/doc/html
+	cp -r $(C)/build/doc/html c/doc/
+	python3 _tools/c_postprocess_html.py c/doc $(CVERSIONS)
+	rm -rf c/doc/html
 	cp -r $(C)/build/doc/pdf c/doc/
-
-c/doc/igraph-docs.pdf: $(C)/build/doc/stamp
 	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/doc/
-
-$(C)/build/doc/jekyll/stamp: $(C)/build/doc/stamp
-	python3 _tools/jekyllify-c-docs.py $(C)/build $(CVERSIONS) && touch $(C)/build/doc/jekyll/stamp
+	touch $@
 
 $(C)/build/doc/stamp: $(C)/stamp
 	_tools/c_build_versioned.sh $(C) $(CVERSIONS)
@@ -81,7 +77,7 @@ r/doc/stamp: $(R)/stamp
 	cp -r $(R)/build/doc/html r/doc/
 	cp -r $(R)/build/doc/pdf r/doc/
 	mkdir -p r/doc/jekyll
-	_tools/rhtml.sh r/doc/html r/doc/jekyll
+	_tools/r_postprocess_html.sh r/doc/html r/doc/jekyll
 	ln -s r/doc/html/$(RVERSION)/00Index.html r/doc/index.html
 	touch r/doc/stamp
 	rm -rf $(TMP)
@@ -112,7 +108,7 @@ python/doc/api/stamp: $(PY)/doc/api/stamp
 	rm -rf python/doc/api
 	mkdir -p python/doc/api
 	cp -r $(PY)/doc/api_versions/* python/doc/api/
-	_tools/pyhtml_api.py python/doc/api
+	_tools/py_postprocess_html_api.py python/doc/api
 	touch $@
 
 $(PY)/doc/api/stamp: $(PY)/stamp
@@ -124,7 +120,7 @@ python/doc/tutorial/stamp: $(PY)/doc/tutorial/stamp
 	mkdir -p python/doc/tutorial
 	cp -r $(PY)/doc/tutorial/* python/doc/tutorial/
 	rm $@
-	_tools/pyhtml_tutorial.py python/doc/tutorial
+	_tools/py_postprocess_html_tutorial.py python/doc/tutorial
 	touch $@
 
 $(PY)/doc/tutorial/stamp: $(PY)/stamp
