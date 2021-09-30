@@ -78,9 +78,8 @@ r/doc/stamp: $(R)/stamp
 	cp -r $(R)/build/doc/pdf r/doc/
 	mkdir -p r/doc/jekyll
 	_tools/r_postprocess_html.sh r/doc/html r/doc/jekyll
-	ln -s r/doc/html/$(RVERSION)/00Index.html r/doc/index.html
+	rm -rf r/doc/html
 	touch r/doc/stamp
-	rm -rf $(TMP)
 
 r/doc/igraph.pdf: r/doc/stamp
 	cp r/doc/pdf/$(RVERSION)/igraph.pdf r/doc/
@@ -147,7 +146,7 @@ $(PY)/stamp:
 core: stamp
 
 HTML= index.html news.html code-of-conduct.html _layouts/default.html \
-	_layouts/manual.html c/index.html r/index.html python/index.html
+	_layouts/r-manual.html c/index.html r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 
