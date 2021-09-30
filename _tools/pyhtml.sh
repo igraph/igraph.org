@@ -10,51 +10,99 @@ fi
 
 dir=$1
 
-inhtml=`ls $dir/*.html`
-
-header='---
+header_pydoctor='---
 layout: pydoctor
 title: python-igraph API reference
 mainheader: python-igraph API reference
 lead: List of all classes, functions and methods in python-igraph
----
+vmenu: true
 '
 
-tmpfile=`mktemp /tmp/XXXXXX`
+header_epydoc='---
+layout: epydoc
+title: python-igraph manual
+mainheader: python-igraph manual
+lead: For using igraph from Python
+vmenu: true
+'
 
-find $dir -name '*.html' -print0 | while IFS= read -r -d '' ih; do
-    hf=`basename "${ih}"`
 
-    printf "%b" "Converting ${hf}..."
-    
-    # YAML header
-    echo "${header}" > ${tmpfile}
-    
-    # Begin raw
-    echo '{% raw %}' >> ${tmpfile}
+for version in $dir; do
+  [ version = "stamp" ] && continue
 
-    # Main text
-    cat "${ih}" |
+  # Check if the docs were done by epydoc or pydoctor
+  if echo "0.8.1 0.9.0" | grep -w $version > /dev/null; then
+    docgenerator=epydoc
+    header=$header_epydoc
+  else
+    docgenerator=pydoctor
+    header=$header_pydoctor
+  fi
 
-    # Strip header and footer
-    sed -n '1h;1!H;${;g;s/.*<body\([^>]*\)>/<div\1>/g;p;}' |
-    sed -n '1h;1!H;${;g;s/<\/body>.*/<\/div>/;p;}' |
+  inhtml=`ls $dir/$version/*.html`
+  
+  tmpfile=`mktemp /tmp/XXXXXX`
+  
+  find $dir -name '*.html' -print0 | while IFS= read -r -d '' ih; do
+      hf=`basename "${ih}"`
+  
+      printf "%b" "Converting ${hf}..."
+      
+      # YAML header
+      echo "${header}" > ${tmpfile}
+      echo "langversion: $version" >> ${tmpfile}
+      echo "---" >> ${tmpfile}
+      
+      # Begin raw
+      echo '{% raw %}' >> ${tmpfile}
+  
+      if [ docgenerator = "pydoctor" ]; then
+        # Main text
+        cat "${ih}" |
+  
+        # Strip header and footer
+        sed -n '1h;1!H;${;g;s/.*<body\([^>]*\)>/<div\1>/g;p;}' |
+        sed -n '1h;1!H;${;g;s/<\/body>.*/<\/div>/;p;}' |
+  
+        # Remove navbar class, replace with pydoctor-navbar
+        sed 's/class="navbar navbar-default"/class="pydoctor-navbar navbar-default"/g' |
+  
+        # Done 
+        cat >> ${tmpfile}
+      else
+        # Main text
+        cat ${ih} |
+  
+        # Strip header and footer
+        sed -n '1h;1!H;${;g;s/.*<body\([^>]*\)>/<div\1/g;p;}' |
+        sed -n '1h;1!H;${;g;s/<\/body>.*/<\/div>/;p;}' |
+  
+        # Take out links to frames / no frames
+        sed -n '1h;1!H;${;g;s/\[[^[]*frames.html[^[]*]//;p;}' |
+  
+        # Repair a bug in epydoc
+        sed 's/^<\/div>\(<a name=\)/\1/' |
+  
+        # Remove link from navbar
+        sed 's/<a class="navbar" [^>]*_top[^>]*igraph\.org[^>]*>[^<]*<\/a>//' |
+  
+        # Remove navbar class, replace with epynavbar
+        sed 's/class="navbar"/class="epynavbar"/g' |
+  
+        # Done 
+        cat >> ${tmpfile}
+      fi
+  
+      # End raw
+      echo '{% endraw %}' >> ${tmpfile}
+      
+      # Replace
+      cp ${tmpfile} "${ih}"
+      
+      printf " done.\n"
+      
+  done;
+  
+  rm -f ${tmpfile}
 
-    # Remove navbar class, replace with pydoctor-navbar
-    sed 's/class="navbar navbar-default"/class="pydoctor-navbar navbar-default"/g' |
-
-    # Done 
-    cat >> ${tmpfile}
-    
-    # End raw
-    echo '{% endraw %}' >> ${tmpfile}
-    
-    # Replace
-    cp ${tmpfile} "${ih}"
-    
-    printf " done.\n"
-    
-done;
-
-rm -f ${tmpfile}
-
+done

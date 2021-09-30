@@ -13,6 +13,8 @@ CVERSIONS?='0.8.1 0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
 PYVERSIONS?='0.9.0 0.9.6 master develop'
 PYCVERSIONS?='0.9.0 0.9.4 0.9.4 develop'
+#PYVERSIONS?='0.9.0'
+#PYCVERSIONS?='0.9.0'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -110,7 +112,7 @@ python/doc/api/stamp: $(PY)/doc/api/stamp
 	rm -rf python/doc/api
 	mkdir -p python/doc/api
 	cp -r $(PY)/doc/api_versions/* python/doc/api/
-	_tools/pyhtml.sh python/doc/api
+	_tools/pyhtml_api.py python/doc/api
 	touch $@
 
 $(PY)/doc/api/stamp: $(PY)/stamp
@@ -120,7 +122,9 @@ $(PY)/doc/api/stamp: $(PY)/stamp
 python/doc/tutorial/stamp: $(PY)/doc/tutorial/stamp
 	rm -rf python/doc/tutorial
 	mkdir -p python/doc/tutorial
-	cp -r $(PY)/doc/tutorial_versions/* python/doc/tutorial/
+	cp -r $(PY)/doc/tutorial/* python/doc/tutorial/
+	rm $@
+	_tools/pyhtml_tutorial.py python/doc/tutorial
 	touch $@
 
 $(PY)/doc/tutorial/stamp: $(PY)/stamp
@@ -157,9 +161,9 @@ stamp: $(HTML) $(CSS) $(POSTS)
 	printf "$(CVERSION)" > _includes/igraph-cversion
 	printf "$(RVERSION)" > _includes/igraph-rversion
 	printf "$(PYVERSION)" > _includes/igraph-pyversion
-	printf "$(CVERSIONS)" > _includes/igraph-cversions
-	printf "$(RVERSIONS)" > _includes/igraph-rversions
-	printf "$(PYVERSIONS)" > _includes/igraph-pyversions
+	printf "$(CVERSIONS)" | tr -d "'" > _includes/igraph-cversions
+	printf "$(RVERSIONS)" | tr -d "'" > _includes/igraph-rversions
+	printf "$(PYVERSIONS)" | tr -d "'" > _includes/igraph-pyversions
 	bundle exec jekyll build
 	touch stamp
 

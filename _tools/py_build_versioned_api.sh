@@ -49,17 +49,24 @@ for i in "${!PYVERSIONS[@]}"; do
   echo "Build docs"
 
   # Old docs use epydoc, which is python2 only. So fix that
-  sed -i 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
+  if [ -f scripts/epydoc-patched ]; then
+    sed -i 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
+    sed -i 's|/usr/bin/env python|/usr/bin/env python2|' scripts/epydoc-patched
+  fi
 
   scripts/mkdoc.sh
 
   # Restore initial file, to ensure a clean tree for future git checkout
-  git checkout HEAD scripts/mkdoc.sh
+  if [ -f scripts/epydoc-patched ]; then
+    git checkout HEAD scripts/mkdoc.sh
+    git checkout HEAD scripts/epydoc-patched
+  fi
 
   echo "Copy docs"
 
+  rm -rf doc/api_versions/${version}
   cp -r doc/api/html doc/api_versions/${version}
-  rm -r doc/api/html
+  rm -rf doc/api/*
 
   echo "Version ${version} (C core: ${c_version}): done"
 

@@ -8,7 +8,7 @@ PY_ABS=$(realpath $PY)
 IFS=' '; read -ra PYVERSIONS <<< $PYVERSIONS
 
 cd $PY_ABS
-mkdir -p doc/tutorial_versions
+mkdir -p doc/tutorial
 
 for i in "${!PYVERSIONS[@]}"; do
   version=${PYVERSIONS[$i]}
@@ -20,7 +20,7 @@ for i in "${!PYVERSIONS[@]}"; do
   echo "Build docs"
 
   cd doc
-  ../.venv/bin/python -m sphinx.cmd.build source tutorial_versions/$version
+  ../.venv/bin/python -m sphinx.cmd.build source tutorial/$version
   cd ..
 
   echo "Version ${version} done"
