@@ -1,7 +1,7 @@
 
-all: core
+all: jekyll
 
-.PHONY: all core c r python devserver
+.PHONY: all core c r python jekyll devserver
 
 # Default doc version
 CVERSION?=0.9.4
@@ -51,13 +51,10 @@ $(C)/build/doc/stamp: $(C)/stamp
 
 $(C)/stamp:
 	mkdir -p $(C)
-	cd $(C) && git status || ( \
-		if [ "x$(CCOMMITHASH)" != x ]; then \
-			git clone $(CREPO) . && git reset --hard $(CCOMMITHASH); \
-		else \
-			git clone $(CREPO) .; \
-		fi \
-	)
+	# Clone repo if not present
+	[ ! -d $(C)/.git ] && \
+		cd $(C) && \
+		git clone $(CREPO) .
 	touch $@
 
 ######################################################################
@@ -128,40 +125,45 @@ $(PY)/doc/tutorial/stamp: $(PY)/stamp
 
 $(PY)/stamp:
 	mkdir -p $(PY)
-	cd $(PY) && git status || ( \
-		if [ "x$(PYCOMMITHASH)" != x ]; then \
-			git clone $(PYREPO) . && git reset --hard $(PYCOMMITHASH); \
-		else \
-			git clone $(PYREPO) .; \
-		fi \
-	) && git submodule update --init
-	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
-	cd $(PY) && .venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme
-	_tools/patch-pydoctor.sh $(PY) || true
+	# Clone repo if not present
+	[ ! -d $(PY)/.git ] && \
+		cd $(PY) && \
+		git clone $(PYREPO) . && \
+		git submodule update --init
+	# Make virtual environment if not present
+	[ ! -d $(PY)/.venv ] && \
+		cd $(PY) && \
+		python3 -m venv .venv && \
+		.venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme
+	# Patch pydoctor until they fix it
+	_tools/patch-pydoctor.sh $(PY)
 	touch $@
 
 ######################################################################
 ## Core stuff
 
-core: stamp
-
-HTML= index.html news.html code-of-conduct.html _layouts/default.html \
-	_layouts/r-manual.html c/index.html r/index.html python/index.html
+HTML= index.html news.html code-of-conduct.html \
+      _layouts/default.html _layouts/r-manual.html _layouts/c-manual.html \
+      c/index.html r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 
 POSTS= $(wildcard _posts/*)
 
-stamp: $(HTML) $(CSS) $(POSTS)
+core: $(HTML) $(CSS) $(POSTS) vendor/bundle
 	printf "$(CVERSION)" > _includes/igraph-cversion
 	printf "$(RVERSION)" > _includes/igraph-rversion
 	printf "$(PYVERSION)" > _includes/igraph-pyversion
 	printf "$(CVERSIONS)" | tr -d "'" > _includes/igraph-cversions
 	printf "$(RVERSIONS)" | tr -d "'" > _includes/igraph-rversions
 	printf "$(PYVERSIONS)" | tr -d "'" > _includes/igraph-pyversions
-	bundle exec jekyll build
-	touch stamp
 
-devserver: stamp
+jekyll: core c r python
+	bundle exec jekyll build
+
+devserver: core c python
 	bundle exec jekyll serve -d docs
-	
+
+vendor/bundle:
+	bundle config set --local path 'vendor/bundle'
+	bundle install
