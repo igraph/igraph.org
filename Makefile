@@ -38,9 +38,9 @@ c: core c/stamp c/igraph-docs.pdf
 c/stamp: $(C)/build/doc/stamp
 	mkdir -p c/pre
 	cp -r $(C)/build/doc/html/* c/pre/
-	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS)
+	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS) $(CVERSION)
 	rm -rf c/pre
-	cp -r $(C)/build/doc/pdf c/doc/
+	cp -r $(C)/build/doc/pdf c/
 	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/
 	touch $@
 
@@ -73,7 +73,7 @@ r/stamp: $(R)/stamp
 	cp -r $(R)/build/doc/html/* r/pre/
 	cp -r $(R)/build/doc/pdf r/
 	mkdir -p r/html
-	_tools/r_postprocess_html.sh r/pre r/html
+	_tools/r_postprocess_html.sh r/pre r/html $(RVERSION)
 	rm -rf r/pre
 	touch r/stamp
 
@@ -103,7 +103,7 @@ python/api/stamp: $(PY)/doc/api/stamp
 	rm -rf python/api
 	mkdir -p python/api
 	cp -r $(PY)/doc/api_versions/* python/api/
-	_tools/py_postprocess_html_api.py python/api
+	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
 	touch $@
 
 $(PY)/doc/api/stamp: $(PY)/stamp
@@ -115,7 +115,7 @@ python/tutorial/stamp: $(PY)/doc/tutorial/stamp
 	mkdir -p python/tutorial
 	cp -r $(PY)/doc/tutorial/* python/tutorial/
 	rm $@
-	_tools/py_postprocess_html_tutorial.py python/tutorial
+	_tools/py_postprocess_html_tutorial.py python/tutorial $(PYVERSION)
 	touch $@
 
 $(PY)/doc/tutorial/stamp: $(PY)/stamp

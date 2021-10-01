@@ -3,13 +3,14 @@
 ## Convert HTML files created by R CMD INSTALL, to 
 ## file that can be used as Jekyll inputs
 
-if [ "$#" -ne 2 ] || ! [ -d "$1" ] || ! [ -d "$2" ]; then
-  echo "Usage: $0 SOURCE-DIR TARGET-DIR" >&2
+if [ "$#" -ne 3 ] || ! [ -d "$1" ] || ! [ -d "$2" ]; then
+  echo "Usage: $0 SOURCE-DIR TARGET-DIR LATEST-VERSION" >&2
   exit 1
 fi
 
-indir=$1
-outdir=$2
+indir=${1}
+outdir=${2}
+latest=${3}
 
 header='---
 layout: r-manual
@@ -43,12 +44,21 @@ for version in $versions; do
   
   for ih in ${inhtml}; do
       ihf=`basename ${ih}`
-      oh=${outdir}/${version}/`basename ${ih}`
+      oh=${outdir}/${version}/${ihf}
       
       # YAML header
       echo "${header}" > ${oh}
       echo "doctype: ${outbase}/" >> ${oh}
       echo "langversion: ${version}" >> ${oh}
+      if [ ${version} = ${latest} ]; then
+        if [ ${ihf} = "00Index.html" ]; then
+          latest_path=${outdir}/latest/index.html
+        else
+          latest_path=${outdir}/latest/${ihf}
+        fi
+        echo "redirect_from:" >> ${oh}
+	echo "  - ${latest_path}" >> ${oh}
+      fi
       echo "---" >> ${oh}
       echo "" >> ${oh}
       echo "" >> ${oh}
@@ -86,5 +96,6 @@ for version in $versions; do
 
   mv "${outdir}/${version}/00Index.html" "${outdir}/${version}/index.html"
 done;
+mv "${outdir}/latest/00Index.html" "${outdir}/latest/index.html"
 
 rm -f ${sedfile}

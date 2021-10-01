@@ -1,6 +1,7 @@
 #!/bin/env python
 import os
 import re
+from pathlib import Path
 import shutil
 import glob
 import tempfile
@@ -13,15 +14,17 @@ if __name__ == '__main__':
 
     pa = argparse.ArgumentParser()
     pa.add_argument('folder')
+    pa.add_argument('latest')
     args = pa.parse_args()
 
-    folder = args.folder
+    folder = Path(args.folder)
+    latest = args.latest
 
     for version in os.listdir(folder):
         if version == 'stamp':
             continue
 
-        inhtml = glob.glob(folder+'/'+version+'/*.html')
+        inhtml = glob.glob(str(folder)+'/'+version+'/*.html')
 
         for ihname in inhtml:
             hf = os.path.basename(ihname)
@@ -39,6 +42,13 @@ if __name__ == '__main__':
                                 tmpfile.write('vmenu: true\n')
                                 tmpfile.write('doctype: doc/tutorial/\n')
                                 tmpfile.write(f'langversion: {version}\n')
+                                if version == latest:
+                                    path = Path(ihname)
+                                    latest_path = list(path.parts)
+                                    latest_path[latest_path.index(version)] = 'latest'
+                                    latest_path = Path(*latest_path)
+                                    tmpfile.write(f'redirect_from:\n  - {latest_path}\n')
+
                         tmpfile.write(line)
 
                 # Replace

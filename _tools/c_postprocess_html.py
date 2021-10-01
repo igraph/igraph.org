@@ -28,11 +28,17 @@ def fail(msg, code=1):
     sys.exit(code)
 
 
-def process_html_file(path, version):
+def process_html_file(path, version, latest_version):
     tmp_path = path.with_suffix(".html.tmp")
     with tmp_path.open("w") as outfp:
         outfp.write(BANNER)
-        outfp.write(f'langversion: {version}\n---\n\n')
+        outfp.write(f'langversion: {version}\n')
+        if version == latest_version:
+            latest_path = list(path.parts)
+            latest_path[latest_path.index(version)] = 'latest'
+            latest_path = Path(*latest_path)
+            outfp.write(f'redirect_from:\n  - {latest_path}\n')
+        outfp.write('---\n\n')
         outfp.write("{% raw %}\n")
 
         with path.open("r") as fp:
@@ -57,11 +63,13 @@ def main():
     parser.add_argument("source_dir", help="source folder of igraph's C core")
     parser.add_argument("out_dir", help="output folder of igraph's C core")
     parser.add_argument("versions", help="versions to build")
+    parser.add_argument("latest", help="latest version to redirect")
     options = parser.parse_args()
 
     doc_dir = Path(options.source_dir)
     jekyll_dir = Path(options.out_dir)
     versions = options.versions.split()
+    latest = options.latest
 
     if not doc_dir.exists():
         fail(f"Build the HTML docs first; {doc_dir} does not exist")
@@ -76,7 +84,7 @@ def main():
         print(jekyll_dir_version)
         for html_file in jekyll_dir_version.glob("*.html"):
             print(html_file)
-            process_html_file(html_file, version)
+            process_html_file(html_file, version, latest)
 
 
 if __name__ == "__main__":
