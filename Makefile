@@ -30,19 +30,18 @@ PYREPO=https://github.com/igraph/python-igraph
 C=_build/c
 
 clean_c:
-	rm -rf c/doc
+	rm -rf c/html c/pdf c/igraph-docs.pdf c/stamp
 	rm -rf $(C)
 
-c: core c/doc/stamp c/doc/igraph-docs.pdf
+c: core c/stamp c/igraph-docs.pdf
 
-c/doc/stamp: $(C)/build/doc/stamp
-	rm -rf c/doc
-	mkdir -p c/doc/html
-	cp -r $(C)/build/doc/html c/doc/
-	python3 _tools/c_postprocess_html.py c/doc $(CVERSIONS)
-	rm -rf c/doc/html
+c/stamp: $(C)/build/doc/stamp
+	mkdir -p c/pre
+	cp -r $(C)/build/doc/html/* c/pre/
+	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS)
+	rm -rf c/pre
 	cp -r $(C)/build/doc/pdf c/doc/
-	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/doc/
+	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/
 	touch $@
 
 $(C)/build/doc/stamp: $(C)/stamp
@@ -64,22 +63,22 @@ R=_build/r
 
 
 clean_r:
-	rm -rf r/doc
+	rm -rf r/pre r/html r/pdf
 	rm -rf $(R)
 
-r: core r/doc/stamp r/doc/igraph.pdf
+r: core r/stamp r/igraph.pdf
 
-r/doc/stamp: $(R)/stamp
-	mkdir -p r/doc
-	cp -r $(R)/build/doc/html r/doc/
-	cp -r $(R)/build/doc/pdf r/doc/
-	mkdir -p r/doc/jekyll
-	_tools/r_postprocess_html.sh r/doc/html r/doc/jekyll
-	rm -rf r/doc/html
-	touch r/doc/stamp
+r/stamp: $(R)/stamp
+	mkdir -p r/pre
+	cp -r $(R)/build/doc/html/* r/pre/
+	cp -r $(R)/build/doc/pdf r/
+	mkdir -p r/html
+	_tools/r_postprocess_html.sh r/pre r/html
+	rm -rf r/pre
+	touch r/stamp
 
-r/doc/igraph.pdf: r/doc/stamp
-	cp r/doc/pdf/$(RVERSION)/igraph.pdf r/doc/
+r/igraph.pdf: r/stamp
+	cp r/pdf/$(RVERSION)/igraph.pdf r/
 
 $(R)/stamp:
 	mkdir -p $(R)
@@ -94,29 +93,29 @@ ARCHFLAGS=-Wno-error=unused-command-line-argument
 PY=_build/python
 
 clean_python:
-	rm -rf python/doc/api
-	rm -rf python/doc/tutorial
+	rm -rf python/api
+	rm -rf python/tutorial
 	rm -rf $(PY)
 
-python: core python/doc/api/stamp python/doc/tutorial/stamp
+python: core python/api/stamp python/tutorial/stamp
 
-python/doc/api/stamp: $(PY)/doc/api/stamp
-	rm -rf python/doc/api
-	mkdir -p python/doc/api
-	cp -r $(PY)/doc/api_versions/* python/doc/api/
-	_tools/py_postprocess_html_api.py python/doc/api
+python/api/stamp: $(PY)/doc/api/stamp
+	rm -rf python/api
+	mkdir -p python/api
+	cp -r $(PY)/doc/api_versions/* python/api/
+	_tools/py_postprocess_html_api.py python/api
 	touch $@
 
 $(PY)/doc/api/stamp: $(PY)/stamp
 	export ARCHFLAGS=$(ARCHFLAGS) && _tools/py_build_versioned_api.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
 	touch $@
 
-python/doc/tutorial/stamp: $(PY)/doc/tutorial/stamp
-	rm -rf python/doc/tutorial
-	mkdir -p python/doc/tutorial
-	cp -r $(PY)/doc/tutorial/* python/doc/tutorial/
+python/tutorial/stamp: $(PY)/doc/tutorial/stamp
+	rm -rf python/tutorial
+	mkdir -p python/tutorial
+	cp -r $(PY)/doc/tutorial/* python/tutorial/
 	rm $@
-	_tools/py_postprocess_html_tutorial.py python/doc/tutorial
+	_tools/py_postprocess_html_tutorial.py python/tutorial
 	touch $@
 
 $(PY)/doc/tutorial/stamp: $(PY)/stamp
@@ -162,7 +161,7 @@ jekyll: core c r python
 	bundle exec jekyll build
 
 devserver: core c python
-	bundle exec jekyll serve -d docs
+	bundle exec jekyll serve
 
 vendor/bundle:
 	bundle config set --local path 'vendor/bundle'

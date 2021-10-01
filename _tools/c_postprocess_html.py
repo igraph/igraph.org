@@ -19,7 +19,7 @@ title: igraph Reference Manual
 mainheader: igraph Reference Manual
 lead: For using the igraph C library
 vmenu: true
-doctype: doc/jekyll/
+doctype: html/
 """
 
 
@@ -55,14 +55,13 @@ def process_html_file(path, version):
 def main():
     parser = ArgumentParser()
     parser.add_argument("source_dir", help="source folder of igraph's C core")
+    parser.add_argument("out_dir", help="output folder of igraph's C core")
     parser.add_argument("versions", help="versions to build")
     options = parser.parse_args()
 
-    source_dir = Path(options.source_dir)
+    doc_dir = Path(options.source_dir)
+    jekyll_dir = Path(options.out_dir)
     versions = options.versions.split()
-    doc_dir = source_dir / "html"
-    jekyll_dir = source_dir / "jekyll"
-
 
     if not doc_dir.exists():
         fail(f"Build the HTML docs first; {doc_dir} does not exist")

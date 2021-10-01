@@ -47,7 +47,7 @@ for version in $versions; do
       
       # YAML header
       echo "${header}" > ${oh}
-      echo "doctype: doc/${outbase}/" >> ${oh}
+      echo "doctype: ${outbase}/" >> ${oh}
       echo "langversion: ${version}" >> ${oh}
       echo "---" >> ${oh}
       echo "" >> ${oh}
