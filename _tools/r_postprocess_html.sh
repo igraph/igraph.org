@@ -20,16 +20,22 @@ lead: Use this if you are using igraph from R
 vmenu: true
 '
 
-basepkg="base boot class cluster codetools compiler datasets               \
-    foreign graphics grDevices grid KernSmooth lattice MASS Matrix methods \
-    mgcv nlme nnet parallel rpart spatial splines stats stats4 survival    \
-    tcltk tools utils"
+basepkgs="base compiler datasets graphics grDevices grid methods parallel \
+	splines stats stats4 tcltk tools utils"
+cranpkgs="boot class cluster codetools foreign KernSmooth lattice MASS \
+	Matrix mgcv nlme nnet rpart spatial survival"
 
 sedfile=`mktemp /tmp/XXXXXX`
 echo -n > $sedfile
-for i in $basepkg; do 
-    printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\/\\([^\\\"]*\)\\.html/\\\"" >> $sedfile
-    printf "href=\\\"http:\\/\\/www.inside-r.org\\/r-doc\\/${i}\\/\\\1/g\n" >> $sedfile
+printf "s/href=\\\"\\.\\.\\/\\.\\.\\/igraph\\/help\\/\\([^\\\"]*\)\\.html/" >> $sedfile
+printf "href=\\\"\\\1.html/g\n" >> $sedfile
+for i in $basepkgs; do
+    printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
+    printf "href=\\\"https:\\/\\/rdrr.io\\/r\\/${i}\\/\\\1.html/g\n" >> $sedfile
+done
+for i in $cranpkgs; do
+    printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
+    printf "href=\\\"https:\\/\\/rdrr.io\\/cran\\/${i}\\/man\\/\\\1.html/g\n" >> $sedfile
 done
 
 # echo foo | sed -f $sedfile 
