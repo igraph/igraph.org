@@ -29,11 +29,11 @@ sedfile=`mktemp /tmp/XXXXXX`
 echo -n > $sedfile
 printf "s/href=\\\"\\.\\.\\/\\.\\.\\/igraph\\/help\\/\\([^\\\"]*\)\\.html/" >> $sedfile
 printf "href=\\\"\\\1.html/g\n" >> $sedfile
-for i in $basepkgs; do
+for i in $basepkgs; do 
     printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
     printf "href=\\\"https:\\/\\/rdrr.io\\/r\\/${i}\\/\\\1.html/g\n" >> $sedfile
 done
-for i in $cranpkgs; do
+for i in $cranpkgs; do 
     printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
     printf "href=\\\"https:\\/\\/rdrr.io\\/cran\\/${i}\\/man\\/\\\1.html/g\n" >> $sedfile
 done
