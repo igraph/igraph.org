@@ -11,8 +11,8 @@ PYVERSION?=0.9.6
 # Available versions
 CVERSIONS?='0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
-PYVERSIONS?='0.9.0 0.9.6 master develop'
-PYCVERSIONS?='0.9.0 0.9.4 0.9.4 develop'
+PYVERSIONS?='0.9.6 master develop'
+PYCVERSIONS?='0.9.4 0.9.4 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -30,10 +30,10 @@ PYREPO=https://github.com/igraph/python-igraph
 C=_build/c
 
 clean_c:
-	rm -rf c/html c/pdf c/igraph-docs.pdf c/stamp
+	rm -rf c/html c/pdf c/stamp
 	rm -rf $(C)
 
-c: core c/stamp c/igraph-docs.pdf
+c: core c/stamp
 
 c/stamp: $(C)/build/doc/stamp
 	mkdir -p c/pre
@@ -41,7 +41,6 @@ c/stamp: $(C)/build/doc/stamp
 	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS) $(CVERSION)
 	rm -rf c/pre
 	cp -r $(C)/build/doc/pdf c/
-	cp $(C)/build/doc/pdf/$(CVERSION)/igraph-docs.pdf c/
 	touch $@
 
 $(C)/build/doc/stamp: $(C)/stamp
@@ -76,9 +75,6 @@ r/stamp: $(R)/stamp
 	_tools/r_postprocess_html.sh r/pre r/html $(RVERSION)
 	rm -rf r/pre
 	touch r/stamp
-
-r/igraph.pdf: r/stamp
-	cp r/pdf/$(RVERSION)/igraph.pdf r/
 
 $(R)/stamp:
 	mkdir -p $(R)
