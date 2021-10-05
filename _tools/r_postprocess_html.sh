@@ -21,16 +21,20 @@ vmenu: true
 '
 
 basepkgs="base compiler datasets graphics grDevices grid methods parallel \
-	splines stats stats4 tcltk tools utils"
+        splines stats stats4 tcltk tools utils"
 cranpkgs="boot class cluster codetools foreign KernSmooth lattice MASS \
-	Matrix mgcv nlme nnet rpart spatial survival"
+        Matrix mgcv nlme nnet rpart spatial survival"
 
 sedfile=`mktemp /tmp/XXXXXX`
 echo -n > $sedfile
 printf "s/href=\\\"\\.\\.\\/\\.\\.\\/igraph\\/help\\/\\([^\\\"]*\)\\.html/" >> $sedfile
 printf "href=\\\"\\\1.html/g\n" >> $sedfile
+printf "s/href=\\\"00Index\\.html/" >> $sedfile
+printf "href=\\\"index.html/g\n" >> $sedfile
 for i in $basepkgs; do 
     printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
+    printf "href=\\\"https:\\/\\/rdrr.io\\/r\\/${i}\\/\\\1.html/g\n" >> $sedfile
+    printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/help\\/\\([^\\\"]*\)\\.html/" >> $sedfile
     printf "href=\\\"https:\\/\\/rdrr.io\\/r\\/${i}\\/\\\1.html/g\n" >> $sedfile
 done
 for i in $cranpkgs; do 
@@ -63,7 +67,7 @@ for version in $versions; do
           latest_path=${outdir}/latest/${ihf}
         fi
         echo "redirect_from:" >> ${oh}
-	echo "  - ${latest_path}" >> ${oh}
+        echo "  - ${latest_path}" >> ${oh}
       fi
       echo "---" >> ${oh}
       echo "" >> ${oh}
@@ -83,14 +87,12 @@ for version in $versions; do
   
       # From index remove the top
       if [ ${ihf} = "00Index.html" ]; then 
-  	sed -n '/<h2>Help Pages<\/h2>/,$p' | tail +2 
+        sed -n '/<h2>Help Pages<\/h2>/,$p' | tail +2 
       else
-  	cat
+        cat
       fi |
   
-      # Rewrite links to other packages, looks like 
-      # we are only referring to base and recommended
-      # packages, maybe only these are allowed by R CMD check
+      # Rewrite links to other packages
       sed -f $sedfile |
       
       # Done 

@@ -40,7 +40,7 @@ if __name__ == '__main__':
                             header_startend += 1
                             if header_startend == 2:
                                 tmpfile.write('vmenu: true\n')
-                                tmpfile.write('doctype: doc/tutorial/\n')
+                                tmpfile.write('doctype: tutorial/\n')
                                 tmpfile.write(f'langversion: {version}\n')
                                 if version == latest:
                                     path = Path(ihname)
