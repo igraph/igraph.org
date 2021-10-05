@@ -1,12 +1,20 @@
 
-all: core
+all: jekyll
 
-.PHONY: all core c r python
+.PHONY: all core c r python jekyll devserver
 
+# Default doc version
 CVERSION?=0.9.4
 RVERSION?=1.2.6
 PYVERSION?=0.9.6
 
+# Available versions
+CVERSIONS?='0.9.0 0.9.4 master develop'
+RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6'
+PYVERSIONS?='0.9.6 master develop'
+PYCVERSIONS?='0.9.4 0.9.4 develop'
+
+# FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
@@ -21,69 +29,56 @@ PYREPO=https://github.com/igraph/python-igraph
 
 C=_build/c
 
-c: core c/doc/stamp c/doc/igraph-docs.pdf
-
-c/doc/stamp: $(C)/build/doc/jekyll/stamp
-	rm -rf c/doc
-	mkdir -p c
-	cp -r $(C)/build/doc/jekyll c/doc
-
-c/doc/igraph-docs.pdf: $(C)/build/doc/igraph-docs.pdf c/doc/stamp
-	cp $(C)/build/doc/igraph-docs.pdf c/doc/
-
-$(C)/build/doc/jekyll/stamp: $(C)/build/doc/html/stamp
-	python3 _tools/jekyllify-c-docs.py $(C)/build && touch $(C)/build/doc/jekyll/stamp
-
-$(C)/build/doc/html/stamp: $(C)/build/CMakeCache.txt
-	cd $(C)/build && make html
-
-$(C)/build/CMakeCache.txt: $(C)/stamp
-	cd $(C) && mkdir build && cd build && cmake .. 
-
-$(C)/stamp:
+clean_c:
+	rm -rf c/html c/pdf c/stamp
 	rm -rf $(C)
-	mkdir -p $(C)
-	cd $(C) && ( \
-		if [ "x$(CCOMMITHASH)" != x ]; then \
-			git clone $(CREPO) . && git reset --hard $(CCOMMITHASH); \
-		else \
-			git clone --branch $(CVERSION) --depth 1 $(CREPO) .; \
-		fi \
-	)
+
+c: core c/stamp
+
+c/stamp: $(C)/build/doc/stamp
+	mkdir -p c/pre
+	cp -r $(C)/build/doc/html/* c/pre/
+	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS) $(CVERSION)
+	rm -rf c/pre
+	cp -r $(C)/build/doc/pdf c/
 	touch $@
 
-$(C)/build/doc/igraph-docs.pdf: $(C)/doc/igraph-docs.xml c/doc/stamp
-	cd $(C)/build && make pdf
+$(C)/build/doc/stamp: $(C)/stamp
+	_tools/c_build_versioned.sh $(C) $(CVERSIONS)
+	touch $@
+
+$(C)/stamp:
+	mkdir -p $(C)
+	# Clone repo if not present
+	[ ! -d $(C)/.git ] && \
+		cd $(C) && \
+		git clone $(CREPO) .
+	touch $@
 
 ######################################################################
 ## R stuff
 
 R=_build/r
 
-r: core r/doc/stamp r/doc/igraph.pdf
 
-r/doc/stamp: $(R)/stamp
-	$(eval TMP := $(shell mktemp -d /tmp/.XXXXX))
-	cd ${R} && \
-	R CMD INSTALL --html --no-R --no-configure --no-inst \
-	  --no-libs --no-exec --no-test-load -l $(TMP) .
-	rm -rf r/doc
-	mkdir -p r/doc
-	_tools/rhtml.sh $(TMP)/igraph/html r/doc
-	ln -s 00Index.html r/doc/index.html
-	touch r/doc/stamp
-	rm -rf $(TMP)
+clean_r:
+	rm -rf r/pre r/html r/pdf
+	rm -rf $(R)
 
-r/doc/igraph.pdf: r/doc/stamp
-	mkdir -p r/doc
-	R CMD Rd2pdf --no-preview --force -o r/doc/igraph.pdf $(R)
+r: core r/stamp
+
+r/stamp: $(R)/stamp
+	mkdir -p r/pre
+	cp -r $(R)/build/doc/html/* r/pre/
+	cp -r $(R)/build/doc/pdf r/
+	mkdir -p r/html
+	_tools/r_postprocess_html.sh r/pre r/html $(RVERSION)
+	rm -rf r/pre
+	touch r/stamp
 
 $(R)/stamp:
-	rm -rf $(R)
 	mkdir -p $(R)
-	cd $(R) && \
-		curl -s https://cran.r-project.org/src/contrib/igraph_$(RVERSION).tar.gz \
-		| tar --strip-components 1 -xzf -
+	_tools/r_build_versioned.sh $(R) $(RVERSIONS) $(RVERSION)
 	touch $@
 
 ######################################################################
@@ -93,56 +88,77 @@ ARCHFLAGS=-Wno-error=unused-command-line-argument
 
 PY=_build/python
 
-python: core python/doc/api/stamp python/doc/tutorial/stamp
+clean_python:
+	rm -rf python/api
+	rm -rf python/tutorial
+	rm -rf $(PY)
 
-python/doc/api/stamp: $(PY)/doc/api/html/index.html
-	rm -rf python/doc/api
-	mkdir -p python/doc/api
-	cp -r $(PY)/doc/api/html/ python/doc/api
-	_tools/pyhtml.sh python/doc/api
+python: core python/api/stamp python/tutorial/stamp
+
+python/api/stamp: $(PY)/doc/api/stamp
+	rm -rf python/api
+	mkdir -p python/api
+	cp -r $(PY)/doc/api_versions/* python/api/
+	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
 	touch $@
 
-$(PY)/doc/api/html/index.html: $(PY)/stamp
-	cd $(PY) && rm -rf vendor/build/igraph vendor/install/igraph
-	export ARCHFLAGS=$(ARCHFLAGS) && cd $(PY) && .venv/bin/python setup.py build
-	cd $(PY) && .venv/bin/python setup.py install && scripts/mkdoc.sh
+$(PY)/doc/api/stamp: $(PY)/stamp
+	export ARCHFLAGS=$(ARCHFLAGS) && _tools/py_build_versioned_api.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
+	touch $@
 
-python/doc/tutorial/stamp: $(PY)/stamp
-	mkdir -p python/doc/tutorial
-	cd $(PY)/doc && ../.venv/bin/python -m sphinx.cmd.build source tutorial
-	cp -r $(PY)/doc/tutorial/ python/doc/tutorial/
+python/tutorial/stamp: $(PY)/doc/tutorial/stamp
+	rm -rf python/tutorial
+	mkdir -p python/tutorial
+	cp -r $(PY)/doc/tutorial/* python/tutorial/
+	rm $@
+	_tools/py_postprocess_html_tutorial.py python/tutorial $(PYVERSION)
+	touch $@
+
+$(PY)/doc/tutorial/stamp: $(PY)/stamp
+	_tools/py_build_versioned_tutorial.sh $(PY) $(PYVERSIONS)
 	touch $@
 
 $(PY)/stamp:
-	rm -rf $(PY)
 	mkdir -p $(PY)
-	cd $(PY) && ( \
-		if [ "x$(PYCOMMITHASH)" != x ]; then \
-			git clone $(PYREPO) . && git reset --hard $(PYCOMMITHASH); \
-		else \
-			git clone --branch $(PYVERSION) --depth 1 $(PYREPO) .; \
-		fi \
-	) && git submodule update --init
-	cd $(PY) && if [ ! -d .venv ]; then python3 -m venv .venv; fi
-	cd $(PY) && .venv/bin/pip install pydoctor wheel Sphinx sphinxbootstrap4theme
-	_tools/patch-pydoctor.sh $(PY) || true
+	# Clone repo if not present
+	[ ! -d $(PY)/.git ] && \
+		cd $(PY) && \
+		git clone $(PYREPO) . && \
+		git submodule update --init
+	# Make virtual environment if not present
+	[ ! -d $(PY)/.venv ] && \
+		cd $(PY) && \
+		python3 -m venv .venv && \
+		.venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme
+	# Patch pydoctor until they fix it
+	_tools/patch-pydoctor.sh $(PY)
 	touch $@
 
 ######################################################################
 ## Core stuff
 
-core: stamp
-
-HTML= index.html news.html code-of-conduct.html _layouts/default.html \
-	_layouts/manual.html c/index.html r/index.html python/index.html
+HTML= index.html news.html code-of-conduct.html \
+      _layouts/default.html _layouts/r-manual.html _layouts/c-manual.html \
+      c/index.html r/index.html python/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 
 POSTS= $(wildcard _posts/*)
 
-stamp: $(HTML) $(CSS) $(POSTS)
+core: $(HTML) $(CSS) $(POSTS) vendor/bundle
 	printf "$(CVERSION)" > _includes/igraph-cversion
 	printf "$(RVERSION)" > _includes/igraph-rversion
 	printf "$(PYVERSION)" > _includes/igraph-pyversion
+	printf "$(CVERSIONS)" | tr -d "'" > _includes/igraph-cversions
+	printf "$(RVERSIONS)" | tr -d "'" > _includes/igraph-rversions
+	printf "$(PYVERSIONS)" | tr -d "'" > _includes/igraph-pyversions
+
+jekyll: core c r python
 	bundle exec jekyll build
-	touch stamp
+
+devserver: core c python
+	bundle exec jekyll serve
+
+vendor/bundle:
+	bundle config set --local path 'vendor/bundle'
+	bundle install
