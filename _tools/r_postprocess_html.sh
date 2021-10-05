@@ -66,8 +66,14 @@ for version in $versions; do
         else
           latest_path=${outdir}/latest/${ihf}
         fi
+        if [ ${ihf} = "00Index.html" ]; then
+          legacy_path=/r/doc/index.html
+        else
+          legacy_path=/r/doc/${ihf}
+        fi
         echo "redirect_from:" >> ${oh}
-        echo "  - ${latest_path}" >> ${oh}
+        echo "  - /${latest_path}" >> ${oh}
+        echo "  - /${legacy_path}" >> ${oh}
       fi
       echo "---" >> ${oh}
       echo "" >> ${oh}

@@ -37,7 +37,13 @@ def process_html_file(path, version, latest_version):
             latest_path = list(path.parts)
             latest_path[latest_path.index(version)] = 'latest'
             latest_path = Path(*latest_path)
-            outfp.write(f'redirect_from:\n  - {latest_path}\n')
+
+            legacy_path = list(path.parts)
+            legacy_path.remove(version)
+            legacy_path[legacy_path.index("html")] = 'doc'
+            legacy_path = Path(*legacy_path)
+
+            outfp.write(f'redirect_from:\n  - /{latest_path}\n  - /{legacy_path}\n')
         outfp.write('---\n\n')
         outfp.write("{% raw %}\n")
 
