@@ -65,7 +65,7 @@ clean_r:
 	rm -rf r/pre r/html r/pdf
 	rm -rf $(R)
 
-r: core r/stamp r/igraph.pdf
+r: core r/stamp
 
 r/stamp: $(R)/stamp
 	mkdir -p r/pre
