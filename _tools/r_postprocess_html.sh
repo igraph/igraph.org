@@ -26,6 +26,7 @@ cranpkgs="boot class cluster codetools foreign KernSmooth lattice MASS \
         Matrix mgcv nlme nnet rpart spatial survival"
 
 sedfile=`mktemp /tmp/XXXXXX`
+sedfile2=`mktemp /tmp/XXXXXX`
 echo -n > $sedfile
 printf "s/href=\\\"\\.\\.\\/\\.\\.\\/igraph\\/help\\/\\([^\\\"]*\)\\.html/" >> $sedfile
 printf "href=\\\"\\\1.html/g\n" >> $sedfile
@@ -41,17 +42,30 @@ for i in $cranpkgs; do
     printf "s/href=\\\"\\.\\.\\/\\.\\.\\/${i}\\/html\\/\\([^\\\"]*\)\\.html/" >> $sedfile
     printf "href=\\\"https:\\/\\/rdrr.io\\/cran\\/${i}\\/man\\/\\\1.html/g\n" >> $sedfile
 done
+echo -n > $sedfile2
+printf "s/url=\\.\\.\\/html\\/\\([^\\\']*\)\\.html/" >> $sedfile2
+printf "url=\\\1.html/g\n" >> $sedfile2
 
-# echo foo | sed -f $sedfile 
 outbase=`basename ${outdir}`
 
 versions=$(ls $indir)
 for version in $versions; do
   echo "Postprocessing docs for R version ${version}"
 
-  inhtml=`ls ${indir}/${version}/*.html`
   mkdir -p ${outdir}/${version}
   
+  inhtml=`ls ${indir}/${version}/help/*.html`
+  for ih in ${inhtml}; do
+      ihf=`basename ${ih}`
+      oh=${outdir}/${version}/${ihf}
+
+	  # TODO(ntamas)
+	  cat ${ih} |
+	  sed -f $sedfile2 |
+	  cat >> ${oh}
+  done
+  
+  inhtml=`ls ${indir}/${version}/html/*.html`
   for ih in ${inhtml}; do
       ihf=`basename ${ih}`
       oh=${outdir}/${version}/${ihf}
@@ -60,21 +74,6 @@ for version in $versions; do
       echo "${header}" > ${oh}
       echo "doctype: ${outbase}/" >> ${oh}
       echo "langversion: ${version}" >> ${oh}
-      if [ ${version} = ${latest} ]; then
-        if [ ${ihf} = "00Index.html" ]; then
-          latest_path=${outdir}/latest/index.html
-        else
-          latest_path=${outdir}/latest/${ihf}
-        fi
-        if [ ${ihf} = "00Index.html" ]; then
-          legacy_path=/r/doc/index.html
-        else
-          legacy_path=/r/doc/${ihf}
-        fi
-        echo "redirect_from:" >> ${oh}
-        echo "  - /${latest_path}" >> ${oh}
-        echo "  - /${legacy_path}" >> ${oh}
-      fi
       echo "---" >> ${oh}
       echo "" >> ${oh}
       echo "" >> ${oh}
@@ -106,10 +105,9 @@ for version in $versions; do
       
       # End raw
       echo '{% endraw %}' >> ${oh}
-  done;
+  done
 
   mv "${outdir}/${version}/00Index.html" "${outdir}/${version}/index.html"
 done;
-mv "${outdir}/latest/00Index.html" "${outdir}/latest/index.html"
 
 rm -f ${sedfile}

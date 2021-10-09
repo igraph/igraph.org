@@ -62,19 +62,6 @@ if __name__ == '__main__':
                 # YAML header
                 tmpfile.write(header)
                 tmpfile.write(f'langversion: {version}\n')
-                if version == latest:
-                    path = Path(ihname)
-
-                    latest_path = list(path.parts)
-                    latest_path[latest_path.index(version)] = 'latest'
-                    latest_path = Path(*latest_path)
-
-                    legacy_path = list(path.parts)
-                    legacy_path.remove(version)
-                    legacy_path.insert(legacy_path.index("api"), "doc")
-                    legacy_path = Path(*legacy_path)
-
-                    tmpfile.write(f'redirect_from:\n  - /{latest_path}\n  - /{legacy_path}\n')
                 tmpfile.write('---\n')
 
                 # Begin raw

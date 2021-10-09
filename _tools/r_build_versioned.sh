@@ -44,6 +44,8 @@ for i in "${!RVERSIONS[@]}"; do
   cd ../..
 
   echo "Reorganize folders"
+  mkdir -p build/doc/html/$version/
+  cp -r ${TMP}/igraph/help build/doc/html/$version
   cp -r ${TMP}/igraph/html build/doc/html/$version
   mkdir -p build/doc/pdf/$version/
   cp -r build_versions/$version/igraph.pdf build/doc/pdf/$version/
