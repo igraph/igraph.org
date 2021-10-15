@@ -1,0 +1,74 @@
+---
+title: R/igraph 1.2.7
+date: 2021-10-15
+tags: r
+---
+
+In an attempt to bring the R interface of igraph closer to the recent
+developments of the C core, we have released [R-igraph](https://igraph.org/r/)
+1.2.7, the seventh bugfix release of the 1.2 series. This version updates
+the C core of igraph within the R interface to version 0.8.5, which, while
+still several versions behind the mainline C core, fixes a range of bugs
+compared to the previous release and introduces a few new functions.
+
+This release is only the beginning; in the next few months we aim to process
+most of the issues on the [Github issue
+tracker](https://github.com/igraph/rigraph/issues), close the ones that are not
+relevant any more, fix the ones that should be fixed, and then proceed with
+updating the R interface to version 0.9.4 of the C core, which is the most
+recent C core version at the time of writing.
+
+<!--more-->
+
+Release Notes
+-------------
+
+Added:
+
+- `cluster_leiden()` added as an interface to the Leiden community detection
+  algorithm in the C core of igraph
+  ([#399](https://github.com/igraph/rigraph/issues/399).
+- `cluster_fluid_communities()` added as an interface to the fluid communities
+  algorithm of the C core of igraph
+  ([#454](https://github.com/igraph/rigraph/issues/454).
+
+Fixed:
+
+- `make_lattice()` correctly rounds `length` to the nearest integer while
+  printing a warning ([#115](https://github.com/igraph/rigraph/issues/115).
+- `make_empty_graph(NULL)` now prints an error instead of producing an
+  invalid graph ([#404](https://github.com/igraph/rigraph/issues/404)).
+- `make_graph(c())` now produces an empty graph instead of printing a
+  misleading error message ([#431](https://github.com/igraph/rigraph/431)).
+- Printing a graph where some edges have NA as the names of both endpoints
+  does not produce a misleading error message any more
+  ([#410](https://github.com/igraph/rigraph/410)).
+- The `types` argument of functions related to bipartite graphs now prints
+  a warning when the types are coerced to booleans
+  ([#476](https://github.com/igraph/rigraph/476)).
+- Betweenness normalisation no longer overflows
+  ([#442](https://github.com/igraph/rigraph/442)).
+- `layout_with_sugiyama()` returns a layout of type matrix even if there is
+  only one vertex in the graph ([#408](https://github.com/igraph/rigraph/408)).
+- Plotting a null graph (i.e. a graph with no vertices) does not throw an error
+  any more ([#387](https://github.com/igraph/rigraph/387)).
+
+Deprecated:
+- The `membership` argument of `modularity.matrix()` is now deprecated as the
+  function never needed it anyway.
+- `modularity()` now prints a warning when it is applied on a directed graph
+  because the implementation in igraph's C core does not support directed
+  graphs as of version 0.8.5. The warning will be turned into an error in
+  the next minor (1.3.0) version of the R interface; the error will be removed
+  later when the C core is updated to a version that supports modularity for
+  directed networks.
+- `transitivity()` now prints a warning when its local variant (`type="local"`)
+  is called on a directed graph or a graph with multiple edges beecause the
+  implementation in the C core of igraph does not work reliably in these cases
+  as of version 0.8.5. The warning will be turned into an error in the next
+  minor (1.3.0) version of the R interface; the error will be removed later
+  when the C core is updated to a version that supports transitivity for
+  networks with multiple edges.
+
+Misc:
+- Documentation improvements.
