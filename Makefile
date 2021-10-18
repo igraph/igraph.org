@@ -41,8 +41,6 @@ c/stamp: $(C)/build/doc/stamp
 	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS) $(CVERSION)
 	rm -rf c/pre
 	cp -r $(C)/build/doc/pdf c/
-	ln -s $(CVERSION) c/html/latest
-	ln -s html/latest c/doc
 	touch $@
 
 $(C)/build/doc/stamp: $(C)/stamp
@@ -76,8 +74,6 @@ r/stamp: $(R)/stamp
 	mkdir -p r/html
 	_tools/r_postprocess_html.sh r/pre r/html $(RVERSION)
 	rm -rf r/pre
-	ln -s $(RVERSION) r/html/latest
-	ln -s html/latest r/doc
 	touch r/stamp
 
 $(R)/stamp:
@@ -104,8 +100,6 @@ python/api/stamp: $(PY)/doc/api/stamp
 	mkdir -p python/api
 	cp -r $(PY)/doc/api_versions/* python/api/
 	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
-	ln -s $(PYVERSION) python/api/latest
-	ln -s ../api/latest python/doc/api
 	touch $@
 
 $(PY)/doc/api/stamp: $(PY)/stamp
@@ -118,8 +112,6 @@ python/tutorial/stamp: $(PY)/doc/tutorial/stamp
 	cp -r $(PY)/doc/tutorial/* python/tutorial/
 	rm $@
 	_tools/py_postprocess_html_tutorial.py python/tutorial $(PYVERSION)
-	ln -s $(PYVERSION) python/tutorial/latest
-	ln -s ../tutorial/latest python/doc/tutorial
 	touch $@
 
 $(PY)/doc/tutorial/stamp: $(PY)/stamp
@@ -164,7 +156,7 @@ core: $(HTML) $(CSS) $(POSTS) vendor/bundle
 jekyll: core c r python
 	bundle exec jekyll build
 
-devserver: core c python
+devserver: core c r python
 	bundle exec jekyll serve
 
 vendor/bundle:
