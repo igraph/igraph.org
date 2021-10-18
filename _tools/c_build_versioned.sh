@@ -15,9 +15,20 @@ mkdir -p build/doc/pdf
 for i in "${!CVERSIONS[@]}"; do
   version=${CVERSIONS[$i]}
 
+  if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+    if [ -d "build/doc/html/${version}" -a -d "build/doc/pdf/${version}" ]; then
+      echo "Skipping already built version: $version"
+    fi
+    continue
+  fi
+
   echo "Building version: $version"
 
   git checkout $version
+  if [ "${version}" = "master" -o "${version}" = "develop" ]; then
+    # 'master' and 'develop' are "moving targets", we need to pull
+    git pull
+  fi
 
   echo "Build docs"
 

@@ -13,9 +13,21 @@ mkdir -p doc/tutorial
 for i in "${!PYVERSIONS[@]}"; do
   version=${PYVERSIONS[$i]}
 
+  if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+    if [ -d "doc/tutorial/${version}" ]; then
+      echo "Skipping already built version: $version"
+    fi
+    continue
+  fi
+
   echo "Building version: $version"
 
   git checkout $version
+  if [ "${version}" = "master" -o "${version}" = "develop" ]; then
+    # 'master' and 'develop' are "moving targets", we need to
+    # pull
+    git pull
+  fi
 
   echo "Build docs"
 

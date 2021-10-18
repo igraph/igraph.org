@@ -51,7 +51,6 @@ if __name__ == '__main__':
             header = header_pydoctor
 
         inhtml = glob.glob(str(folder)+'/'+version+'/*.html')
-        print(inhtml)
 
         for ihname in inhtml:
             hf = os.path.basename(ihname)

@@ -16,6 +16,13 @@ mkdir -p build/doc/pdf
 for i in "${!RVERSIONS[@]}"; do
   version=${RVERSIONS[$i]}
 
+  if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+    if [ -d "build/doc/html/${version}" -a -d "build/doc/pdf/${version}" ]; then
+      echo "Skipping already built version: $version"
+    fi
+    continue
+  fi
+
   echo "Building version: $version"
 
   mkdir -p build_versions/$version

@@ -16,9 +16,20 @@ for i in "${!PYVERSIONS[@]}"; do
   version=${PYVERSIONS[$i]}
   c_version=${PYCVERSIONS[$i]}
 
+  if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+    if [ -d "doc/api_versions/${version}" ]; then
+      echo "Skipping already built version: $version (C version: $c_version)"
+    fi
+    continue
+  fi
+
   echo "Building version: $version (C version: $c_version)"
 
   git checkout $version
+  if [ "${version}" = "master" -o "${version}" = "develop" ]; then
+    # 'master' and 'develop' are "moving targets", we need to pull
+    git pull
+  fi
 
   echo "Build C core matching this version"
 
