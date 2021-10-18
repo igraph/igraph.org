@@ -16,8 +16,8 @@ for i in "${!PYVERSIONS[@]}"; do
   if [ "${version}" != "master" -a "${version}" != "develop" ]; then
     if [ -d "doc/tutorial/${version}" ]; then
       echo "Skipping already built version: $version"
+      continue
     fi
-    continue
   fi
 
   echo "Building version: $version"

@@ -55,7 +55,10 @@ for i in "${!PYVERSIONS[@]}"; do
     cp -r vendor/install/igraph vendor/cache/igraph_${c_version}
   fi
 
+  # Clean up previous builds and then do a fresh build
+  rm -rf build
   rm -rf .venv/lib/python3.*/site-packages/igraph
+  rm -rf .venv/lib/python3.*/site-packages/python_igraph*.egg
   .venv/bin/python setup.py install
 
   echo "Build docs"

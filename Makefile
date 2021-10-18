@@ -6,13 +6,13 @@ all: jekyll
 # Default doc version
 CVERSION?=0.9.4
 RVERSION?=1.2.7
-PYVERSION?=0.9.6
+PYVERSION?=0.9.7
 
 # Available versions
 CVERSIONS?='0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7'
-PYVERSIONS?='0.9.6 master develop'
-PYCVERSIONS?='0.9.4 0.9.4 develop'
+PYVERSIONS?='0.9.6 0.9.7 master develop'
+PYCVERSIONS?='0.9.4 0.9.4 0.9.4 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -49,10 +49,14 @@ $(C)/build/doc/stamp: $(C)/stamp
 
 $(C)/stamp:
 	mkdir -p $(C)
-	# Clone repo if not present
-	[ ! -d $(C)/.git ] && \
+	# Clone repo if not present, fetch updates if it is present
+	if [ ! -d $(C)/.git ]; then \
 		cd $(C) && \
 		git clone $(CREPO) .
+	else \
+		cd $(C) && \
+		git fetch; \
+	fi
 	touch $@
 
 ######################################################################
@@ -120,16 +124,21 @@ $(PY)/doc/tutorial/stamp: $(PY)/stamp
 
 $(PY)/stamp:
 	mkdir -p $(PY)
-	# Clone repo if not present
-	[ ! -d $(PY)/.git ] && \
+	# Clone repo if not present, fetch updates if it is present
+	if [ ! -d $(PY)/.git ]; then \
 		cd $(PY) && \
 		git clone $(PYREPO) . && \
-		git submodule update --init
+		git submodule update --init; \
+	else \
+		cd $(PY) && \
+		git fetch; \
+	fi
 	# Make virtual environment if not present
-	[ ! -d $(PY)/.venv ] && \
+	if [ ! -d $(PY)/.venv ]; then \
 		cd $(PY) && \
 		python3 -m venv .venv && \
-		.venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme
+		.venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme; \
+	fi
 	# Patch pydoctor until they fix it
 	_tools/patch-pydoctor.sh $(PY)
 	touch $@
