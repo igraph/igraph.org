@@ -18,8 +18,8 @@ for i in "${!CVERSIONS[@]}"; do
   if [ "${version}" != "master" -a "${version}" != "develop" ]; then
     if [ -d "build/doc/html/${version}" -a -d "build/doc/pdf/${version}" ]; then
       echo "Skipping already built version: $version"
+      continue
     fi
-    continue
   fi
 
   echo "Building version: $version"

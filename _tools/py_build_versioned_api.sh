@@ -19,8 +19,8 @@ for i in "${!PYVERSIONS[@]}"; do
   if [ "${version}" != "master" -a "${version}" != "develop" ]; then
     if [ -d "doc/api_versions/${version}" ]; then
       echo "Skipping already built version: $version (C version: $c_version)"
+      continue
     fi
-    continue
   fi
 
   echo "Building version: $version (C version: $c_version)"
@@ -55,6 +55,7 @@ for i in "${!PYVERSIONS[@]}"; do
     cp -r vendor/install/igraph vendor/cache/igraph_${c_version}
   fi
 
+  rm -rf .venv/lib/python3.*/site-packages/igraph
   .venv/bin/python setup.py install
 
   echo "Build docs"
