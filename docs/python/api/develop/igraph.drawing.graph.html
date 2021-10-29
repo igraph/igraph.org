@@ -68,6 +68,8 @@
             
             <a class="dropdown-item" href="/python/api/master/">master</a>
             
+            <a class="dropdown-item" href="/python/api/0.9.8/">0.9.8</a>
+            
             <a class="dropdown-item" href="/python/api/0.9.7/">0.9.7</a>
             
             <a class="dropdown-item" href="/python/api/0.9.6/">0.9.6</a>
@@ -163,7 +165,7 @@
       </div>
 
       <div id="splitTables">
-        <table class="children sortable" id="id147">
+        <table class="children sortable" id="id148">
   
   <tr class="class">
     
@@ -175,6 +177,11 @@
     <td>Class</td>
     <td><code><a href="igraph.drawing.graph.GephiGraphStreamingDrawer.html">GephiGraphStreamingDrawer</a></code></td>
     <td><span>Graph drawer that sends a graph to a file-like object (e.g., socket, URL connection, file) using the Gephi graph streaming format.</span></td>
+  </tr><tr class="function">
+    
+    <td>Function</td>
+    <td><code><a href="#__plot__">__plot__</a></code></td>
+    <td><span>Plots the graph to the given Cairo context or matplotlib Axes.</span></td>
   </tr>
 </table>
         
@@ -184,11 +191,29 @@
 
       <div id="childList">
 
-        
+        <div class="basefunction">
+  
+  <a name="igraph.drawing.graph.__plot__">
+    
+  </a>
+  <a name="__plot__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__plot__</span>(self, backend, context, *args, **kwds):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div><p>Plots the graph to the given Cairo context or matplotlib Axes.</p><p>The visual style of vertices and edges can be modified at three places in the following order of precedence (lower indices override higher indices):</p><ol><li>Keyword arguments of this function (or of <code><a href="igraph.drawing.html#plot">plot()</a></code> which is passed intact to <code>Graph.__plot__()</code>.</li><li>Vertex or edge attributes, specified later in the list of keyword arguments.</li><li>igraph-wide plotting defaults (see <code><a href="igraph.configuration.Configuration.html">igraph.config.Configuration</a></code>)</li><li>Built-in defaults.</li></ol><p>E.g., if the <code>vertex_size</code> keyword attribute is not present, but there exists a vertex attribute named <code>size</code>, the sizes of the vertices will be specified by that attribute.</p><p>Besides the usual self-explanatory plotting parameters (<code>context</code>, <code>bbox</code>, <code>palette</code>), it accepts the following keyword arguments:</p><ul><li><code>autocurve</code>: whether to use curves instead of straight lines for multiple edges on the graph plot. This argument may be <code>True</code> or <code>False</code>; when omitted, <code>True</code> is assumed for graphs with less than 10.000 edges and <code>False</code> otherwise.</li><li><code>drawer_factory</code>: a subclass of <code><a href="igraph.drawing.cairo.graph.AbstractCairoGraphDrawer.html">AbstractCairoGraphDrawer</a></code> which will be used to draw the graph. You may also provide a function here which takes two arguments: the Cairo context to draw on and a bounding box (an instance of <code><a href="igraph.drawing.utils.BoundingBox.html">BoundingBox</a></code>). If this keyword argument is missing, igraph will use the default graph drawer which should be suitable for most purposes. It is safe to omit this keyword argument unless you need to use a specific graph drawer.</li><li><code>keep_aspect_ratio</code>: whether to keep the aspect ratio of the layout that igraph calculates to place the nodes. <code>True</code> means that the layout will be scaled proportionally to fit into the bounding box where the graph is to be drawn but the aspect ratio will be kept the same (potentially leaving empty space next to, below or above the graph). <code>False</code> means that the layout will be scaled independently along the X and Y axis in order to fill the entire bounding box. The default is <code>False</code>.</li><li><code>layout</code>: the layout to be used. If not an instance of <code><a href="igraph.layout.Layout.html">Layout</a></code>, it will be passed to <code><a href="igraph.layout.html">layout</a></code> to calculate the layout. Note that if you want a deterministic layout that does not change with every plot, you must either use a deterministic layout function (like <code>layout_circle</code>) or calculate the layout in advance and pass a <code><a href="igraph.layout.Layout.html">Layout</a></code> object here.</li><li><code>margin</code>: the top, right, bottom, left margins as a 4-tuple. If it has less than 4 elements or is a single float, the elements will be re-used until the length is at least 4.</li><li><code>mark_groups</code>: whether to highlight some of the vertex groups by colored polygons. This argument can be one of the following:<ul><li><code>False</code>: no groups will be highlighted</li><li><code>True</code>: only valid if the object plotted is a <code><a href="igraph.clustering.VertexClustering.html">VertexClustering</a></code> or <code><a href="igraph.clustering.VertexCover.html">VertexCover</a></code>. The vertex groups in the clutering or cover will be highlighted such that the i-th group will be colored by the i-th color from the current palette. If used when plotting a graph, it will throw an error.</li><li>A dict mapping tuples of vertex indices to color names. The given vertex groups will be highlighted by the given colors.</li><li>A list containing pairs or an iterable yielding pairs, where the first element of each pair is a list of vertex indices and the second element is a color.</li><li>A <code><a href="igraph.clustering.VertexClustering.html">VertexClustering</a></code> or <code><a href="igraph.clustering.VertexCover.html">VertexCover</a></code> instance. The vertex groups in the clustering or cover will be highlighted such that the i-th group will be colored by the i-th color from the current palette.</li></ul><p>In place of lists of vertex indices, you may also use <code><a href="igraph.seq.VertexSeq.html">VertexSeq</a></code> instances.</p><p>In place of color names, you may also use color indices into the current palette. <code>None</code> as a color name will mean that the corresponding group is ignored.</p></li><li><code>vertex_size</code>: size of the vertices. The corresponding vertex attribute is called <code>size</code>. The default is 10. Vertex sizes are measured in the unit of the Cairo context on which igraph is drawing.</li><li><code>vertex_color</code>: color of the vertices. The corresponding vertex attribute is <code>color</code>, the default is red.  Colors can be specified either by common X11 color names (see the source code of <code><a href="igraph.drawing.colors.html">igraph.drawing.colors</a></code> for a list of known colors), by 3-tuples of floats (ranging between 0 and 255 for the R, G and B components), by CSS-style string specifications (<code>#rrggbb</code>) or by integer color indices of the specified palette.</li><li><code>vertex_frame_color</code>: color of the frame (i.e. stroke) of the vertices. The corresponding vertex attribute is <code>frame_color</code>, the default is black. See <code>vertex_color</code> for the possible ways of specifying a color.</li><li><code>vertex_frame_width</code>: the width of the frame (i.e. stroke) of the vertices. The corresponding vertex attribute is <code>frame_width</code>. The default is 1. Vertex frame widths are measured in the unit of the Cairo context on which igraph is drawing.</li><li><code>vertex_shape</code>: shape of the vertices. Alternatively it can be specified by the <code>shape</code> vertex attribute. Possibilities are: <code>square</code>, {circle}, {triangle}, {triangle-down} or <code>hidden</code>. See the source code of <code><a href="igraph.drawing.html">igraph.drawing</a></code> for a list of alternative shape names that are also accepted and mapped to these.</li><li><code>vertex_label</code>: labels drawn next to the vertices. The corresponding vertex attribute is <code>label</code>.</li><li><code>vertex_label_dist</code>: distance of the midpoint of the vertex label from the center of the corresponding vertex. The corresponding vertex attribute is <code>label_dist</code>.</li><li><code>vertex_label_color</code>: color of the label. Corresponding vertex attribute: <code>label_color</code>. See <code>vertex_color</code> for color specification syntax.</li><li><code>vertex_label_size</code>: font size of the label, specified in the unit of the Cairo context on which we are drawing. Corresponding vertex attribute: <code>label_size</code>.</li><li><code>vertex_label_angle</code>: the direction of the line connecting the midpoint of the vertex with the midpoint of the label. This can be used to position the labels relative to the vertices themselves in conjunction with <code>vertex_label_dist</code>. Corresponding vertex attribute: <code>label_angle</code>. The default is <code>-math.pi/2</code>.</li><li><code>vertex_order</code>: drawing order of the vertices. This must be a list or tuple containing vertex indices; vertices are then drawn according to this order.</li><li><code>vertex_order_by</code>: an alternative way to specify the drawing order of the vertices; this attribute is interpreted as the name of a vertex attribute, and vertices are drawn such that those with a smaller attribute value are drawn first. You may also reverse the order by passing a tuple here; the first element of the tuple should be the name of the attribute, the second element specifies whether the order is reversed (<code>True</code>, <code>False</code>, <code>"asc"</code> and <code>"desc"</code> are accepted values).</li><li><code>edge_color</code>: color of the edges. The corresponding edge attribute is <code>color</code>, the default is red. See <code>vertex_color</code> for color specification syntax.</li><li><code>edge_curved</code>: whether the edges should be curved. Positive numbers correspond to edges curved in a counter-clockwise direction, negative numbers correspond to edges curved in a clockwise direction. Zero represents straight edges. <code>True</code> is interpreted as 0.5, <code>False</code> is interpreted as 0. The default is 0 which makes all the edges straight.</li><li><code>edge_width</code>: width of the edges in the default unit of the Cairo context on which we are drawing. The corresponding edge attribute is <code>width</code>, the default is 1.</li><li><code>edge_arrow_size</code>: arrow size of the edges. The corresponding edge attribute is <code>arrow_size</code>, the default is 1.</li><li><code>edge_arrow_width</code>: width of the arrowhead on the edge. The corresponding edge attribute is <code>arrow_width</code>, the default is 1.</li><li><code>edge_order</code>: drawing order of the edges. This must be a list or tuple containing edge indices; edges are then drawn according to this order.</li><li><code>edge_order_by</code>: an alternative way to specify the drawing order of the edges; this attribute is interpreted as the name of an edge attribute, and edges are drawn such that those with a smaller attribute value are drawn first. You may also reverse the order by passing a tuple here; the first element of the tuple should be the name of the attribute, the second element specifies whether the order is reversed (<code>True</code>, <code>False</code>, <code>"asc"</code> and <code>"desc"</code> are accepted values).</li></ul></div>
+  </div>
+</div>
 
       </div>
       <address>
-        <a href="index.html">API Documentation</a> for <a href="https://igraph.org/python">python-igraph</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2 at 2021-10-18 16:23:19.
+        <a href="index.html">API Documentation</a> for <a href="https://igraph.org/python">python-igraph</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2.
       </address>
 
     </div>

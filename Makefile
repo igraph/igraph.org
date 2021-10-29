@@ -6,13 +6,13 @@ all: jekyll
 # Default doc version
 CVERSION?=0.9.4
 RVERSION?=1.2.7
-PYVERSION?=0.9.7
+PYVERSION?=0.9.8
 
 # Available versions
 CVERSIONS?='0.9.0 0.9.4 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7'
-PYVERSIONS?='0.9.6 0.9.7 master develop'
-PYCVERSIONS?='0.9.4 0.9.4 0.9.4 develop'
+PYVERSIONS?='0.9.6 0.9.7 0.9.8 master develop'
+PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.4 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release

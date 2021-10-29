@@ -68,6 +68,8 @@
             
             <a class="dropdown-item" href="/python/api/master/">master</a>
             
+            <a class="dropdown-item" href="/python/api/0.9.8/">0.9.8</a>
+            
             <a class="dropdown-item" href="/python/api/0.9.7/">0.9.7</a>
             
             <a class="dropdown-item" href="/python/api/0.9.6/">0.9.6</a>
@@ -220,6 +222,21 @@
     <td>Function</td>
     <td><code><a href="#_prepare_community_comparison">_prepare_community_comparison</a></code></td>
     <td><span>Auxiliary method that takes two community structures either as membership lists or instances of <code><a href="igraph.clustering.Clustering.html">Clustering</a></code>, and returns a tuple whose two elements are membership lists.</span></td>
+  </tr><tr class="function private">
+    
+    <td>Function</td>
+    <td><code><a href="#_biconnected_components">_biconnected_components</a></code></td>
+    <td><span>Calculates the biconnected components of the graph.</span></td>
+  </tr><tr class="function private">
+    
+    <td>Function</td>
+    <td><code><a href="#_cohesive_blocks">_cohesive_blocks</a></code></td>
+    <td><span>Calculates the cohesive block structure of the graph.</span></td>
+  </tr><tr class="function private">
+    
+    <td>Function</td>
+    <td><code><a href="#_clusters">_clusters</a></code></td>
+    <td><span>Calculates the (strong or weak) clusters (connected components) for a given graph.</span></td>
   </tr>
 </table>
         
@@ -301,11 +318,65 @@
     
     <div><p>Calculates the split-join distance between two community structures.</p><p>The split-join distance is a distance measure defined on the space of partitions of a given set. It is the sum of the projection distance of one partition from the other and vice versa, where the projection number of A from B is if calculated as follows:</p><ol><li>For each set in A, find the set in B with which it has the maximal overlap, and take note of the size of the overlap.</li><li>Take the sum of the maximal overlap sizes for each set in A.</li><li>Subtract the sum from <i class="math">n</i>, the number of elements in the partition.</li></ol><p>Note that the projection distance is asymmetric, that's why it has to be calculated in both directions and then added together.  This function returns the projection distance of <code>comm1</code> from <code>comm2</code> and the projection distance of <code>comm2</code> from <code>comm1</code>, and returns them in a pair. The actual split-join distance is the sum of the two distances. The reason why it is presented this way is that one of the elements being zero then implies that one of the partitions is a subpartition of the other (and if it is close to zero, then one of the partitions is close to being a subpartition of the other).</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">comm1</td><td>the first community structure as a membership list or as a <code><a href="igraph.clustering.Clustering.html">Clustering</a></code> object.</td></tr><tr><td></td><td class="fieldArg">comm2</td><td>the second community structure as a membership list or as a <code><a href="igraph.clustering.Clustering.html">Clustering</a></code> object.</td></tr><tr><td></td><td class="fieldArg">remove_none</td><td>whether to remove <code>None</code> entries from the membership lists. This is handy if your <code><a href="igraph.clustering.Clustering.html">Clustering</a></code> object was constructed using <code><a href="igraph.clustering.VertexClustering.html#FromAttribute">VertexClustering.FromAttribute</a></code> using an attribute which was not defined for all the vertices. If <code>remove_none</code> is <code>False</code>, a <code>None</code> entry in either <code>comm1</code> or <code>comm2</code> will result in an exception. If <code>remove_none</code> is <code>True</code>, <code>None</code> values are filtered away and only the remaining lists are compared.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">the projection distance of <code>comm1</code> from <code>comm2</code> and vice versa in a tuple. The split-join distance is the sum of the two.</td></tr><tr class="fieldStart"><td class="fieldName">See Also</td><td colspan="2"><code><a href="#compare_communities">compare_communities()</a></code> with <code>method = "split-join"</code> if you are not interested in the individual projection distances but only the sum of them.</td></tr><tr class="fieldStart"><td class="fieldName">Unknown Field: newfield</td><td class="fieldArg">ref</td><td>Reference</td></tr><tr class="fieldStart"><td class="fieldName">Unknown Field: ref</td><td colspan="2">van Dongen D: Performance criteria for graph clustering and Markov cluster experiments. Technical Report INS-R0012, National Research Institute for Mathematics and Computer Science in the Netherlands, Amsterdam, May 2000.</td></tr></table></div>
   </div>
+</div><div class="basefunction private">
+  
+  <a name="igraph.clustering._biconnected_components">
+    
+  </a>
+  <a name="_biconnected_components">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_biconnected_components</span>(graph, return_articulation_points=False):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div><p>Calculates the biconnected components of the graph.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">graph</td><td><span class="undocumented">Undocumented</span></td></tr><tr><td></td><td class="fieldArg">return_articulation_points</td><td>whether to return the articulation points as well</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">a <code><a href="igraph.clustering.VertexCover.html">VertexCover</a></code> object describing the biconnected components, and optionally the list of articulation points as well</td></tr></table></div>
+  </div>
+</div><div class="basefunction private">
+  
+  <a name="igraph.clustering._cohesive_blocks">
+    
+  </a>
+  <a name="_cohesive_blocks">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_cohesive_blocks</span>(graph):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div><p>Calculates the cohesive block structure of the graph.</p><p>Cohesive blocking is a method of determining hierarchical subsets of graph vertices based on their structural cohesion (i.e. vertex connectivity). For a given graph G, a subset of its vertices S is said to be maximally k-cohesive if there is no superset of S with vertex connectivity greater than or equal to k. Cohesive blocking is a process through which, given a k-cohesive set of vertices, maximally l-cohesive subsets are recursively identified with l &gt; k. Thus a hierarchy of vertex subsets is obtained in the end, with the entire graph G at its root.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">an instance of <code><a href="igraph.clustering.CohesiveBlocks.html">CohesiveBlocks</a></code>. See the documentation of <code><a href="igraph.clustering.CohesiveBlocks.html">CohesiveBlocks</a></code> for more information.</td></tr><tr class="fieldStart"><td class="fieldName">See Also</td><td colspan="2"><code><a href="igraph.clustering.CohesiveBlocks.html">CohesiveBlocks</a></code></td></tr></table></div>
+  </div>
+</div><div class="basefunction private">
+  
+  <a name="igraph.clustering._clusters">
+    
+  </a>
+  <a name="_clusters">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_clusters</span>(graph, mode='strong'):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div><p>Calculates the (strong or weak) clusters (connected components) for a given graph.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">graph</td><td><span class="undocumented">Undocumented</span></td></tr><tr><td></td><td class="fieldArg">mode</td><td>must be either <code>"strong"</code> or <code>"weak"</code>, depending on the clusters being sought. Optional, defaults to <code>"strong"</code>.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">a <code><a href="igraph.clustering.VertexClustering.html">VertexClustering</a></code> object</td></tr></table></div>
+  </div>
 </div>
 
       </div>
       <address>
-        <a href="index.html">API Documentation</a> for <a href="https://igraph.org/python">python-igraph</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2 at 2021-10-18 16:23:19.
+        <a href="index.html">API Documentation</a> for <a href="https://igraph.org/python">python-igraph</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2.
       </address>
 
     </div>

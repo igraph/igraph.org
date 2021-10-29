@@ -123,3 +123,45 @@ index e5f4050..3d326b3 100644
        </address>
  
      </div>
+diff --git a/pydoctor/templatewriter/summary.py b/pydoctor/templatewriter/summary.py
+index e5f4050..3d326b3 100644
+--- a/pydoctor/templatewriter/summary.py
++++ b/pydoctor/templatewriter/summary.py
+@@ -22,7 +22,7 @@
+         return r
+     ul = tags.ul()
+     for m in sorted(contents, key=lambda m:m.fullName()):
+-        ul(moduleSummary(m, page_url))
++        ul(moduleSummary(m, page_url), "\n")
+     return r(ul)
+ 
+ def _lckey(x):
+@@ -45,6 +45,7 @@
+         r = []
+         for o in self.system.rootobjects:
+             r.append(moduleSummary(o, self.filename))
++            r.append("\n")
+         return tag.clear()(r)
+     @renderer
+     def heading(self, request, tag):
+@@ -105,7 +106,7 @@
+     if len(scs) > 0:
+         ul = tags.ul()
+         for sc in sorted(scs, key=_lckey):
+-            ul(subclassesFrom(hostsystem, sc, anchors, page_url))
++            ul(subclassesFrom(hostsystem, sc, anchors, page_url), "\n")
+         r(ul)
+     return r
+ 
+@@ -136,9 +137,10 @@
+                 if o:
+                     ul = tags.ul()
+                     for sc in sorted(o, key=_lckey):
+-                        ul(subclassesFrom(self.system, sc, anchors, self.filename))
++                        ul(subclassesFrom(self.system, sc, anchors, self.filename), "\n")
+                     item(ul)
+                 t(item)
++            t("\n")
+         return t
+ 
+     @renderer
