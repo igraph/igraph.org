@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-	<!-- Favicon and theming -->
+    <!-- Favicon and theming -->
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
@@ -55,18 +55,16 @@
 
       {% if langname != null and langname != 'igraph' %}
       <ul class="navbar-nav mr-auto">
-        {% if layout.vmenu != null  or page.vmenu != null %}
+        {% if layout.vmenu != null or page.vmenu != null %}
         <li class="nav-item"><a class="nav-link" href="/{{ lang }}">{{ langname }}</a></li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
             {{ page.langversion }}
           </a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="/{{ lang }}/{{ page.doctype | default: layout.doctype }}latest/">latest</a>
-            {% for langversioni in langversions reversed %}
-            <a class="dropdown-item" href="/{{ lang }}/{{ page.doctype | default: layout.doctype }}{{ langversioni }}/">{{ langversioni }}</a>
-            {% endfor %}
+          <div class="dropdown-menu" id="doc-version-switcher">
+            <a class="dropdown-item" href="#">Please wait...</a>
           </div>
+          {%- assign needs_doc_version_switcher = true %}
         </li>
         {% else %}
         <li class="nav-item"><a class="nav-link" href="/{{ lang }}">{{ langname }} {{ langversion }}</a></li>
@@ -144,11 +142,21 @@
     <script src="/js/affix.js"></script>
     <script src="/js/jumbotron.js"></script>
     <script src="/js/toggle.js"></script>
+
+{% if needs_doc_version_switcher %}
+    <script src="/js/doc-version-switcher.js"></script>
+    <script>
+        generateVersionSwitcher('#doc-version-switcher', '{{ lang | url_param_escape }}', '{{ page.doctype | default: layout.doctype | url_param_escape }}');
+    </script>
+{% endif %}
+
 {% if page.animated_header or layout.animated_header %}
       <script>
         startAnimation();
       </script>
 {% endif %}
+
+
     {{ page.extrafoot }}
   </body>
 </html>
