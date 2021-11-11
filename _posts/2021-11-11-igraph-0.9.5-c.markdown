@@ -1,0 +1,54 @@
+---
+title: C/igraph 0.9.5
+date: 2021-11-11
+tags: c
+---
+
+[C/igraph](https://igraph.org/c/) 0.9.5, the fifth bugfix release of the 0.9 series, has arrived.
+
+The source can be obtained from [the GitHub releases
+page](https://github.com/igraph/igraph/releases/tag/0.9.5).
+
+This release includes bug fixes and performance improvements only.
+
+### Fixed
+
+ - `igraph_reindex_membership()` does not allow negative membership indices any more.
+
+ - `igraph_rewire_directed_edges()` now generates multigraphs when edge
+   directions are ignored, to make it consistent with the directed case.
+
+ - Fixed a bug in `igraph_gomory_hu_tree()` that returned only the equivalent
+   flow tree instead of the cut tree.
+
+ - Fixed a bug in the `IGRAPH_TO_UNDIRECTED_COLLAPSE` mode of
+   `igraph_to_undirected()` that provided an incorrect merge vector to the
+   attribute handler, leading to problems when edge attributes were merged
+   using an attribute combination.
+
+ - Fixed the behaviour of the `IGRAPH_ENABLE_LTO` option when it was set to
+   `AUTO`; earlier versions had a bug where `AUTO` simply checked whether LTO
+   is supported but then did not use LTO even if it was supported.
+
+ - When using igraph from a CMake project, it is now checked that the project
+   has the C++ language enabled. This is necessary for linking to igraph with
+   CMake.
+
+### Other
+
+ - Improved the root selection method for disconnected graphs in the
+   Reingold-Tilford layout (#1836). The new root selection method provides
+   niceer results if the graph is not a tree, although it is still recommended
+   to use the Sugiyama layout instead, unless the input graph is _almost_
+   a tree, in which case Reingold-Tilfold may still be preferred.
+
+ - `igraph_decompose()` is now much faster for large graphs containing many
+   isolates or small components.
+
+ - `igraph_largest_cliques()` and `igraph_clique_number()` were re-written to
+   use `igraph_maximal_cliques_callback()` so they are much faster now.
+
+ - The vendored GLPK has been upgraded to GLPK 5.0.
+
+ - Documentation improvements.
+
