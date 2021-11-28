@@ -19,8 +19,10 @@ Jekyll::Hooks.register :site, :post_write do |site|
   puts "  Creating links..."
   links = {
     "c/html/latest" => latest_version_in(File.join(site.source, "c", "html")),
+    "c/pdf/latest" => latest_version_in(File.join(site.source, "c", "pdf")),
     "c/doc" => "html/latest",
     "r/html/latest" => latest_version_in(File.join(site.source, "r", "html")),
+    "r/pdf/latest" => latest_version_in(File.join(site.source, "r", "pdf")),
     "r/doc" => "html/latest",
     "python/api/latest" => latest_version_in(File.join(site.source, "python", "api")),
     "python/doc/api" => "../api/latest",
