@@ -1,0 +1,360 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Chapter 14. Graph cycles</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="igraph Reference Manual">
+<link rel="up" href="index.html" title="igraph Reference Manual">
+<link rel="prev" href="igraph-Structural.html" title="Chapter 13. Structural properties of graphs">
+<link rel="next" href="igraph-Visitors.html" title="Chapter 15. Graph visitors">
+<script type="text/javascript" src="toggle.js"></script><link rel="stylesheet" href="style.css" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+<link rel="chapter" href="igraph-Introduction.html" title="Chapter 1. Introduction">
+<link rel="chapter" href="igraph-Installation.html" title="Chapter 2. Installation">
+<link rel="chapter" href="igraph-Tutorial.html" title="Chapter 3. Tutorial">
+<link rel="chapter" href="igraph-Basic.html" title="Chapter 4. About igraph graphs, the basic interface">
+<link rel="chapter" href="igraph-Error.html" title="Chapter 5. Error handling">
+<link rel="chapter" href="igraph-Memory.html" title="Chapter 6. Memory (de)allocation">
+<link rel="chapter" href="igraph-Data-structures.html" title="Chapter 7. Data structure library: vector, matrix, other data types">
+<link rel="chapter" href="igraph-Random.html" title="Chapter 8. Random numbers">
+<link rel="chapter" href="igraph-Generators.html" title="Chapter 9. Graph generators">
+<link rel="chapter" href="igraph-Spatial-Games.html" title="Chapter 10. Games on graphs">
+<link rel="chapter" href="igraph-Iterators.html" title="Chapter 11. Vertex and edge selectors and sequences, iterators">
+<link rel="chapter" href="igraph-Attributes.html" title="Chapter 12. Graph, vertex and edge attributes">
+<link rel="chapter" href="igraph-Structural.html" title="Chapter 13. Structural properties of graphs">
+<link rel="chapter" href="igraph-Cycles.html" title="Chapter 14. Graph cycles">
+<link rel="chapter" href="igraph-Visitors.html" title="Chapter 15. Graph visitors">
+<link rel="chapter" href="igraph-Cliques.html" title="Chapter 16. Cliques and independent vertex sets">
+<link rel="chapter" href="igraph-Isomorphism.html" title="Chapter 17. Graph isomorphism">
+<link rel="chapter" href="igraph-Coloring.html" title="Chapter 18. Graph coloring">
+<link rel="chapter" href="igraph-Motifs.html" title="Chapter 19. Graph motifs, dyad census and triad census">
+<link rel="chapter" href="igraph-Layout.html" title="Chapter 20. Generating layouts for graph drawing">
+<link rel="chapter" href="igraph-Foreign.html" title="Chapter 21. Reading and writing graphs from and to files">
+<link rel="chapter" href="igraph-Flows.html" title="Chapter 22. Maximum flows, minimum cuts and related measures">
+<link rel="chapter" href="igraph-Separators.html" title="Chapter 23. Vertex separators">
+<link rel="chapter" href="igraph-Community.html" title="Chapter 24. Detecting community structure">
+<link rel="chapter" href="igraph-Graphlets.html" title="Chapter 25. Graphlets">
+<link rel="chapter" href="igraph-HRG.html" title="Chapter 26. Hierarchical random graphs">
+<link rel="chapter" href="igraph-SCG.html" title="Chapter 27. Spectral coarse graining">
+<link rel="chapter" href="igraph-Embedding.html" title="Chapter 28. Embedding of graphs">
+<link rel="chapter" href="igraph-Operators.html" title="Chapter 29. Graph operators">
+<link rel="chapter" href="igraph-Arpack.html" title="Chapter 30. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs">
+<link rel="chapter" href="igraph-Bipartite.html" title="Chapter 31. Bipartite, i.e. two-mode graphs">
+<link rel="chapter" href="igraph-Advanced.html" title="Chapter 32. Advanced igraph programming">
+<link rel="chapter" href="igraph-Nongraph.html" title="Chapter 33. Non-graph related functions">
+<link rel="chapter" href="igraph-Licenses.html" title="Chapter 34. Licenses for igraph and this manual">
+<link rel="index" href="ix01.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Structural.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Visitors.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Cycles"></a>Chapter 14. Graph cycles</h1></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Cycles.html#id-1.15.2">1. Eulerian cycles and paths</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="id-1.15.2"></a>1. Eulerian cycles and paths</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path</a></span></dt>
+</dl></div>
+<p>These functions calculate whether an Eulerian path or cycle exists
+and if so, can find them.</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_is_eulerian"></a>1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_is_eulerian(const igraph_t *graph, igraph_bool_t *has_path, igraph_bool_t *has_cycle);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+An Eulerian path traverses each edge of the graph precisely once. A closed
+Eulerian path is referred to as an Eulerian cycle.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>has_path</code></em>:</span></p></td>
+<td><p>
+  Pointer to a Boolean, will be set to true if an Eulerian path exists.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>has_cycle</code></em>:</span></p></td>
+<td><p>
+  Pointer to a Boolean, will be set to true if an Eulerian cycle exists.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>, not enough memory for
+        temporary data.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_eulerian_cycle"></a>1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_eulerian_cycle(const igraph_t *graph, igraph_vector_t *edge_res, igraph_vector_t *vertex_res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+Finds an Eulerian cycle, if it exists. An Eulerian cycle is a closed path
+that traverses each edge precisely once.
+
+</p>
+<p>
+This function uses Hierholzer's algorithm.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of edges
+                belonging to the cycle will be stored here. May be <code class="constant">NULL</code>
+                if it is not needed by the caller.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of vertices
+                  belonging to the cycle will be stored here. May be <code class="constant">NULL</code>
+                  if it is not needed by the caller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td>
+<p>
+  Error code:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOMEM</code></span></p></td>
+<td><p>
+
+          not enough memory for temporary data.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
+<td><p>
+
+          graph does not have an Eulerian cycle.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+  </p>
+</td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_eulerian_path"></a>1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_eulerian_path(const igraph_t *graph, igraph_vector_t *edge_res, igraph_vector_t *vertex_res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+Finds an Eulerian path, if it exists. An Eulerian path traverses
+each edge precisely once.
+
+</p>
+<p>
+This function uses Hierholzer's algorithm.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of edges
+                belonging to the path will be stored here. May be <code class="constant">NULL</code>
+                if it is not needed by the caller.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialised vector. The indices of vertices
+                  belonging to the path will be stored here. May be <code class="constant">NULL</code>
+                  if it is not needed by the caller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td>
+<p>
+  Error code:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOMEM</code></span></p></td>
+<td><p>
+
+          not enough memory for temporary data.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
+<td><p>
+
+          graph does not have an Eulerian path.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+  </p>
+</td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
+
+ 
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Structural.html"><b>← Chapter 13. Structural properties of graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Visitors.html"><b>Chapter 15. Graph visitors →</b></a></td>
+</tr></table>
+</body>
+</html>

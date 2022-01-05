@@ -4,12 +4,12 @@ all: jekyll
 .PHONY: all core c r python jekyll devserver
 
 # Default doc version
-CVERSION?=0.9.5
+CVERSION?=0.9.6
 RVERSION?=1.2.7
 PYVERSION?=0.9.8
 
 # Available versions
-CVERSIONS?='0.9.0 0.9.4 0.9.5 master develop'
+CVERSIONS?='0.9.0 0.9.4 0.9.5 0.9.6 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7'
 PYVERSIONS?='0.9.6 0.9.7 0.9.8 master develop'
 PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.4 develop'
@@ -56,7 +56,7 @@ $(C)/stamp:
 	# Clone repo if not present, fetch updates if it is present
 	if [ ! -d $(C)/.git ]; then \
 		cd $(C) && \
-		git clone $(CREPO) . \
+		git clone $(CREPO) .; \
 	else \
 		cd $(C) && \
 		git fetch; \

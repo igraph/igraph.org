@@ -1,0 +1,447 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Chapter 3. Tutorial</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="igraph Reference Manual">
+<link rel="up" href="index.html" title="igraph Reference Manual">
+<link rel="prev" href="igraph-Installation.html" title="Chapter 2. Installation">
+<link rel="next" href="igraph-Basic.html" title="Chapter 4. About igraph graphs, the basic interface">
+<script type="text/javascript" src="toggle.js"></script><link rel="stylesheet" href="style.css" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+<link rel="chapter" href="igraph-Introduction.html" title="Chapter 1. Introduction">
+<link rel="chapter" href="igraph-Installation.html" title="Chapter 2. Installation">
+<link rel="chapter" href="igraph-Tutorial.html" title="Chapter 3. Tutorial">
+<link rel="chapter" href="igraph-Basic.html" title="Chapter 4. About igraph graphs, the basic interface">
+<link rel="chapter" href="igraph-Error.html" title="Chapter 5. Error handling">
+<link rel="chapter" href="igraph-Memory.html" title="Chapter 6. Memory (de)allocation">
+<link rel="chapter" href="igraph-Data-structures.html" title="Chapter 7. Data structure library: vector, matrix, other data types">
+<link rel="chapter" href="igraph-Random.html" title="Chapter 8. Random numbers">
+<link rel="chapter" href="igraph-Generators.html" title="Chapter 9. Graph generators">
+<link rel="chapter" href="igraph-Spatial-Games.html" title="Chapter 10. Games on graphs">
+<link rel="chapter" href="igraph-Iterators.html" title="Chapter 11. Vertex and edge selectors and sequences, iterators">
+<link rel="chapter" href="igraph-Attributes.html" title="Chapter 12. Graph, vertex and edge attributes">
+<link rel="chapter" href="igraph-Structural.html" title="Chapter 13. Structural properties of graphs">
+<link rel="chapter" href="igraph-Cycles.html" title="Chapter 14. Graph cycles">
+<link rel="chapter" href="igraph-Visitors.html" title="Chapter 15. Graph visitors">
+<link rel="chapter" href="igraph-Cliques.html" title="Chapter 16. Cliques and independent vertex sets">
+<link rel="chapter" href="igraph-Isomorphism.html" title="Chapter 17. Graph isomorphism">
+<link rel="chapter" href="igraph-Coloring.html" title="Chapter 18. Graph coloring">
+<link rel="chapter" href="igraph-Motifs.html" title="Chapter 19. Graph motifs, dyad census and triad census">
+<link rel="chapter" href="igraph-Layout.html" title="Chapter 20. Generating layouts for graph drawing">
+<link rel="chapter" href="igraph-Foreign.html" title="Chapter 21. Reading and writing graphs from and to files">
+<link rel="chapter" href="igraph-Flows.html" title="Chapter 22. Maximum flows, minimum cuts and related measures">
+<link rel="chapter" href="igraph-Separators.html" title="Chapter 23. Vertex separators">
+<link rel="chapter" href="igraph-Community.html" title="Chapter 24. Detecting community structure">
+<link rel="chapter" href="igraph-Graphlets.html" title="Chapter 25. Graphlets">
+<link rel="chapter" href="igraph-HRG.html" title="Chapter 26. Hierarchical random graphs">
+<link rel="chapter" href="igraph-Embedding.html" title="Chapter 27. Embedding of graphs">
+<link rel="chapter" href="igraph-Operators.html" title="Chapter 28. Graph operators">
+<link rel="chapter" href="igraph-Arpack.html" title="Chapter 29. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs">
+<link rel="chapter" href="igraph-Bipartite.html" title="Chapter 30. Bipartite, i.e. two-mode graphs">
+<link rel="chapter" href="igraph-Advanced.html" title="Chapter 31. Advanced igraph programming">
+<link rel="chapter" href="igraph-Nongraph.html" title="Chapter 32. Non-graph related functions">
+<link rel="chapter" href="igraph-Licenses.html" title="Chapter 33. Licenses for igraph and this manual">
+<link rel="index" href="ix01.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Installation.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Basic.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Tutorial"></a>Chapter 3. Tutorial</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-1">1. Compiling programs using igraph</a></span></dt>
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-2">2. Creating your first graphs</a></span></dt>
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-3">3. Calculating various properties of graphs</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="tut-lesson-1"></a>1. Compiling programs using igraph</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-1-compiling-with-cmake">1.1. Compiling with CMake</a></span></dt>
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-1-compiling-without-cmake">1.2. Compiling without CMake</a></span></dt>
+<dt><span class="section"><a href="igraph-Tutorial.html#tut-lesson-1-running-the-program">1.3. Running the program</a></span></dt>
+</dl></div>
+<p>
+The following short example program demonstrates the basic usage of
+the <span class="command"><strong>igraph</strong></span> library.
+</p>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+  igraph_real_t diameter;
+  igraph_t graph;
+
+  <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
+
+  <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM, 1000, 3000,
+                          IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.17. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;graph, &amp;diameter, 0, 0, 0, 0, IGRAPH_UNDIRECTED, 1);
+  <span class="strong"><strong>printf</strong></span>("Diameter of a random graph with average degree %g: %g\n",
+          2.0 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph) / <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph),
+          (double) diameter);
+
+  <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+  <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p>
+</p>
+<p>
+This example illustrates a couple of points. First, programs
+using the <span class="command"><strong>igraph</strong></span> library should include the
+<code class="filename">igraph.h</code> header
+file. Second, <span class="command"><strong>igraph</strong></span> uses the
+<span class="type">igraph_real_t</span> type for real numbers instead of
+<span class="type">double</span>. Third, <span class="command"><strong>igraph</strong></span> graph objects
+are represented by the <span class="type">igraph_t</span> data
+type. Fourth, the <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game()</code></a>
+creates a graph and <a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a>
+destroys it, i.e. deallocates the memory associated to it.
+</p>
+<p>
+For compiling this program you need a C compiler. Optionally,
+<a class="ulink" href="https://cmake.org" target="_top">CMake</a> can be used to automate the compilation.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tut-lesson-1-compiling-with-cmake"></a>1.1. Compiling with CMake</h3></div></div></div>
+<p>
+It is convenient to use CMake because it can automatically discover the
+necessary compilation flags on all operating systems. Many IDEs support
+CMake, and can work with CMake projects directly. To create a CMake project
+for this example program, create a file name <code class="filename">CMakeLists.txt</code> with the
+following contents:
+
+</p>
+<pre class="programlisting">
+cmake_minimum_required(VERSION 3.16)
+project(igraph_test)
+
+find_package(igraph REQUIRED)
+
+add_executable(igraph_test igraph_test.c)
+target_link_libraries(igraph_test PUBLIC igraph::igraph)
+</pre>
+<p>
+</p>
+<p>
+To compile the project, create a new directory called build, and switch to it:
+</p>
+<pre class="programlisting">
+mkdir build
+cd build
+</pre>
+<p>
+</p>
+<p>
+Run CMake to configure the project:
+</p>
+<pre class="programlisting">
+cmake ..
+</pre>
+<p>
+</p>
+<p>
+If igraph was installed at a non-standard location, specify its prefix
+using the <code class="option">-DCMAKE_PREFIX_PATH=...</code> option. The prefix must be
+the same directory that was specified as the <code class="option">CMAKE_INSTALL_PREFIX</code>
+when compiling igraph.
+</p>
+<p>
+If configuration has succeeded, build the program using
+</p>
+<pre class="programlisting">
+cmake --build .
+</pre>
+<p>
+</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">C++ has to be enabled in igraph projects</h3>
+<p>Parts of igraph are implemented in C++; therefore, any CMake target that
+depends on igraph should use the C++ linker. Furthermore, OpenMP support in
+igraph works correctly only if C++ is enabled in the CMake project. The script
+that finds igraph on the host machine will throw an error if C++ support is
+not enabled in the CMake project.</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tut-lesson-1-compiling-without-cmake"></a>1.2. Compiling without CMake</h3></div></div></div>
+<p>
+On most Unix-like systems, the default C compiler is called <span class="command"><strong>cc</strong></span>.
+To compile the test program, you will need a command similar to the following:
+</p>
+<pre class="programlisting">
+cc igraph_test.c -I/usr/local/include/igraph -L/usr/local/lib -ligraph -o igraph_test
+</pre>
+<p>
+</p>
+<p>
+The exact form depends on where <span class="command"><strong>igraph</strong></span> was installed on your
+system, whether it was compiled as a shared or static library, and the external
+libraries it was linked to. The directory after the <code class="option">-I</code> switch
+is the one containing the <code class="filename">igraph.h</code> file, while the one
+following <code class="option">-L</code> should contain the library file itself, usually a
+file called <code class="filename">libigraph.a</code> (static library on macOS and
+Linux), <code class="filename">libigraph.so</code> (shared library on Linux),
+<code class="filename">libigraph.dylib</code> (shared library on macOS),
+<code class="filename">igraph.lib</code> (static library on Windows) or
+<code class="filename">igraph.dll</code> (shared library on Windows). If
+<span class="command"><strong>igraph</strong></span> was compiled as a static library, it is also
+necessary to manually link to all of its dependencies.
+</p>
+<p>
+If your system has the <span class="command"><strong>pkg-config</strong></span> utility you are
+likely to get the necessary compile options by issuing the command
+</p>
+<pre class="programlisting">
+pkg-config --libs --cflags igraph
+</pre>
+<p>
+(if <span class="command"><strong>igraph</strong></span> was built as a shared library) or
+</p>
+<pre class="programlisting">
+pkg-config --static --libs --cflags igraph
+</pre>
+<p>
+(if <span class="command"><strong>igraph</strong></span> was built as a static library).
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tut-lesson-1-running-the-program"></a>1.3. Running the program</h3></div></div></div>
+<p>
+On most systems, the executable can be run by simply typing its name like this:
+</p>
+<pre class="programlisting">
+./igraph_test
+</pre>
+<p>
+If you use dynamic linking and the <span class="command"><strong>igraph</strong></span>
+library is not in a standard place, you may need to add its location to the
+<code class="envar">LD_LIBRARY_PATH</code> (Linux), <code class="envar">DYLD_LIBRARY_PATH</code> (macOS)
+or <code class="envar">PATH</code> (Windows) environment variables.
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="tut-lesson-2"></a>2. Creating your first graphs</h2></div></div></div>
+<p>
+The functions generating graph objects are called graph
+generators. Stochastic (i.e. randomized) graph generators are called
+<span class="quote">“<span class="quote">games</span>”</span>.
+</p>
+<p>
+<span class="command"><strong>igraph</strong></span> can handle directed and undirected graphs. Most graph
+generators are able to create both types of graphs and most other
+functions are usually also capable of handling
+both. E.g. <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a>
+which (surprisingly) calculates
+shortest paths from a vertex to other vertices can calculate
+directed or undirected paths.
+</p>
+<p>
+<span class="command"><strong>igraph</strong></span> has sophisticated ways for creating graphs. The simplest
+graphs are deterministic regular structures like star graphs
+(<a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center."><code class="function">igraph_star()</code></a>),
+ring graphs (<a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>), lattices
+(<a class="link" href="igraph-Generators.html#igraph_lattice" title="1.7. igraph_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_lattice()</code></a>) or trees
+(<a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children."><code class="function">igraph_tree()</code></a>).
+</p>
+<p>
+The following example creates an undirected regular circular lattice,
+adds some random edges to it and calculates the average length of
+shortest paths between all pairs of vertices in the graph before and
+after adding the random edges. (The message is that some random edges
+can reduce path lengths a lot.)
+</p>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+  igraph_t graph;
+  igraph_vector_int_t dimvector;
+  igraph_vector_int_t edges;
+  igraph_real_t avg_path_len;
+  int i;
+
+  <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;dimvector, 2);
+  <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(dimvector)[0]=30;
+  <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(dimvector)[1]=30;
+  <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lattice" title="1.7. igraph_lattice — Arbitrary dimensional square lattices.">igraph_lattice</a></strong></span>(&amp;graph, &amp;dimvector, 0, IGRAPH_UNDIRECTED, 0, 1);
+
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.14. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs.">igraph_average_path_length</a></strong></span>(&amp;graph, &amp;avg_path_len, NULL, IGRAPH_UNDIRECTED, 1);
+  <span class="strong"><strong>printf</strong></span>("Average path length (lattice):            %g\n", (double) avg_path_len);
+
+  <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
+  <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 20);
+  <span class="strong"><strong>for</strong></span> (i=0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;edges); i++) {
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(edges)[i] = <span class="strong"><strong>RNG_INTEGER</strong></span>(0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph) - 1);
+  }
+
+  <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_edges" title="3.3.2. igraph_add_edges — Adds edges to a graph object.">igraph_add_edges</a></strong></span>(&amp;graph, &amp;edges, 0);
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.14. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs.">igraph_average_path_length</a></strong></span>(&amp;graph, &amp;avg_path_len, NULL, IGRAPH_UNDIRECTED, 1);
+  <span class="strong"><strong>printf</strong></span>("Average path length (randomized lattice): %g\n", (double) avg_path_len);
+
+  <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;dimvector);
+  <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
+  <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+  <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p>
+</p>
+<p>
+This example illustrates some new points. <span class="command"><strong>igraph</strong></span> uses
+<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><span class="type">igraph_vector_t</span></a>
+instead of plain C arrays. <span class="type">igraph_vector_t</span> is superior to
+regular arrays in almost every sense. Vectors are created by the
+<a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor)."><code class="function">igraph_vector_init()</code></a>
+function and, like graphs, they should be destroyed if not
+needed any more by calling
+<a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a>
+on them. A vector can be indexed by the
+<a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR()</code></a> function
+(right now it is a macro). Vectors
+can be resized, e.g. most <span class="command"><strong>igraph</strong></span> functions returning the result in a
+vector resize it to the size of the result.
+</p>
+<p>
+<a class="link" href="igraph-Generators.html#igraph_lattice" title="1.7. igraph_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_lattice()</code></a>
+takes a vector argument specifying the dimensions of
+the lattice. In this example we generate a 30x30 two dimensional
+lattice. See the documentation of
+<a class="link" href="igraph-Generators.html#igraph_lattice" title="1.7. igraph_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_lattice()</code></a> in
+the reference manual for the other arguments.
+</p>
+<p>
+The vertices in a graph are identified by an integer number between
+0 and N-1, N is the number of vertices in the graph (this can be
+obtained by
+<a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph."><code class="function">igraph_vcount()</code></a>,
+as in the example).
+</p>
+<p>
+The <a class="link" href="igraph-Basic.html#igraph_add_edges" title="3.3.2. igraph_add_edges — Adds edges to a graph object."><code class="function">igraph_add_edges()</code></a>
+function simply takes a graph and a vector of
+vertex IDs defining the new edges. The first edge is between the first
+two vertex IDs in the vector, the second edge is between the second
+two, etc. This way we add ten random edges to the lattice.
+</p>
+<p>
+Note that in the example it is possible to add loop edges, edges
+pointing to the same vertex and multiple edges, more than one edge
+between the same pair of vertices.
+<span class="type">igraph_t</span> can of course
+represent loops and
+multiple edges, although some routines expect simple graphs,
+i.e. graphs without loop and multiple edges, because for example some
+structural properties are ill-defined for non-simple graphs. Loop
+edges can be removed by calling
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="tut-lesson-3"></a>3. Calculating various properties of graphs</h2></div></div></div>
+<p>
+In our next example we will calculate various centrality measures in a
+friendship graph. The friendship graph is from the famous Zachary karate
+club study. (Web search on 'Zachary karate' if you want to know more about
+this.) Centrality measures quantify how central is the position of
+individual vertices in the graph.
+</p>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+  igraph_t graph;
+  igraph_vector_int_t v;
+  igraph_vector_int_t result;
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> result_real;
+  igraph_integer_t edges[] = { 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8,
+                            0,10, 0,11, 0,12, 0,13, 0,17, 0,19, 0,21, 0,31,
+                            1, 2, 1, 3, 1, 7, 1,13, 1,17, 1,19, 1,21, 1,30,
+                            2, 3, 2, 7, 2,27, 2,28, 2,32, 2, 9, 2, 8, 2,13,
+                            3, 7, 3,12, 3,13, 4, 6, 4,10, 5, 6, 5,10, 5,16,
+                            6,16, 8,30, 8,32, 8,33, 9,33,13,33,14,32,14,33,
+                           15,32,15,33,18,32,18,33,19,33,20,32,20,33,
+                           22,32,22,33,23,25,23,27,23,32,23,33,23,29,
+                           24,25,24,27,24,31,25,31,26,29,26,33,27,33,
+                           28,31,28,33,29,32,29,33,30,32,30,33,31,32,31,33,
+                           32,33
+  };
+
+  <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;v, edges, <span class="strong"><strong>sizeof</strong></span>(edges) / <span class="strong"><strong>sizeof</strong></span>(edges[0]));
+  <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;graph, &amp;v, 0, IGRAPH_UNDIRECTED);
+
+  <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;result, 0);
+  <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;result_real, 0);
+
+  <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;graph, &amp;result, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_LOOPS);
+  <span class="strong"><strong>printf</strong></span>("Maximum degree is      %10i, vertex %2i.\n",
+         (int) <span class="strong"><strong>igraph_vector_int_max</strong></span>(&amp;result), (int) <span class="strong"><strong>igraph_vector_int_which_max</strong></span>(&amp;result));
+
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_closeness" title="9.1. igraph_closeness — Closeness centrality calculations for some vertices.">igraph_closeness</a></strong></span>(&amp;graph, &amp;result_real, NULL, NULL, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL,
+                   <span class="emphasis"><em>/*weights=*/</em></span> NULL, <span class="emphasis"><em>/*normalized=*/</em></span> 0);
+  <span class="strong"><strong>printf</strong></span>("Maximum closeness is   %10g, vertex %2i.\n",
+          (double) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_max" title="2.10.2. igraph_vector_max — Largest element of a vector.">igraph_vector_max</a></strong></span>(&amp;result_real), (int) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_which_max" title="2.10.4. igraph_vector_which_max — Gives the index of the maximum element of the vector.">igraph_vector_which_max</a></strong></span>(&amp;result_real));
+
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_betweenness" title="9.3. igraph_betweenness — Betweenness centrality of some vertices.">igraph_betweenness</a></strong></span>(&amp;graph, &amp;result_real, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                     IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*weights=*/</em></span> NULL);
+  <span class="strong"><strong>printf</strong></span>("Maximum betweenness is %10g, vertex %2i.\n",
+          (double) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_max" title="2.10.2. igraph_vector_max — Largest element of a vector.">igraph_vector_max</a></strong></span>(&amp;result_real), (int) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_which_max" title="2.10.4. igraph_vector_which_max — Gives the index of the maximum element of the vector.">igraph_vector_which_max</a></strong></span>(&amp;result_real));
+
+  <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;result);
+  <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;result_real);
+  <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+  <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p>
+</p>
+<p>
+This example reflects some new features. First of all, it shows a
+way to define a graph simply as defining a C array with its edges.
+Function <a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t."><code class="function">igraph_vector_view()</code></a>
+creates a <span class="emphasis"><em>view</em></span> of a C
+array. It does not copy any data, this also means that you should not
+call <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a>
+on a vector created this way. This vector is then used to create the
+undirected graph.
+</p>
+<p>
+Then the degree, closeness and betweenness centrality of the vertices
+is calculated and the highest values are printed. Note that the vector
+(<code class="varname">result</code>) which returns the result from these
+functions has to be initialized first, and also that the functions resize
+it to be able to hold the result.
+</p>
+<p>
+The <code class="constant">igraph_vss_all()</code> argument tells the functions to
+calculate the property for every vertex in the graph, it is shorthand
+for a <span class="emphasis"><em>vertex selector</em></span> (<span class="type">igraph_vs_t</span>).
+Vertex selectors help to perform operations on a subset of vertices,
+you can read more about them in <a class="link" href="igraph-Iterators.html" title="Chapter 11. Vertex and edge selectors and sequences, iterators">one
+of the following chapters.</a>
+</p>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Installation.html"><b>← Chapter 2. Installation</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Basic.html"><b>Chapter 4. About igraph graphs, the basic interface →</b></a></td>
+</tr></table>
+</body>
+</html>

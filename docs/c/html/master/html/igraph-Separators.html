@@ -1,0 +1,1010 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Chapter 23. Vertex separators</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="igraph Reference Manual">
+<link rel="up" href="index.html" title="igraph Reference Manual">
+<link rel="prev" href="igraph-Flows.html" title="Chapter 22. Maximum flows, minimum cuts and related measures">
+<link rel="next" href="igraph-Community.html" title="Chapter 24. Detecting community structure">
+<script type="text/javascript" src="toggle.js"></script><link rel="stylesheet" href="style.css" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+<link rel="chapter" href="igraph-Introduction.html" title="Chapter 1. Introduction">
+<link rel="chapter" href="igraph-Installation.html" title="Chapter 2. Installation">
+<link rel="chapter" href="igraph-Tutorial.html" title="Chapter 3. Tutorial">
+<link rel="chapter" href="igraph-Basic.html" title="Chapter 4. About igraph graphs, the basic interface">
+<link rel="chapter" href="igraph-Error.html" title="Chapter 5. Error handling">
+<link rel="chapter" href="igraph-Memory.html" title="Chapter 6. Memory (de)allocation">
+<link rel="chapter" href="igraph-Data-structures.html" title="Chapter 7. Data structure library: vector, matrix, other data types">
+<link rel="chapter" href="igraph-Random.html" title="Chapter 8. Random numbers">
+<link rel="chapter" href="igraph-Generators.html" title="Chapter 9. Graph generators">
+<link rel="chapter" href="igraph-Spatial-Games.html" title="Chapter 10. Games on graphs">
+<link rel="chapter" href="igraph-Iterators.html" title="Chapter 11. Vertex and edge selectors and sequences, iterators">
+<link rel="chapter" href="igraph-Attributes.html" title="Chapter 12. Graph, vertex and edge attributes">
+<link rel="chapter" href="igraph-Structural.html" title="Chapter 13. Structural properties of graphs">
+<link rel="chapter" href="igraph-Cycles.html" title="Chapter 14. Graph cycles">
+<link rel="chapter" href="igraph-Visitors.html" title="Chapter 15. Graph visitors">
+<link rel="chapter" href="igraph-Cliques.html" title="Chapter 16. Cliques and independent vertex sets">
+<link rel="chapter" href="igraph-Isomorphism.html" title="Chapter 17. Graph isomorphism">
+<link rel="chapter" href="igraph-Coloring.html" title="Chapter 18. Graph coloring">
+<link rel="chapter" href="igraph-Motifs.html" title="Chapter 19. Graph motifs, dyad census and triad census">
+<link rel="chapter" href="igraph-Layout.html" title="Chapter 20. Generating layouts for graph drawing">
+<link rel="chapter" href="igraph-Foreign.html" title="Chapter 21. Reading and writing graphs from and to files">
+<link rel="chapter" href="igraph-Flows.html" title="Chapter 22. Maximum flows, minimum cuts and related measures">
+<link rel="chapter" href="igraph-Separators.html" title="Chapter 23. Vertex separators">
+<link rel="chapter" href="igraph-Community.html" title="Chapter 24. Detecting community structure">
+<link rel="chapter" href="igraph-Graphlets.html" title="Chapter 25. Graphlets">
+<link rel="chapter" href="igraph-HRG.html" title="Chapter 26. Hierarchical random graphs">
+<link rel="chapter" href="igraph-SCG.html" title="Chapter 27. Spectral coarse graining">
+<link rel="chapter" href="igraph-Embedding.html" title="Chapter 28. Embedding of graphs">
+<link rel="chapter" href="igraph-Operators.html" title="Chapter 29. Graph operators">
+<link rel="chapter" href="igraph-Arpack.html" title="Chapter 30. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs">
+<link rel="chapter" href="igraph-Bipartite.html" title="Chapter 31. Bipartite, i.e. two-mode graphs">
+<link rel="chapter" href="igraph-Advanced.html" title="Chapter 32. Advanced igraph programming">
+<link rel="chapter" href="igraph-Nongraph.html" title="Chapter 33. Non-graph related functions">
+<link rel="chapter" href="igraph-Licenses.html" title="Chapter 34. Licenses for igraph and this manual">
+<link rel="index" href="ix01.html" title="Index">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Flows.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Community.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Separators"></a>Chapter 23. Vertex separators</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Separators.html#igraph_is_separator">1. <code class="function">igraph_is_separator</code> —  Would removing this set of vertices disconnect the graph?</a></span></dt>
+<dt><span class="section"><a href="igraph-Separators.html#igraph_is_minimal_separator">2. <code class="function">igraph_is_minimal_separator</code> —  Decides whether a set of vertices is a minimal separator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Separators.html#igraph_all_minimal_st_separators">3. <code class="function">igraph_all_minimal_st_separators</code> —  List all vertex sets that are minimal (s,t) separators for some s and t.</a></span></dt>
+<dt><span class="section"><a href="igraph-Separators.html#igraph_minimum_size_separators">4. <code class="function">igraph_minimum_size_separators</code> —  Find all minimum size separating vertex sets.</a></span></dt>
+<dt><span class="section"><a href="igraph-Separators.html#igraph_even_tarjan_reduction">5. <code class="function">igraph_even_tarjan_reduction</code> — Even-Tarjan reduction of a graph</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_is_separator"></a>1. <code class="function">igraph_is_separator</code> —  Would removing this set of vertices disconnect the graph?</h2></div></div></div>
+<a class="indexterm" name="id-1.24.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_is_separator(const igraph_t *graph,
+                        const igraph_vs_t candidate,
+                        igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. It may be directed, but edge
+       directions are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>candidate</code></em>:</span></p></td>
+<td><p>
+  The candidate separator. It must not contain all
+       vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a Boolean variable, the result is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number vertices and edges.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.24.2.8.1"></a><p class="title"><b>Example 23.1.  File <code class="code">examples/simple/igraph_is_separator.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>FAIL</strong></span>(msg, error) <span class="strong"><strong>do</strong></span> { <span class="strong"><strong>printf</strong></span>(msg "\n") ; <span class="strong"><strong>return</strong></span> error; } <span class="strong"><strong>while</strong></span> (0)
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> sep;
+    igraph_bool_t result;
+
+    <span class="emphasis"><em>/* Simple star graph, remove the center */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version).">igraph_vss_1</a></strong></span>(0), &amp;result);
+    <span class="strong"><strong>if</strong></span> (!result) {
+        <span class="strong"><strong>FAIL</strong></span>("Center of star graph failed.", 1);
+    }
+
+    <span class="emphasis"><em>/* Same graph, but another vertex */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version).">igraph_vss_1</a></strong></span>(6), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("Non-center of star graph failed.", 2);
+    }
+
+    <span class="emphasis"><em>/* Same graph, all vertices but the center */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 9), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("All non-central vertices of star graph failed.", 5);
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* Same graph, all vertices */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(0, 9), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("All vertices of star graph failed.", 6);
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* Karate club */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "zachary");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(&amp;sep, 32);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(&amp;sep, 33);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_vector" title="4.4. igraph_vss_vector — Vertex set based on a vector (immediate version).">igraph_vss_vector</a></strong></span>(&amp;sep), &amp;result);
+    <span class="strong"><strong>if</strong></span> (!result) {
+        <span class="strong"><strong>FAIL</strong></span>("Karate network (32,33) failed", 3);
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(&amp;sep, 5);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[0] = 8;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[1] = 9;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[2] = 19;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[3] = 30;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[4] = 31;
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_vector" title="4.4. igraph_vss_vector — Vertex set based on a vector (immediate version).">igraph_vss_vector</a></strong></span>(&amp;sep), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("Karate network (8,9,19,30,31) failed", 4);
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;sep);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_is_minimal_separator"></a>2. <code class="function">igraph_is_minimal_separator</code> —  Decides whether a set of vertices is a minimal separator.</h2></div></div></div>
+<a class="indexterm" name="id-1.24.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_is_minimal_separator(const igraph_t *graph,
+                                const igraph_vs_t candidate,
+                                igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+A set of vertices is a minimal separator, if the removal of the
+vertices disconnects the graph, and this is not true for any subset
+of the set.
+
+</p>
+<p>This implementation first checks that the given
+candidate is a separator, by calling <a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?"><code class="function">igraph_is_separator()</code></a>. If it is a separator, then it checks that
+each subset of size n-1, where n is the size of the candidate, is
+not a separator.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. It may be directed, but edge
+       directions are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>candidate</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector of long integers, the
+       candidate minimal separator.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean variable, the result is stored
+       here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n(|V|+|E|)), |V| is the number of vertices, |E|
+is the number of edges, n is the number vertices in the candidate
+separator.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.24.3.9.1"></a><p class="title"><b>Example 23.2.  File <code class="code">examples/simple/igraph_is_minimal_separator.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>FAIL</strong></span>(msg, error) <span class="strong"><strong>do</strong></span> { <span class="strong"><strong>printf</strong></span>(msg "\n") ; <span class="strong"><strong>return</strong></span> error; } <span class="strong"><strong>while</strong></span> (0)
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> sep;
+    igraph_bool_t result;
+
+    <span class="emphasis"><em>/* Simple star graph, remove the center */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_minimal_separator" title="2. igraph_is_minimal_separator — Decides whether a set of vertices is a minimal separator.">igraph_is_minimal_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version).">igraph_vss_1</a></strong></span>(0), &amp;result);
+    <span class="strong"><strong>if</strong></span> (!result) {
+        <span class="strong"><strong>FAIL</strong></span>("Center of star graph failed.", 1);
+    }
+
+    <span class="emphasis"><em>/* Same graph, but another vertex */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_minimal_separator" title="2. igraph_is_minimal_separator — Decides whether a set of vertices is a minimal separator.">igraph_is_minimal_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version).">igraph_vss_1</a></strong></span>(6), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("Non-center of star graph failed.", 2);
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* Karate club */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "zachary");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(&amp;sep, 32);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(&amp;sep, 33);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_minimal_separator" title="2. igraph_is_minimal_separator — Decides whether a set of vertices is a minimal separator.">igraph_is_minimal_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_vector" title="4.4. igraph_vss_vector — Vertex set based on a vector (immediate version).">igraph_vss_vector</a></strong></span>(&amp;sep), &amp;result);
+    <span class="strong"><strong>if</strong></span> (!result) {
+        <span class="strong"><strong>FAIL</strong></span>("Karate network (32,33) failed", 3);
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(&amp;sep, 5);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[0] = 8;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[1] = 9;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[2] = 19;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[3] = 30;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(sep)[4] = 31;
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_minimal_separator" title="2. igraph_is_minimal_separator — Decides whether a set of vertices is a minimal separator.">igraph_is_minimal_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_vector" title="4.4. igraph_vss_vector — Vertex set based on a vector (immediate version).">igraph_vss_vector</a></strong></span>(&amp;sep), &amp;result);
+    <span class="strong"><strong>if</strong></span> (result) {
+        <span class="strong"><strong>FAIL</strong></span>("Karate network (8,9,19,30,31) failed", 4);
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;sep);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_all_minimal_st_separators"></a>3. <code class="function">igraph_all_minimal_st_separators</code> —  List all vertex sets that are minimal (s,t) separators for some s and t.</h2></div></div></div>
+<a class="indexterm" name="id-1.24.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_all_minimal_st_separators(const igraph_t *graph,
+                                     igraph_vector_ptr_t *separators);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function lists all vertex sets that are minimal (s,t)
+separators for some (s,t) vertex pair.
+
+</p>
+<p>
+Note that some vertex sets returned by this function may not be minimal
+with respect to disconnecting the graph (or increasing the number of
+connected components). Take for example the 5-vertex graph with edges
+<code class="literal">0-1-2-3-4-1</code>. This function returns the vertex sets
+<code class="literal">{1}</code>, <code class="literal">{2,4}</code> and <code class="literal">{1,3}</code>.
+Notice that <code class="literal">{1,3}</code> is not minimal with respect to disconnecting
+the graph, as <code class="literal">{1}</code> would be sufficient for that. However, it is
+minimal with respect to separating vertices <code class="constant">2</code> and <code class="constant">4</code>.
+
+</p>
+<p>
+See more about the implemented algorithm in
+Anne Berry, Jean-Paul Bordat and Olivier Cogis: Generating All the
+Minimal Separators of a Graph, In: Peter Widmayer, Gabriele Neyer
+and Stephan Eidenbenz (editors): Graph-theoretic concepts in
+computer science, 1665, 167--172, 1999. Springer.
+<a class="ulink" href="https://doi.org/10.1007/3-540-46784-X_17" target="_top">https://doi.org/10.1007/3-540-46784-X_17</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. It may be directed, but edge
+       directions are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>separators</code></em>:</span></p></td>
+<td><p>
+  An initialized pointer vector, the separators
+       are stored here. It is a list of pointers to <span class="type">igraph_vector_t</span>
+       objects. Each vector will contain the ids of the vertices in
+       the separator.
+       To free all memory allocated for <em class="parameter"><code>separators</code></em>, you need call
+       <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a> and then <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on
+       each element, before destroying the pointer vector itself.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets."><code class="function">igraph_minimum_size_separators()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n|V|^3), |V| is the number of vertices, n is the
+number of separators.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.24.4.12.1"></a><p class="title"><b>Example 23.3.  File <code class="code">examples/simple/igraph_minimal_separators.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t graph;
+    igraph_vector_ptr_t separators;
+    long int i, n;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "zachary");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;separators, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_all_minimal_st_separators" title="3. igraph_all_minimal_st_separators — List all vertex sets that are minimal (s,t) separators for some s and t.">igraph_all_minimal_st_separators</a></strong></span>(&amp;graph, &amp;separators);
+
+    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;separators);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        igraph_bool_t res;
+        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *sep = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(separators)[i];
+        <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_is_separator" title="1. igraph_is_separator — Would removing this set of vertices disconnect the graph?">igraph_is_separator</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_vector" title="4.4. igraph_vss_vector — Vertex set based on a vector (immediate version).">igraph_vss_vector</a></strong></span>(sep), &amp;res);
+        <span class="strong"><strong>if</strong></span> (!res) {
+            <span class="strong"><strong>printf</strong></span>("Vertex set %li is not a separator!\n", i);
+            <span class="strong"><strong>igraph_vector_print</strong></span>(sep);
+            <span class="strong"><strong>return</strong></span> 1;
+        }
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(separators)[i];
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
+        <span class="strong"><strong>IGRAPH_FREE</strong></span>(v);
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;separators);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_minimum_size_separators"></a>4. <code class="function">igraph_minimum_size_separators</code> —  Find all minimum size separating vertex sets.</h2></div></div></div>
+<a class="indexterm" name="id-1.24.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_minimum_size_separators(const igraph_t *graph,
+                                   igraph_vector_ptr_t *separators);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function lists all separator vertex sets of minimum size.
+A vertex set is a separator if its removal disconnects the graph.
+
+</p>
+<p>
+The implementation is based on the following paper:
+Arkady Kanevsky: Finding all minimum-size separating vertex sets in
+a graph, Networks 23, 533--541, 1993.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, which must be undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>separators</code></em>:</span></p></td>
+<td><p>
+  An initialized pointer vector, the separators
+       are stored here. It is a list of pointers to igraph_vector_t
+       objects. Each vector will contain the ids of the vertices in
+       the separator.
+       To free all memory allocated for <code class="constant">separators</code>, you need call
+       <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a> and then <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on
+       each element, before destroying the pointer vector itself.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.24.5.9.1"></a><p class="title"><b>Example 23.4.  File <code class="code">examples/simple/igraph_minimum_size_separators.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>print_and_destroy</strong></span>(igraph_vector_ptr_t *ptr) {
+    long int i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(ptr);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*ptr)[i];
+        <span class="strong"><strong>igraph_vector_print</strong></span>(v);
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
+        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(ptr);
+    <span class="strong"><strong>return</strong></span> 0;
+}
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_t g, g2;
+    igraph_vector_ptr_t sep;
+    igraph_vs_t vs;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 7, IGRAPH_UNDIRECTED,
+                 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0,
+                 -1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* ----------------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED,
+                 0, 3, 1, 3, 2, 3,
+                 0, 4, 1, 4, 2, 4,
+                 -1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* ----------------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED,
+                 2, 0, 3, 0, 4, 0,
+                 2, 1, 3, 1, 4, 1,
+                 -1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* ----------------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED,
+                 0, 2, 0, 3, 1, 2, 1, 3, 5, 2, 5, 3, 6, 2, 6, 3,
+                 7, 2, 7, 3, 8, 2, 8, 3, 9, 2, 9, 3,
+                 2, 4, 4, 3,
+                 -1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* ----------------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.10. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 4, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*loops=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* ----------------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 23, IGRAPH_UNDIRECTED,
+                 0, 1, 0, 2, 0, 3, 0, 4, 0, 5,
+                 1, 2, 1, 3, 1, 4, 1, 6,
+                 2, 3, 2, 5, 2, 6,
+                 3, 4, 3, 5, 3, 6,
+                 4, 5, 4, 6, 4, 20,
+                 5, 6,
+                 6, 7, 6, 10, 6, 13, 6, 18,
+                 7, 8, 7, 10, 7, 13,
+                 8, 9,
+                 9, 11, 9, 12,
+                 10, 11, 10, 13,
+                 11, 15,
+                 12, 15,
+                 13, 14,
+                 14, 15,
+                 16, 17, 16, 18, 16, 19,
+                 17, 19, 17, 20,
+                 18, 19, 18, 21, 18, 22,
+                 19, 20,
+                 20, 21, 20, 22,
+                 21, 22,
+                 -1);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("Orig:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 0, 1, 2, 3, 4, 5, 6, 16, 17, 18, 19, 20, 21, 22, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices.">igraph_induced_subgraph</a></strong></span>(&amp;g, &amp;g2, vs, IGRAPH_SUBGRAPH_AUTO);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g2, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("1-7,17-23:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices.">igraph_induced_subgraph</a></strong></span>(&amp;g, &amp;g2, vs, IGRAPH_SUBGRAPH_AUTO);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g2, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("7-16:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 16, 17, 18, 19, 20, 21, 22, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices.">igraph_induced_subgraph</a></strong></span>(&amp;g, &amp;g2, vs, IGRAPH_SUBGRAPH_AUTO);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g2, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("17-23:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 6, 7, 10, 13, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices.">igraph_induced_subgraph</a></strong></span>(&amp;g, &amp;g2, vs, IGRAPH_SUBGRAPH_AUTO);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g2, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("7,8,11,14:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;sep, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 0, 1, 2, 3, 4, 5, 6, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices.">igraph_induced_subgraph</a></strong></span>(&amp;g, &amp;g2, vs, IGRAPH_SUBGRAPH_AUTO);
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;g2, &amp;sep);
+    <span class="strong"><strong>printf</strong></span>("1-7:\n");
+    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;sep);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_even_tarjan_reduction"></a>5. <code class="function">igraph_even_tarjan_reduction</code> — Even-Tarjan reduction of a graph</h2></div></div></div>
+<a class="indexterm" name="id-1.24.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_even_tarjan_reduction(const igraph_t *graph, igraph_t *graphbar,
+                                 igraph_vector_t *capacity);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+A digraph is created with twice as many vertices and edges. For each
+original vertex i, two vertices i'= i and i'' = i' + n are created,
+with a directed edge from i' to i''. For each original directed edge
+from i to j, two new edges are created, from i' to j'' and from i''
+to j'.
+
+</p>
+<p>This reduction is used in the paper (observation 2):
+Arkady Kanevsky: Finding all minimum-size separating vertex sets in
+a graph, Networks 23, 533--541, 1993.
+
+</p>
+<p>The original paper where this reduction was conceived is
+Shimon Even and R. Endre Tarjan: Network Flow and Testing Graph
+Connectivity, SIAM J. Comput., 4(4), 507–518.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A graph. Although directness is not checked, this function
+       is commonly used only on directed graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graphbar</code></em>:</span></p></td>
+<td><p>
+  Pointer to a new directed graph that will contain the
+       reduction, with twice as many vertices and edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>capacity</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector or a null pointer. If
+       not a null pointer, then it will be filled the capacity from
+       the reduction: the first |E| elements are 1, the remaining |E|
+       are equal to |V| (which is used to mean infinity).
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E|+|V|).
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.24.6.10.1"></a><p class="title"><b>Example 23.5.  File <code class="code">examples/simple/even_tarjan.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;limits.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t g, gbar;
+    igraph_integer_t k1, k2 = (igraph_integer_t) INT_MAX;
+    igraph_real_t tmpk;
+    long int i, j, n;
+    <a class="link" href="igraph-Flows.html#igraph_maxflow_stats_t" title="1.4. igraph_maxflow_stats_t — A simple data type to return some statistics from the">igraph_maxflow_stats_t</a> stats;
+
+    <span class="emphasis"><em>/* --------------------------------------------------- */</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "meredith");
+    <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_even_tarjan_reduction" title="5. igraph_even_tarjan_reduction — Even-Tarjan reduction of a graph">igraph_even_tarjan_reduction</a></strong></span>(&amp;g, &amp;gbar, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
+
+    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_vertex_connectivity" title="3.4. igraph_vertex_connectivity — The vertex connectivity of a graph">igraph_vertex_connectivity</a></strong></span>(&amp;g, &amp;k1, <span class="emphasis"><em>/* checks= */</em></span> 0);
+
+    n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        <span class="strong"><strong>for</strong></span> (j = i + 1; j &lt; n; j++) {
+            igraph_bool_t conn;
+            <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_are_connected" title="1.1. igraph_are_connected — Decides whether two vertices are connected">igraph_are_connected</a></strong></span>(&amp;g, i, j, &amp;conn);
+            <span class="strong"><strong>if</strong></span> (conn) {
+                <span class="strong"><strong>continue</strong></span>;
+            }
+            <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_maxflow_value" title="1.2. igraph_maxflow_value — Maximum flow in a network with the push/relabel algorithm">igraph_maxflow_value</a></strong></span>(&amp;gbar, &amp;tmpk,
+                                 <span class="emphasis"><em>/* source= */</em></span> i + n,
+                                 <span class="emphasis"><em>/* target= */</em></span> j,
+                                 <span class="emphasis"><em>/* capacity= */</em></span> 0,
+                                 &amp;stats);
+            <span class="strong"><strong>if</strong></span> (tmpk &lt; k2) {
+                k2 = tmpk;
+            }
+        }
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;gbar);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>if</strong></span> (k1 != k2) {
+        <span class="strong"><strong>printf</strong></span>("k1 = %ld while k2 = %ld\n", (long int) k1, (long int) k2);
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Flows.html"><b>← Chapter 22. Maximum flows, minimum cuts and related measures</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Community.html"><b>Chapter 24. Detecting community structure →</b></a></td>
+</tr></table>
+</body>
+</html>
