@@ -47,7 +47,7 @@
       gtag('config', 'UA-1392972-5');
     </script>
 
-    <link rel="top" title="python-igraph 0.9.7 documentation" href="index.html" /> <link rel="next" title="Graph generation" href="generation.html" /> <link rel="prev" title="Installing igraph" href="install.html" /> <link rel="stylesheet" href="_static/basic.css" type="text/css" /> <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> <link rel="stylesheet" href="_static/other.css" type="text/css" />
+    <link rel="top" title="igraph 0.9.8 documentation" href="index.html" /> <link rel="next" title="Tutorial gallery" href="gallery.html" /> <link rel="prev" title="Installing igraph" href="install.html" /> <link rel="stylesheet" href="_static/basic.css" type="text/css" /> <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> <link rel="stylesheet" href="_static/other.css" type="text/css" />
   </head>
 
   <body class="python">
@@ -128,11 +128,11 @@
         <a href="install.html" title="Previous Chapter: Installing igraph" class="btn btn-light" role="button" accesskey="P">
           <i class="fa fa-chevron-left"></i> Installing igraph
         </a>
-        <a href="index.html" title="Parent: python-igraph 0.9.7 documentation" class="btn btn-light" role="button" accesskey="U">
-          <i class="fa fa-home"></i> python-igraph 0.9.7 documentation
+        <a href="index.html" title="Parent: igraph 0.9.8 documentation" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-home"></i> igraph 0.9.8 documentation
         </a>
-        <a href="generation.html" title="Next Chapter: Graph generation" class="btn btn-light" role="button" accesskey="N">
-          Graph generation <i class="fa fa-chevron-right"></i>
+        <a href="gallery.html" title="Next Chapter: Tutorial gallery" class="btn btn-light" role="button" accesskey="N">
+          Tutorial gallery <i class="fa fa-chevron-right"></i>
         </a>
       </div>
     </div>
@@ -179,7 +179,7 @@
 
         
   <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
 <p>This chapter contains a short overview of <em>igraph</em>’s capabilities. It is highly recommended to read
 it at least once if you are new to <em>igraph</em>. I assume that you have already installed <em>igraph</em>; if
 you did not, see <a class="reference internal" href="install.html#installing-igraph"><span class="std std-ref">Installing igraph</span></a> first. Familiarity with the Python language is also
@@ -189,6 +189,10 @@ programming language, <a class="reference external" href="https://python.swaroop
 start out. If you already have a stable programming background in other languages and you just want
 a quick overview of Python, <a class="reference external" href="https://www.stavros.io/tutorials/python/">Learn Python in 10 minutes</a>
 is probably your best bet.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the impatient reader, see the <a class="reference internal" href="gallery.html#gallery"><span class="std std-ref">Tutorial gallery</span></a> page for short, self-contained examples.</p>
+</div>
 <section id="starting-igraph">
 <h2>Starting <em>igraph</em><a class="headerlink" href="#starting-igraph" title="Permalink to this headline">¶</a></h2>
 <p><em>igraph</em> is a Python module, hence it can be imported exactly the same way as any other
@@ -200,36 +204,40 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; import igraph
 </pre></div>
 </div>
-<p>This imports <em>igraph</em>’s objects and methods inside an own namespace called <code class="xref py py-mod docutils literal notranslate"><span class="pre">igraph</span></code>. Whenever
-you would like to call any of <em>igraph</em>’s methods, you will have to provide the appropriate
-namespace-qualification. E.g., to check which <em>igraph</em> version you are using, you could do the
-following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">igraph</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">igraph</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<p>It is customary among the userbase to use a named import for short:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+</pre></div>
+</div>
+<p>This is the recommended way to import <em>igraph</em> whether it’s in a python script, interactive shell
+(e.g. ipython), or a GUI (e.g. notebooks, Jupyterlab).</p>
+<p>This imports <em>igraph</em>’s objects and methods inside an own namespace called <code class="xref py py-mod docutils literal notranslate"><span class="pre">igraph</span></code> or <code class="docutils literal notranslate"><span class="pre">ig</span></code> (if you used a named import). To call any of <em>igraph</em>’s methods, you must prepend the module name, e.g. to print the version of <em>igraph</em> installed on your system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ig</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 <span class="go">0.9.6</span>
 </pre></div>
 </div>
-<p>Another way to make use of <em>igraph</em> is to import all its objects and methods into the main
-Python namespace (so you do not have to type the namespace-qualification every time).
-This is fine as long as your own objects and methods do not conflict with the ones
-provided by <em>igraph</em>:</p>
+<p>An alternative way to make use of <em>igraph</em> which was popular a few years back is to import all its
+objects and methods into the main Python namespace:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">igraph</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
+<p>This approach (star import) is now discouraged because <em>igraph</em> functions risk to conflict with and override other functions you have already imported or declared. Of course, if you know there’s no conflict you can still use this method.</p>
 <p>The third way to start <em>igraph</em> is to simply call the startup script that was supplied with
-the <em>igraph</em> package you installed. Not too surprisingly, the script is called <strong class="command">igraph</strong>,
-and provided that the script is on your path in the command line of your operating system
-(which is almost surely the case on Linux and OS X), you can simply type <strong class="command">igraph</strong> at the
-command line. Windows users will find the script inside the <code class="file docutils literal notranslate"><span class="pre">scripts</span></code> subdirectory of Python
-and you may have to add it manually to your path in order to be able to use the script from
-the command line without typing the whole path.</p>
-<p>When you start the script, you will see something like this:</p>
+the <em>igraph</em> package you installed. Not too surprisingly, the script is called <strong class="command">igraph</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ igraph
 No configuration file, using defaults
 igraph 0.9.6 running inside Python 3.9.6 (default, Jun 29 2021, 05:25:02)
 Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt;
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Provided that the script is on your path in the command line of your operating system
+(which is almost surely the case on Linux and OS X), you can simply type <strong class="command">igraph</strong> at the
+command line. Windows users will find the script inside the <code class="file docutils literal notranslate"><span class="pre">scripts</span></code> subdirectory of Python
+and you may have to add it manually to your path in order to be able to use the script from
+the command line without typing the whole path.</p>
 </div>
 <p>The command-line startup script imports all of <em>igraph</em>’s methods and objects into the main
 namespace, so it is practically equivalent to <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">igraph</span> <span class="pre">import</span> <span class="pre">*</span></code>. The difference between
@@ -239,23 +247,19 @@ standard Python shell. Currently the module looks for <a class="reference extern
 IDLE (the Tcl/Tk-based graphical shell supplied with Python). If neither IPython nor IDLE is
 installed, the startup script launches the default Python shell. You can also modify the
 order in which these shells are searched by tweaking <em>igraph</em>’s configuration file
-(see <span class="xref std std-ref">configuring-igraph</span>).</p>
-<p>In general, it is advised to use the command line startup script when using <em>igraph</em>
-interactively (i.e., when you just want to quickly load or generate some graphs, calculate
-some basic properties and save the results somewhere). For non-disposable graph analysis
-routines that you intend to re-run from time to time, you should write a script separately
-in a <code class="docutils literal notranslate"><span class="pre">.py</span></code> source file and import <em>igraph</em> using one of the above methods at the start of
-the script, then launch the script using the Python interpreter.</p>
-<p>From now on, every example in the documentation will assume that <em>igraph</em>’s objects and
-methods are imported into the main namespace (i.e., we used <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">igraph</span> <span class="pre">import</span> <span class="pre">*</span></code>
-instead of <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">igraph</span></code>). If you let <em>igraph</em> take its own namespace, please adjust
-all the examples accordingly.</p>
+(see <a class="reference internal" href="configuring-igraph.html#configuring-igraph"><span class="std std-ref">Configuring igraph</span></a>).</p>
+<p>If you are using <em>igraph</em> interactively, we recommend you import it in a Jupyter notebook,
+a Jupyterlab or ipython session, or via the shell script provided (method #3). As for any
+other package, you might want to store more streamlined analyses in a Python script (<code class="docutils literal notranslate"><span class="pre">.py</span></code>
+extension).</p>
+<p>For the sake of simplicity, this tutorial will assume you have imported igraph using the
+short name <code class="docutils literal notranslate"><span class="pre">ig</span></code> as recommended above.</p>
 </section>
 <section id="creating-a-graph-from-scratch">
 <h2>Creating a graph from scratch<a class="headerlink" href="#creating-a-graph-from-scratch" title="Permalink to this headline">¶</a></h2>
 <p>Assuming that you have started <em>igraph</em> successfully, it is time to create your first
 <em>igraph</em> graph. This is pretty simple:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The above statement created an undirected graph with no vertices or edges and assigned it
@@ -276,7 +280,12 @@ user-friendly output, we can try to print the graph using Python’s
 </div>
 <p>This summary consists of <cite>IGRAPH</cite>, followed by a four-character long code, the number of vertices, the number of edges, two dashes (<cite>–</cite>) and the name of the graph (i.e. the contents of the <cite>name</cite> attribute, if any)</p>
 <p>This is not too exciting so far; a graph with no vertices and no edges is not really useful
-for us. Let’s add some vertices first!</p>
+for us. Of course, there are dozens of ways to create a graph with vertices and edges, depending on your exact situation. In general, if you know the number of vertices and already have a list of edges connecting them, you can just use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>This creates a graph with 10 vertices, numbered 0 to 9, and two edges connecting vertex 0 with vertex 1, and vertex 0 (again) with vertex 5. See <a class="reference internal" href="generation.html#generation"><span class="std std-ref">Graph generation</span></a> for a detailed overview of all the possible ways to create graphs in <em>igraph</em>.</p>
+<p>A less common situation, which we’ll follow here as an example, is to add vertices and edges to an existing graph, which in this case is the empty graph. First, to add vertices:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -361,7 +370,7 @@ and so on, while stochastic generators are used to create Erdős-Rényi random n
 Barabási-Albert networks, geometric random graphs and such. <em>igraph</em> has too many
 generators to cover them all in this tutorial, so we will only try a
 deterministic and a stochastic generator instead:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="go">IGRAPH U--- 127 126 --</span>
 </pre></div>
@@ -370,7 +379,7 @@ deterministic and a stochastic generator instead:</p>
 vertices and each vertex (apart from the leaves) has two children (and of course one
 parent). No matter how many times you call <code class="xref py py-meth docutils literal notranslate"><span class="pre">Graph.Tree()</span></code>, the generated graph will
 always be the same if you use the same parameters:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">get_edgelist</span><span class="p">()</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">get_edgelist</span><span class="p">()</span>
 <span class="go">True</span>
 </pre></div>
@@ -385,7 +394,7 @@ just print the first 10 elements!</p>
 </pre></div>
 </div>
 <p>Let’s do the same with a stochastic generator!</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">GRG</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">GRG</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="go">IGRAPH U---- 100 516 --</span>
 <span class="go">+ attr: x (v), y (v)</span>
@@ -400,7 +409,7 @@ from the one that was generated when I wrote this tutorial, hence the values abo
 summary will not match the ones you got. This is normal and expected. Even if you generate
 two geometric random graphs on the same machine, they will be different for the same parameter
 set:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">GRG</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">GRG</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edgelist</span><span class="p">()</span> <span class="o">==</span> <span class="n">g2</span><span class="o">.</span><span class="n">get_edgelist</span><span class="p">()</span>
 <span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">isomorphic</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
@@ -437,7 +446,7 @@ or you can pickle the whole <code class="xref py py-class docutils literal notra
 back into Python only.</p>
 </div>
 <p>Let us create a simple imaginary social network the usual way by hand.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
 </pre></div>
 </div>
 <p>Now, let us assume that we want to store the names, ages and genders of people in this network as
@@ -609,7 +618,7 @@ vertices) is returned:</p>
 method or anything that behaves like a function), the object will be called for
 every vertex that’s currently in the sequence. If the function returns <code class="docutils literal notranslate"><span class="pre">True</span></code>,
 the vertex will be included, otherwise it will be excluded:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">Full</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Full</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">only_odd_vertices</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">vertex</span><span class="p">:</span> <span class="n">vertex</span><span class="o">.</span><span class="n">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">only_odd_vertices</span><span class="p">)</span>
 <span class="go">5</span>
@@ -801,7 +810,7 @@ of vertex IDs or <code class="xref py py-class docutils literal notranslate"><sp
 </pre></div>
 </div>
 <p>or, alternatively:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Dennis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Dennis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
 <span class="go">3</span>
 </pre></div>
 </div>
@@ -959,23 +968,23 @@ However, the primary utility of <code class="xref py py-class docutils literal n
 <p>For instance, we can plot our imaginary social network with the Kamada-Kawai
 layout algorithm as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layout</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s2">&quot;kk&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This should open an external image viewer showing a visual representation of the network,
 something like the one on the following figure (although the exact placement of
 nodes may be different on your machine since the layout is not deterministic):</p>
-<figure class="align-center" id="id1">
+<figure class="align-center" id="id2">
 <img alt="The visual representation of our social network (Cairo backend)" src="_images/tutorial_social_network_1.png" />
 <figcaption>
-<p><span class="caption-text">Our social network with the Kamada-Kawai layout algorithm</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Our social network with the Kamada-Kawai layout algorithm</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>If you prefer to use <a class="reference external" href="https://matplotlib.org/">matplotlib</a> as a plotting engine, create an axes and use the
 <code class="docutils literal notranslate"><span class="pre">target</span></code> argument:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="align-center">
@@ -988,30 +997,30 @@ from the <code class="docutils literal notranslate"><span class="pre">label</spa
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="s2">&quot;pink&quot;</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_dict</span><span class="p">[</span><span class="n">gender</span><span class="p">]</span> <span class="k">for</span> <span class="n">gender</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Cairo backend</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>  <span class="c1"># matplotlib backend</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Cairo backend</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>  <span class="c1"># matplotlib backend</span>
 </pre></div>
 </div>
 <p>Note that we are simply re-using the previous layout object here, but we also specified
 that we need a smaller plot (300 x 300 pixels) and a larger margin around the graph
 to fit the labels (20 pixels). The result is:</p>
-<figure class="align-center" id="id2">
+<figure class="align-center" id="id3">
 <img alt="The visual representation of our social network - with names and genders" src="_images/tutorial_social_network_2.png" />
 <figcaption>
-<p><span class="caption-text">Our social network - with names as labels and genders as colors</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Our social network - with names as labels and genders as colors</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>and for matplotlib:</p>
-<figure class="align-center" id="id3">
+<figure class="align-center" id="id4">
 <img alt="The visual representation of our social network - with names and genders" src="_images/tutorial_social_network_2_mpl.png" />
 <figcaption>
-<p><span class="caption-text">Our social network - with names as labels and genders as colors</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Our social network - with names as labels and genders as colors</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Instead of specifying the visual properties as vertex and edge attributes, you can
 also give them as keyword arguments to <code class="xref py py-func docutils literal notranslate"><span class="pre">plot()</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="s2">&quot;pink&quot;</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">vertex_color</span><span class="o">=</span><span class="p">[</span><span class="n">color_dict</span><span class="p">[</span><span class="n">gender</span><span class="p">]</span> <span class="k">for</span> <span class="n">gender</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">vertex_color</span><span class="o">=</span><span class="p">[</span><span class="n">color_dict</span><span class="p">[</span><span class="n">gender</span><span class="p">]</span> <span class="k">for</span> <span class="n">gender</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;gender&quot;</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>This latter approach is preferred if you want to keep the properties of the visual
@@ -1027,19 +1036,19 @@ attributes to <code class="xref py py-func docutils literal notranslate"><span c
 <span class="gp">&gt;&gt;&gt; </span><span class="n">visual_style</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layout</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">visual_style</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">visual_style</span><span class="p">[</span><span class="s2">&quot;margin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">visual_style</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">visual_style</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The final plot shows the formal ties with thick lines while informal ones with thin lines:</p>
-<figure class="align-center" id="id4">
+<figure class="align-center" id="id5">
 <img alt="The visual representation of our social network - with names, genders and formal ties" src="_images/tutorial_social_network_3.png" />
 <figcaption>
-<p><span class="caption-text">Our social network - also showing which ties are formal</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Our social network - also showing which ties are formal</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>To sum it all up: there are special vertex and edge properties that correspond to
 the visual representation of the graph. These attributes override the default settings
-of <em>igraph</em> (see <span class="xref std std-ref">configuring-igraph</span> for overriding the system-wide defaults).
+of <em>igraph</em> (see <a class="reference internal" href="configuring-igraph.html#configuring-igraph"><span class="std std-ref">Configuring igraph</span></a> for overriding the system-wide defaults).
 Furthermore, appropriate keyword arguments supplied to <code class="xref py py-func docutils literal notranslate"><span class="pre">plot()</span></code> override the
 visual properties provided by the vertex and edge attributes. The following two
 tables summarise the most frequently used visual attributes for vertices and edges,
@@ -1164,6 +1173,23 @@ graph is directed, relative to 10 pixels.</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">edge_width</span></code></p></td>
 <td><p>Width of the edge in pixels</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">label</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">edge_label</span></code></p></td>
+<td><p>If specified, it adds a label to the edge.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">background</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">edge_background</span></code></p></td>
+<td><p>If specified, it adds a rectangular box
+around the edge label, of the specified
+color (matplotlib only).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">align_label</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">edge_align_label</span></code></p></td>
+<td><p>If True, rotate the edge label such that
+it aligns with the edge direction. Labels
+that would be upside-down are flipped
+(matplotlib only).</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -1230,7 +1256,7 @@ Example: <code class="docutils literal notranslate"><span class="pre">&quot;#008
 100%. Example: <code class="docutils literal notranslate"><span class="pre">&quot;rgb(0,</span> <span class="pre">127,</span> <span class="pre">255)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;rgb(0%,</span> <span class="pre">50%,</span> <span class="pre">100%)&quot;</span></code>.</p></li>
 </ul>
 </dd>
-<dt>List, tuple or whitespace-separated string of RGB values</dt><dd><p>Example: <code class="docutils literal notranslate"><span class="pre">(255,</span> <span class="pre">128,</span> <span class="pre">0)</span></code>, <code class="docutils literal notranslate"><span class="pre">[255,</span> <span class="pre">128,</span> <span class="pre">0]</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;255,</span> <span class="pre">128,</span> <span class="pre">0&quot;</span></code>.</p>
+<dt>Lists or tuples of RGB values in the range 0-1</dt><dd><p>Example: <code class="docutils literal notranslate"><span class="pre">(1.0,</span> <span class="pre">0.5,</span> <span class="pre">0)</span></code> or <code class="docutils literal notranslate"><span class="pre">[1.0,</span> <span class="pre">0.5,</span> <span class="pre">0]</span></code>.</p>
 </dd>
 </dl>
 </section>
@@ -1244,9 +1270,16 @@ save to anything that is supported by Cairo, including SVG, PDF and PNG files.
 SVG or PDF files can then later be converted to PostScript (<code class="docutils literal notranslate"><span class="pre">.ps</span></code>) or Encapsulated
 PostScript (<code class="docutils literal notranslate"><span class="pre">.eps</span></code>) format if you prefer that, while PNG files can be converted to
 TIF (<code class="docutils literal notranslate"><span class="pre">.tif</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s2">&quot;social_network.pdf&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">visual_style</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s2">&quot;social_network.pdf&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">visual_style</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>If you are using the matplotlib backend, you can save your plot as usual:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">visual_style</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;social_network.pdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Many file formats are supported by matplotlib.</p>
 </section>
 </section>
 <section id="igraph-and-the-outside-world">
@@ -1357,8 +1390,8 @@ The following table summarises the formats <em>igraph</em> can read or write:</p
 from <a class="reference download internal" download="" href="_downloads/181f2c166825b410a01506e5bd30d7a4/zachary.zip"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a>, unzip it and try to load it into
 <em>igraph</em>. Since it is a GraphML file, you must use the GraphML reader method from
 the table above (make sure you use the appropriate path to the downloaded file):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">Read_GraphML</span><span class="p">(</span><span class="s2">&quot;zachary.graphml&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="p">(</span><span class="n">karate</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Read_GraphML</span><span class="p">(</span><span class="s2">&quot;zachary.graphml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ig</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">karate</span><span class="p">)</span>
 <span class="go">IGRAPH UNW- 34 78 -- Zachary&#39;s karate club network</span>
 </pre></div>
 </div>
@@ -1385,7 +1418,7 @@ reader methods which tries to infer the appropriate format from the file extensi
 the preferred format is again inferred from the extension. The format detection of
 <code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">Graph.save()</span></code> can be overridden by the <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword
 argument which accepts the short names of the formats from the above table:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;zachary.graphml&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;zachary.graphml&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;zachary.net&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">karate</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;zachary.my_extension&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;gml&quot;</span><span class="p">)</span>
 </pre></div>

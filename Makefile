@@ -6,13 +6,13 @@ all: jekyll
 # Default doc version
 CVERSION?=0.9.6
 RVERSION?=1.2.7
-PYVERSION?=0.9.8
+PYVERSION?=0.9.9
 
 # Available versions
 CVERSIONS?='0.9.0 0.9.4 0.9.5 0.9.6 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7'
-PYVERSIONS?='0.9.6 0.9.7 0.9.8 master develop'
-PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.4 develop'
+PYVERSIONS?='0.9.6 0.9.7 0.9.8 0.9.9 master develop'
+PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.6 0.9.6 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
@@ -141,7 +141,7 @@ $(PY)/stamp:
 	if [ ! -d $(PY)/.venv ]; then \
 		cd $(PY) && \
 		python3 -m venv .venv && \
-		.venv/bin/pip install epydoc pydoctor wheel Sphinx sphinxbootstrap4theme; \
+		.venv/bin/pip install epydoc matplotlib pydoctor wheel Sphinx sphinxbootstrap4theme; \
 	fi
 	# Patch pydoctor until they fix it
 	_tools/patch-pydoctor.sh $(PY)
