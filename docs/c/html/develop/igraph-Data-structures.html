@@ -437,7 +437,7 @@ n is the number of elements.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_init_copy(
-    igraph_vector_t *v, const igraph_real_t *data, igraph_integer_t length);
+        igraph_vector_t *v, const igraph_real_t *data, igraph_integer_t length);
 </pre></div>
 <p>
 </p>
@@ -1649,28 +1649,7 @@ References:
 <div class="example">
 <a name="id-1.8.3.8.4.10.2"></a><p class="title"><b>Example 7.1.  File <code class="code">examples/simple/igraph_fisher_yates_shuffle.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>  Test suite for the Fisher-Yates shuffle.</em></span>
-<span class="emphasis"><em>  Copyright (C) 2011 Minh Van Nguyen </em></span>&lt;nguyenminh2@gmail.com&gt;
-
-<span class="emphasis"><em>  This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>  it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>  the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>  (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>  This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>  but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>  GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>  You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>  along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>  Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>  02110-1301 USA</em></span>
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_INTEGER</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
 <span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_UNIF</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.2. igraph_rng_get_unif — Generate real, uniform random numbers from an interval">igraph_rng_get_unif</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
@@ -2289,8 +2268,10 @@ Time complexity: O(n), where n is the number of elements in the vector.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_g">2.9.3. <code class="function">igraph_vector_all_g</code> —  Are all elements greater?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_le">2.9.4. <code class="function">igraph_vector_all_le</code> —  Are all elements less or equal?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_ge">2.9.5. <code class="function">igraph_vector_all_ge</code> —  Are all elements greater or equal?</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.6. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.7. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.6. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped">2.9.7. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.8. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped">2.9.9. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -2608,11 +2589,150 @@ Time complexity: O(n), the length of the vectors.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_lex_cmp"></a>2.9.6. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors.</h4></div></div></div>
+<a name="igraph_vector_lex_cmp"></a>2.9.6. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.10.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_vector_lex_cmp(const void *lhs, const void *rhs);
+int igraph_vector_lex_cmp(
+    const igraph_vector_t *lhs, const igraph_vector_t *rhs
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+If the elements of two vectors match but one is shorter, the shorter
+one comes first. Thus {1, 3} comes after {1, 2, 3}, but before {1, 3, 4}.
+
+</p>
+<p>
+This function is typically used together with <code class="constant">igraph_vector_list_sort</code>().
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lhs</code></em>:</span></p></td>
+<td><p>
+  Pointer to the first vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rhs</code></em>:</span></p></td>
+<td><p>
+  Pointer to the second vector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  -1 if <em class="parameter"><code>lhs</code></em> is lexicographically smaller,
+        0 if <em class="parameter"><code>lhs</code></em> and <em class="parameter"><code>rhs</code></em> are equal, else 1.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.7. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.8. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
+    the last element.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the number of elements in the smaller vector.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.8.3.10.7.12.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_t graph;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_integer_t i, n;
+
+    <span class="emphasis"><em>/* Set a random seed to make the program deterministic */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 31415);
+
+    <span class="emphasis"><em>/* Create a random graph with a given number of vertices and edges */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM, 15, 80, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+
+    <span class="emphasis"><em>/* Find all maximal cliques in the graph */</em></span>
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;graph, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, -1, -1);
+
+    <span class="emphasis"><em>/* Print the cliques in lexicographical order */</em></span>
+    <span class="strong"><strong>printf</strong></span>("Maximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in lexicographical order:\n");
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, igraph_vector_int_lex_cmp);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i));
+    }
+
+    <span class="emphasis"><em>/* Print the cliques in colexicographical order */</em></span>
+    <span class="strong"><strong>printf</strong></span>("\nMaximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in colexicographical order:\n");
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, igraph_vector_int_colex_cmp);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i));
+    }
+
+    <span class="emphasis"><em>/* Destroy data structures when we no longer need them */</em></span>
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_lex_cmp_untyped"></a>2.9.7. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_vector_lex_cmp_untyped(const void *lhs, const void *rhs);
 </pre></div>
 <p>
 </p>
@@ -2679,8 +2799,99 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.7. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> for a type-safe variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.9. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> to compare vectors starting from
     the last element.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the number of elements in the smaller vector.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_colex_cmp"></a>2.9.8. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_vector_colex_cmp(
+    const igraph_vector_t *lhs, const igraph_vector_t *rhs
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This comparison starts from the last element of both vectors and
+moves backward. If the elements of two vectors match but one is
+shorter, the shorter one comes first. Thus {1, 2} comes after {3, 2, 1},
+but before {0, 1, 2}.
+
+</p>
+<p>
+This function is typically used together with <code class="constant">igraph_vector_list_sort</code>().
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lhs</code></em>:</span></p></td>
+<td><p>
+  Pointer to a pointer to the first vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rhs</code></em>:</span></p></td>
+<td><p>
+  Pointer to a pointer to the second vector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  -1 if <em class="parameter"><code>lhs</code></em> in reverse order is
+        lexicographically smaller than the reverse of <em class="parameter"><code>rhs</code></em>,
+        0 if <em class="parameter"><code>lhs</code></em> and <em class="parameter"><code>rhs</code></em> are equal, else 1.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.9. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
+    the first element.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2691,15 +2902,14 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.10.7.12.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_ptr_sort.c</code></b></p>
+<a name="id-1.8.3.10.9.12.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting">
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_t graph;
-    igraph_vector_ptr_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
     igraph_integer_t i, n;
 
     <span class="emphasis"><em>/* Set a random seed to make the program deterministic */</em></span>
@@ -2709,31 +2919,28 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM, 15, 80, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
     <span class="emphasis"><em>/* Find all maximal cliques in the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;graph, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, -1, -1);
 
     <span class="emphasis"><em>/* Print the cliques in lexicographical order */</em></span>
     <span class="strong"><strong>printf</strong></span>("Maximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in lexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors.">igraph_vector_lex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, igraph_vector_int_lex_cmp);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
     <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i));
     }
 
     <span class="emphasis"><em>/* Print the cliques in colexicographical order */</em></span>
     <span class="strong"><strong>printf</strong></span>("\nMaximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in colexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.7. igraph_vector_colex_cmp — Colexicographical comparison of two vectors.">igraph_vector_colex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, igraph_vector_int_colex_cmp);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
     <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i));
     }
 
     <span class="emphasis"><em>/* Destroy data structures when we no longer need them */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR" title="2.16.18. IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR — Sets the item destructor for this pointer vector (macro version).">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector.">igraph_vector_ptr_destroy_all</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2748,11 +2955,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_colex_cmp"></a>2.9.7. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.8.2"></a><p>
+<a name="igraph_vector_colex_cmp_untyped"></a>2.9.9. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_vector_colex_cmp(const void *lhs, const void *rhs);
+int igraph_vector_colex_cmp_untyped(const void *lhs, const void *rhs);
 </pre></div>
 <p>
 </p>
@@ -2822,7 +3029,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
+  igraph_vector_colex_cmp() for a type-safe variant of this
+    function, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.7. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> to compare vectors starting from
     the first element.
   </p></td>
 </tr></tbody>
@@ -2830,63 +3038,7 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <p>
 
 Time complexity: O(n), the number of elements in the smaller vector.
-
-</p>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="id-1.8.3.10.8.12.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_ptr_sort.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting">
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
-
-int <span class="strong"><strong>main</strong></span>() {
-    igraph_t graph;
-    igraph_vector_ptr_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
-    igraph_integer_t i, n;
-
-    <span class="emphasis"><em>/* Set a random seed to make the program deterministic */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 31415);
-
-    <span class="emphasis"><em>/* Create a random graph with a given number of vertices and edges */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM, 15, 80, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
-
-    <span class="emphasis"><em>/* Find all maximal cliques in the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;graph, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, -1, -1);
-
-    <span class="emphasis"><em>/* Print the cliques in lexicographical order */</em></span>
-    <span class="strong"><strong>printf</strong></span>("Maximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in lexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors.">igraph_vector_lex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
-    }
-
-    <span class="emphasis"><em>/* Print the cliques in colexicographical order */</em></span>
-    <span class="strong"><strong>printf</strong></span>("\nMaximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in colexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.7. igraph_vector_colex_cmp — Colexicographical comparison of two vectors.">igraph_vector_colex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
-    }
-
-    <span class="emphasis"><em>/* Destroy data structures when we no longer need them */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR" title="2.16.18. IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR — Sets the item destructor for this pointer vector (macro version).">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector.">igraph_vector_ptr_destroy_all</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<p> 
+ 
 </p>
 </div>
 </div>
@@ -3273,7 +3425,7 @@ Time complexity: O(n), the number of elements.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_empty">2.11.1. <code class="function">igraph_vector_empty</code> —  Decides whether the size of the vector is zero.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_size">2.11.2. <code class="function">igraph_vector_size</code> —  Returns the size (=length) of the vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_capacity">2.11.3. <code class="function">igraph_vector_capacity</code> —  Returns the allocated capacity of the vector</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_capacity">2.11.3. <code class="function">igraph_vector_capacity</code> —  Returns the allocated capacity of the vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_sum">2.11.4. <code class="function">igraph_vector_sum</code> —  Calculates the sum of the elements in the vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_prod">2.11.5. <code class="function">igraph_vector_prod</code> —  Calculates the product of the elements in the vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_isininterval">2.11.6. <code class="function">igraph_vector_isininterval</code> —  Checks if all elements of a vector are in the given</a></span></dt>
@@ -3386,7 +3538,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_capacity"></a>2.11.3. <code class="function">igraph_vector_capacity</code> —  Returns the allocated capacity of the vector</h4></div></div></div>
+<a name="igraph_vector_capacity"></a>2.11.3. <code class="function">igraph_vector_capacity</code> —  Returns the allocated capacity of the vector.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.12.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -3400,8 +3552,9 @@ igraph_integer_t igraph_vector_capacity(const igraph_vector_t*v);
 
 
 Note that this might be different from the size of the vector (as
-queried by <a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector."><code class="function">igraph_vector_size()</code></a>, and specifies how many elements
+queried by <a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector."><code class="function">igraph_vector_size()</code></a>), and specifies how many elements
 the vector can hold, without reallocation.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -4268,7 +4421,7 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.8.3.14.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_reserve(igraph_vector_t* v, igraph_integer_t size);
+igraph_error_t igraph_vector_reserve(igraph_vector_t* v, igraph_integer_t capacity);
 </pre></div>
 <p>
 </p>
@@ -4308,7 +4461,7 @@ elements to your vector before it will be copied.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>capacity</code></em>:</span></p></td>
 <td><p>
   The new <span class="emphasis"><em>allocated</em></span> size of the vector.
 </p></td>
@@ -4345,7 +4498,7 @@ is the new allocated size of the vector.
 <a class="indexterm" name="id-1.8.3.14.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_resize(igraph_vector_t* v, igraph_integer_t newsize);
+igraph_error_t igraph_vector_resize(igraph_vector_t* v, igraph_integer_t new_size);
 </pre></div>
 <p>
 </p>
@@ -4377,7 +4530,7 @@ one. In this case the newly appeared elements in the vector are
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>newsize</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>new_size</code></em>:</span></p></td>
 <td><p>
   The new size of the vector.
 </p></td>
@@ -4883,7 +5036,7 @@ O(n log n) for n elements.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_qsort_ind(igraph_vector_t *v,
-        igraph_vector_int_t *inds, igraph_bool_t descending);
+        igraph_vector_int_t *inds, igraph_order_t order);
 </pre></div>
 <p>
 </p>
@@ -4917,14 +5070,15 @@ NaN values is undefined.
 <td><p><span class="term"><em class="parameter"><code>inds</code></em>:</span></p></td>
 <td><p>
   the output array of indices. This must be initialized,
-        but will be resized
+       but will be resized
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>descending</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>order</code></em>:</span></p></td>
 <td><p>
-  whether the output array should be sorted in descending
-       order.
+  whether the output array should be sorted in ascending
+       or descending order. Use <code class="constant">IGRAPH_ASCENDING</code> for ascending and
+       <code class="constant">IGRAPH_DESCENDING</code> for descending order.
 </p></td>
 </tr>
 </tbody>
@@ -5116,9 +5270,6 @@ the <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.
 real numbers.</p>
 <p>This type has the same space complexity as <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a>, and most implemented operations work the same way
 as for <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a>.</p>
-<p>This type is mostly used to pass to or receive from a set of
-graphs to some <span class="command"><strong>igraph</strong></span> functions, such as <a class="link" href="igraph-Structural.html#igraph_decompose" title="7.4. igraph_decompose — Decompose a graph into connected components."><code class="function">igraph_decompose()</code></a>, which decomposes a graph to connected
-components.</p>
 <p>The same <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR</code></a> macro used for ordinary vectors can be
 used for pointer vectors as well, please note that a typeless
 generic pointer will be provided by this macro and you may need to
@@ -5132,13 +5283,13 @@ Note that the semantics of an item destructor does not coincide with
 C++ destructors; for instance, when a pointer vector is resized to a
 smaller size, the extra items will <span class="emphasis"><em>not</em></span> be destroyed automatically!
 Nevertheless, item destructors may become handy in many cases; for
-instance, a vector of graphs generated by <a class="link" href="igraph-Structural.html#igraph_decompose" title="7.4. igraph_decompose — Decompose a graph into connected components."><code class="function">igraph_decompose()</code></a> can
+instance, a vector of graphs generated by some function can
 be destroyed with a single call to <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>
-if the item destructor is set to <a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a>.</p>
+if the item destructor is set to <a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a>.</p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_init"></a>2.16.1. <code class="function">igraph_vector_ptr_init</code> —  Initialize a pointer vector (constructor).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.7.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_init(igraph_vector_ptr_t* v, igraph_integer_t size);
@@ -5204,7 +5355,7 @@ Time complexity: operating system dependent, the amount of <span class="quote">�
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_copy"></a>2.16.2. <code class="function">igraph_vector_ptr_copy</code> —  Copy a pointer vector (constructor).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.8.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_copy(igraph_vector_ptr_t *to, const igraph_vector_ptr_t *from);
@@ -5279,7 +5430,7 @@ done in O(n) time.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_destroy"></a>2.16.3. <code class="function">igraph_vector_ptr_destroy</code> —  Destroys a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.9.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_destroy(igraph_vector_ptr_t* v);
@@ -5320,7 +5471,7 @@ number of elements in the vector).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_free_all"></a>2.16.4. <code class="function">igraph_vector_ptr_free_all</code> —  Frees all the elements of a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.10.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_free_all(igraph_vector_ptr_t* v);
@@ -5363,7 +5514,7 @@ arbitrary size. n is the number of elements in the pointer vector.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_destroy_all"></a>2.16.5. <code class="function">igraph_vector_ptr_destroy_all</code> —  Frees all the elements and destroys the pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.11.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_destroy_all(igraph_vector_ptr_t* v);
@@ -5406,7 +5557,7 @@ elements in the vector).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_size"></a>2.16.6. <code class="function">igraph_vector_ptr_size</code> —  Gives the number of elements in the pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.12.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_vector_ptr_size(const igraph_vector_ptr_t* v);
@@ -5457,7 +5608,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_clear"></a>2.16.7. <code class="function">igraph_vector_ptr_clear</code> —  Removes all elements from a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.13.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_clear(igraph_vector_ptr_t* v);
@@ -5508,7 +5659,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_push_back"></a>2.16.8. <code class="function">igraph_vector_ptr_push_back</code> —  Appends an element to the back of a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.14.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_push_back(igraph_vector_ptr_t* v, void* e);
@@ -5585,7 +5736,7 @@ push_back operations need O(n) time to complete.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_insert"></a>2.16.9. <code class="function">igraph_vector_ptr_insert</code> —  Inserts a single element into a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.15.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_insert(igraph_vector_ptr_t* v, igraph_integer_t pos, void* e);
@@ -5638,7 +5789,7 @@ the given position. The size of the vector will increase by one.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_e"></a>2.16.10. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.16.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void *igraph_vector_ptr_e(const igraph_vector_ptr_t* v, igraph_integer_t pos);
@@ -5697,7 +5848,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_set"></a>2.16.11. <code class="function">igraph_vector_ptr_set</code> —  Assign to an element of a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.17.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_set(igraph_vector_ptr_t* v, igraph_integer_t pos, void* value);
@@ -5747,7 +5898,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_resize"></a>2.16.12. <code class="function">igraph_vector_ptr_resize</code> —  Resizes a pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.18.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.17.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_resize(igraph_vector_ptr_t* v, igraph_integer_t newsize);
@@ -5814,7 +5965,7 @@ needed to allocate the memory for the vector elements.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_sort"></a>2.16.13. <code class="function">igraph_vector_ptr_sort</code> —  Sorts the pointer vector based on an external comparison function.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.19.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vector_ptr_sort(igraph_vector_ptr_t *v, int (*compar)(const void*, const void*));
@@ -5863,69 +6014,13 @@ to the underlying object the address of which is stored in <code class="constant
 </table></div>
 <p>
 
-
-</p>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="id-1.8.3.17.19.6.1"></a><p class="title"><b>Example 7.4.  File <code class="code">examples/simple/igraph_vector_ptr_sort.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting">
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
-
-int <span class="strong"><strong>main</strong></span>() {
-    igraph_t graph;
-    igraph_vector_ptr_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
-    igraph_integer_t i, n;
-
-    <span class="emphasis"><em>/* Set a random seed to make the program deterministic */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 31415);
-
-    <span class="emphasis"><em>/* Create a random graph with a given number of vertices and edges */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM, 15, 80, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
-
-    <span class="emphasis"><em>/* Find all maximal cliques in the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;graph, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, -1, -1);
-
-    <span class="emphasis"><em>/* Print the cliques in lexicographical order */</em></span>
-    <span class="strong"><strong>printf</strong></span>("Maximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in lexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.6. igraph_vector_lex_cmp — Lexicographical comparison of two vectors.">igraph_vector_lex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
-    }
-
-    <span class="emphasis"><em>/* Print the cliques in colexicographical order */</em></span>
-    <span class="strong"><strong>printf</strong></span>("\nMaximal <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> in colexicographical order:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_sort" title="2.16.13. igraph_vector_ptr_sort — Sorts the pointer vector based on an external comparison function.">igraph_vector_ptr_sort</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.7. igraph_vector_colex_cmp — Colexicographical comparison of two vectors.">igraph_vector_colex_cmp</a>);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i=0; i &lt; n; ++i) {
-        <span class="strong"><strong>igraph_vector_print</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i]);
-    }
-
-    <span class="emphasis"><em>/* Destroy data structures when we no longer need them */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR" title="2.16.18. IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR — Sets the item destructor for this pointer vector (macro version).">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector.">igraph_vector_ptr_destroy_all</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<p> 
+ 
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_sort_ind"></a>2.16.14. <code class="function">igraph_vector_ptr_sort_ind</code> —  Return a permutation of indices that sorts a vector of pointers</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.20.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.19.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_sort_ind(igraph_vector_ptr_t *v,
@@ -6007,7 +6102,7 @@ position in the array. Use this to set the values of inds.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_permute"></a>2.16.15. <code class="function">igraph_vector_ptr_permute</code> —  Permutes the elements of a pointer vector in place according to an index vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.21.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.20.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_permute(igraph_vector_ptr_t* v, const igraph_vector_int_t* index);
@@ -6094,7 +6189,7 @@ Time complexity: O(n), the size of the vector.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_get_item_destructor"></a>2.16.16. <code class="function">igraph_vector_ptr_get_item_destructor</code> —  Gets the current item destructor for this pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.22.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.21.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_finally_func_t* igraph_vector_ptr_get_item_destructor(const igraph_vector_ptr_t *v);
@@ -6134,7 +6229,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_vector_ptr_set_item_destructor"></a>2.16.17. <code class="function">igraph_vector_ptr_set_item_destructor</code> —  Sets the item destructor for this pointer vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.23.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.22.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_finally_func_t* igraph_vector_ptr_set_item_destructor(
@@ -6175,7 +6270,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR"></a>2.16.18. <code class="function">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</code> —  Sets the item destructor for this pointer vector (macro version).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.17.24.2"></a><p>
+<a class="indexterm" name="id-1.8.3.17.23.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR(v, func)
@@ -10161,32 +10256,9 @@ Row and column indices follow the C convention and are zero-based.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.1"></a><p class="title"><b>Example 7.5.  File <code class="code">examples/simple/igraph_sparsemat.c</code></b></p>
+<a name="id-1.8.5.2.7.1"></a><p class="title"><b>Example 7.4.  File <code class="code">examples/simple/igraph_sparsemat.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2009-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
 
@@ -10203,9 +10275,10 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Convert a ring graph to a matrix, print it, compress, print again */</em></span>
 <span class="strong"><strong>#define</strong></span> VC 10
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;G, VC, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_sparsemat" title="25.7. igraph_get_sparsemat — Converts an igraph graph to a sparse matrix.">igraph_get_sparsemat</a></strong></span>(&amp;G, &amp;A);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.9. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;G, VC, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="25.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_print" title="4.10.1. igraph_sparsemat_print — Prints a sparse matrix to a file.">igraph_sparsemat_print</a></strong></span>(&amp;A, stdout);
@@ -10265,9 +10338,10 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>printf</strong></span>("------------------------\n");
 
     <span class="emphasis"><em>/* Transpose matrices */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_sparsemat" title="25.7. igraph_get_sparsemat — Converts an igraph graph to a sparse matrix.">igraph_get_sparsemat</a></strong></span>(&amp;G, &amp;A);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="25.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_print" title="4.10.1. igraph_sparsemat_print — Prints a sparse matrix to a file.">igraph_sparsemat_print</a></strong></span>(&amp;B, stdout);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;C, <span class="emphasis"><em>/*values=*/</em></span> 1);
@@ -10316,12 +10390,14 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Add two matrices */</em></span>
 
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;B, 1, 1, 0);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;G, 10, IGRAPH_STAR_OUT, <span class="emphasis"><em>/*center=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;H, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_sparsemat" title="25.7. igraph_get_sparsemat — Converts an igraph graph to a sparse matrix.">igraph_get_sparsemat</a></strong></span>(&amp;G, &amp;A);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_sparsemat" title="25.7. igraph_get_sparsemat — Converts an igraph graph to a sparse matrix.">igraph_get_sparsemat</a></strong></span>(&amp;H, &amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;H);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.9. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;H, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="25.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="25.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;H, &amp;B, IGRAPH_GET_ADJACENCY_BOTH);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;H);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;C);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;B, &amp;D);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.4. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
@@ -10342,34 +10418,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.2"></a><p class="title"><b>Example 7.6.  File <code class="code">examples/simple/igraph_sparsemat3.c</code></b></p>
+<a name="id-1.8.5.2.7.2"></a><p class="title"><b>Example 7.5.  File <code class="code">examples/simple/igraph_sparsemat3.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2009-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+<pre class="programlisting"><span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
 
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;cs/cs.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;cs.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>permute</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
@@ -10434,7 +10487,7 @@ int <span class="strong"><strong>permute_cols</strong></span>(<span class="stron
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias for integers to indicate that the integer value is an error code.">igraph_error_t</a> <span class="strong"><strong>random_permutation</strong></span>(igraph_vector_int_t *vec) {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>random_permutation</strong></span>(igraph_vector_int_t *vec) {
     <span class="emphasis"><em>/* We just do size(vec) * 2 swaps */</em></span>
     igraph_integer_t one, two, i, n = <span class="strong"><strong>igraph_vector_int_size</strong></span>(vec);
     igraph_integer_t tmp;
@@ -10676,34 +10729,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.3"></a><p class="title"><b>Example 7.7.  File <code class="code">examples/simple/igraph_sparsemat4.c</code></b></p>
+<a name="id-1.8.5.2.7.3"></a><p class="title"><b>Example 7.6.  File <code class="code">examples/simple/igraph_sparsemat4.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2009-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+<pre class="programlisting"><span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
 
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;cs/cs.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;cs.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 igraph_bool_t <span class="strong"><strong>check_solution</strong></span>(<span class="strong"><strong>const</strong></span> igraph_sparsemat_t *A,
@@ -10984,32 +11014,9 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.4"></a><p class="title"><b>Example 7.8.  File <code class="code">examples/simple/igraph_sparsemat6.c</code></b></p>
+<a name="id-1.8.5.2.7.4"></a><p class="title"><b>Example 7.7.  File <code class="code">examples/simple/igraph_sparsemat6.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_matrix_t mat, mat2, mat3;
@@ -11060,32 +11067,9 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.5"></a><p class="title"><b>Example 7.9.  File <code class="code">examples/simple/igraph_sparsemat7.c</code></b></p>
+<a name="id-1.8.5.2.7.5"></a><p class="title"><b>Example 7.8.  File <code class="code">examples/simple/igraph_sparsemat7.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM1 10
 <span class="strong"><strong>#define</strong></span> DIM2 5
@@ -11147,32 +11131,9 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.5.2.7.6"></a><p class="title"><b>Example 7.10.  File <code class="code">examples/simple/igraph_sparsemat8.c</code></b></p>
+<a name="id-1.8.5.2.7.6"></a><p class="title"><b>Example 7.9.  File <code class="code">examples/simple/igraph_sparsemat8.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM1 10
 <span class="strong"><strong>#define</strong></span> DIM2 5
@@ -12847,7 +12808,7 @@ Time complexity: O(1).
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_gaxpy">4.4.10. <code class="function">igraph_sparsemat_gaxpy</code> —  Matrix-vector product, added to another vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_add_rows">4.4.11. <code class="function">igraph_sparsemat_add_rows</code> —  Adds rows to a sparse matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_add_cols">4.4.12. <code class="function">igraph_sparsemat_add_cols</code> —  Adds columns to a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_resize">4.4.13. <code class="function">igraph_sparsemat_resize</code> —  Resizes a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_resize">4.4.13. <code class="function">igraph_sparsemat_resize</code> —  Resizes a sparse matrix and clears all the elements.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -13664,7 +13625,7 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_resize"></a>4.4.13. <code class="function">igraph_sparsemat_resize</code> —  Resizes a sparse matrix.</h4></div></div></div>
+<a name="igraph_sparsemat_resize"></a>4.4.13. <code class="function">igraph_sparsemat_resize</code> —  Resizes a sparse matrix and clears all the elements.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.5.5.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -13678,7 +13639,7 @@ igraph_error_t igraph_sparsemat_resize(igraph_sparsemat_t *A, igraph_integer_t n
 
 
 This function resizes a sparse matrix. The resized sparse matrix
-will be empty.
+will become empty, even if it contained nonzero entries.
 
 </p>
 <p><b>Arguments: </b>
@@ -17206,7 +17167,7 @@ n is the number of elements in the old matrix.
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p>Deprecated since version 0.10.0. Please do not use this function in new
-code; use <a class="link" href="igraph-Data-structures.html#igraph_sparsemat_resize" title="4.4.13. igraph_sparsemat_resize — Resizes a sparse matrix."><code class="function">igraph_sparsemat_resize()</code></a>
+code; use <a class="link" href="igraph-Data-structures.html#igraph_sparsemat_resize" title="4.4.13. igraph_sparsemat_resize — Resizes a sparse matrix and clears all the elements."><code class="function">igraph_sparsemat_resize()</code></a>
 instead.</p>
 </div>
 <p> 
@@ -17431,7 +17392,7 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.8.7.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_stack_reserve(igraph_stack_t* s, igraph_integer_t size);
+igraph_error_t igraph_stack_reserve(igraph_stack_t* s, igraph_integer_t capacity);
 </pre></div>
 <p>
 </p>
@@ -17820,32 +17781,9 @@ needed. See the operations below.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.8.3.1"></a><p class="title"><b>Example 7.11.  File <code class="code">examples/simple/dqueue.c</code></b></p>
+<a name="id-1.8.8.3.1"></a><p class="title"><b>Example 7.10.  File <code class="code">examples/simple/dqueue.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
 
@@ -19091,32 +19029,9 @@ type.</p>
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.10.3.1"></a><p class="title"><b>Example 7.12.  File <code class="code">examples/simple/igraph_strvector.c</code></b></p>
+<a name="id-1.8.10.3.1"></a><p class="title"><b>Example 7.11.  File <code class="code">examples/simple/igraph_strvector.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 void <span class="strong"><strong>strvector_print</strong></span>(<span class="strong"><strong>const</strong></span> igraph_strvector_t *sv) {
     igraph_integer_t i, s = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="9.12. igraph_strvector_size — Gives the size of a string vector.">igraph_strvector_size</a></strong></span>(sv);
@@ -20048,7 +19963,7 @@ of a graph. After creation it is independent of the original graph,
 it can be modified freely with the usual vector operations, the
 graph is not affected. E.g. the adjacency list can be used to
 rewire the edges of a graph efficiently. If one used the
-straightforward <a class="link" href="igraph-Basic.html#igraph_delete_edges" title="2.3.4. igraph_delete_edges — Removes edges from a graph."><code class="function">igraph_delete_edges()</code></a> and <a class="link" href="igraph-Basic.html#igraph_add_edges" title="2.3.2. igraph_add_edges — Adds edges to a graph object."><code class="function">igraph_add_edges()</code></a> combination for this that needs O(|V|+|E|) time
+straightforward <a class="link" href="igraph-Basic.html#igraph_delete_edges" title="3.3.4. igraph_delete_edges — Removes edges from a graph."><code class="function">igraph_delete_edges()</code></a> and <a class="link" href="igraph-Basic.html#igraph_add_edges" title="3.3.2. igraph_add_edges — Adds edges to a graph object."><code class="function">igraph_add_edges()</code></a> combination for this that needs O(|V|+|E|) time
 for every single deletion and insertion operation, it is thus very
 slow if many edges are rewired. Extracting the graph into an
 adjacency list, do all the rewiring operations on the vectors of
@@ -20069,32 +19984,9 @@ during the computation.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.11.5.1"></a><p class="title"><b>Example 7.13.  File <code class="code">examples/simple/adjlist.c</code></b></p>
+<a name="id-1.8.11.5.1"></a><p class="title"><b>Example 7.12.  File <code class="code">examples/simple/adjlist.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2008-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
 
@@ -20106,7 +19998,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>     * representation, then reconstruct the graph from the tree and check</em></span>
 <span class="emphasis"><em>     * whether the two are isomorphic (they should be) */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from an incidence list.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.5. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic">igraph_isomorphic</a></strong></span>(&amp;g, &amp;g2, &amp;iso);
@@ -20114,8 +20006,8 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_destroy" title="10.1.4. igraph_adjlist_destroy — Deallocates an adjacency list.">igraph_adjlist_destroy</a></strong></span>(&amp;adjlist);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -21072,6 +20964,7 @@ If the function is called for the first time for a vertex then the
 result is stored in the adjacency list and no further query
 operations are needed when the neighbors of the same vertex are
 queried again.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -21106,7 +20999,8 @@ queried again.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Pointer to a vector. It is allowed to modify it and
+  Pointer to a vector, or <code class="constant">NULL</code> upon error.
+  It is safe to modify this vector,
   modification does not affect the original graph.
   </p></td>
 </tr></tbody>
@@ -21363,6 +21257,7 @@ If the function is called for the first time for a vertex, then the
 result is stored in the incidence list and no further query
 operations are needed when the incident edges of the same vertex are
 queried again.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -21397,7 +21292,8 @@ queried again.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Pointer to a vector. It is allowed to modify it and
+  Pointer to a vector, or <code class="constant">NULL</code> upon error.
+  It is safe to modify this vector,
   modification does not affect the original graph.
   </p></td>
 </tr></tbody>

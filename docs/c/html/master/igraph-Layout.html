@@ -164,7 +164,7 @@
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_bipartite">1.6. <code class="function">igraph_layout_bipartite</code> — Simple layout for bipartite graphs.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#drl-layout-generator">1.7. The DrL layout generator</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold">1.8. <code class="function">igraph_layout_fruchterman_reingold</code> —  Places the vertices on a plane according to the Fruchterman-Reingold algorithm.</a></span></dt>
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai">1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according the Kamada-Kawai algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai">1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according to the Kamada-Kawai algorithm.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_gem">1.10. <code class="function">igraph_layout_gem</code> — The GEM layout algorithm, as described in Arne Frick, Andreas Ludwig,</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_davidson_harel">1.11. <code class="function">igraph_layout_davidson_harel</code> — Davidson-Harel layout algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_mds">1.12. <code class="function">igraph_layout_mds</code> —  Place the vertices on a plane using multidimensional scaling.</a></span></dt>
@@ -1096,7 +1096,7 @@ Time complexity: O(1).
 <div class="informalexample"><pre class="programlisting">
 int igraph_layout_drl(const igraph_t *graph, igraph_matrix_t *res,
                       igraph_bool_t use_seed,
-                      igraph_layout_drl_options_t *options,
+                      const igraph_layout_drl_options_t *options,
                       const igraph_vector_t *weights,
                       const igraph_vector_bool_t *fixed);
 </pre></div>
@@ -1196,7 +1196,7 @@ Time complexity: ???.
 <div class="informalexample"><pre class="programlisting">
 int igraph_layout_drl_3d(const igraph_t *graph, igraph_matrix_t *res,
                          igraph_bool_t use_seed,
-                         igraph_layout_drl_options_t *options,
+                         const igraph_layout_drl_options_t *options,
                          const igraph_vector_t *weights,
                          const igraph_vector_bool_t *fixed);
 </pre></div>
@@ -1457,7 +1457,7 @@ vertices in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_kamada_kawai"></a>1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according the Kamada-Kawai algorithm.</h3></div></div></div>
+<a name="igraph_layout_kamada_kawai"></a>1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according to the Kamada-Kawai algorithm.</h3></div></div></div>
 <a class="indexterm" name="id-1.21.2.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1475,11 +1475,30 @@ int igraph_layout_kamada_kawai(const igraph_t *graph, igraph_matrix_t *res,
 
 
 
+This is a force-directed layout. A spring is inserted between all pairs
+of vertices, both those which are directly connected and those that are not.
+The unstretched length of springs is chosen based on the graph distance
+between the corresponding pair of vertices. Thus, in a weighted graph, increasing
+the weight between two vertices pushes them apart. The Young modulus of springs
+is inversely proportional to the graph distance, ensuring that springs between
+far-apart veritces will have a smaller effect on the layout.
+
 </p>
 <p>
-This is a force directed layout, see  Kamada, T. and Kawai, S.: An
-Algorithm for Drawing General Undirected Graphs. Information
-Processing Letters, 31/1, 7--15, 1989.
+This layout algorithm is not suitable for large graphs. The memory
+requirements are of the order O(|V|^2).
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Kamada, T. and Kawai, S.:
+An Algorithm for Drawing General Undirected Graphs.
+Information Processing Letters, 31/1, 7--15, 1989.
+<a class="ulink" href="https://doi.org/10.1016/0020-0190(89)90102-6" target="_top">https://doi.org/10.1016/0020-0190(89)90102-6</a>
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2138,7 +2157,8 @@ children. For the exact algorithm, see:
 </p>
 <p>
 Reingold, E and Tilford, J: Tidier drawing of trees.
-IEEE Trans. Softw. Eng., SE-7(2):223--228, 1981
+IEEE Trans. Softw. Eng., SE-7(2):223--228, 1981.
+<a class="ulink" href="https://doi.org/10.1109/TSE.1981.234519" target="_top">https://doi.org/10.1109/TSE.1981.234519</a>
 
 </p>
 <p>
@@ -2181,13 +2201,15 @@ first to obtain a possible spanning tree.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>roots</code></em>:</span></p></td>
 <td><p>
-  The index of the root vertex or root vertices.
-  If this is a non-empty vector then the supplied vertex ids are used
-  as the roots of the trees (or a single tree if the graph is connected).
-  If it is a null pointer of a pointer to an empty vector, then the root
-  vertices are automatically calculated based on topological sorting,
-  performed with the opposite mode than the <em class="parameter"><code>mode</code></em> argument.
-  After the vertices have been sorted, one is selected from each component.
+  The index of the root vertex or root vertices. The set of roots
+  should be specified so that all vertices of the graph are reachable from them.
+  Simply put, in the udirected case, one root should be given from each
+  connected component. If <em class="parameter"><code>roots</code></em> is <code class="constant">NULL</code> or a pointer to an empty vector,
+  then the roots will be selected automatically. Currently, automatic root
+  selection prefers low ecccentricity vertices in graphs with fewer than
+  500 vertices, and high degree vertices (acording to <em class="parameter"><code>mode</code></em>) in larger graphs.
+  The root selecton heuristic may change without notice. To ensure a consistent
+  output, please specify the roots manually.
 </p></td>
 </tr>
 <tr>
@@ -2286,7 +2308,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>    }*/</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -2357,13 +2379,15 @@ the tree is drawn in a circular way, with the root vertex in the center.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>roots</code></em>:</span></p></td>
 <td><p>
-  The index of the root vertex or root vertices.
-  If this is a non-empty vector then the supplied vertex ids are used
-  as the roots of the trees (or a single tree if the graph is connected).
-  If it is a null pointer of a pointer to an empty vector, then the root
-  vertices are automatically calculated based on topological sorting,
-  performed with the opposite mode than the <em class="parameter"><code>mode</code></em> argument.
-  After the vertices have been sorted, one is selected from each component.
+  The index of the root vertex or root vertices. The set of roots
+  should be specified so that all vertices of the graph are reachable from them.
+  Simply put, in the udirected case, one root should be given from each
+  connected component. If <em class="parameter"><code>roots</code></em> is <code class="constant">NULL</code> or a pointer to an empty vector,
+  then the roots will be selected automatically. Currently, automatic root
+  selection prefers low ecccentricity vertices in graphs with fewer than
+  500 vertices, and high degree vertices (acording to <em class="parameter"><code>mode</code></em>) in larger graphs.
+  The root selecton heuristic may change without notice. To ensure a consistent
+  output, please specify the roots manually.
 </p></td>
 </tr>
 <tr>
@@ -2562,7 +2586,7 @@ Cybernetics 11(2):109-125, 1981.
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sphere">2.2. <code class="function">igraph_layout_sphere</code> —  Places vertices (more or less) uniformly on a sphere.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid_3d">2.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold_3d">2.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</a></span></dt>
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai_3d">2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai_3d">2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -2937,7 +2961,7 @@ vertices in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_kamada_kawai_3d"></a>2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator</h3></div></div></div>
+<a name="igraph_layout_kamada_kawai_3d"></a>2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.21.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -2956,11 +2980,14 @@ int igraph_layout_kamada_kawai_3d(const igraph_t *graph, igraph_matrix_t *res,
 
 
 
+This is the 3D version of igraph_layout_kamada_kawai().
+See the documentation of that function for more information.
+
 </p>
 <p>
-This is a force directed layout, see  Kamada, T. and Kawai, S.: An
-Algorithm for Drawing General Undirected Graphs. Information
-Processing Letters, 31/1, 7--15, 1989.
+This layout algorithm is not suitable for large graphs. The memory
+requirements are of the order O(|V|^2).
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2980,8 +3007,8 @@ Processing Letters, 31/1, 7--15, 1989.
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized matrix object. This will
-       contain the result (x-positions in column zero and
-       y-positions in column one) and will be resized if needed.
+       contain the result (x-, y- and z-positions in columns one
+       through three) and will be resized if needed.
 </p></td>
 </tr>
 <tr>
@@ -2989,7 +3016,7 @@ Processing Letters, 31/1, 7--15, 1989.
 <td><p>
   Boolean, whether to use the values supplied in the
        <em class="parameter"><code>res</code></em> argument as the initial configuration. If zero and there
-       are any limits on the X, Y or Z coordinates, then a random initial
+       are any limits on the z, y or z coordinates, then a random initial
        configuration is used. Otherwise the vertices are placed uniformly
        on a sphere of radius 1 as the initial configuration.
 </p></td>
@@ -3104,8 +3131,8 @@ graph.
 <a class="indexterm" name="id-1.21.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_layout_merge_dla(igraph_vector_ptr_t *thegraphs,
-                            igraph_vector_ptr_t *coords,
+int igraph_layout_merge_dla(const igraph_vector_ptr_t *thegraphs,
+                            const igraph_vector_ptr_t *coords,
                             igraph_matrix_t *res);
 </pre></div>
 <p>
@@ -3132,7 +3159,7 @@ last.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>thegraphs</code></em>:</span></p></td>
 <td><p>
-  Pointer vector containing the graph object of
+  Pointer vector containing the graph objects of
        which the layouts will be merged.
 </p></td>
 </tr>

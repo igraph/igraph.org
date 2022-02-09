@@ -157,8 +157,10 @@
 <a name="about-blas"></a>1.  BLAS interface in igraph</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_ddot">1.1. <code class="function">igraph_blas_ddot</code> —  Dot product of two vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dgemv">1.2. <code class="function">igraph_blas_dgemv</code> —  Matrix-vector multiplication using BLAS, vector version.</a></span></dt>
-<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dgemv_array">1.3. <code class="function">igraph_blas_dgemv_array</code> —  Matrix-vector multiplication using BLAS, array version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dnrm2">1.2. <code class="function">igraph_blas_dnrm2</code> —  Euclidean norm of a vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dgemv">1.3. <code class="function">igraph_blas_dgemv</code> —  Matrix-vector multiplication using BLAS, vector version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dgemm">1.4. <code class="function">igraph_blas_dgemm</code> —  Matrix-matrix multiplication using BLAS.</a></span></dt>
+<dt><span class="section"><a href="igraph-Arpack.html#igraph_blas_dgemv_array">1.5. <code class="function">igraph_blas_dgemv_array</code> —  Matrix-vector multiplication using BLAS, array version.</a></span></dt>
 </dl></div>
 <p>
 BLAS is a highly optimized library for basic linear algebra operations
@@ -228,8 +230,7 @@ Time complexity: O(n) where n is the length of the vectors.
 <div class="example">
 <a name="id-1.30.2.3.6.1"></a><p class="title"><b>Example 29.1.  File <code class="code">examples/simple/blas.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting">
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_matrix_t m;
@@ -255,7 +256,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(m, 3, 2) = 6;
 
     <span class="emphasis"><em>/* Compute 2 m.x + 3 y and store it in y. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.2. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/* transpose= */</em></span> 0, <span class="emphasis"><em>/* alpha= */</em></span> 2, &amp;m, &amp;x, <span class="emphasis"><em>/* beta= */</em></span> 3, &amp;y);
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.3. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/* transpose= */</em></span> 0, <span class="emphasis"><em>/* alpha= */</em></span> 2, &amp;m, &amp;x, <span class="emphasis"><em>/* beta= */</em></span> 3, &amp;y);
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;y);
 
     <span class="emphasis"><em>/* Compute the squared norm of x, as well as the dor product of x and z. */</em></span>
@@ -281,8 +282,58 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_blas_dgemv"></a>1.2. <code class="function">igraph_blas_dgemv</code> —  Matrix-vector multiplication using BLAS, vector version.</h3></div></div></div>
+<a name="igraph_blas_dnrm2"></a>1.2. <code class="function">igraph_blas_dnrm2</code> —  Euclidean norm of a vector.</h3></div></div></div>
 <a class="indexterm" name="id-1.30.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_real_t igraph_blas_dnrm2(const igraph_vector_t *v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The vector.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Real value, the norm of <em class="parameter"><code>v</code></em>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n) where n is the length of the vector.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_blas_dgemv"></a>1.3. <code class="function">igraph_blas_dgemv</code> —  Matrix-vector multiplication using BLAS, vector version.</h3></div></div></div>
+<a class="indexterm" name="id-1.30.2.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_blas_dgemv(igraph_bool_t transpose, igraph_real_t alpha,
@@ -377,7 +428,7 @@ Time complexity: O(nk) if the matrix is of size n x k
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.3. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version."><code class="function">igraph_blas_dgemv_array</code></a> if you have arrays instead of
+  <a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.5. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version."><code class="function">igraph_blas_dgemv_array</code></a> if you have arrays instead of
     vectors.
   </p></td>
 </tr></tbody>
@@ -387,10 +438,9 @@ Time complexity: O(nk) if the matrix is of size n x k
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.30.2.4.10.1"></a><p class="title"><b>Example 29.2.  File <code class="code">examples/simple/blas.c</code></b></p>
+<a name="id-1.30.2.5.10.1"></a><p class="title"><b>Example 29.2.  File <code class="code">examples/simple/blas.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting">
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_matrix_t m;
@@ -416,7 +466,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(m, 3, 2) = 6;
 
     <span class="emphasis"><em>/* Compute 2 m.x + 3 y and store it in y. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.2. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/* transpose= */</em></span> 0, <span class="emphasis"><em>/* alpha= */</em></span> 2, &amp;m, &amp;x, <span class="emphasis"><em>/* beta= */</em></span> 3, &amp;y);
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.3. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/* transpose= */</em></span> 0, <span class="emphasis"><em>/* alpha= */</em></span> 2, &amp;m, &amp;x, <span class="emphasis"><em>/* beta= */</em></span> 3, &amp;y);
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;y);
 
     <span class="emphasis"><em>/* Compute the squared norm of x, as well as the dor product of x and z. */</em></span>
@@ -442,8 +492,147 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_blas_dgemv_array"></a>1.3. <code class="function">igraph_blas_dgemv_array</code> —  Matrix-vector multiplication using BLAS, array version.</h3></div></div></div>
-<a class="indexterm" name="id-1.30.2.5.2"></a><p>
+<a name="igraph_blas_dgemm"></a>1.4. <code class="function">igraph_blas_dgemm</code> —  Matrix-matrix multiplication using BLAS.</h3></div></div></div>
+<a class="indexterm" name="id-1.30.2.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_blas_dgemm(igraph_bool_t transpose_a, igraph_bool_t transpose_b,
+        igraph_real_t alpha, const igraph_matrix_t *a, const igraph_matrix_t *b,
+        igraph_real_t beta, igraph_matrix_t *c);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function is a somewhat more user-friendly interface to
+the <code class="constant">dgemm</code> function in BLAS. <code class="constant">dgemm</code> calculates
+alpha*a*b + beta*c, where a, b and c are matrices, of which a and b
+can be transposed.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>transpose_a</code></em>:</span></p></td>
+<td><p>
+  whether to transpose the matrix <em class="parameter"><code>a</code></em>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>transpose_b</code></em>:</span></p></td>
+<td><p>
+  whether to transpose the matrix <em class="parameter"><code>b</code></em>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>alpha</code></em>:</span></p></td>
+<td><p>
+  the constant <code class="constant">alpha</code>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>a</code></em>:</span></p></td>
+<td><p>
+  the matrix <code class="constant">a</code>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  the matrix <code class="constant">b</code>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
+<td><p>
+  the constant <code class="constant">beta</code>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>c</code></em>:</span></p></td>
+<td><p>
+  the matrix <code class="constant">c</code>. The result will also be stored here.
+                   If beta is zero, c will be resized to fit the result.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n m k) where matrix a is of size n × k, and matrix b is of
+size k × m.
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <code class="constant">IGRAPH_EOVERFLOW</code> if the matrix is too large for BLAS,
+        <code class="constant">IGRAPH_EINVAL</code> if the matrices have incompatible sizes,
+        <code class="constant">IGRAPH_SUCCESS</code> otherwise.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.30.2.6.8.1"></a><p class="title"><b>Example 29.3.  File <code class="code">examples/simple/blas_dgemm.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_matrix_t a, b, c;
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;a, 2, 2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(a, 0, 0) = 1;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(a, 0, 1) = 2;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(a, 1, 0) = 3;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(a, 1, 1) = 4;
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;b, 2, 2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(b, 0, 0) = 5;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(b, 0, 1) = 6;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(b, 1, 0) = 7;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(b, 1, 1) = 8;
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;c, 2, 2);
+
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemm" title="1.4. igraph_blas_dgemm — Matrix-matrix multiplication using BLAS.">igraph_blas_dgemm</a></strong></span>(1, 1, 0.5, &amp;a, &amp;b, 0, &amp;c);
+    <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;c, "%g");
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;a);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;b);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;c);
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_blas_dgemv_array"></a>1.5. <code class="function">igraph_blas_dgemv_array</code> —  Matrix-vector multiplication using BLAS, array version.</h3></div></div></div>
+<a class="indexterm" name="id-1.30.2.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_blas_dgemv_array(igraph_bool_t transpose, igraph_real_t alpha,
@@ -540,7 +729,7 @@ Time complexity: O(nk) if the matrix is of size n x k
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.2. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version."><code class="function">igraph_blas_dgemv</code></a> if you have vectors instead of
+  <a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.3. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version."><code class="function">igraph_blas_dgemv</code></a> if you have vectors instead of
     arrays.
   </p></td>
 </tr></tbody>
@@ -839,41 +1028,17 @@ Time complexity: TODO.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.30.3.5.4.9.1"></a><p class="title"><b>Example 29.3.  File <code class="code">examples/simple/igraph_lapack_dgesv.c</code></b></p>
+<a name="id-1.30.3.5.4.9.1"></a><p class="title"><b>Example 29.4.  File <code class="code">examples/simple/igraph_lapack_dgesv.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM 10
 
 void <span class="strong"><strong>igraph_print_warning</strong></span>(<span class="strong"><strong>const</strong></span> char *reason, <span class="strong"><strong>const</strong></span> char *file,
-                          int line, int igraph_errno) {
+                          int line) {
     <span class="strong"><strong>IGRAPH_UNUSED</strong></span>(file);
     <span class="strong"><strong>IGRAPH_UNUSED</strong></span>(line);
-    <span class="strong"><strong>IGRAPH_UNUSED</strong></span>(igraph_errno);
     <span class="strong"><strong>printf</strong></span>("Warning: %s\n", reason);
 }
 
@@ -943,7 +1108,7 @@ int <span class="strong"><strong>main</strong></span>() {
             <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, i, j) = <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1, 10);
         }
     }
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.3. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version.">igraph_blas_dgemv_array</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, <span class="emphasis"><em>/*a=*/</em></span> &amp;A,
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.5. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version.">igraph_blas_dgemv_array</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, <span class="emphasis"><em>/*a=*/</em></span> &amp;A,
                                            <span class="emphasis"><em>/*x-*/</em></span> &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(B, 0, 0), <span class="emphasis"><em>/*beta=*/</em></span> 0,
                                            <span class="emphasis"><em>/*y=*/</em></span> &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(RHS, 0, 0));
 
@@ -976,7 +1141,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, DIM - 1, i) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, i);
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.3. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version.">igraph_blas_dgemv_array</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, <span class="emphasis"><em>/*a=*/</em></span> &amp;A,
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv_array" title="1.5. igraph_blas_dgemv_array — Matrix-vector multiplication using BLAS, array version.">igraph_blas_dgemv_array</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, <span class="emphasis"><em>/*a=*/</em></span> &amp;A,
                                            <span class="emphasis"><em>/*x-*/</em></span> &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(B, 0, 0), <span class="emphasis"><em>/*beta=*/</em></span> 0,
                                            <span class="emphasis"><em>/*y=*/</em></span> &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(RHS, 0, 0));
 
@@ -1165,32 +1330,9 @@ Time complexity: TODO.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.30.3.6.2.9.1"></a><p class="title"><b>Example 29.4.  File <code class="code">examples/simple/igraph_lapack_dsyevr.c</code></b></p>
+<a name="id-1.30.3.6.2.9.1"></a><p class="title"><b>Example 29.5.  File <code class="code">examples/simple/igraph_lapack_dsyevr.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM 10
 
@@ -1217,7 +1359,7 @@ igraph_bool_t <span class="strong"><strong>check_ev</strong></span>(<span class=
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; m; i++) {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors, 0, i), n);
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_update" title="2.6.2. igraph_vector_update — Update a vector from another one.">igraph_vector_update</a></strong></span>(&amp;y, &amp;v);
-        <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.2. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, A, &amp;v,
+        <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.3. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, A, &amp;v,
                                          <span class="emphasis"><em>/*beta=*/</em></span> -<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values)[i], &amp;y);
         <span class="strong"><strong>for</strong></span> (j = 0; j &lt; n; j++) {
             <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(y)[i]) &gt; tol) {
@@ -1527,32 +1669,9 @@ Time complexity: TODO.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.30.3.6.3.10.1"></a><p class="title"><b>Example 29.5.  File <code class="code">examples/simple/igraph_lapack_dgeev.c</code></b></p>
+<a name="id-1.30.3.6.3.10.1"></a><p class="title"><b>Example 29.6.  File <code class="code">examples/simple/igraph_lapack_dgeev.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM 10
@@ -2081,32 +2200,9 @@ Time complexity: TODO
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.30.3.6.4.12.1"></a><p class="title"><b>Example 29.6.  File <code class="code">examples/simple/igraph_lapack_dgeevx.c</code></b></p>
+<a name="id-1.30.3.6.4.12.1"></a><p class="title"><b>Example 29.7.  File <code class="code">examples/simple/igraph_lapack_dgeevx.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="strong"><strong>#define</strong></span> DIM 10
@@ -2438,7 +2534,7 @@ typedef struct igraph_arpack_options_t {
 </p>
 <p>
 </p>
-<p>This data structure contains the options of thee ARPACK eigenvalue
+<p>This data structure contains the options of the ARPACK eigenvalue
 solver routines. It must be initialized by calling <a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options"><code class="function">igraph_arpack_options_init()</code></a> on it. Then it can be used for
 multiple ARPACK calls, as the ARPACK solvers do not modify it.
 
@@ -3447,7 +3543,7 @@ are found in O(n) time as well.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_arpack_unpack_complex(igraph_matrix_t *vectors, igraph_matrix_t *values,
-                                 long int nev);
+                                 igraph_integer_t nev);
 </pre></div>
 <p>
 </p>

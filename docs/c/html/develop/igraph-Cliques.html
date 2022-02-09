@@ -179,7 +179,7 @@ to cliques and independent vertex sets.
 <a class="indexterm" name="id-1.17.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_cliques(const igraph_t *graph, igraph_vector_ptr_t *res,
+igraph_error_t igraph_cliques(const igraph_t *graph, igraph_vector_int_list_t *res,
                    igraph_integer_t min_size, igraph_integer_t max_size);
 </pre></div>
 <p>
@@ -220,24 +220,21 @@ Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliq
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-  objects which contain the indices of vertices involved in a clique.
-  The pointer vector will be resized if needed but note that the
-  objects in the pointer vector will not be freed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the minimum size of the cliques to be
+  Integer specifying the minimum size of the cliques to be
   returned. If negative or zero, no lower bound will be used.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the maximum size of the cliques to be
+  Integer specifying the maximum size of the cliques to be
   returned. If negative or zero, no upper bound will be used.
 </p></td>
 </tr>
@@ -283,38 +280,12 @@ Time complexity: Exponential
 <div class="example">
 <a name="id-1.17.3.2.13.1"></a><p class="title"><b>Example 16.1.  File <code class="code">examples/simple/igraph_cliques.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
-int <span class="strong"><strong>compare_vectors</strong></span>(<span class="strong"><strong>const</strong></span> void *p1, <span class="strong"><strong>const</strong></span> void *p2) {
-    igraph_vector_int_t *v1, *v2;
+int <span class="strong"><strong>compare_vectors</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *v1, <span class="strong"><strong>const</strong></span> igraph_vector_int_t *v2) {
     igraph_integer_t s1, s2, i;
 
-    v1 = *((igraph_vector_int_t **) p1);
-    v2 = *((igraph_vector_int_t **) p2);
     s1 = <span class="strong"><strong>igraph_vector_int_size</strong></span>(v1);
     s2 = <span class="strong"><strong>igraph_vector_int_size</strong></span>(v2);
     <span class="strong"><strong>if</strong></span> (s1 &lt; s2) {
@@ -335,28 +306,28 @@ int <span class="strong"><strong>compare_vectors</strong></span>(<span class="st
 }
 
 <span class="emphasis"><em>/* Takes a pointer vector of vectors. Sorts each vector, then sorts the pointer vector */</em></span>
-void <span class="strong"><strong>canonicalize_list</strong></span>(igraph_vector_ptr_t *list) {
+void <span class="strong"><strong>canonicalize_list</strong></span>(igraph_vector_int_list_t *list) {
     igraph_integer_t i, len;
-    len = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(list);
+    len = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(list);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; len; ++i) {
-        <span class="strong"><strong>igraph_vector_int_sort</strong></span>((igraph_vector_int_t *) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*list)[i]);
+        <span class="strong"><strong>igraph_vector_int_sort</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(list, i));
     }
-    <span class="strong"><strong>qsort</strong></span>(&amp;(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*list)[0]), len, <span class="strong"><strong>sizeof</strong></span>(void *), &amp;compare_vectors);
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(list, &amp;compare_vectors);
 }
 
 <span class="strong"><strong>struct</strong></span> userdata {
     int i;
-    igraph_vector_ptr_t *list;
+    igraph_vector_int_list_t *list;
 };
 
-igraph_bool_t <span class="strong"><strong>handler</strong></span>(igraph_vector_int_t *clique, void *arg) {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>handler</strong></span>(igraph_vector_int_t *clique, void *arg) {
     <span class="strong"><strong>struct</strong></span> userdata *ud;
     igraph_bool_t cont;
 
     ud = (<span class="strong"><strong>struct</strong></span> userdata *) arg;
     cont = 1; <span class="emphasis"><em>/* true */</em></span>
 
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>compare_vectors</strong></span>(&amp;clique, &amp;(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*(ud-&gt;list))[ud-&gt;i])) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>compare_vectors</strong></span>(clique, <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(ud-&gt;list, ud-&gt;i)) != 0) {
         <span class="strong"><strong>printf</strong></span>("igraph_cliques() and igraph_cliques_callback() give different results.\n");
         cont = 0; <span class="emphasis"><em>/* false */</em></span>
     }
@@ -366,14 +337,14 @@ igraph_bool_t <span class="strong"><strong>handler</strong></span>(igraph_vector
 
     ud-&gt;i += 1;
 
-    <span class="strong"><strong>return</strong></span> cont;
+    <span class="strong"><strong>return</strong></span> cont ? IGRAPH_SUCCESS : IGRAPH_STOP;
 }
 
 void <span class="strong"><strong>test_callback</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph) {
-    igraph_vector_ptr_t list;
+    igraph_vector_int_list_t list;
     <span class="strong"><strong>struct</strong></span> userdata ud;
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;list, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;list, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(graph, &amp;list, 0, 0);
 
     ud.i = 0;
@@ -381,15 +352,14 @@ void <span class="strong"><strong>test_callback</strong></span>(<span class="str
 
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.3. igraph_cliques_callback — Calls a function for each clique in the graph.">igraph_cliques_callback</a></strong></span>(graph, 0, 0, &amp;handler, (void *) &amp;ud);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR" title="2.16.18. IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR — Sets the item destructor for this pointer vector (macro version).">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</a></strong></span>(&amp;list, igraph_vector_int_destroy);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector.">igraph_vector_ptr_destroy_all</a></strong></span>(&amp;list);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;list);
 }
 
 
 int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g;
-    igraph_vector_ptr_t result;
+    igraph_vector_int_list_t result;
     igraph_es_t es;
     igraph_integer_t omega;
     igraph_integer_t i, j, n;
@@ -397,10 +367,10 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;result, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.10. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 6, 0, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;result, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.12. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 6, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_pairs_small" title="6.9. igraph_es_pairs_small — Edge selector, multiple edges defined by their endpoints as arguments.">igraph_es_pairs_small</a></strong></span>(&amp;es, 0, 0, 1, 0, 2, 3, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="2.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, es);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="3.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, es);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object.">igraph_es_destroy</a></strong></span>(&amp;es);
 
     <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong>sizeof</strong></span>(params) / (2 * <span class="strong"><strong>sizeof</strong></span>(params[0])); j++) {
@@ -409,14 +379,12 @@ int <span class="strong"><strong>main</strong></span>() {
         } <span class="strong"><strong>else</strong></span> {
             <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.5. igraph_largest_cliques — Finds the largest clique(s) in a graph.">igraph_largest_cliques</a></strong></span>(&amp;g, &amp;result);
         }
-        n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;result);
+        n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
         <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> found\n", n);
         <span class="strong"><strong>canonicalize_list</strong></span>(&amp;result);
         <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-            igraph_vector_int_t* v = (igraph_vector_int_t*) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_e" title="2.16.10. igraph_vector_ptr_e — Access an element of a pointer vector.">igraph_vector_ptr_e</a></strong></span>(&amp;result, i);
+            igraph_vector_int_t* v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i);
             <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-            <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-            <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
         }
     }
 
@@ -425,16 +393,16 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>test_callback</strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(&amp;g, &amp;result, 5, 5);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;result) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;result);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -498,14 +466,14 @@ zero counts will be returned.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the minimum size of the cliques to be
+  Integer specifying the minimum size of the cliques to be
   returned. If negative or zero, no lower bound will be used.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the maximum size of the cliques to be
+  Integer specifying the maximum size of the cliques to be
   returned. If negative or zero, no upper bound will be used.
 </p></td>
 </tr>
@@ -597,14 +565,14 @@ Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliq
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the minimum size of the cliques to be
+  Integer specifying the minimum size of the cliques to be
   returned. If negative or zero, no lower bound will be used.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the maximum size of the cliques to be
+  Integer specifying the maximum size of the cliques to be
   returned. If negative or zero, no upper bound will be used.
 </p></td>
 </tr>
@@ -665,7 +633,7 @@ Time complexity: Exponential
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_clique_handler_t"></a>1.4. <code class="function">igraph_clique_handler_t</code> —  Type of clique handler functions.</h3></div></div></div>
 <a class="indexterm" name="id-1.17.3.5.2"></a><pre class="programlisting">
-typedef igraph_bool_t igraph_clique_handler_t(igraph_vector_int_t *clique, void *arg);
+typedef igraph_error_t igraph_clique_handler_t(igraph_vector_int_t *clique, void *arg);
 </pre>
 <p>
 
@@ -711,7 +679,8 @@ See the details at the documentation of <a class="link" href="igraph-Cliques.htm
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Boolean, whether to continue with the clique search.
+  Error code; <code class="constant">IGRAPH_SUCCESS</code> to continue the search or
+  <code class="constant">IGRAPH_STOP</code> to stop the search without signaling an error.
  
   </p></td>
 </tr></tbody>
@@ -725,7 +694,7 @@ See the details at the documentation of <a class="link" href="igraph-Cliques.htm
 <a class="indexterm" name="id-1.17.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_largest_cliques(const igraph_t *graph, igraph_vector_ptr_t *res);
+igraph_error_t igraph_largest_cliques(const igraph_t *graph, igraph_vector_int_list_t *res);
 </pre></div>
 <p>
 </p>
@@ -746,7 +715,7 @@ not always largest.
 
 </p>
 <p>The current implementation of this function searches
-for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a> and drops
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and drops
 those that are not the largest.
 
 </p>
@@ -773,9 +742,8 @@ these two versions.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized pointer vector, the result
-       will be stored here. It will be resized as needed. Note that
-       vertices of a clique may be returned in arbitrary order.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 </tbody>
@@ -823,10 +791,10 @@ Time complexity: O(3^(|V|/3)) worst case.
 <a class="indexterm" name="id-1.17.3.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_maximal_cliques(const igraph_t *graph,
-                           igraph_vector_ptr_t *res,
-                           igraph_integer_t min_size,
-                           igraph_integer_t max_size);
+igraph_error_t igraph_maximal_cliques(
+    const igraph_t *graph, igraph_vector_int_list_t *res,
+    igraph_integer_t min_size, igraph_integer_t max_size
+);
 </pre></div>
 <p>
 </p>
@@ -941,30 +909,7 @@ of the graph, this is typically small for sparse graphs.
 <div class="example">
 <a name="id-1.17.3.7.14.1"></a><p class="title"><b>Example 16.2.  File <code class="code">examples/simple/igraph_maximal_cliques.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> NODES 1000
 <span class="strong"><strong>#define</strong></span> CLIQUE_SIZE 10
@@ -981,15 +926,13 @@ void <span class="strong"><strong>permutation</strong></span>(igraph_vector_int_
     }
 }
 
-int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><strong>const</strong></span> void *a, <span class="strong"><strong>const</strong></span> void *b) {
-    <span class="strong"><strong>const</strong></span> igraph_vector_int_t **da = (<span class="strong"><strong>const</strong></span> igraph_vector_int_t **) a;
-    <span class="strong"><strong>const</strong></span> igraph_vector_int_t **db = (<span class="strong"><strong>const</strong></span> igraph_vector_int_t **) b;
-    igraph_integer_t i, alen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(*da), blen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(*db);
+int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *a, <span class="strong"><strong>const</strong></span> igraph_vector_int_t *b) {
+    igraph_integer_t i, alen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(a), blen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(b);
     <span class="strong"><strong>if</strong></span> (alen != blen) {
         <span class="strong"><strong>return</strong></span> (alen &lt; blen) - (alen &gt; blen);
     }
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; alen; i++) {
-        igraph_integer_t ea = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(**da)[i], eb = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(**db)[i];
+        igraph_integer_t ea = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*a)[i], eb = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*b)[i];
         <span class="strong"><strong>if</strong></span> (ea != eb) {
             <span class="strong"><strong>return</strong></span> (ea &gt; eb) - (ea &lt; eb);
         }
@@ -997,24 +940,21 @@ int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-void <span class="strong"><strong>sort_cliques</strong></span>(igraph_vector_ptr_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
-    igraph_integer_t i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+void <span class="strong"><strong>sort_cliques</strong></span>(igraph_vector_int_list_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
+    igraph_integer_t i, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        igraph_vector_int_t *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i];
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
         <span class="strong"><strong>igraph_vector_int_sort</strong></span>(v);
     }
-    <span class="strong"><strong>igraph_qsort</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>), (size_t) n,
-                 <span class="strong"><strong>sizeof</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *), sort_cmp);
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, sort_cmp);
 }
 
-void <span class="strong"><strong>print_and_destroy_cliques</strong></span>(igraph_vector_ptr_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
-    int i;
+void <span class="strong"><strong>print_cliques</strong></span>(igraph_vector_int_list_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
+    igraph_integer_t i;
     <span class="strong"><strong>sort_cliques</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
-        igraph_vector_int_t *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i];
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
         <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
     }
 }
 
@@ -1022,7 +962,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g, g2, cli;
     igraph_vector_int_t perm;
-    igraph_vector_ptr_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
     igraph_integer_t no;
     igraph_integer_t i;
 
@@ -1034,45 +974,45 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;perm, 0, NODES - 1);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g, IGRAPH_ERDOS_RENYI_GNM, NODES, NODES,
                             <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.10. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.12. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; NO_CLIQUES; i++) {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
         <span class="strong"><strong>permutation</strong></span>(&amp;perm);
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices">igraph_permute_vertices</a></strong></span>(&amp;g, &amp;g2, &amp;perm);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                            <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                                  <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
 
-    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="emphasis"><em>/* Print and destroy them */</em></span>
+    <span class="emphasis"><em>/* Print them */</em></span>
 
-    <span class="strong"><strong>print_and_destroy_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>print_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Build a triangle with a loop (thanks to Emmanuel Navarro) */</em></span>
 
@@ -1080,24 +1020,24 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                            <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                                  <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
 
-    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="emphasis"><em>/* Print and destroy them */</em></span>
+    <span class="emphasis"><em>/* Print them */</em></span>
 
-    <span class="strong"><strong>print_and_destroy_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>print_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1214,30 +1154,7 @@ of the graph, this is typically small for sparse graphs.
 <div class="example">
 <a name="id-1.17.3.8.11.1"></a><p class="title"><b>Example 16.3.  File <code class="code">examples/simple/igraph_maximal_cliques.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2010-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> NODES 1000
 <span class="strong"><strong>#define</strong></span> CLIQUE_SIZE 10
@@ -1254,15 +1171,13 @@ void <span class="strong"><strong>permutation</strong></span>(igraph_vector_int_
     }
 }
 
-int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><strong>const</strong></span> void *a, <span class="strong"><strong>const</strong></span> void *b) {
-    <span class="strong"><strong>const</strong></span> igraph_vector_int_t **da = (<span class="strong"><strong>const</strong></span> igraph_vector_int_t **) a;
-    <span class="strong"><strong>const</strong></span> igraph_vector_int_t **db = (<span class="strong"><strong>const</strong></span> igraph_vector_int_t **) b;
-    igraph_integer_t i, alen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(*da), blen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(*db);
+int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *a, <span class="strong"><strong>const</strong></span> igraph_vector_int_t *b) {
+    igraph_integer_t i, alen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(a), blen = <span class="strong"><strong>igraph_vector_int_size</strong></span>(b);
     <span class="strong"><strong>if</strong></span> (alen != blen) {
         <span class="strong"><strong>return</strong></span> (alen &lt; blen) - (alen &gt; blen);
     }
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; alen; i++) {
-        igraph_integer_t ea = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(**da)[i], eb = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(**db)[i];
+        igraph_integer_t ea = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*a)[i], eb = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*b)[i];
         <span class="strong"><strong>if</strong></span> (ea != eb) {
             <span class="strong"><strong>return</strong></span> (ea &gt; eb) - (ea &lt; eb);
         }
@@ -1270,24 +1185,21 @@ int <span class="strong"><strong>sort_cmp</strong></span>(<span class="strong"><
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-void <span class="strong"><strong>sort_cliques</strong></span>(igraph_vector_ptr_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
-    igraph_integer_t i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+void <span class="strong"><strong>sort_cliques</strong></span>(igraph_vector_int_list_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
+    igraph_integer_t i, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        igraph_vector_int_t *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i];
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
         <span class="strong"><strong>igraph_vector_int_sort</strong></span>(v);
     }
-    <span class="strong"><strong>igraph_qsort</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>), (size_t) n,
-                 <span class="strong"><strong>sizeof</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *), sort_cmp);
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, sort_cmp);
 }
 
-void <span class="strong"><strong>print_and_destroy_cliques</strong></span>(igraph_vector_ptr_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
-    int i;
+void <span class="strong"><strong>print_cliques</strong></span>(igraph_vector_int_list_t *<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>) {
+    igraph_integer_t i;
     <span class="strong"><strong>sort_cliques</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
-        igraph_vector_int_t *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)[i];
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
         <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
     }
 }
 
@@ -1295,7 +1207,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g, g2, cli;
     igraph_vector_int_t perm;
-    igraph_vector_ptr_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
     igraph_integer_t no;
     igraph_integer_t i;
 
@@ -1307,45 +1219,45 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;perm, 0, NODES - 1);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g, IGRAPH_ERDOS_RENYI_GNM, NODES, NODES,
                             <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.10. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.12. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; NO_CLIQUES; i++) {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
         <span class="strong"><strong>permutation</strong></span>(&amp;perm);
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices">igraph_permute_vertices</a></strong></span>(&amp;g, &amp;g2, &amp;perm);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                            <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                                  <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
 
-    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="emphasis"><em>/* Print and destroy them */</em></span>
+    <span class="emphasis"><em>/* Print them */</em></span>
 
-    <span class="strong"><strong>print_and_destroy_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>print_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Build a triangle with a loop (thanks to Emmanuel Navarro) */</em></span>
 
@@ -1353,24 +1265,24 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                            <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 3,
                                  <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
 
-    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="emphasis"><em>/* Print and destroy them */</em></span>
+    <span class="emphasis"><em>/* Print them */</em></span>
 
-    <span class="strong"><strong>print_and_destroy_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong>print_cliques</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1492,13 +1404,11 @@ of the graph, this is typically small for sparse graphs.*
 <a class="indexterm" name="id-1.17.3.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_maximal_cliques_subset(const igraph_t *graph,
-                                  igraph_vector_int_t *subset,
-                                  igraph_vector_ptr_t *res,
-                                  igraph_integer_t *no,
-                                  FILE *outfile,
-                                  igraph_integer_t min_size,
-                                  igraph_integer_t max_size);
+igraph_error_t igraph_maximal_cliques_subset(
+    const igraph_t *graph, igraph_vector_int_t *subset,
+    igraph_vector_int_list_t *res, igraph_integer_t *no,
+    FILE *outfile, igraph_integer_t min_size, igraph_integer_t max_size
+);
 </pre></div>
 <p>
 </p>
@@ -1542,7 +1452,7 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <code class="constant">igraph_ptr_t</code>; the cliques will be
+  Pointer to a list of integer vectors; the cliques will be
   stored here
 </p></td>
 </tr>
@@ -1556,7 +1466,8 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outfile</code></em>:</span></p></td>
 <td><p>
-  Pointer to the output file, it should be writable.
+  Pointer to an output file or <code class="constant">NULL</code>.
+  When not <code class="constant">NULL</code>, the file should be writable.
 </p></td>
 </tr>
 <tr>
@@ -1853,6 +1764,11 @@ igraph_error_t igraph_clique_number(const igraph_t *graph, igraph_integer_t *no)
 The clique number of a graph is the size of the largest clique.
 
 </p>
+<p>The current implementation of this function searches
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and keeps
+track of the size of the largest clique that was found.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -1929,7 +1845,7 @@ Time complexity: O(3^(|V|/3)) worst case.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_weighted_cliques(const igraph_t *graph,
-                            const igraph_vector_t *vertex_weights, igraph_vector_ptr_t *res,
+                            const igraph_vector_t *vertex_weights, igraph_vector_int_list_t *res,
                             igraph_real_t min_weight, igraph_real_t max_weight, igraph_bool_t maximal);
 </pre></div>
 <p>
@@ -1970,30 +1886,28 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-  objects which contain the indices of vertices involved in a clique.
-  The pointer vector will be resized if needed but note that the
-  objects in the pointer vector will not be freed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_weight</code></em>:</span></p></td>
 <td><p>
-  Integer giving the minimum weight of the cliques to be
+  Integer specifying the minimum weight of the cliques to be
   returned. If negative or zero, no lower bound will be used.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_weight</code></em>:</span></p></td>
 <td><p>
-  Integer giving the maximum weight of the cliques to be
+  Integer specifying the maximum weight of the cliques to be
   returned. If negative or zero, no upper bound will be used.
 </p></td>
 </tr>
@@ -2050,7 +1964,7 @@ Time complexity: Exponential
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_largest_weighted_cliques(const igraph_t *graph,
-                                    const igraph_vector_t *vertex_weights, igraph_vector_ptr_t *res);
+                                    const igraph_vector_t *vertex_weights, igraph_vector_int_list_t *res);
 </pre></div>
 <p>
 </p>
@@ -2088,17 +2002,15 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-  objects which contain the indices of vertices involved in a clique.
-  The pointer vector will be resized if needed but note that the
-  objects in the pointer vector will not be freed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 </tbody>
@@ -2181,7 +2093,8 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
@@ -2248,7 +2161,7 @@ Time complexity: TODO
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_independent_vertex_sets(const igraph_t *graph,
-                                   igraph_vector_ptr_t *res,
+                                   igraph_vector_int_list_t *res,
                                    igraph_integer_t min_size,
                                    igraph_integer_t max_size);
 </pre></div>
@@ -2294,24 +2207,21 @@ for generating all the maximal independent sets. SIAM J Computing,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-  objects which contain the indices of vertices involved in an independent
-  vertex set. The pointer vector will be resized if needed but note that the
-  objects in the pointer vector will not be freed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the minimum size of the sets to be
+  Integer specifying the minimum size of the sets to be
   returned. If negative or zero, no lower bound will be used.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
 <td><p>
-  Integer giving the maximum size of the sets to be
+  Integer specifying the maximum size of the sets to be
   returned. If negative or zero, no upper bound will be used.
 </p></td>
 </tr>
@@ -2358,79 +2268,49 @@ Time complexity: TODO
 <div class="example">
 <a name="id-1.17.5.2.13.1"></a><p class="title"><b>Example 16.4.  File <code class="code">examples/simple/igraph_independent_sets.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g;
-    igraph_vector_ptr_t result;
+    igraph_vector_int_list_t result;
     igraph_integer_t i, j, n;
     igraph_integer_t alpha;
     <span class="strong"><strong>const</strong></span> int params[] = {4, -1, 2, 2, 0, 0, -1, -1};
 
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;result, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;result, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong>sizeof</strong></span>(params) / (2 * <span class="strong"><strong>sizeof</strong></span>(params[0])); j++) {
         <span class="strong"><strong>if</strong></span> (params[2 * j + 1] != 0) {
             <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_independent_vertex_sets" title="3.1. igraph_independent_vertex_sets — Finds all independent vertex sets in a graph.">igraph_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result, params[2 * j], params[2 * j + 1]);
         } <span class="strong"><strong>else</strong></span> {
             <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_largest_independent_vertex_sets" title="3.2. igraph_largest_independent_vertex_sets — Finds the largest independent vertex set(s) in a graph.">igraph_largest_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result);
         }
-        n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;result);
+        n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
         <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " independent sets found\n", n);
         <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-            igraph_vector_int_t* v;
-            v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_e" title="2.16.10. igraph_vector_ptr_e — Access an element of a pointer vector.">igraph_vector_ptr_e</a></strong></span>(&amp;result, i);
-            <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-            <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-            <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
+            <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i));
         }
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 10, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 10, 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.3. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph.">igraph_maximal_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;result);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
     <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " maximal independent sets found\n", n);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        igraph_vector_int_t* v;
-        v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_e" title="2.16.10. igraph_vector_ptr_e — Access an element of a pointer vector.">igraph_vector_ptr_e</a></strong></span>(&amp;result, i);
-        <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i));
     }
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;result);
 
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph.">igraph_independence_number</a></strong></span>(&amp;g, &amp;alpha);
     <span class="strong"><strong>printf</strong></span>("alpha=%" IGRAPH_PRId "\n", alpha);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;result);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2450,7 +2330,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_largest_independent_vertex_sets(const igraph_t *graph,
-        igraph_vector_ptr_t *res);
+        igraph_vector_int_list_t *res);
 </pre></div>
 <p>
 </p>
@@ -2489,8 +2369,8 @@ for generating all the maximal independent sets. SIAM J Computing,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-    here. It will be resized as needed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 </tbody>
@@ -2539,7 +2419,7 @@ Time complexity: TODO
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_maximal_independent_vertex_sets(const igraph_t *graph,
-        igraph_vector_ptr_t *res);
+        igraph_vector_int_list_t *res);
 </pre></div>
 <p>
 </p>
@@ -2588,11 +2468,8 @@ use <a class="link" href="igraph-Cliques.html#igraph_independence_number" title=
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to a pointer vector, the result will be stored
-  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-  objects which contain the indices of vertices involved in an independent
-  vertex set. The pointer vector will be resized if needed but note that the
-  objects in the pointer vector will not be freed.
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
 </p></td>
 </tr>
 </tbody>

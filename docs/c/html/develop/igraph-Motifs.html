@@ -688,7 +688,7 @@ of vertices.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_motifs_randesu(const igraph_t *graph, igraph_vector_t *hist,
-                          int size, const igraph_vector_t *cut_prob);
+                          igraph_integer_t size, const igraph_vector_t *cut_prob);
 </pre></div>
 <p>
 </p>
@@ -706,23 +706,25 @@ the graph.
 
 </p>
 <p>
-This function is able to find the different motifs of size three
-and four (i.e. the number of different subgraphs with three and four
-vertices) in the network.
+This function is able to find directed motifs of sizes three
+and four and undirected motifs of sizes three to six
+(i.e. the number of different subgraphs with three to six
+vertices in the network).
 
 </p>
 <p>
 In a big network the total number of motifs can be very large, so
 it takes a lot of time to find all of them. In this case, a sampling
 method can be used. This function is capable of doing sampling via the
-<code class="constant">cut_prob</code> argument. This argument gives the probability that
+<em class="parameter"><code>cut_prob</code></em> argument. This argument gives the probability that
 a branch of the motif search tree will not be explored. See
 S. Wernicke and F. Rasche: FANMOD: a tool for fast network motif
 detection, Bioinformatics 22(9), 1152--1153, 2006 for details.
+<a class="ulink" href="https://doi.org/10.1093/bioinformatics/btl038" target="_top">https://doi.org/10.1093/bioinformatics/btl038</a>
 
 </p>
 <p>
-Set the <code class="constant">cut_prob</code> argument to a zero vector for finding all
+Set the <em class="parameter"><code>cut_prob</code></em> argument to a zero vector for finding all
 motifs.
 
 </p>
@@ -750,7 +752,7 @@ motifs in undirected graphs.
 <td><p>
   The result of the computation, it gives the number of
        motifs found for each isomorphism class. See
-       <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of a graph with 3 or 4 vertices"><code class="function">igraph_isoclass()</code></a> for help about isomorphism classes.
+       <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a> for help about isomorphism classes.
        Note that this function does <span class="emphasis"><em>not</em></span> count isomorphism
        classes that are not connected and will report NaN (more
        precisely <code class="constant">IGRAPH_NAN</code>) for them.
@@ -759,9 +761,10 @@ motifs in undirected graphs.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
 <td><p>
-  The size of the motifs to search for. Only three and
-       four are implemented currently. The limitation is not in the
-       motif finding code, but the graph isomorphism code.
+  The size of the motifs to search for. For directed graphs,
+       only 3 and 4 are implemented, for undirected, 3 to 6.
+       The limitation is not in the motif finding code, but the graph
+       isomorphism code.
 </p></td>
 </tr>
 <tr>
@@ -769,7 +772,7 @@ motifs in undirected graphs.
 <td><p>
   Vector of probabilities for cutting the search tree
        at a given level. The first element is the first level, etc.
-       Supply all zeros here (of length <code class="constant">size</code>) to find all motifs
+       Supply all zeros here (of length <em class="parameter"><code>size</code></em>) to find all motifs
        in a graph.
 </p></td>
 </tr>
@@ -787,11 +790,12 @@ motifs in undirected graphs.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
-
   </p></td>
 </tr></tbody>
 </table></div>
-<p></p>
+<p>
+
+</p>
 <p><b>See also: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -807,7 +811,7 @@ parameter; <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_no" ti
 number of motifs of a given size in a graph;
 <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them."><code class="function">igraph_motifs_randesu_callback()</code></a> for calling a callback function
 for every motif found; <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm"><code class="function">igraph_subisomorphic_lad()</code></a> for finding
-subgraphs on more than 4 vertices.
+subgraphs on more than 4 (directed) or 6 (undirected) vertices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -820,77 +824,57 @@ Time complexity: TODO.
 <div class="example">
 <a name="id-1.20.6.2.15.1"></a><p class="title"><b>Example 19.1.  File <code class="code">examples/simple/igraph_motifs_randesu.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-void <span class="strong"><strong>print_vector</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v) {
-    igraph_integer_t i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v);
-    igraph_real_t sum = 0.0;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_is_nan</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i])) {
-            sum += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i];
-        }
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>igraph_real_printf</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i] / sum);
-        <span class="strong"><strong>printf</strong></span>(" ");
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-}
-
-igraph_bool_t <span class="strong"><strong>print_motif</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, igraph_vector_int_t *vids,
-                          int isoclass, void* extra) {
-    <span class="strong"><strong>printf</strong></span>("Class %d: ", isoclass);
+<span class="emphasis"><em>/* This is a callback function suitable for use with igraph_motifs_randesu_callback().</em></span>
+<span class="emphasis"><em> * It prints each motif it is calld with. */</em></span>
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>print_motif</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, igraph_vector_int_t *vids,
+                          igraph_integer_t isoclass, void* extra) {
+    <span class="strong"><strong>printf</strong></span>("Found isoclass %2" IGRAPH_PRId ":  ", isoclass);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(vids);
-    <span class="strong"><strong>return</strong></span> 0;
+    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS; <span class="emphasis"><em>/* Return 'IGRAPH_SUCCESS': do not interrupt the search. */</em></span>
 }
-
 
 int <span class="strong"><strong>main</strong></span>() {
 
-    igraph_t g;
+    igraph_t graph;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> hist;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cp_3, cp_4;
+    igraph_real_t zeros[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cut_prob;
 
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;cp_3, 3, 0.0, 0.0, 0.0);
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;cp_4, 4, 0.0, 0.0, 0.0, 0.0);
+    <span class="emphasis"><em>/* Compute the 4-motif distritbuion in Zachary's karate club network. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;g, 1000, IGRAPH_DIRECTED, 1, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.15. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;hist, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph.">igraph_motifs_randesu</a></strong></span>(&amp;g, &amp;hist, 3, &amp;cp_3);
-    <span class="strong"><strong>print_vector</strong></span>(&amp;hist);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph.">igraph_motifs_randesu</a></strong></span>(&amp;graph, &amp;hist, 4, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;cut_prob, zeros, 4));
+
+    <span class="emphasis"><em>/* Compute the total number of motifs (connected 4-vertex subgraphs)</em></span>
+<span class="emphasis"><em>     * so that we can print the normalized distribution. */</em></span>
+    igraph_real_t sum = 0.0;
+    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;hist);
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i=0; i &lt; n; i++) {
+        <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_is_nan</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i])) {
+            sum += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i];
+        }
+    }
+    <span class="strong"><strong>printf</strong></span>("4-motif distribution:\n");
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i=0; i &lt; n; i++) {
+        <span class="emphasis"><em>/* Print NaN values in a platform-independent manner: */</em></span>
+        <span class="strong"><strong>igraph_real_printf</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i] / sum);
+        <span class="strong"><strong>printf</strong></span>(" ");
+    }
+    <span class="strong"><strong>printf</strong></span>("\n\n");
+
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;hist);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "bull");
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;g, 3, &amp;cp_3, &amp;print_motif, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;g, 4, &amp;cp_4, &amp;print_motif, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="emphasis"><em>/* Identify the vertices of each three-motif in a small Kautz graph. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;cp_3);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;cp_4);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.21. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;graph, 3, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;cut_prob, zeros, 3), &amp;print_motif, NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -909,7 +893,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_motifs_randesu_no(const igraph_t *graph, igraph_integer_t *no,
-                             int size, const igraph_vector_t *cut_prob);
+                             igraph_integer_t size, const igraph_vector_t *cut_prob);
 </pre></div>
 <p>
 </p>
@@ -1003,7 +987,7 @@ Time complexity: TODO.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_motifs_randesu_estimate(const igraph_t *graph, igraph_integer_t *est,
-                                   int size, const igraph_vector_t *cut_prob,
+                                   igraph_integer_t size, const igraph_vector_t *cut_prob,
                                    igraph_integer_t sample_size,
                                    const igraph_vector_int_t *parsample);
 </pre></div>
@@ -1013,10 +997,10 @@ igraph_error_t igraph_motifs_randesu_estimate(const igraph_t *graph, igraph_inte
 
 
 
-This function estimates the total number of connected induced
+This function estimates the total number of weakly connected induced
 subgraphs, called motifs, of a fixed number of vertices. For
 example, an undirected complete graph on <code class="constant">n</code> vertices
-will have one motif of <em class="parameter"><code>size</code></em> <code class="constant">n</code>, and <code class="constant">n</code> motifs
+will have one motif of size <code class="constant">n</code>, and <code class="constant">n</code> motifs
 of <em class="parameter"><code>size</code></em> <code class="literal">n - 1</code>. As another example, one triangle
 and a separate vertex will have zero motifs of size four.
 
@@ -1063,7 +1047,7 @@ motifs in undirected graphs.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
 <td><p>
-  The size of the motif to look for.
+  The size of the motifs to look for.
 </p></td>
 </tr>
 <tr>
@@ -1071,7 +1055,7 @@ motifs in undirected graphs.
 <td><p>
   Vector giving the probabilities to cut a branch of
        the search tree and omit counting the motifs in that branch.
-       It contains a probability for each level. Supply <code class="constant">size</code>
+       It contains a probability for each level. Supply <em class="parameter"><code>size</code></em>
        zeros here to count all the motifs in the sample.
 </p></td>
 </tr>
@@ -1079,7 +1063,7 @@ motifs in undirected graphs.
 <td><p><span class="term"><em class="parameter"><code>sample_size</code></em>:</span></p></td>
 <td><p>
   The number of vertices to use as the
-       sample. This parameter is only used if the <code class="constant">parsample</code>
+       sample. This parameter is only used if the <em class="parameter"><code>parsample</code></em>
        argument is a null pointer.
 </p></td>
 </tr>
@@ -1088,7 +1072,7 @@ motifs in undirected graphs.
 <td><p>
   Either pointer to an initialized vector or a null
        pointer. If a vector then the vertex IDs in the vector are
-       used as a sample. If a null pointer then the <code class="constant">sample_size</code>
+       used as a sample. If a null pointer then the <em class="parameter"><code>sample_size</code></em>
        argument is used to create a sample of vertices drawn with
        uniform probability.
 </p></td>
@@ -1137,7 +1121,7 @@ Time complexity: TODO.
 <a class="indexterm" name="id-1.20.6.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_motifs_randesu_callback(const igraph_t *graph, int size,
+igraph_error_t igraph_motifs_randesu_callback(const igraph_t *graph, igraph_integer_t size,
                                    const igraph_vector_t *cut_prob, igraph_motifs_handler_t *callback,
                                    void* extra);
 </pre></div>
@@ -1149,9 +1133,10 @@ igraph_error_t igraph_motifs_randesu_callback(const igraph_t *graph, int size,
 
 </p>
 <p>
-Similarly to <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>, this function is able to find the
-different motifs of size three and four (i.e. the number of different
-subgraphs with three and four vertices) in the network. However, instead of
+Similarly to <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>, this function is able to find
+directed motifs of sizes three and four and undirected motifs of sizes
+three to six (i.e. the number of different subgraphs with three to six
+vertices in the network). However, instead of
 counting them, the function will call a callback function for each motif
 found to allow further tests or post-processing.
 
@@ -1232,77 +1217,57 @@ Time complexity: TODO.
 <div class="example">
 <a name="id-1.20.6.5.10.1"></a><p class="title"><b>Example 19.2.  File <code class="code">examples/simple/igraph_motifs_randesu.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-void <span class="strong"><strong>print_vector</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v) {
-    igraph_integer_t i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v);
-    igraph_real_t sum = 0.0;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_is_nan</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i])) {
-            sum += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i];
-        }
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>igraph_real_printf</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i] / sum);
-        <span class="strong"><strong>printf</strong></span>(" ");
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-}
-
-igraph_bool_t <span class="strong"><strong>print_motif</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, igraph_vector_int_t *vids,
-                          int isoclass, void* extra) {
-    <span class="strong"><strong>printf</strong></span>("Class %d: ", isoclass);
+<span class="emphasis"><em>/* This is a callback function suitable for use with igraph_motifs_randesu_callback().</em></span>
+<span class="emphasis"><em> * It prints each motif it is calld with. */</em></span>
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>print_motif</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, igraph_vector_int_t *vids,
+                          igraph_integer_t isoclass, void* extra) {
+    <span class="strong"><strong>printf</strong></span>("Found isoclass %2" IGRAPH_PRId ":  ", isoclass);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(vids);
-    <span class="strong"><strong>return</strong></span> 0;
+    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS; <span class="emphasis"><em>/* Return 'IGRAPH_SUCCESS': do not interrupt the search. */</em></span>
 }
-
 
 int <span class="strong"><strong>main</strong></span>() {
 
-    igraph_t g;
+    igraph_t graph;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> hist;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cp_3, cp_4;
+    igraph_real_t zeros[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cut_prob;
 
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;cp_3, 3, 0.0, 0.0, 0.0);
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;cp_4, 4, 0.0, 0.0, 0.0, 0.0);
+    <span class="emphasis"><em>/* Compute the 4-motif distritbuion in Zachary's karate club network. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a ring graph, a one dimensional lattice.">igraph_ring</a></strong></span>(&amp;g, 1000, IGRAPH_DIRECTED, 1, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.15. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;hist, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph.">igraph_motifs_randesu</a></strong></span>(&amp;g, &amp;hist, 3, &amp;cp_3);
-    <span class="strong"><strong>print_vector</strong></span>(&amp;hist);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph.">igraph_motifs_randesu</a></strong></span>(&amp;graph, &amp;hist, 4, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;cut_prob, zeros, 4));
+
+    <span class="emphasis"><em>/* Compute the total number of motifs (connected 4-vertex subgraphs)</em></span>
+<span class="emphasis"><em>     * so that we can print the normalized distribution. */</em></span>
+    igraph_real_t sum = 0.0;
+    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;hist);
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i=0; i &lt; n; i++) {
+        <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_is_nan</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i])) {
+            sum += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i];
+        }
+    }
+    <span class="strong"><strong>printf</strong></span>("4-motif distribution:\n");
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i=0; i &lt; n; i++) {
+        <span class="emphasis"><em>/* Print NaN values in a platform-independent manner: */</em></span>
+        <span class="strong"><strong>igraph_real_printf</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[i] / sum);
+        <span class="strong"><strong>printf</strong></span>(" ");
+    }
+    <span class="strong"><strong>printf</strong></span>("\n\n");
+
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;hist);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "bull");
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;g, 3, &amp;cp_3, &amp;print_motif, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;g, 4, &amp;cp_4, &amp;print_motif, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="emphasis"><em>/* Identify the vertices of each three-motif in a small Kautz graph. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;cp_3);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;cp_4);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.21. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them.">igraph_motifs_randesu_callback</a></strong></span>(&amp;graph, 3, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;cut_prob, zeros, 3), &amp;print_motif, NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -1321,7 +1286,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.20.6.6.2"></a><pre class="programlisting">
 typedef igraph_error_t igraph_motifs_handler_t(const igraph_t *graph,
         igraph_vector_int_t *vids,
-        int isoclass,
+        igraph_integer_t isoclass,
         void* extra);
 </pre>
 <p>
@@ -1359,7 +1324,7 @@ the following arguments:
 <td><p><span class="term"><em class="parameter"><code>isoclass</code></em>:</span></p></td>
 <td><p>
   The isomorphism class of the motif that has just been
-  found. Use <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of a graph with 3 or 4 vertices"><code class="function">igraph_isoclass</code></a> or <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph</code></a> to find
+  found. Use <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass</code></a> or <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph</code></a> to find
   out which isomorphism class belongs to a given motif.
 </p></td>
 </tr>

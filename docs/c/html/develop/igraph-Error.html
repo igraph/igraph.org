@@ -214,7 +214,7 @@ when this rule is violated are documented in this manual.
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_error_handler_t"></a>2.1. <code class="function">igraph_error_handler_t</code> —  The type of error handler functions.</h3></div></div></div>
 <a class="indexterm" name="id-1.6.3.7.2"></a><pre class="programlisting">
-typedef void igraph_error_handler_t (const char * reason, const char * file,
+typedef void igraph_error_handler_t (const char *reason, const char *file,
                                      int line, igraph_error_t igraph_errno);
 </pre>
 <p>
@@ -320,7 +320,7 @@ standard error and returns with the error code.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="error-codes"></a>3.  Error codes</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Error.html#igraph_error_t">3.1. <code class="function">igraph_error_t</code> —  Type alias for integers to indicate that the integer value is an error code.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_t">3.1. <code class="function">igraph_error_t</code> —  Type alias because igraph_error_t used to be an integer, and was used</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_error_type_t">3.2. <code class="function">igraph_error_type_t</code> —  Error code type.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_strerror">3.3. <code class="function">igraph_strerror</code> —  Textual description of an error.</a></span></dt>
 </dl></div>
@@ -332,12 +332,13 @@ cannot run into any error, these may return other types, or
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_error_t"></a>3.1. <code class="function">igraph_error_t</code> —  Type alias for integers to indicate that the integer value is an error code.</h3></div></div></div>
+<a name="igraph_error_t"></a>3.1. <code class="function">igraph_error_t</code> —  Type alias because igraph_error_t used to be an integer, and was used</h3></div></div></div>
 <a class="indexterm" name="id-1.6.4.3.2"></a><pre class="programlisting">
-typedef int igraph_error_t;
+typedef igraph_error_type_t igraph_error_t;
 </pre>
 <p>
 
+         slightly differenly than igraph_error_type_t.
 
 This type is used as the return type of igraph functions that return an
 error code.
@@ -410,7 +411,8 @@ typedef enum {
     IGRAPH_CPUTIME           = 57,
     IGRAPH_EUNDERFLOW        = 58,
     IGRAPH_ERWSTUCK          = 59,
-    IGRAPH_STOP              = 60  /* undocumented, used internally */
+    IGRAPH_STOP              = 60,
+    IGRAPH_ERANGE            = 61
 } igraph_error_type_t;
 </pre>
 <p>
@@ -866,7 +868,7 @@ or if more flexibility is needed, <a class="link" href="igraph-Error.html#igraph
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_warning_handler_t"></a>4.1. <code class="function">igraph_warning_handler_t</code> —  The type of igraph warning handler functions.</h3></div></div></div>
 <a class="indexterm" name="id-1.6.5.5.2"></a><pre class="programlisting">
-typedef igraph_error_handler_t igraph_warning_handler_t;
+typedef void igraph_warning_handler_t (const char *reason, const char *file, int line);
 </pre>
 <p>
 
@@ -1014,8 +1016,7 @@ error code.
 <a class="indexterm" name="id-1.6.5.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- igraph_error_t igraph_warning(const char *reason, const char *file, int line,
-                                 igraph_error_t igraph_errno);
+ void igraph_warning(const char *reason, const char *file, int line);
 </pre></div>
 <p>
 </p>
@@ -1087,8 +1088,8 @@ a function that uses <span class="command"><strong>igraph</strong></span>.
 <a class="indexterm" name="id-1.6.5.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- igraph_error_t igraph_warningf(const char *reason, const char *file, int line,
-                                  igraph_error_t igraph_errno, ...);
+IGRAPH_FUNCATTR_PRINTFLIKE(1,4)
+IGRAPH_EXPORT void igraph_warningf(const char *reason, const char *file, int line, ...);
 </pre></div>
 <p>
 </p>
@@ -1139,27 +1140,12 @@ into the <em class="parameter"><code>reason</code></em> template string and call
 <td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
 <td><p>
   The additional arguments to be substituted into the
-       template string.
-</p></td>
+       template string.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  The supplied error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
  
 </p>
 </div>
@@ -1169,8 +1155,7 @@ into the <em class="parameter"><code>reason</code></em> template string and call
 <a class="indexterm" name="id-1.6.5.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void igraph_warning_handler_ignore(const char *reason, const char *file,
-                                   int line, igraph_error_t igraph_errno);
+void igraph_warning_handler_ignore(const char *reason, const char *file, int line);
 </pre></div>
 <p>
 </p>
@@ -1226,8 +1211,7 @@ This warning handler function simply ignores all warnings.
 <a class="indexterm" name="id-1.6.5.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void igraph_warning_handler_print(const char *reason, const char *file,
-                                  int line, igraph_error_t igraph_errno);
+void igraph_warning_handler_print(const char *reason, const char *file, int line);
 </pre></div>
 <p>
 </p>
@@ -1313,7 +1297,9 @@ handler which raises an exception according to the Python way.
 <p>
 If you want to write an error handler, your error handler should
 call <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates all registered objects."><code class="function">IGRAPH_FINALLY_FREE()</code></a> to deallocate all temporary memory to
-prevent memory leaks.
+prevent memory leaks. Note that this may invalidate the error message
+buffer <em class="parameter"><code>reason</code></em> passed to the error handler. Do not access it after
+having called <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates all registered objects."><code class="function">IGRAPH_FINALLY_FREE()</code></a>.
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -1596,7 +1582,8 @@ supplied arguments.
 <a class="indexterm" name="id-1.6.6.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- igraph_error_t igraph_errorf(const char *reason, const char *file, int line,
+IGRAPH_FUNCATTR_PRINTFLIKE(1,5)
+IGRAPH_EXPORT igraph_error_t igraph_errorf(const char *reason, const char *file, int line,
                                 igraph_error_t igraph_errno, ...);
 </pre></div>
 <p>
@@ -2137,7 +2124,7 @@ This macro is meant for internal use by <span class="command"><strong>igraph</st
 
 </p>
 <p>
-Since a typial fatal error handler does a <code class="literal">longjmp()</code>, avoid using this
+Since a typical fatal error handler does a <code class="literal">longjmp()</code>, avoid using this
 macro in C++ code. With most compilers, destructor will not be called when
 <code class="literal">longjmp()</code> leaves the current scope.
 
@@ -2166,7 +2153,7 @@ macro in C++ code. With most compilers, destructor will not be called when
 <a class="indexterm" name="id-1.6.6.6.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- IGRAPH_NORETURN void igraph_fatal(const char *reason, const char *file, int line);
+ IGRAPH_FUNCATTR_NORETURN void igraph_fatal(const char *reason, const char *file, int line);
 </pre></div>
 <p>
 </p>
@@ -2216,7 +2203,8 @@ This function triggers a fatal error. Typically it is called indirectly through
 <a class="indexterm" name="id-1.6.6.6.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- IGRAPH_NORETURN void igraph_fatalf(const char *reason, const char *file, int line, ...);
+IGRAPH_FUNCATTR_PRINTFLIKE(1,4)
+IGRAPH_EXPORT IGRAPH_FUNCATTR_NORETURN void igraph_fatalf(const char *reason, const char *file, int line, ...);
 </pre></div>
 <p>
 </p>

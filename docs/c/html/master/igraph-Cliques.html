@@ -412,7 +412,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;result, 0);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.10. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 6, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_pairs_small" title="6.9. igraph_es_pairs_small — Edge selector, multiple edges defined by their endpoints as arguments.">igraph_es_pairs_small</a></strong></span>(&amp;es, 0, 0, 1, 0, 2, 3, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="2.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, es);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="3.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, es);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object.">igraph_es_destroy</a></strong></span>(&amp;es);
 
     <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong>sizeof</strong></span>(params) / (2 * <span class="strong"><strong>sizeof</strong></span>(params[0])); j++) {
@@ -437,7 +437,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>test_callback</strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(&amp;g, &amp;result, 5, 5);
@@ -445,7 +445,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;result);
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -758,7 +758,7 @@ not always largest.
 
 </p>
 <p>The current implementation of this function searches
-for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a> and drops
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and drops
 those that are not the largest.
 
 </p>
@@ -1053,18 +1053,18 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
         <span class="strong"><strong>permutation</strong></span>(&amp;perm);
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices">igraph_permute_vertices</a></strong></span>(&amp;g, &amp;g2, &amp;perm);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
@@ -1085,7 +1085,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Clean up */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Build a triangle with a loop (thanks to Emmanuel Navarro) */</em></span>
 
@@ -1110,7 +1110,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Clean up */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1327,18 +1327,18 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
         <span class="strong"><strong>permutation</strong></span>(&amp;perm);
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices">igraph_permute_vertices</a></strong></span>(&amp;g, &amp;g2, &amp;perm);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
 
     <span class="emphasis"><em>/* Find the maximal cliques */</em></span>
 
@@ -1359,7 +1359,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Clean up */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Build a triangle with a loop (thanks to Emmanuel Navarro) */</em></span>
 
@@ -1384,7 +1384,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Clean up */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1570,7 +1570,8 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outfile</code></em>:</span></p></td>
 <td><p>
-  Pointer to the output file, it should be writable.
+  Pointer to an output file or <code class="constant">NULL</code>.
+  When not <code class="constant">NULL</code>, the file should be writable.
 </p></td>
 </tr>
 <tr>
@@ -1867,6 +1868,11 @@ int igraph_clique_number(const igraph_t *graph, igraph_integer_t *no);
 The clique number of a graph is the size of the largest clique.
 
 </p>
+<p>The current implementation of this function searches
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and keeps
+track of the size of the largest clique that was found.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -1984,7 +1990,8 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
@@ -2102,7 +2109,8 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
@@ -2195,7 +2203,8 @@ Only positive integer vertex weights are supported.
 <td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   A vector of vertex weights. The current implementation
-  will truncate all weights to their integer parts.
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
 </p></td>
 </tr>
 <tr>
@@ -2437,7 +2446,7 @@ int <span class="strong"><strong>main</strong></span>() {
             <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
         }
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_tree" title="1.9. igraph_tree — Creates a tree in which almost all vertices have the same number of children.">igraph_tree</a></strong></span>(&amp;g, 10, 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.3. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph.">igraph_maximal_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result);
@@ -2455,7 +2464,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph.">igraph_independence_number</a></strong></span>(&amp;g, &amp;alpha);
     <span class="strong"><strong>printf</strong></span>("alpha=%ld\n", (long)alpha);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }

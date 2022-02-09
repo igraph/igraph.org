@@ -240,47 +240,8 @@ Some igraph functions return a pointer vector (igraph_vector_ptr_t)
 containing pointers to other igraph or other data types. These data
 types are dynamically allocated and have to be deallocated
 manually when the user does not need them any more. This can be done
-by calling igraph_free on them.
+by calling <code class="constant">igraph_free</code>() on them.
 
-</p>
-<p>
-Here is a complete example on how to use <code class="constant">igraph_free</code> properly.
-
-</p>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="id-1.7.3.5.2"></a><p class="title"><b>Example 6.1.  File <code class="code">examples/simple/igraph_free.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-int <span class="strong"><strong>main</strong></span>(void)
-{
-   igraph_t graph;
-   igraph_vector_ptr_t seps;
-   igraph_integer_t i;
-
-   <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.13. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "tutte");
-   <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;seps, 0);
-   <span class="strong"><strong><a class="link" href="igraph-Separators.html#igraph_minimum_size_separators" title="4. igraph_minimum_size_separators — Find all minimum size separating vertex sets.">igraph_minimum_size_separators</a></strong></span>(&amp;graph, &amp;seps);
-
-   <span class="strong"><strong>for</strong></span> (i=0; i&lt;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;seps); i++) {
-     igraph_vector_int_t *v=<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(seps)[i];
-     <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
-     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(v);
-     <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
-   }
-
-   <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;seps);
-   <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-   <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<p>
 </p>
 <p><b>Arguments: </b>
 </p>
