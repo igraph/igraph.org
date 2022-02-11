@@ -47,8 +47,8 @@ def process_html_file(path, version, latest_version):
                         in_body = False
                         outfp.write("{% endraw %}\n")
                         break
-                if in_body:
-                    outfp.write(line)
+                    if in_body:
+                        outfp.write(line)
 
     move(tmp_path, path)
 
