@@ -43,7 +43,7 @@ def process_html_file(path, version, latest_version):
                     if line.startswith("<body"):
                         in_body = True
                 else:
-                    if line.startswith("</body"):
+                    if line.lstrip().startswith("</body"):
                         in_body = False
                         outfp.write("{% endraw %}\n")
                         break
