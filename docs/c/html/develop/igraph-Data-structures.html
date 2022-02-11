@@ -157,8 +157,9 @@
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Dqueues">7. Double-ended queues</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Heaps">8. Maximum and minimum heaps</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Strvector">9. String vectors</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Adjlists">10. Adjacency lists</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Partial-prefix-sum-trees">11. Partial prefix sum trees</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Vector-lists">10. Lists of vectors, matrices and graphs</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Adjlists">11. Adjacency lists</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Partial-prefix-sum-trees">12. Partial prefix sum trees</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -213,6 +214,17 @@ types they currently support:
   In addition both maximum and minimum heaps are available.
   The default is the <span class="type">igraph_real_t</span> maximum heap.
 </p></dd>
+<dt><span class="glossterm">list of vectors</span></dt>
+<dd class="glossdef"><p>
+  Lists of vectors are currently defined for vectors holding
+  <span class="type">igraph_real_t</span> and <span class="type">igraph_integer_t</span> (int).
+  The default is <span class="type">igraph_real_t</span>.
+</p></dd>
+<dt><span class="glossterm">list of matrices</span></dt>
+<dd class="glossdef"><p>
+  Lists of matrices are currently defined for matrices holding
+  <span class="type">igraph_real_t</span> only.
+</p></dd>
 </dl></div>
 <p>
 </p>
@@ -258,12 +270,24 @@ Some examples:
   <span class="type">igraph_integer_t</span> elements. Its functions have the
   <code class="function">igraph_heap_min_int_</code> prefix.
 </p></li>
+<li class="listitem"><p>
+  <span class="type">igraph_vector_list_t</span> is a list of (floating-point) vectors; each
+  element in this data structure is an <span class="type">igraph_vector_t</span>.
+  Similarly, <span class="type">igraph_matrix_list_t</span> is a list of (floating-point)
+  matrices; each element in this data structure is an <span class="type">igraph_matrix_t</span>.
+</p></li>
+<li class="listitem"><p>
+  <span class="type">igraph_vector_int_list_t</span> is a list of integer vectors; each
+  element in this data structure is an <span class="type">igraph_vector_int_t</span>.
+</p></li>
 </ul></div>
 <p>
 </p>
 <p>
 Note that the <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a> and the <a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a> macros can be used on <span class="emphasis"><em>all</em></span>
-vector and matrix types.
+vector and matrix types. <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a> cannot be used
+on <span class="emphasis"><em>lists</em></span> of vectors, though, only on the individial
+vectors in the list.
 </p>
 </div>
 <div class="section">
@@ -305,7 +329,7 @@ when the vector is supposed to hold vertex or edge identifiers, while
 <span class="type">igraph_vector_t</span> is used when the vector is expected to hold fractional
 numbers or infinities.</p>
 <p>The <span class="type">igraph_vector_t</span> type and its variants usually use O(n) space
-to store n elements. Sometimes they uses more, this is because vectors can
+to store n elements. Sometimes they use more, this is because vectors can
 shrink, but even if they shrink, the current implementation does not free a
 single bit of memory.</p>
 <p>The elements in an <span class="type">igraph_vector_t</span> object and its variants are
@@ -315,7 +339,7 @@ memory, the starting address of this memory block can be queried
 with the <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR</code></a> macro. This way, vector objects can be used
 with standard mathematical libraries, like the GNU Scientific
 Library.</p>
-<p>Almost all of the functions desccribed below for <span class="type">igraph_vector_t</span>
+<p>Almost all of the functions described below for <span class="type">igraph_vector_t</span>
 also exist for all the other vector type variants. These variants are not
 documented separately; you can simply replace <code class="constant">vector</code> with <code class="constant">vector_int</code>,
 <code class="constant">vector_bool</code> or something similar if you need a function for another
@@ -19944,12 +19968,1720 @@ length of the new string.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph-Adjlists"></a>10. Adjacency lists</h2></div></div></div>
+<a name="igraph-Vector-lists"></a>10. Lists of vectors, matrices and graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#adjacent-vertices">10.1. Adjacent vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#incident-edges">10.2. Incident edges</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#lazy-adjacency-list">10.3. Lazy adjacency list for vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#lazy-incidence-list">10.4. Lazy incidence list for edges</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_t">10.1.  About <span class="type">igraph_vector_list_t</span> objects</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#vector-list-constructors-and-destructors">10.2.  Constructors and
+Destructors</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#vector-list-accessing-elements">10.3.  Accessing elements</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#vector-list-properties">10.4. Vector properties</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#vector-list-resizing-operations">10.5. Resizing operations</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#vector-list-sorting">10.6. Sorting and reordering</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_vector_list_t"></a>10.1.  About <span class="type">igraph_vector_list_t</span> objects</h3></div></div></div>
+<p>The <span class="type">igraph_vector_list_t</span> data type is essentially a list of
+<span class="type">igraph_vector_t</span> objects with automatic memory management. It is something
+similar to (but much simpler than) the <span class="type">vector</span> template in the C++
+standard library where the elements are vectors themselves.</p>
+<p>There are multiple variants of <span class="type">igraph_vector_list_t</span>; the basic variant
+stores vectors of doubles (i.e. each item is an <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a>), but
+there is also <span class="type">igraph_vector_int_list_t</span> for integers (where each item is
+an <span class="type">igraph_vector_int_t</span>), <span class="type">igraph_matrix_list_t</span> for matrices of
+doubles and so on. The following list summarizes the variants that are
+currently available in the library:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>
+<span class="type">igraph_vector_list_t</span> for lists of vectors of floating-point numbers
+     (<span class="type">igraph_vector_t</span>)
+
+</p></li>
+<li class="listitem"><p>
+<span class="type">igraph_vector_int_list_t</span> for lists of integer vectors
+     (<span class="type">igraph_vector_int_t</span>)
+
+</p></li>
+<li class="listitem"><p>
+<span class="type">igraph_matrix_list_t</span> for lists of matrices of floating-point numbers
+     (<span class="type">igraph_matrix_t</span>)
+
+</p></li>
+<li class="listitem"><p>
+<span class="type">igraph_graph_list_t</span> for lists of graphs (<span class="type">igraph_t</span>)
+
+</p></li>
+</ul></div>
+<p>Lists of vectors are used in <span class="command"><strong>igraph</strong></span> in many
+cases, e.g., when returning lists of paths, cliques or vertex sets.
+Functions that expect or return a list of numeric vectors typically use
+<span class="type">igraph_vector_list_t</span> or <span class="type">igraph_vector_int_list_t</span> to achieve this.
+Lists of integer vectors are used when the vectors in the list are supposed
+to hold vertex or edge identifiers, while lists of floating-point vectors
+are used when the vectors are expected to hold fractional numbers or
+infinities.</p>
+<p>The elements in an <span class="type">igraph_vector_list_t</span> object and its variants are
+indexed from zero, we follow the usual C convention here.</p>
+<p>Almost all of the functions described below for <span class="type">igraph_vector_list_t</span>
+also exist for all the other vector list variants. These variants are not
+documented separately; you can simply replace <code class="constant">vector_list</code> with, say,
+<code class="constant">vector_int_list</code> if you need a function for another variant. For instance,
+to initialize a list of integer vectors, you need to use
+<code class="constant">igraph_vector_int_list_init</code>() and not <a class="link" href="igraph-Data-structures.html#igraph_vector_list_init" title="10.2.1. igraph_vector_list_init — Initializes a list of vectors (constructor)."><code class="function">igraph_vector_list_init()</code></a>.</p>
+<p>Before diving into a detailed description of the functions related to
+lists of vectors, we must also talk about the <span class="emphasis"><em>ownership</em></span> rules of these
+objects. The most important rule is that the vectors in the list are
+owned by the list itself, meaning that the user is <span class="emphasis"><em>not</em></span> responsible
+for allocating memory for the vectors or for freeing the memory associated
+to the vectors. It is the responsibility of the list to allocate and initialize
+the vectors when new items are created in the list, and it is also the
+responsibility of the list to destroy the items when they are removed from
+the list without passing on their ownership to the user. As a consequence,
+the list may not contain "uninitialized" or "null" items; each item is
+initialized when it comes to existence. If you create a list containing
+one million vectors, you are not only allocating memory for one million
+<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> object but you are also initializing one million
+vectors. Also, if you have a list containing one million vectors and you
+clear the list by calling <a class="link" href="igraph-Data-structures.html#igraph_vector_list_clear" title="10.5.1. igraph_vector_list_clear — Removes all elements from a list of vectors."><code class="function">igraph_vector_list_clear()</code></a>, the list will
+implicitly destroy these lists, and any pointers that you may hold to the
+items become invalid at once.</p>
+<p>Speaking about pointers, the typical way of working with vectors in
+a list is to obtain a pointer to one of the items via the
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_get_ptr" title="10.3.1. igraph_vector_list_get_ptr — Retrieve the address of a vector in the vector list."><code class="function">igraph_vector_list_get_ptr()</code></a> method and then passing this pointer
+onwards to functions that manipulate <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> objects. However,
+note that the pointers are <span class="emphasis"><em>ephemeral</em></span> in the sense that they may be
+invalidated any time when the list is modified because a modification may
+involve the re-allocation of the internal storage of the list if more space
+is needed, and the pointers that you obtained will not follow the
+reallocation. This limitation does not appear often in real-world usage of
+<code class="constant">igraph_vector_list_t</code> and in general, the advantages of the automatic
+memory management outweigh this limitation.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vector-list-constructors-and-destructors"></a>10.2.  Constructors and
+Destructors</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_init">10.2.1. <code class="function">igraph_vector_list_init</code> —  Initializes a list of vectors (constructor).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_destroy">10.2.2. <code class="function">igraph_vector_list_destroy</code> —  Destroys a list of vectors object.</a></span></dt>
+</dl></div>
+<p><span class="type">igraph_vector_list_t</span> objects have to be initialized before using
+them, this is analogous to calling a constructor on them.
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_init" title="10.2.1. igraph_vector_list_init — Initializes a list of vectors (constructor)."><code class="function">igraph_vector_list_init()</code></a> is the basic constructor; it creates a list
+of the given length and also initializes each vector in the newly created
+list to zero length.</p>
+<p>If an <span class="type">igraph_vector_list_t</span> object is not needed any more, it
+should be destroyed to free its allocated memory by calling the
+<span class="type">igraph_vector_list_t</span> destructor, <a class="link" href="igraph-Data-structures.html#igraph_vector_list_destroy" title="10.2.2. igraph_vector_list_destroy — Destroys a list of vectors object."><code class="function">igraph_vector_list_destroy()</code></a>.
+Calling the destructor also destroys all the vectors inside the vector
+list due to the ownership rules. If you want to keep a few of the vectors
+in the vector list, you need to copy them with <a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor)."><code class="function">igraph_vector_copy()</code></a> or
+<a class="link" href="igraph-Data-structures.html#igraph_vector_update" title="2.6.2. igraph_vector_update — Update a vector from another one."><code class="function">igraph_vector_update()</code></a>, or you need to remove them from the list and
+take ownership by calling <a class="link" href="igraph-Data-structures.html#igraph_vector_list_pop_back" title="10.5.7. igraph_vector_list_pop_back — Remove the last item from the vector list and transfer ownership to the caller."><code class="function">igraph_vector_list_pop_back()</code></a>,
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_remove" title="10.5.8. igraph_vector_list_remove — Remove the item at the given index from the vector list and transfer ownership to the caller."><code class="function">igraph_vector_list_remove()</code></a> or <a class="link" href="igraph-Data-structures.html#igraph_vector_list_remove_fast" title="10.5.9. igraph_vector_list_remove_fast — Remove the item at the given index in the vector list, move the last item to its place and transfer ownership to the caller."><code class="function">igraph_vector_list_remove_fast()</code></a> .</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_init"></a>10.2.1. <code class="function">igraph_vector_list_init</code> —  Initializes a list of vectors (constructor).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_init(igraph_vector_list_t* v, igraph_integer_t size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function constructs a list of vectors of the given size, and initializes
+each vector in the newly created list to become an empty vector.
+
+</p>
+<p>
+Vector objects initialized by this function are <span class="emphasis"><em>owned</em></span> by the list, and
+they will be destroyed automatically when the list is destroyed with
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_destroy" title="10.2.2. igraph_vector_list_destroy — Destroys a list of vectors object."><code class="function">igraph_vector_list_destroy()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to a not yet initialized list of vectors.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
+<td><p>
+  The size of the list.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  error code:
+      <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, the amount of
+<span class="quote">“<span class="quote">time</span>”</span> required to allocate
+O(n) elements and initialize the corresponding vectors;
+n is the number of elements.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_destroy"></a>10.2.2. <code class="function">igraph_vector_list_destroy</code> —  Destroys a list of vectors object.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_destroy(igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+All lists initialized by <a class="link" href="igraph-Data-structures.html#igraph_vector_list_init" title="10.2.1. igraph_vector_list_init — Initializes a list of vectors (constructor)."><code class="function">igraph_vector_list_init()</code></a> should be properly
+destroyed by this function. A destroyed list of vectors needs to be
+reinitialized by <a class="link" href="igraph-Data-structures.html#igraph_vector_list_init" title="10.2.1. igraph_vector_list_init — Initializes a list of vectors (constructor)."><code class="function">igraph_vector_list_init()</code></a> if you want to use it again.
+
+</p>
+<p>
+Vectors that are in the list when it is destroyed are also destroyed
+implicitly.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to the (previously initialized) list object to
+       destroy.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: operating system dependent.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vector-list-accessing-elements"></a>10.3.  Accessing elements</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_get_ptr">10.3.1. <code class="function">igraph_vector_list_get_ptr</code> —  Retrieve the address of a vector in the vector list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_set">10.3.2. <code class="function">igraph_vector_list_set</code> —  Sets the vector at the given index in the list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_swap">10.3.3. <code class="function">igraph_vector_list_swap</code> —  Swaps the vector at the given index in the list with another one.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_tail_ptr">10.3.4. <code class="function">igraph_vector_list_tail_ptr</code> —  Retrieve the address of the last vector in the vector list.</a></span></dt>
+</dl></div>
+<p>Elements of a vector list may be accessed with the
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_get_ptr" title="10.3.1. igraph_vector_list_get_ptr — Retrieve the address of a vector in the vector list."><code class="function">igraph_vector_list_get_ptr()</code></a> function. The function returns a <span class="emphasis"><em>pointer</em></span>
+to the vector with a given index inside the list, and you may then pass
+this pointer onwards to other functions that can query or manipulate
+vectors. The pointer itself is guaranteed to stay valid as long as the
+list itself is not modified; however, <span class="emphasis"><em>any</em></span> modification to the list
+will invalidate the pointer, even modifications that are seemingly unrelated
+to the vector that the pointer points to (such as adding a new vector at
+the end of the list). This is because the list data structure may be forced
+to re-allocate its internal storage if a new element does not fit into the
+already allocated space, and there are no guarantees that the re-allocated
+block remains at the same memory location (typically it gets moved elsewhere).
+</p>
+<p>Note that the standard <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR</code></a> macro that works for ordinary vectors
+does not work for lists of vectors to access the i-th element (but of course
+you can use it to index into an existing vector that you retrieved from the
+vector list with <a class="link" href="igraph-Data-structures.html#igraph_vector_list_get_ptr" title="10.3.1. igraph_vector_list_get_ptr — Retrieve the address of a vector in the vector list."><code class="function">igraph_vector_list_get_ptr()</code></a> ). This is because the
+macro notation would allow one to overwrite the vector in the list with
+another one without the list knowing about it, so the list would not be able
+to destroy the vector that was overwritten by a new one.
+</p>
+<p> <a class="link" href="igraph-Data-structures.html#igraph_vector_list_tail_ptr" title="10.3.4. igraph_vector_list_tail_ptr — Retrieve the address of the last vector in the vector list."><code class="function">igraph_vector_list_tail_ptr()</code></a> returns a pointer to the last
+vector in the list, or <code class="constant">NULL</code> if the list is empty. There is no
+<code class="function">igraph_vector_list_head_ptr()</code>, however, as it is easy to
+write <code class="literal">igraph_vector_list_get_ptr(v, 0)</code> instead.</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_get_ptr"></a>10.3.1. <code class="function">igraph_vector_list_get_ptr</code> —  Retrieve the address of a vector in the vector list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.4.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_vector_t* igraph_vector_list_get_ptr(const igraph_vector_list_t* v, igraph_integer_t pos);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pos</code></em>:</span></p></td>
+<td><p>
+  The position of the vector in the list. The position of the first
+    vector is zero.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  A pointer to the vector. It remains valid as long as the underlying
+    list of vectors is not modified.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_set"></a>10.3.2. <code class="function">igraph_vector_list_set</code> —  Sets the vector at the given index in the list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.4.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_set(igraph_vector_list_t* v, igraph_integer_t pos, igraph_vector_t* e);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function destroys the vector that is already at the given index <em class="parameter"><code>pos</code></em>
+in the list, and replaces it with the vector pointed to by <em class="parameter"><code>e</code></em>.
+The ownership of the vector pointed to by <em class="parameter"><code>e</code></em> is taken by the list so
+the user is not responsible for destroying <em class="parameter"><code>e</code></em> any more; it will be
+destroyed when the list itself is destroyed or if <em class="parameter"><code>e</code></em> gets removed from the
+list without passing on the ownership to somewhere else.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pos</code></em>:</span></p></td>
+<td><p>
+  The index to modify in the list.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>e</code></em>:</span></p></td>
+<td><p>
+  The vector to set in the list.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_swap"></a>10.3.3. <code class="function">igraph_vector_list_swap</code> —  Swaps the vector at the given index in the list with another one.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.4.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_swap(igraph_vector_list_t* v, igraph_integer_t pos, igraph_vector_t* e);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function replaces the vector that is already at the given index <em class="parameter"><code>pos</code></em>
+in the list with the vector pointed to by <em class="parameter"><code>e</code></em>. The ownership of the vector
+pointed to by <em class="parameter"><code>e</code></em> is taken by the list so the user is not responsible for
+destroying <em class="parameter"><code>e</code></em> any more. At the same time, the ownership of the vector that
+<span class="emphasis"><em>was</em></span> in the list at position <em class="parameter"><code>pos</code></em> will be transferred to the caller and
+<em class="parameter"><code>e</code></em> will be updated to point to it, so the caller becomes responsible for
+destroying it when it does not need the vector any more.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pos</code></em>:</span></p></td>
+<td><p>
+  The index to modify in the list.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>e</code></em>:</span></p></td>
+<td><p>
+  The vector to swap with the one already in the list.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_tail_ptr"></a>10.3.4. <code class="function">igraph_vector_list_tail_ptr</code> —  Retrieve the address of the last vector in the vector list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.4.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_vector_t* igraph_vector_list_tail_ptr(const igraph_vector_list_t *v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  A pointer to the last vector in the list, or <code class="constant">NULL</code> if the list
+    is empty.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vector-list-properties"></a>10.4. Vector properties</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_empty">10.4.1. <code class="function">igraph_vector_list_empty</code> —  Decides whether the size of the list is zero.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_size">10.4.2. <code class="function">igraph_vector_list_size</code> —  Returns the size (=length) of the vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_capacity">10.4.3. <code class="function">igraph_vector_list_capacity</code> —  Returns the allocated capacity of the list.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_empty"></a>10.4.1. <code class="function">igraph_vector_list_empty</code> —  Decides whether the size of the list is zero.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.5.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_bool_t igraph_vector_list_empty(const igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Non-zero number (true) if the size of the list is zero and
+        zero (false) otherwise.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_size"></a>10.4.2. <code class="function">igraph_vector_list_size</code> —  Returns the size (=length) of the vector.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_vector_list_size(const igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The size of the list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_capacity"></a>10.4.3. <code class="function">igraph_vector_list_capacity</code> —  Returns the allocated capacity of the list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.5.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_vector_list_capacity(const igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+Note that this might be different from the size of the list (as
+queried by <a class="link" href="igraph-Data-structures.html#igraph_vector_list_size" title="10.4.2. igraph_vector_list_size — Returns the size (=length) of the vector."><code class="function">igraph_vector_list_size()</code></a>), and specifies how many vectors
+the list can hold, without reallocation.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to the (previously initialized) list object to query.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The allocated capacity.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_size" title="10.4.2. igraph_vector_list_size — Returns the size (=length) of the vector."><code class="function">igraph_vector_list_size()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vector-list-resizing-operations"></a>10.5. Resizing operations</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_clear">10.5.1. <code class="function">igraph_vector_list_clear</code> —  Removes all elements from a list of vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_reserve">10.5.2. <code class="function">igraph_vector_list_reserve</code> —  Reserves memory for a list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_resize">10.5.3. <code class="function">igraph_vector_list_resize</code> —  Resize the list of vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_push_back">10.5.4. <code class="function">igraph_vector_list_push_back</code> —  Append an existing vector to the list, transferring ownership.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_push_back_copy">10.5.5. <code class="function">igraph_vector_list_push_back_copy</code> —  Append the copy of a vector to the list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_push_back_new">10.5.6. <code class="function">igraph_vector_list_push_back_new</code> —  Append a new vector to the list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_pop_back">10.5.7. <code class="function">igraph_vector_list_pop_back</code> —  Remove the last item from the vector list and transfer ownership to the caller.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_remove">10.5.8. <code class="function">igraph_vector_list_remove</code> —  Remove the item at the given index from the vector list and transfer ownership to the caller.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_remove_fast">10.5.9. <code class="function">igraph_vector_list_remove_fast</code> —  Remove the item at the given index in the vector list, move the last item to its place and transfer ownership to the caller.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_discard">10.5.10. <code class="function">igraph_vector_list_discard</code> —  Discard the item at the given index in the vector list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_discard_back">10.5.11. <code class="function">igraph_vector_list_discard_back</code> —  Discard the last item in the vector list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_discard_fast">10.5.12. <code class="function">igraph_vector_list_discard_fast</code> —  Discard the item at the given index in the vector list and move the last item to its place.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_clear"></a>10.5.1. <code class="function">igraph_vector_list_clear</code> —  Removes all elements from a list of vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_clear(igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function sets the size of the list to zero, and it also destroys all
+the vectors that were placed in the list before clearing it.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n), n is the number of items being deleted.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_reserve"></a>10.5.2. <code class="function">igraph_vector_list_reserve</code> —  Reserves memory for a list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_reserve(igraph_vector_list_t* v, igraph_integer_t capacity);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+<span class="command"><strong>igraph</strong></span> lists are flexible, they can grow and shrink. Growing
+however occasionally needs the data in the list to be copied.
+In order to avoid this, you can call this function to reserve space for
+future growth of the list.
+
+</p>
+<p>
+Note that this function does <span class="emphasis"><em>not</em></span> change the size of the list, neither
+does it initialize any new vectors. Let us see a small example to clarify
+things: if you reserve space for 100 elements and the size of your
+list was (and still is) 60, then you can surely add additional 40
+new vectors to your list before it will be copied.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>capacity</code></em>:</span></p></td>
+<td><p>
+  The new <span class="emphasis"><em>allocated</em></span> size of the list.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, should be around
+O(n), n is the new allocated size of the list.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_resize"></a>10.5.3. <code class="function">igraph_vector_list_resize</code> —  Resize the list of vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_resize(igraph_vector_list_t* v, igraph_integer_t new_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+Note that this function does not free any memory, just sets the
+size of the list to the given one. It can on the other hand
+allocate more memory if the new size is larger than the previous
+one.
+
+</p>
+<p>
+When the new size is larger than the current size, the newly added
+vectors in the list are initialized to empty vectors. When the new
+size is smaller than the current size, the vectors that were removed
+from the end of the list are destroyed automatically.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>new_size</code></em>:</span></p></td>
+<td><p>
+  The new size of the list.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code,
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough
+        memory. Note that this function <span class="emphasis"><em>never</em></span> returns an error
+        if the list is made smaller.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_reserve" title="10.5.2. igraph_vector_list_reserve — Reserves memory for a list."><code class="function">igraph_vector_list_reserve()</code></a> for allocating memory for future
+extensions of a list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(m) if the new size is smaller (m is the number of items
+that were removed from the list), operating system dependent if the new
+size is larger. In the latter case it is usually around O(n), where n is the
+new size of the vector.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_push_back"></a>10.5.4. <code class="function">igraph_vector_list_push_back</code> —  Append an existing vector to the list, transferring ownership.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_push_back(igraph_vector_list_t* v, igraph_vector_t* e);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function resizes the list to be one element longer, and sets the very last
+element in the list to the specified vector <em class="parameter"><code>e</code></em> . The list takes ownership
+of the vector so the user is not responsible for freeing <em class="parameter"><code>e</code></em> any more;
+the vector will be destroyed when the list itself is destroyed or if <em class="parameter"><code>e</code></em> gets
+removed from the list without passing on the ownership to somewhere else.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>e</code></em>:</span></p></td>
+<td><p>
+  Pointer to the vector to append to the list.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent. What is important is that
+a sequence of n subsequent calls to this function has time complexity
+O(n), even if there hadn't been any space reserved for the new elements by
+<a class="link" href="igraph-Data-structures.html#igraph_vector_list_reserve" title="10.5.2. igraph_vector_list_reserve — Reserves memory for a list."><code class="function">igraph_vector_list_reserve()</code></a>. This is implemented by a trick similar to
+the C++ <span class="type">vector</span> class: each time more memory is allocated for a
+vector, the size of the additionally allocated memory is the same
+as the vector's current length. (We assume here that the time
+complexity of memory allocation is at most linear).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_push_back_copy"></a>10.5.5. <code class="function">igraph_vector_list_push_back_copy</code> —  Append the copy of a vector to the list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_push_back_copy(igraph_vector_list_t* v, const igraph_vector_t* e);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function resizes the list to be one element longer, and copies the
+specified vector given as an argument to the last element. The newly added
+element is owned by the list, but the ownership of the original vector is
+retained at the caller.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>e</code></em>:</span></p></td>
+<td><p>
+  Pointer to the vector to copy to the end of the list.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: same as <a class="link" href="igraph-Data-structures.html#igraph_vector_list_push_back" title="10.5.4. igraph_vector_list_push_back — Append an existing vector to the list, transferring ownership."><code class="function">igraph_vector_list_push_back()</code></a> plus the time
+needed to copy the vector (which is O(n) for n elements in the vector).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_push_back_new"></a>10.5.6. <code class="function">igraph_vector_list_push_back_new</code> —  Append a new vector to the list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_push_back_new(igraph_vector_list_t* v, igraph_vector_t** e);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function resizes the list to be one element longer. The newly added
+element will be an empty vector that is owned by the list. A pointer to
+the newly added element is returned in the last argument if it is not
+<code class="constant">NULL</code> .
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector pointer; this will be updated to point to
+       the newly added vector. May be <code class="constant">NULL</code> if you do not need a pointer
+       to the newly added vector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: same as <a class="link" href="igraph-Data-structures.html#igraph_vector_list_push_back" title="10.5.4. igraph_vector_list_push_back — Append an existing vector to the list, transferring ownership."><code class="function">igraph_vector_list_push_back()</code></a>.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_pop_back"></a>10.5.7. <code class="function">igraph_vector_list_pop_back</code> —  Remove the last item from the vector list and transfer ownership to the caller.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_pop_back(igraph_vector_list_t* v, igraph_vector_t* result);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the last vector from the list. The vector that was
+removed from the list is returned in <em class="parameter"><code>e</code></em> and its ownership is passed back
+to the caller; in other words, the caller becomes responsible for destroying
+the vector when it is not needed any more.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_vector_t</code> object; it will be updated to the
+       item that was removed from the list. Ownership of this vector is
+       passed on to the caller.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_remove"></a>10.5.8. <code class="function">igraph_vector_list_remove</code> —  Remove the item at the given index from the vector list and transfer ownership to the caller.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_remove(igraph_vector_list_t* v, igraph_integer_t index, igraph_vector_t* result);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the vector at the given index from the list, and
+moves all subsequent items in the list by one slot to the left to fill
+the gap. The vector that was removed from the list is returned in <em class="parameter"><code>e</code></em>
+and its ownership is passed back to the caller; in other words, the caller
+becomes responsible for destroying the vector when it is not needed any more.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em>:</span></p></td>
+<td><p>
+  Index of the item to be removed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_vector_t</code> object; it will be updated to the
+       item that was removed from the list. Ownership of this vector is
+       passed on to the caller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_remove_fast" title="10.5.9. igraph_vector_list_remove_fast — Remove the item at the given index in the vector list, move the last item to its place and transfer ownership to the caller."><code class="function">igraph_vector_list_remove_fast()</code></a> if you do not care about the
+order of the items in the list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), where n is the number of items in the list.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_remove_fast"></a>10.5.9. <code class="function">igraph_vector_list_remove_fast</code> —  Remove the item at the given index in the vector list, move the last item to its place and transfer ownership to the caller.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_remove_fast(igraph_vector_list_t* v, igraph_integer_t index, igraph_vector_t* result);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the vector at the given index from the list,
+moves the last item in the list to <em class="parameter"><code>index</code></em> to fill the gap, and then
+transfers ownership of the removed vector back to the caller; in other words,
+the caller becomes responsible for destroying the vector when it is not
+needed any more.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em>:</span></p></td>
+<td><p>
+  Index of the item to be discarded and destroyed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_discard" title="10.5.10. igraph_vector_list_discard — Discard the item at the given index in the vector list."><code class="function">igraph_vector_list_discard()</code></a> if you want to preserve the order of the
+items in the list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_discard"></a>10.5.10. <code class="function">igraph_vector_list_discard</code> —  Discard the item at the given index in the vector list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_discard(igraph_vector_list_t* v, igraph_integer_t index);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the vector at the given index from the list, and
+moves all subsequent items in the list by one slot to the left to fill
+the gap. The vector that was removed from the list is destroyed automatically.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em>:</span></p></td>
+<td><p>
+  Index of the item to be discarded and destroyed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_discard_fast" title="10.5.12. igraph_vector_list_discard_fast — Discard the item at the given index in the vector list and move the last item to its place."><code class="function">igraph_vector_list_discard_fast()</code></a> if you do not care about the
+order of the items in the list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), where n is the number of items in the list.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_discard_back"></a>10.5.11. <code class="function">igraph_vector_list_discard_back</code> —  Discard the last item in the vector list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.12.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_discard_back(igraph_vector_list_t* v);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the last vector from the list and destroys it.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_discard_fast"></a>10.5.12. <code class="function">igraph_vector_list_discard_fast</code> —  Discard the item at the given index in the vector list and move the last item to its place.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.6.13.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_discard_fast(igraph_vector_list_t* v, igraph_integer_t index);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function removes the vector at the given index from the list, and
+moves the last item in the list to <em class="parameter"><code>index</code></em> to fill the gap. The vector that
+was removed from the list is destroyed automatically.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em>:</span></p></td>
+<td><p>
+  Index of the item to be discarded and destroyed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_list_discard" title="10.5.10. igraph_vector_list_discard — Discard the item at the given index in the vector list."><code class="function">igraph_vector_list_discard()</code></a> if you want to preserve the order of the
+items in the list.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vector-list-sorting"></a>10.6. Sorting and reordering</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_permute">10.6.1. <code class="function">igraph_vector_list_permute</code> —  Permutes the elements of a list in place according to an index vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_sort">10.6.2. <code class="function">igraph_vector_list_sort</code> —  Sorts the elements of the list into ascending order.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_list_sort_ind">10.6.3. <code class="function">igraph_vector_list_sort_ind</code> —  Return a permutation of indices that sorts the list</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_permute"></a>10.6.1. <code class="function">igraph_vector_list_permute</code> —  Permutes the elements of a list in place according to an index vector.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.7.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_permute(igraph_vector_list_t* v, const igraph_vector_int_t* index);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This function takes a list <code class="constant">v</code> and a corresponding index vector <code class="constant">index</code>,
+and permutes the elements of <code class="constant">v</code> such that <code class="constant">v</code>[index[i]] is moved to become
+<code class="constant">v</code>[i] after the function is executed.
+
+</p>
+<p>
+It is an error to call this function with an index vector that does not
+represent a valid permutation. Each element in the index vector must be
+between 0 and the length of the list minus one (inclusive), and each such
+element must appear only once. The function does not attempt to validate the
+index vector. Memory may be leaked if the index vector does not satisfy these
+conditions.
+
+</p>
+<p>
+The index vector that this function takes is compatible with the index vector
+returned from <a class="link" href="igraph-Data-structures.html#igraph_vector_list_sort_ind" title="10.6.3. igraph_vector_list_sort_ind — Return a permutation of indices that sorts the list"><code class="function">igraph_vector_list_sort_ind()</code></a>; passing in the index vector
+from <a class="link" href="igraph-Data-structures.html#igraph_vector_list_sort_ind" title="10.6.3. igraph_vector_list_sort_ind — Return a permutation of indices that sorts the list"><code class="function">igraph_vector_list_sort_ind()</code></a> will sort the original vector.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  the list to permute
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em>:</span></p></td>
+<td><p>
+  the index vector</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n), the number of items in the list.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_sort"></a>10.6.2. <code class="function">igraph_vector_list_sort</code> —  Sorts the elements of the list into ascending order.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.7.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_list_sort(igraph_vector_list_t *v, int (*cmp)(const igraph_vector_t*, const igraph_vector_t*));
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized list object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cmp</code></em>:</span></p></td>
+<td><p>
+  A comparison function that takes pointers to two vectors and
+       returns zero if the two vectors are considered equal, any negative
+       number if the first vector is smaller and any positive number if the
+       second vector is smaller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n log n) for n elements.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_list_sort_ind"></a>10.6.3. <code class="function">igraph_vector_list_sort_ind</code> —  Return a permutation of indices that sorts the list</h4></div></div></div>
+<a class="indexterm" name="id-1.8.11.7.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_list_sort_ind(
+    igraph_vector_list_t *v, igraph_vector_int_t *inds,
+    int (*cmp)(const igraph_vector_t*, const igraph_vector_t*)
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+Takes an unsorted list <em class="parameter"><code>v</code></em> as input and computes an array of
+indices <em class="parameter"><code>inds</code></em> such that v[ inds[i] ], with i increasing from 0, is
+an ordered array according to the comparison function <em class="parameter"><code>cmp</code></em>. The order of
+indices for identical elements is not defined.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  the list to be sorted
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>inds</code></em>:</span></p></td>
+<td><p>
+  the output array of indices. This must be initialized,
+       but will be resized
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cmp</code></em>:</span></p></td>
+<td><p>
+  A comparison function that takes pointers to two vectors and
+       returns zero if the two vectors are considered equal, any negative
+       number if the first vector is smaller and any positive number if the
+       second vector is smaller.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n log n) for n elements.
+ 
+</p>
+</div>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph-Adjlists"></a>11. Adjacency lists</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#adjacent-vertices">11.1. Adjacent vertices</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#incident-edges">11.2. Incident edges</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#lazy-adjacency-list">11.3. Lazy adjacency list for vertices</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#lazy-incidence-list">11.4. Lazy incidence list for edges</a></span></dt>
 </dl></div>
 <p>Sometimes it is easier to work with a graph which is in
 adjacency list format: a list of vectors; each vector contains the
@@ -19972,7 +21704,7 @@ on how exactly the rewiring is done) typically O(|V|+|E|) time for
 the whole rewiring process.</p>
 <p>Lazy adjacency lists are a bit different. When creating a
 lazy adjacency list, the neighbors of the vertices are not queried,
-only some memory is allocated for the vectors. When <a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="10.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> is called for vertex v the first time,
+only some memory is allocated for the vectors. When <a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="11.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> is called for vertex v the first time,
 the neighbors of v are queried and stored in a vector of the
 adjacency list, so they don't need to be queried again. Lazy
 adjacency lists are handy if you have an at least linear operation
@@ -19984,7 +21716,7 @@ during the computation.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.11.5.1"></a><p class="title"><b>Example 7.12.  File <code class="code">examples/simple/adjlist.c</code></b></p>
+<a name="id-1.8.12.5.1"></a><p class="title"><b>Example 7.12.  File <code class="code">examples/simple/adjlist.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -19999,13 +21731,13 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>     * whether the two are isomorphic (they should be) */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from an incidence list.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="11.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from an incidence list.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.5. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic">igraph_isomorphic</a></strong></span>(&amp;g, &amp;g2, &amp;iso);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_destroy" title="10.1.4. igraph_adjlist_destroy — Deallocates an adjacency list.">igraph_adjlist_destroy</a></strong></span>(&amp;adjlist);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_destroy" title="11.1.4. igraph_adjlist_destroy — Deallocates an adjacency list.">igraph_adjlist_destroy</a></strong></span>(&amp;adjlist);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -20019,22 +21751,22 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="adjacent-vertices"></a>10.1. Adjacent vertices</h3></div></div></div>
+<a name="adjacent-vertices"></a>11.1. Adjacent vertices</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init">10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_empty">10.1.2. <code class="function">igraph_adjlist_init_empty</code> —  Initializes an empty adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_complementer">10.1.3. <code class="function">igraph_adjlist_init_complementer</code> —  Adjacency lists for the complementer graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_destroy">10.1.4. <code class="function">igraph_adjlist_destroy</code> —  Deallocates an adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_get">10.1.5. <code class="function">igraph_adjlist_get</code> —  Query a vector in an adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_size">10.1.6. <code class="function">igraph_adjlist_size</code> —  Returns the number of vertices in an adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_clear">10.1.7. <code class="function">igraph_adjlist_clear</code> — Removes all edges from an adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_sort">10.1.8. <code class="function">igraph_adjlist_sort</code> —  Sorts each vector in an adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_simplify">10.1.9. <code class="function">igraph_adjlist_simplify</code> —  Simplifies an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init">11.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_empty">11.1.2. <code class="function">igraph_adjlist_init_empty</code> —  Initializes an empty adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_complementer">11.1.3. <code class="function">igraph_adjlist_init_complementer</code> —  Adjacency lists for the complementer graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_destroy">11.1.4. <code class="function">igraph_adjlist_destroy</code> —  Deallocates an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_get">11.1.5. <code class="function">igraph_adjlist_get</code> —  Query a vector in an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_size">11.1.6. <code class="function">igraph_adjlist_size</code> —  Returns the number of vertices in an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_clear">11.1.7. <code class="function">igraph_adjlist_clear</code> — Removes all edges from an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_sort">11.1.8. <code class="function">igraph_adjlist_sort</code> —  Sorts each vector in an adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_simplify">11.1.9. <code class="function">igraph_adjlist_simplify</code> —  Simplifies an adjacency list.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_init"></a>10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.2.2"></a><p>
+<a name="igraph_adjlist_init"></a>11.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_adjlist_init_from_inclist(
@@ -20115,8 +21847,8 @@ edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_init_empty"></a>10.1.2. <code class="function">igraph_adjlist_init_empty</code> —  Initializes an empty adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.3.2"></a><p>
+<a name="igraph_adjlist_init_empty"></a>11.1.2. <code class="function">igraph_adjlist_init_empty</code> —  Initializes an empty adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_adjlist_init_empty(igraph_adjlist_t *al, igraph_integer_t no_of_nodes);
@@ -20176,8 +21908,8 @@ Time complexity: O(|V|), linear in the number of vertices.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_init_complementer"></a>10.1.3. <code class="function">igraph_adjlist_init_complementer</code> —  Adjacency lists for the complementer graph.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.4.2"></a><p>
+<a name="igraph_adjlist_init_complementer"></a>11.1.3. <code class="function">igraph_adjlist_init_complementer</code> —  Adjacency lists for the complementer graph.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_adjlist_init_complementer(const igraph_t *graph,
@@ -20257,8 +21989,8 @@ Time complexity: O(|V|^2+|E|), quadratic in the number of vertices.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_destroy"></a>10.1.4. <code class="function">igraph_adjlist_destroy</code> —  Deallocates an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.5.2"></a><p>
+<a name="igraph_adjlist_destroy"></a>11.1.4. <code class="function">igraph_adjlist_destroy</code> —  Deallocates an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_adjlist_destroy(igraph_adjlist_t *al);
@@ -20293,8 +22025,8 @@ Time complexity: depends on memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_get"></a>10.1.5. <code class="function">igraph_adjlist_get</code> —  Query a vector in an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.6.2"></a><p>
+<a name="igraph_adjlist_get"></a>11.1.5. <code class="function">igraph_adjlist_get</code> —  Query a vector in an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.6.2"></a><p>
 </p>
 <pre class="programlisting">
 #define igraph_adjlist_get(al,no)
@@ -20352,8 +22084,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_size"></a>10.1.6. <code class="function">igraph_adjlist_size</code> —  Returns the number of vertices in an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.7.2"></a><p>
+<a name="igraph_adjlist_size"></a>11.1.6. <code class="function">igraph_adjlist_size</code> —  Returns the number of vertices in an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_adjlist_size(const igraph_adjlist_t *al);
@@ -20402,8 +22134,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_clear"></a>10.1.7. <code class="function">igraph_adjlist_clear</code> — Removes all edges from an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.8.2"></a><p>
+<a name="igraph_adjlist_clear"></a>11.1.7. <code class="function">igraph_adjlist_clear</code> — Removes all edges from an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_adjlist_clear(igraph_adjlist_t *al);
@@ -20437,8 +22169,8 @@ the total number of elements in the adjacency list.</p></td>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_sort"></a>10.1.8. <code class="function">igraph_adjlist_sort</code> —  Sorts each vector in an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.9.2"></a><p>
+<a name="igraph_adjlist_sort"></a>11.1.8. <code class="function">igraph_adjlist_sort</code> —  Sorts each vector in an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_adjlist_sort(igraph_adjlist_t *al);
@@ -20474,8 +22206,8 @@ the adjacency list.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_simplify"></a>10.1.9. <code class="function">igraph_adjlist_simplify</code> —  Simplifies an adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.6.10.2"></a><p>
+<a name="igraph_adjlist_simplify"></a>11.1.9. <code class="function">igraph_adjlist_simplify</code> —  Simplifies an adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.6.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_adjlist_simplify(igraph_adjlist_t *al);
@@ -20528,18 +22260,18 @@ vertices.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="incident-edges"></a>10.2. Incident edges</h3></div></div></div>
+<a name="incident-edges"></a>11.2. Incident edges</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_init">10.2.1. <code class="function">igraph_inclist_init</code> —  Initializes an incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_destroy">10.2.2. <code class="function">igraph_inclist_destroy</code> —  Frees all memory allocated for an incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_get">10.2.3. <code class="function">igraph_inclist_get</code> —  Query a vector in an incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_size">10.2.4. <code class="function">igraph_inclist_size</code> —  Returns the number of vertices in an incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_clear">10.2.5. <code class="function">igraph_inclist_clear</code> —  Removes all edges from an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_init">11.2.1. <code class="function">igraph_inclist_init</code> —  Initializes an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_destroy">11.2.2. <code class="function">igraph_inclist_destroy</code> —  Frees all memory allocated for an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_get">11.2.3. <code class="function">igraph_inclist_get</code> —  Query a vector in an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_size">11.2.4. <code class="function">igraph_inclist_size</code> —  Returns the number of vertices in an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_inclist_clear">11.2.5. <code class="function">igraph_inclist_clear</code> —  Removes all edges from an incidence list.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_inclist_init"></a>10.2.1. <code class="function">igraph_inclist_init</code> —  Initializes an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.7.2.2"></a><p>
+<a name="igraph_inclist_init"></a>11.2.1. <code class="function">igraph_inclist_init</code> —  Initializes an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_inclist_init(const igraph_t *graph,
@@ -20637,8 +22369,8 @@ edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_inclist_destroy"></a>10.2.2. <code class="function">igraph_inclist_destroy</code> —  Frees all memory allocated for an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.7.3.2"></a><p>
+<a name="igraph_inclist_destroy"></a>11.2.2. <code class="function">igraph_inclist_destroy</code> —  Frees all memory allocated for an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_inclist_destroy(igraph_inclist_t *il);
@@ -20672,8 +22404,8 @@ Time complexity: depends on memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_inclist_get"></a>10.2.3. <code class="function">igraph_inclist_get</code> —  Query a vector in an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.7.4.2"></a><p>
+<a name="igraph_inclist_get"></a>11.2.3. <code class="function">igraph_inclist_get</code> —  Query a vector in an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.7.4.2"></a><p>
 </p>
 <pre class="programlisting">
 #define igraph_inclist_get(il,no)
@@ -20732,8 +22464,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_inclist_size"></a>10.2.4. <code class="function">igraph_inclist_size</code> —  Returns the number of vertices in an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.7.5.2"></a><p>
+<a name="igraph_inclist_size"></a>11.2.4. <code class="function">igraph_inclist_size</code> —  Returns the number of vertices in an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.7.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_inclist_size(const igraph_inclist_t *il);
@@ -20782,8 +22514,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_inclist_clear"></a>10.2.5. <code class="function">igraph_inclist_clear</code> —  Removes all edges from an incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.7.6.2"></a><p>
+<a name="igraph_inclist_clear"></a>11.2.5. <code class="function">igraph_inclist_clear</code> —  Removes all edges from an incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.7.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_inclist_clear(igraph_inclist_t *il);
@@ -20819,18 +22551,18 @@ the total number of elements in the incidence list.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="lazy-adjacency-list"></a>10.3. Lazy adjacency list for vertices</h3></div></div></div>
+<a name="lazy-adjacency-list"></a>11.3. Lazy adjacency list for vertices</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_init">10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_destroy">10.3.2. <code class="function">igraph_lazy_adjlist_destroy</code> —  Deallocate a lazt adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_get">10.3.3. <code class="function">igraph_lazy_adjlist_get</code> —  Query neighbor vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_size">10.3.4. <code class="function">igraph_lazy_adjlist_size</code> —  Returns the number of vertices in a lazy adjacency list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_clear">10.3.5. <code class="function">igraph_lazy_adjlist_clear</code> —  Removes all edges from a lazy adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_init">11.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_destroy">11.3.2. <code class="function">igraph_lazy_adjlist_destroy</code> —  Deallocate a lazt adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_get">11.3.3. <code class="function">igraph_lazy_adjlist_get</code> —  Query neighbor vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_size">11.3.4. <code class="function">igraph_lazy_adjlist_size</code> —  Returns the number of vertices in a lazy adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_clear">11.3.5. <code class="function">igraph_lazy_adjlist_clear</code> —  Removes all edges from a lazy adjacency list.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_init"></a>10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.8.2.2"></a><p>
+<a name="igraph_lazy_adjlist_init"></a>11.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.8.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_lazy_adjlist_init(const igraph_t *graph,
@@ -20847,7 +22579,7 @@ igraph_error_t igraph_lazy_adjlist_init(const igraph_t *graph,
 
 Create a lazy adjacency list for vertices. This function only
 allocates some memory for storing the vectors of an adjacency list,
-but the neighbor vertices are not queried, only at the <a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="10.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> calls.
+but the neighbor vertices are not queried, only at the <a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="11.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> calls.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -20913,8 +22645,8 @@ depends on the underlying memory management too.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_destroy"></a>10.3.2. <code class="function">igraph_lazy_adjlist_destroy</code> —  Deallocate a lazt adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.8.3.2"></a><p>
+<a name="igraph_lazy_adjlist_destroy"></a>11.3.2. <code class="function">igraph_lazy_adjlist_destroy</code> —  Deallocate a lazt adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.8.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_lazy_adjlist_destroy(igraph_lazy_adjlist_t *al);
@@ -20949,8 +22681,8 @@ Time complexity: depends on the memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_get"></a>10.3.3. <code class="function">igraph_lazy_adjlist_get</code> —  Query neighbor vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.8.4.2"></a><p>
+<a name="igraph_lazy_adjlist_get"></a>11.3.3. <code class="function">igraph_lazy_adjlist_get</code> —  Query neighbor vertices.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.8.4.2"></a><p>
 </p>
 <pre class="programlisting">
 #define igraph_lazy_adjlist_get(al,no)
@@ -21014,8 +22746,8 @@ first time, O(1) for subsequent calls.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_size"></a>10.3.4. <code class="function">igraph_lazy_adjlist_size</code> —  Returns the number of vertices in a lazy adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.8.5.2"></a><p>
+<a name="igraph_lazy_adjlist_size"></a>11.3.4. <code class="function">igraph_lazy_adjlist_size</code> —  Returns the number of vertices in a lazy adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.8.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_lazy_adjlist_size(const igraph_lazy_adjlist_t *al);
@@ -21064,8 +22796,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_clear"></a>10.3.5. <code class="function">igraph_lazy_adjlist_clear</code> —  Removes all edges from a lazy adjacency list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.8.6.2"></a><p>
+<a name="igraph_lazy_adjlist_clear"></a>11.3.5. <code class="function">igraph_lazy_adjlist_clear</code> —  Removes all edges from a lazy adjacency list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.8.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_lazy_adjlist_clear(igraph_lazy_adjlist_t *al);
@@ -21100,18 +22832,18 @@ the total number of elements in the adjacency list.</p></td>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="lazy-incidence-list"></a>10.4. Lazy incidence list for edges</h3></div></div></div>
+<a name="lazy-incidence-list"></a>11.4. Lazy incidence list for edges</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_init">10.4.1. <code class="function">igraph_lazy_inclist_init</code> —  Initializes a lazy incidence list of edges.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_destroy">10.4.2. <code class="function">igraph_lazy_inclist_destroy</code> —  Deallocates a lazy incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_get">10.4.3. <code class="function">igraph_lazy_inclist_get</code> —  Query incident edges.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_size">10.4.4. <code class="function">igraph_lazy_inclist_size</code> —  Returns the number of vertices in a lazy incidence list.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_clear">10.4.5. <code class="function">igraph_lazy_inclist_clear</code> —  Removes all edges from a lazy incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_init">11.4.1. <code class="function">igraph_lazy_inclist_init</code> —  Initializes a lazy incidence list of edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_destroy">11.4.2. <code class="function">igraph_lazy_inclist_destroy</code> —  Deallocates a lazy incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_get">11.4.3. <code class="function">igraph_lazy_inclist_get</code> —  Query incident edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_size">11.4.4. <code class="function">igraph_lazy_inclist_size</code> —  Returns the number of vertices in a lazy incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_inclist_clear">11.4.5. <code class="function">igraph_lazy_inclist_clear</code> —  Removes all edges from a lazy incidence list.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_inclist_init"></a>10.4.1. <code class="function">igraph_lazy_inclist_init</code> —  Initializes a lazy incidence list of edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.9.2.2"></a><p>
+<a name="igraph_lazy_inclist_init"></a>11.4.1. <code class="function">igraph_lazy_inclist_init</code> —  Initializes a lazy incidence list of edges.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.9.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_lazy_inclist_init(const igraph_t *graph,
@@ -21127,7 +22859,7 @@ igraph_error_t igraph_lazy_inclist_init(const igraph_t *graph,
 
 Create a lazy incidence list for edges. This function only
 allocates some memory for storing the vectors of an incidence list,
-but the incident edges are not queried, only when <a class="link" href="igraph-Data-structures.html#igraph_lazy_inclist_get" title="10.4.3. igraph_lazy_inclist_get — Query incident edges."><code class="function">igraph_lazy_inclist_get()</code></a> is called.
+but the incident edges are not queried, only when <a class="link" href="igraph-Data-structures.html#igraph_lazy_inclist_get" title="11.4.3. igraph_lazy_inclist_get — Query incident edges."><code class="function">igraph_lazy_inclist_get()</code></a> is called.
 
 </p>
 <p>
@@ -21206,8 +22938,8 @@ also depends on the underlying memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_inclist_destroy"></a>10.4.2. <code class="function">igraph_lazy_inclist_destroy</code> —  Deallocates a lazy incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.9.3.2"></a><p>
+<a name="igraph_lazy_inclist_destroy"></a>11.4.2. <code class="function">igraph_lazy_inclist_destroy</code> —  Deallocates a lazy incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.9.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_lazy_inclist_destroy(igraph_lazy_inclist_t *il);
@@ -21242,8 +22974,8 @@ Time complexity: depends on memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_inclist_get"></a>10.4.3. <code class="function">igraph_lazy_inclist_get</code> —  Query incident edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.9.4.2"></a><p>
+<a name="igraph_lazy_inclist_get"></a>11.4.3. <code class="function">igraph_lazy_inclist_get</code> —  Query incident edges.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.9.4.2"></a><p>
 </p>
 <pre class="programlisting">
 #define igraph_lazy_inclist_get(al,no)
@@ -21307,8 +23039,8 @@ time, O(1) for subsequent calls with the same <em class="parameter"><code>no</co
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_inclist_size"></a>10.4.4. <code class="function">igraph_lazy_inclist_size</code> —  Returns the number of vertices in a lazy incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.9.5.2"></a><p>
+<a name="igraph_lazy_inclist_size"></a>11.4.4. <code class="function">igraph_lazy_inclist_size</code> —  Returns the number of vertices in a lazy incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.9.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_lazy_inclist_size(const igraph_lazy_inclist_t *il);
@@ -21357,8 +23089,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_inclist_clear"></a>10.4.5. <code class="function">igraph_lazy_inclist_clear</code> —  Removes all edges from a lazy incidence list.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.11.9.6.2"></a><p>
+<a name="igraph_lazy_inclist_clear"></a>11.4.5. <code class="function">igraph_lazy_inclist_clear</code> —  Removes all edges from a lazy incidence list.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.12.9.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_lazy_inclist_clear(igraph_lazy_inclist_t *il);
@@ -21395,15 +23127,15 @@ the total number of elements in the incidence list.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph-Partial-prefix-sum-trees"></a>11. Partial prefix sum trees</h2></div></div></div>
+<a name="igraph-Partial-prefix-sum-trees"></a>12. Partial prefix sum trees</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_init">11.1. <code class="function">igraph_psumtree_init</code> —  Initializes a partial prefix sum tree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_destroy">11.2. <code class="function">igraph_psumtree_destroy</code> —  Destroys a partial prefix sum tree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_size">11.3. <code class="function">igraph_psumtree_size</code> —  Returns the size of the tree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_get">11.4. <code class="function">igraph_psumtree_get</code> —  Retrieves the value corresponding to an item in the tree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_sum">11.5. <code class="function">igraph_psumtree_sum</code> —  Returns the sum of the values of the leaves in the tree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_search">11.6. <code class="function">igraph_psumtree_search</code> —  Finds an item in the tree, given a value.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_update">11.7. <code class="function">igraph_psumtree_update</code> —  Updates the value associated to an item in the tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_init">12.1. <code class="function">igraph_psumtree_init</code> —  Initializes a partial prefix sum tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_destroy">12.2. <code class="function">igraph_psumtree_destroy</code> —  Destroys a partial prefix sum tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_size">12.3. <code class="function">igraph_psumtree_size</code> —  Returns the size of the tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_get">12.4. <code class="function">igraph_psumtree_get</code> —  Retrieves the value corresponding to an item in the tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_sum">12.5. <code class="function">igraph_psumtree_sum</code> —  Returns the sum of the values of the leaves in the tree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_search">12.6. <code class="function">igraph_psumtree_search</code> —  Finds an item in the tree, given a value.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_psumtree_update">12.7. <code class="function">igraph_psumtree_update</code> —  Updates the value associated to an item in the tree.</a></span></dt>
 </dl></div>
 <p>The <span class="type">igraph_psumtree_t</span> data type represents a partial prefix sum
 tree. A partial prefix sum tree is a data structure that can be used to draw
@@ -21426,8 +23158,8 @@ are non-negative. This is enforced by the object; in particular, trying to
 set a negative value for an item will produce an igraph error.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_init"></a>11.1. <code class="function">igraph_psumtree_init</code> —  Initializes a partial prefix sum tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.5.2"></a><p>
+<a name="igraph_psumtree_init"></a>12.1. <code class="function">igraph_psumtree_init</code> —  Initializes a partial prefix sum tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_psumtree_init(igraph_psumtree_t *t, igraph_integer_t size);
@@ -21490,8 +23222,8 @@ Time complexity: O(n) for a tree containing n elements
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_destroy"></a>11.2. <code class="function">igraph_psumtree_destroy</code> —  Destroys a partial prefix sum tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.6.2"></a><p>
+<a name="igraph_psumtree_destroy"></a>12.2. <code class="function">igraph_psumtree_destroy</code> —  Destroys a partial prefix sum tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_psumtree_destroy(igraph_psumtree_t *t);
@@ -21505,9 +23237,9 @@ void igraph_psumtree_destroy(igraph_psumtree_t *t);
 
 </p>
 <p>
-All partial prefix sum trees initialized by <a class="link" href="igraph-Data-structures.html#igraph_psumtree_init" title="11.1. igraph_psumtree_init — Initializes a partial prefix sum tree."><code class="function">igraph_psumtree_init()</code></a>
+All partial prefix sum trees initialized by <a class="link" href="igraph-Data-structures.html#igraph_psumtree_init" title="12.1. igraph_psumtree_init — Initializes a partial prefix sum tree."><code class="function">igraph_psumtree_init()</code></a>
 should be properly destroyed by this function. A destroyed tree needs to be
-reinitialized by <a class="link" href="igraph-Data-structures.html#igraph_psumtree_init" title="11.1. igraph_psumtree_init — Initializes a partial prefix sum tree."><code class="function">igraph_psumtree_init()</code></a> if you want to use it again.
+reinitialized by <a class="link" href="igraph-Data-structures.html#igraph_psumtree_init" title="12.1. igraph_psumtree_init — Initializes a partial prefix sum tree."><code class="function">igraph_psumtree_init()</code></a> if you want to use it again.
 
 </p>
 <p><b>Arguments: </b>
@@ -21532,8 +23264,8 @@ Time complexity: operating system dependent.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_size"></a>11.3. <code class="function">igraph_psumtree_size</code> —  Returns the size of the tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.7.2"></a><p>
+<a name="igraph_psumtree_size"></a>12.3. <code class="function">igraph_psumtree_size</code> —  Returns the size of the tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_psumtree_size(const igraph_psumtree_t *t);
@@ -21583,8 +23315,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_get"></a>11.4. <code class="function">igraph_psumtree_get</code> —  Retrieves the value corresponding to an item in the tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.8.2"></a><p>
+<a name="igraph_psumtree_get"></a>12.4. <code class="function">igraph_psumtree_get</code> —  Retrieves the value corresponding to an item in the tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_psumtree_get(const igraph_psumtree_t *t, igraph_integer_t idx);
@@ -21645,8 +23377,8 @@ Time complexity: O(1)
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_sum"></a>11.5. <code class="function">igraph_psumtree_sum</code> —  Returns the sum of the values of the leaves in the tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.9.2"></a><p>
+<a name="igraph_psumtree_sum"></a>12.5. <code class="function">igraph_psumtree_sum</code> —  Returns the sum of the values of the leaves in the tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_psumtree_sum(const igraph_psumtree_t *t);
@@ -21696,8 +23428,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_search"></a>11.6. <code class="function">igraph_psumtree_search</code> —  Finds an item in the tree, given a value.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.10.2"></a><p>
+<a name="igraph_psumtree_search"></a>12.6. <code class="function">igraph_psumtree_search</code> —  Finds an item in the tree, given a value.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_psumtree_search(const igraph_psumtree_t *t, igraph_integer_t *idx,
@@ -21775,8 +23507,8 @@ Time complexity: O(log n), where n is the number of items in the tree.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_psumtree_update"></a>11.7. <code class="function">igraph_psumtree_update</code> —  Updates the value associated to an item in the tree.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.12.11.2"></a><p>
+<a name="igraph_psumtree_update"></a>12.7. <code class="function">igraph_psumtree_update</code> —  Updates the value associated to an item in the tree.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.13.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_psumtree_update(igraph_psumtree_t *t, igraph_integer_t idx,

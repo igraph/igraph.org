@@ -17425,8 +17425,8 @@ randomly connected network it is (asymptotically) zero.
 
 </p>
 <p>
-The unnormalized version, computed when <em class="parameter"><code>normalization</code></em> is set to false,
-is identical to the modularity, and is computed as follows for
+The unnormalized version, computed when <em class="parameter"><code>normalized</code></em> is set to false,
+is identical to the modularity, and is defined as follows for
 directed networks:
 </p>
 <p>
@@ -17435,8 +17435,8 @@ directed networks:
 <p>
 where <code class="constant">m</code> denotes the number of edges, <code class="constant">A_ij</code> is the adjacency matrix,
 <code class="literal">k^out</code> and <code class="literal">k^in</code> are the out- and in-degrees,
-and <code class="literal">d(i,j)</code> is one if vertices <code class="constant">i</code> and <code class="constant">j</code> have the same type
-and zero otherwise.
+and <code class="literal">d(i,j)</code> is one if vertices <code class="constant">i</code> and <code class="constant">j</code> are in the same
+category and zero otherwise.
 
 </p>
 <p>
@@ -17463,14 +17463,14 @@ References:
 M. E. J. Newman: Mixing patterns in networks,
 Phys. Rev. E 67, 026126 (2003)
 <a class="ulink" href="https://doi.org/10.1103/PhysRevE.67.026126" target="_top">https://doi.org/10.1103/PhysRevE.67.026126</a>.
-See equation (2) for the definition.
+See section II and equation (2) for the definition of the concept.
 
 </p>
 <p>
-For an educational overview of the concept of assortativity, see
+For an educational overview of assortativity, see
 M. E. J. Newman,
 Networks: An Introduction, Oxford University Press (2010).
-<a class="ulink" href="https://doi.org/10.1093/acprof" target="_top">https://doi.org/10.1093/acprof</a>:oso/9780199206650.001.0001.
+<a class="ulink" href="https://doi.org/10.1093/acprof%3Aoso/9780199206650.001.0001" target="_top">https://doi.org/10.1093/acprof%3Aoso/9780199206650.001.0001</a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -17490,7 +17490,7 @@ Networks: An Introduction, Oxford University Press (2010).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
 <td><p>
-  Integer vector giving the vertex types. The types
+  Integer vector giving the vertex categories. The types
    are represented by integers starting at zero.
 </p></td>
 </tr>
@@ -17578,8 +17578,9 @@ igraph_error_t igraph_assortativity(const igraph_t *graph,
 
 
 This function calculates the assortativity coefficient of a
-graph with given values <code class="constant">x_i</code> for each vertex <code class="constant">i</code>. This coefficient
-equals the Pearson correlation of the values at the two ends of the edges.
+graph based on given values <code class="constant">x_i</code> for each vertex <code class="constant">i</code>. This type of
+assortativity coefficient equals the Pearson correlation of the values
+at the two ends of the edges.
 
 </p>
 <p>
@@ -17592,7 +17593,7 @@ set to false, is defined as follows in a directed graph:
 <p>
 where <code class="constant">m</code> denotes the number of edges, <code class="constant">A_ij</code> is the adjacency matrix, and
 <code class="literal">k^out</code> and <code class="literal">k^in</code> are the out- and in-degrees.
-<code class="constant">x_out</code> and <code class="constant">x_in</code> refer to the vertex values at the start and end of
+<code class="constant">x_out</code> and <code class="constant">x_in</code> refer to the sets of vertex values at the start and end of
 the directed edges.
 
 </p>
@@ -17605,7 +17606,7 @@ the previous expression by
 <code class="literal">var(x_out) = 1/m sum_i k^out_i x_i^2 - (1/m sum_i k^out_i x_i^2)^2</code>
 </p>
 <p>
-<code class="literal">var(x_in) = 1/m sum_j k^in_j x_j^2 - (1/m sum_j k^in_j x_j^2)^2</code>
+<code class="literal">var(x_in)  = 1/m sum_j k^in_j x_j^2 - (1/m sum_j k^in_j x_j^2)^2</code>
 
 </p>
 <p>
@@ -17622,8 +17623,8 @@ References:
 M. E. J. Newman: Mixing patterns
 in networks, Phys. Rev. E 67, 026126 (2003)
 <a class="ulink" href="https://doi.org/10.1103/PhysRevE.67.026126" target="_top">https://doi.org/10.1103/PhysRevE.67.026126</a>.
-See equation (21) in for the definition, and equation (26) for
-performing the calculation in directed graphs.
+See section III and equation (21) for the definition, and equation (26) for
+performing the calculation in directed graphs with the degrees as values.
 
 </p>
 <p>
@@ -17631,7 +17632,7 @@ M. E. J. Newman: Assortative mixing in networks,
 Phys. Rev. Lett. 89, 208701 (2002)
 <a class="ulink" href="http://doi.org/10.1103/PhysRevLett.89.208701" target="_top">http://doi.org/10.1103/PhysRevLett.89.208701</a>.
 See equation (4) for performing the calculation in undirected
-graphs.
+graphs with the degrees as values.
 
 </p>
 <p>
@@ -17667,9 +17668,9 @@ Networks: An Introduction, Oxford University Press (2010).
 <td><p>
   A second value vector to be used for the incoming
     edges when calculating assortativity for a directed graph.
-    Supply a null pointer here if you want to use the same values
+    Supply <code class="constant">NULL</code> here if you want to use the same values
     for outgoing and incoming edges. This argument is ignored
-    (with a warning) if it is not a null pointer and undirected
+    (with a warning) if it is not a null pointer and the undirected
     assortativity coefficient is being calculated.
 </p></td>
 </tr>
@@ -17733,7 +17734,47 @@ based on vertex degrees.
 </tr></tbody>
 </table></div>
 <p>
- 
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.14.21.3.21.1"></a><p class="title"><b>Example 13.35.  File <code class="code">examples/simple/igraph_assortativity_degree.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(){
+    igraph_t g;
+    igraph_integer_t nodes = 100000, A = 0, power = 1, m = 1;
+    
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
+    <span class="strong"><strong>printf</strong></span>("Barabasi-Albert network with 100000 nodes\n\n");
+
+    <span class="strong"><strong>for</strong></span> (int i = 0; i &lt; 5; i++) {
+        igraph_real_t assortativity;
+
+        <span class="emphasis"><em>/* Generate undirected graph with 100000 nodes */</em></span>
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, nodes, power, m, NULL, <span class="emphasis"><em>/* outpref */</em></span> 0, A, IGRAPH_UNDIRECTED, IGRAPH_BARABASI_PSUMTREE, <span class="emphasis"><em>/* start from */</em></span> NULL);
+
+        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="19.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g, &amp;assortativity, <span class="emphasis"><em>/* ignore edge directions */</em></span> IGRAPH_UNDIRECTED);
+        <span class="strong"><strong>printf</strong></span>("Assortativity before rewiring = %g\n", assortativity);
+        
+        <span class="emphasis"><em>/* Rewire graph */</em></span>
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving the degree distribution.">igraph_rewire</a></strong></span>(&amp;g, 10 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g), IGRAPH_REWIRING_SIMPLE);
+        
+        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="19.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g, &amp;assortativity, <span class="emphasis"><em>/* ignore edge directions */</em></span> IGRAPH_UNDIRECTED);
+        <span class="strong"><strong>printf</strong></span>("Assortativity after rewiring = %g\n\n", assortativity);
+
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    }
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
 </p>
 </div>
 <div class="section">
@@ -18193,7 +18234,7 @@ vertices and edges in the original input graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.23.3.11.1"></a><p class="title"><b>Example 13.35.  File <code class="code">examples/simple/igraph_topological_sorting.c</code></b></p>
+<a name="id-1.14.23.3.11.1"></a><p class="title"><b>Example 13.36.  File <code class="code">examples/simple/igraph_topological_sorting.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -18357,7 +18398,7 @@ these heuristics.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.23.4.10.1"></a><p class="title"><b>Example 13.36.  File <code class="code">examples/simple/igraph_feedback_arc_set.c</code></b></p>
+<a name="id-1.14.23.4.10.1"></a><p class="title"><b>Example 13.37.  File <code class="code">examples/simple/igraph_feedback_arc_set.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
@@ -18437,7 +18478,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.23.4.10.2"></a><p class="title"><b>Example 13.37.  File <code class="code">examples/simple/igraph_feedback_arc_set_ip.c</code></b></p>
+<a name="id-1.14.23.4.10.2"></a><p class="title"><b>Example 13.38.  File <code class="code">examples/simple/igraph_feedback_arc_set_ip.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
@@ -18897,7 +18938,7 @@ Time complexity: O(|V|+|E|) where |V| is the number of vertices and
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.25.2.8.1"></a><p class="title"><b>Example 13.38.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
+<a name="id-1.14.25.2.8.1"></a><p class="title"><b>Example 13.39.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -19253,7 +19294,7 @@ Time complexity: O(|V|+|E|) where |V| is the number of vertices and
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.25.3.8.1"></a><p class="title"><b>Example 13.39.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
+<a name="id-1.14.25.3.8.1"></a><p class="title"><b>Example 13.40.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -19663,7 +19704,7 @@ technical report referenced above), O(|V||E|) for weighted graphs.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.25.4.11.1"></a><p class="title"><b>Example 13.40.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
+<a name="id-1.14.25.4.11.1"></a><p class="title"><b>Example 13.41.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -20232,7 +20273,7 @@ Time complexity: O(|V|+|E|), |V| is the number of vertices,
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.27.3.10.1"></a><p class="title"><b>Example 13.41.  File <code class="code">examples/simple/igraph_reciprocity.c</code></b></p>
+<a name="id-1.14.27.3.10.1"></a><p class="title"><b>Example 13.42.  File <code class="code">examples/simple/igraph_reciprocity.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
@@ -20601,7 +20642,7 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.27.6.11.1"></a><p class="title"><b>Example 13.42.  File <code class="code">examples/simple/igraph_knn.c</code></b></p>
+<a name="id-1.14.27.6.11.1"></a><p class="title"><b>Example 13.43.  File <code class="code">examples/simple/igraph_knn.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
