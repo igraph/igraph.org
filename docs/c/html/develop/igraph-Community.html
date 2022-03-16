@@ -1630,7 +1630,8 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.25.4.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_community_leading_eigenvector(const igraph_t *graph,
+igraph_error_t igraph_community_leading_eigenvector(
+        const igraph_t *graph,
         const igraph_vector_t *weights,
         igraph_matrix_int_t *merges,
         igraph_vector_int_t *membership,
@@ -1722,8 +1723,8 @@ Phys Rev E 74:036104 (2006).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
-  The options for ARPACK. <code class="constant">n</code> is always
-   overwritten. <code class="constant">ncv</code> is set to at least 4.
+  The options for ARPACK. Supply <code class="constant">NULL</code> here to use the
+   defaults. <code class="constant">n</code> is always overwritten. <code class="constant">ncv</code> is set to at least 4.
 </p></td>
 </tr>
 <tr>
@@ -1988,9 +1989,9 @@ The following arguments are passed to the callback:
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_le_community_to_membership(const igraph_matrix_int_t *merges,
-                                      igraph_integer_t steps,
-                                      igraph_vector_int_t *membership,
-                                      igraph_vector_int_t *csize);
+                                                 igraph_integer_t steps,
+                                                 igraph_vector_int_t *membership,
+                                                 igraph_vector_int_t *csize);
 </pre></div>
 <p>
 </p>
@@ -2077,7 +2078,7 @@ Time complexity: O(|V|), the number of vertices.
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_walktrap(const igraph_t *graph,
                               const igraph_vector_t *weights,
-                              int steps,
+                              igraph_integer_t steps,
                               igraph_matrix_int_t *merges,
                               igraph_vector_t *modularity,
                               igraph_vector_int_t *membership);
@@ -2131,6 +2132,8 @@ weight 1.
 <td><p><span class="term"><em class="parameter"><code>steps</code></em>:</span></p></td>
 <td><p>
   Integer constant, the length of the random walks.
+    Typically, good results are obtained with values between
+    3-8 with 4-5 being a reasonable default.
 </p></td>
 </tr>
 <tr>
@@ -3645,87 +3648,7 @@ they are assigned to.
 <p>
 
 Time complexity: O(|E|)
-
-</p>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="id-1.25.8.2.8.1"></a><p class="title"><b>Example 24.8.  File <code class="code">examples/simple/igraph_community_fluid_communities.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-<span class="strong"><strong>#include</strong></span> "../../tests/unit/test_utilities.inc"
-
-int <span class="strong"><strong>main</strong></span>() {
-    igraph_t g;
-    igraph_integer_t k;
-    igraph_vector_int_t membership;
-
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 247);
-
-    <span class="emphasis"><em>/* Empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, -1);
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
-    <span class="strong"><strong>igraph_vector_int_push_back</strong></span>(&amp;membership, 1);
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_fluid_communities" title="7.1. igraph_community_fluid_communities — Community detection based on fluids interacting on the graph.">igraph_community_fluid_communities</a></strong></span>(&amp;g, 2, &amp;membership);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;membership) != 0) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* Graph with one vertex only */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 1, IGRAPH_UNDIRECTED, -1);
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_fluid_communities" title="7.1. igraph_community_fluid_communities — Community detection based on fluids interacting on the graph.">igraph_community_fluid_communities</a></strong></span>(&amp;g, 2, &amp;membership);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;membership) != 1 || <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(membership)[0] != 0) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* Zachary Karate club -- this is just a quick smoke test */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
-                 0,  1,  0,  2,  0,  3,  0,  4,  0,  5,
-                 0,  6,  0,  7,  0,  8,  0, 10,  0, 11,
-                 0, 12,  0, 13,  0, 17,  0, 19,  0, 21,
-                 0, 31,  1,  2,  1,  3,  1,  7,  1, 13,
-                 1, 17,  1, 19,  1, 21,  1, 30,  2,  3,
-                 2,  7,  2,  8,  2,  9,  2, 13,  2, 27,
-                 2, 28,  2, 32,  3,  7,  3, 12,  3, 13,
-                 4,  6,  4, 10,  5,  6,  5, 10,  5, 16,
-                 6, 16,  8, 30,  8, 32,  8, 33,  9, 33,
-                 13, 33, 14, 32, 14, 33, 15, 32, 15, 33,
-                 18, 32, 18, 33, 19, 33, 20, 32, 20, 33,
-                 22, 32, 22, 33, 23, 25, 23, 27, 23, 29,
-                 23, 32, 23, 33, 24, 25, 24, 27, 24, 31,
-                 25, 31, 26, 29, 26, 33, 27, 33, 28, 31,
-                 28, 33, 29, 32, 29, 33, 30, 32, 30, 33,
-                 31, 32, 31, 33, 32, 33,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
-    k = 2;
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_fluid_communities" title="7.1. igraph_community_fluid_communities — Community detection based on fluids interacting on the graph.">igraph_community_fluid_communities</a></strong></span>(&amp;g, k, &amp;membership);
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_vector_int_contains</strong></span>(&amp;membership, 0) || !<span class="strong"><strong>igraph_vector_int_contains</strong></span>(&amp;membership, 1)) {
-        <span class="strong"><strong>printf</strong></span>("Resulting graph does not have exactly 2 communities as expected.\n");
-        <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-
-    <span class="strong"><strong>VERIFY_FINALLY_STACK</strong></span>();
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<p> 
+ 
 </p>
 </div>
 </div>
@@ -3900,7 +3823,7 @@ Time complexity: O(m+n)
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.9.2.13.1"></a><p class="title"><b>Example 24.9.  File <code class="code">examples/simple/igraph_community_label_propagation.c</code></b></p>
+<a name="id-1.25.9.2.13.1"></a><p class="title"><b>Example 24.8.  File <code class="code">examples/simple/igraph_community_label_propagation.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -3931,6 +3854,9 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " communities found; modularity score is %g.\n",
            <span class="strong"><strong>igraph_vector_int_max</strong></span>(&amp;membership) + 1, modularity);
 
+    <span class="strong"><strong>printf</strong></span>("Communities membership: ");
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
+
     <span class="emphasis"><em>/* Destroy data structures at the end. */</em></span>
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -3960,7 +3886,7 @@ int <span class="strong"><strong>main</strong></span>() {
 igraph_error_t igraph_community_infomap(const igraph_t * graph,
                              const igraph_vector_t *e_weights,
                              const igraph_vector_t *v_weights,
-                             int nb_trials,
+                             igraph_integer_t nb_trials,
                              igraph_vector_int_t *membership,
                              igraph_real_t *codelength);
 </pre></div>

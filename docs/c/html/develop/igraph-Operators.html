@@ -1851,7 +1851,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a name="miscellaneous-operators"></a>3. Miscellaneous operators</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Operators.html#igraph_connect_neighborhood">3.1. <code class="function">igraph_connect_neighborhood</code> —  Graph power: connect each vertex to its neighborhood.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_contract_vertices">3.2. <code class="function">igraph_contract_vertices</code> — Replace multiple vertices with a single one.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_contract_vertices">3.2. <code class="function">igraph_contract_vertices</code> —  Replace multiple vertices with a single one.</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph">3.3. <code class="function">igraph_induced_subgraph</code> —  Creates a subgraph induced by the specified vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#igraph_linegraph">3.4. <code class="function">igraph_linegraph</code> —  Create the line graph of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#igraph_simplify">3.5. <code class="function">igraph_simplify</code> —  Removes loop and/or multiple edges from the graph.</a></span></dt>
@@ -1948,7 +1948,7 @@ undirected (A,B) edge will be added in this case.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_lattice" title="1.8. igraph_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_lattice()</code></a> uses this function to connect the
+  <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.8. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> uses this function to connect the
 neighborhood of the vertices.
   </p></td>
 </tr></tbody>
@@ -1962,7 +1962,7 @@ graph, d is the average degree and k is the <em class="parameter"><code>order</c
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_contract_vertices"></a>3.2. <code class="function">igraph_contract_vertices</code> — Replace multiple vertices with a single one.</h3></div></div></div>
+<a name="igraph_contract_vertices"></a>3.2. <code class="function">igraph_contract_vertices</code> —  Replace multiple vertices with a single one.</h3></div></div></div>
 <a class="indexterm" name="id-1.29.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1976,9 +1976,15 @@ igraph_error_t igraph_contract_vertices(igraph_t *graph,
 
 
 
-This function creates a new graph, by merging several
-vertices into one. The vertices in the new graph correspond
-to sets of vertices in the input graph.
+This function modifies the graph by merging several vertices
+into one. The vertices in the modified graph correspond
+to groups of vertices in the input graph. No edges are removed,
+thus the modified graph will typically have self-loops
+(corresponding to in-group edges) and multi-edges
+(corresponding to multiple connections between two groups).
+Use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to eliminate self-loops and
+merge multi-edges.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1991,8 +1997,7 @@ to sets of vertices in the input graph.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph, it can be directed or
-       undirected.
+  The input graph. It will be modified in-place.
 </p></td>
 </tr>
 <tr>
@@ -2000,7 +2005,10 @@ to sets of vertices in the input graph.
 <td><p>
   A vector giving the mapping. For each
        vertex in the original graph, it should contain
-       its id in the new graph.
+       its desired ID in the result graph. In order to create
+       "orphan vertices" that have no corresponding vertices
+       in the original graph, ensure that the IDs are consecutive
+       integers starting from zero.
 </p></td>
 </tr>
 <tr>

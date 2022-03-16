@@ -154,6 +154,7 @@
 <dt><span class="section"><a href="igraph-Foreign.html#pajek-format">5. Pajek format</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#ucinets-dl-file-format">6. UCINET's DL file format</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#graphviz-format">7. Graphviz format</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#deprecated-formats">8. Deprecated functions</a></span></dt>
 </dl></div>
 <p>These functions can write a graph to a file, or read a graph
 from a file.</p>
@@ -170,8 +171,8 @@ operating systems supporting <span class="quote">“<span class="quote">non-stan
 <dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_ncol">1.4. <code class="function">igraph_write_graph_ncol</code> —  Writes the graph to a file in <code class="literal">.ncol</code> format.</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_lgl">1.5. <code class="function">igraph_read_graph_lgl</code> —  Reads a graph from an <code class="literal">.lgl</code> file</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_lgl">1.6. <code class="function">igraph_write_graph_lgl</code> —  Writes the graph to a file in <code class="literal">.lgl</code> format</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_dimacs">1.7. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format.</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_dimacs">1.8. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format.</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_dimacs_flow">1.7. <code class="function">igraph_read_graph_dimacs_flow</code> —  Read a graph in DIMACS format.</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_dimacs_flow">1.8. <code class="function">igraph_write_graph_dimacs_flow</code> —  Write a graph in DIMACS format.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -746,6 +747,9 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_t g;
     FILE *input;
 
+    <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
+
     <span class="emphasis"><em>/* Without names and weights */</em></span>
     input = <span class="strong"><strong>fopen</strong></span>("igraph_read_graph_lgl-1.lgl", "r");
     <span class="strong"><strong>if</strong></span> (!input) {
@@ -953,11 +957,11 @@ int <span class="strong"><strong>main</strong></span>() {
 
 
     <span class="strong"><strong>printf</strong></span>("\nOutput vertex and edge labels:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="9.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, vcount);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="8.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, vcount);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; vcount; i++) {
         char str[2] = " "; <span class="emphasis"><em>/* initialize to ensure presence of null terminator */</em></span>
         str[0] = 'A' + i;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="9.6. igraph_strvector_set — Set an element">igraph_strvector_set</a></strong></span>(&amp;names, i, str);
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Set an element">igraph_strvector_set</a></strong></span>(&amp;names, i, str);
     }
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVASV" title="3.2.24. SETVASV — Set a string vertex attribute for all vertices">SETVASV</a></strong></span>(&amp;graph, "names", &amp;names);
 
@@ -966,7 +970,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_lgl" title="1.6. igraph_write_graph_lgl — Writes the graph to a file in .lgl format">igraph_write_graph_lgl</a></strong></span>(&amp;graph, stdout, "names", "weights", <span class="emphasis"><em>/*isolates*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="9.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
@@ -983,11 +987,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_read_graph_dimacs"></a>1.7. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format.</h3></div></div></div>
+<a name="igraph_read_graph_dimacs_flow"></a>1.7. <code class="function">igraph_read_graph_dimacs_flow</code> —  Read a graph in DIMACS format.</h3></div></div></div>
 <a class="indexterm" name="id-1.22.4.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_read_graph_dimacs(igraph_t *graph, FILE *instream,
+igraph_error_t igraph_read_graph_dimacs_flow(igraph_t *graph, FILE *instream,
                              igraph_strvector_t *problem,
                              igraph_vector_int_t *label,
                              igraph_integer_t *source,
@@ -1107,7 +1111,7 @@ number of edges, plus the size of the file in characters.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Foreign.html#igraph_write_graph_dimacs" title="1.8. igraph_write_graph_dimacs — Write a graph in DIMACS format."><code class="function">igraph_write_graph_dimacs()</code></a>
+  <a class="link" href="igraph-Foreign.html#igraph_write_graph_dimacs" title="8.2. igraph_write_graph_dimacs — Write a graph in DIMACS format (deprecated alias)."><code class="function">igraph_write_graph_dimacs()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1117,11 +1121,11 @@ number of edges, plus the size of the file in characters.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_write_graph_dimacs"></a>1.8. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format.</h3></div></div></div>
+<a name="igraph_write_graph_dimacs_flow"></a>1.8. <code class="function">igraph_write_graph_dimacs_flow</code> —  Write a graph in DIMACS format.</h3></div></div></div>
 <a class="indexterm" name="id-1.22.4.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_write_graph_dimacs(const igraph_t *graph, FILE *outstream,
+igraph_error_t igraph_write_graph_dimacs_flow(const igraph_t *graph, FILE *outstream,
                               igraph_integer_t source, igraph_integer_t target,
                               const igraph_vector_t *capacity);
 </pre></div>
@@ -1137,7 +1141,7 @@ See ftp://dimacs.rutgers.edu/pub/netflow/general-info/
 
 </p>
 <p>
-This file format is discussed in the documentation of <a class="link" href="igraph-Foreign.html#igraph_read_graph_dimacs" title="1.7. igraph_read_graph_dimacs — Read a graph in DIMACS format."><code class="function">igraph_read_graph_dimacs()</code></a>, see that for more information.
+This file format is discussed in the documentation of <a class="link" href="igraph-Foreign.html#igraph_read_graph_dimacs_flow" title="1.7. igraph_read_graph_dimacs_flow — Read a graph in DIMACS format."><code class="function">igraph_read_graph_dimacs_flow()</code></a>, see that for more information.
 
 </p>
 <p><b>Arguments: </b>
@@ -1211,7 +1215,7 @@ Time complexity: O(|E|), the number of edges in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  igraph_read_graph_dimacs()
+  igraph_read_graph_dimacs_flow()
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1345,7 +1349,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a name="graphml-format"></a>3. GraphML format</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_graphml">3.1. <code class="function">igraph_read_graph_graphml</code> —  Reads a graph from a GraphML file.</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_graphml">3.2. <code class="function">igraph_write_graph_graphml</code> —  Writes the graph to a file in GraphML format</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_graphml">3.2. <code class="function">igraph_write_graph_graphml</code> —  Writes the graph to a file in GraphML format.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -1353,7 +1357,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.22.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_read_graph_graphml(igraph_t *graph, FILE *instream, int index);
+igraph_error_t igraph_read_graph_graphml(igraph_t *graph, FILE *instream, igraph_integer_t index);
 </pre></div>
 <p>
 </p>
@@ -1518,7 +1522,7 @@ int <span class="strong"><strong>main</strong></span>() {
     ofile = <span class="strong"><strong>fopen</strong></span>("test2.graphml", "w");
     <span class="emphasis"><em>/* If we can't create the test file, just skip the test */</em></span>
     <span class="strong"><strong>if</strong></span> (ofile) {
-        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
+        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
             <span class="strong"><strong>printf</strong></span>("Received unexpected return code: %d\n", result);
             <span class="strong"><strong>return</strong></span> 1;
         }
@@ -1612,7 +1616,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_write_graph_graphml"></a>3.2. <code class="function">igraph_write_graph_graphml</code> —  Writes the graph to a file in GraphML format</h3></div></div></div>
+<a name="igraph_write_graph_graphml"></a>3.2. <code class="function">igraph_write_graph_graphml</code> —  Writes the graph to a file in GraphML format.</h3></div></div></div>
 <a class="indexterm" name="id-1.22.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1773,7 +1777,7 @@ int <span class="strong"><strong>main</strong></span>() {
     ofile = <span class="strong"><strong>fopen</strong></span>("test2.graphml", "w");
     <span class="emphasis"><em>/* If we can't create the test file, just skip the test */</em></span>
     <span class="strong"><strong>if</strong></span> (ofile) {
-        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
+        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
             <span class="strong"><strong>printf</strong></span>("Received unexpected return code: %d\n", result);
             <span class="strong"><strong>return</strong></span> 1;
         }
@@ -2397,13 +2401,18 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_t g;
     FILE *ifile;
 
-    <span class="emphasis"><em>/* PAJEK */</em></span>
+    <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
+
+    <span class="emphasis"><em>/* Read a Pajek file. */</em></span>
     ifile = <span class="strong"><strong>fopen</strong></span>("links.net", "r");
     <span class="strong"><strong>if</strong></span> (ifile == 0) {
         <span class="strong"><strong>return</strong></span> 10;
     }
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_pajek" title="5.1. igraph_read_graph_pajek — Reads a file in Pajek format">igraph_read_graph_pajek</a></strong></span>(&amp;g, ifile);
     <span class="strong"><strong>fclose</strong></span>(ifile);
+
+    <span class="emphasis"><em>/* Write it in edgelist format. */</em></span>
     <span class="strong"><strong>printf</strong></span>("The graph:\n");
     <span class="strong"><strong>printf</strong></span>("Vertices: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
     <span class="strong"><strong>printf</strong></span>("Edges: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g));
@@ -2524,7 +2533,7 @@ edge) in the graph if there are attribute handlers installed.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Foreign.html#igraph_read_graph_pajek" title="5.1. igraph_read_graph_pajek — Reads a file in Pajek format"><code class="function">igraph_read_graph_pajek()</code></a> for reading Pajek graphs, <a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format"><code class="function">igraph_write_graph_graphml()</code></a> for writing a graph in GraphML format,
+  <a class="link" href="igraph-Foreign.html#igraph_read_graph_pajek" title="5.1. igraph_read_graph_pajek — Reads a file in Pajek format"><code class="function">igraph_read_graph_pajek()</code></a> for reading Pajek graphs, <a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format."><code class="function">igraph_write_graph_graphml()</code></a> for writing a graph in GraphML format,
 this suites <span class="command"><strong>igraph</strong></span> graphs better.
   </p></td>
 </tr></tbody>
@@ -2550,36 +2559,36 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_pajek" title="5.2. igraph_write_graph_pajek — Writes a graph to a file in Pajek format.">igraph_write_graph_pajek</a></strong></span>(&amp;g, stdout);
 
     <span class="emphasis"><em>/* add some vertex attributes */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="9.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "A");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "B");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "C");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "D");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "E");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "F");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "G");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "H");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "I");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "J");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="8.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "A");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "B");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "C");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "D");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "E");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "F");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "G");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "H");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "I");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "J");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVASV" title="3.2.24. SETVASV — Set a string vertex attribute for all vertices">SETVASV</a></strong></span>(&amp;g, "id", &amp;names);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="9.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
 
     <span class="emphasis"><em>/* save the graph with vertex names */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_pajek" title="5.2. igraph_write_graph_pajek — Writes a graph to a file in Pajek format.">igraph_write_graph_pajek</a></strong></span>(&amp;g, stdout);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="9.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "escaping spaces");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "escaping \\backslashes\\");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_add" title="9.13. igraph_strvector_add — Adds an element to the back of a string vector.">igraph_strvector_add</a></strong></span>(&amp;names, "escaping \"quotes\"");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="8.1. igraph_strvector_init — Initialize">igraph_strvector_init</a></strong></span>(&amp;names, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping spaces");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping \\backslashes\\");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.13. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping \"quotes\"");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVASV" title="3.2.24. SETVASV — Set a string vertex attribute for all vertices">SETVASV</a></strong></span>(&amp;g, "shape", &amp;names);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="9.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Free allocated memory">igraph_strvector_destroy</a></strong></span>(&amp;names);
 
     <span class="emphasis"><em>/* save the graph with escaped shapes */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_pajek" title="5.2. igraph_write_graph_pajek — Writes a graph to a file in Pajek format.">igraph_write_graph_pajek</a></strong></span>(&amp;g, stdout);
@@ -2699,18 +2708,21 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_t g;
     FILE *infile;
 
+    <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
+
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; no_files; i++) {
         <span class="strong"><strong>printf</strong></span>("Doing %s\n", files[i]);
         infile = <span class="strong"><strong>fopen</strong></span>(files[i], "r");
         <span class="strong"><strong>if</strong></span> (!infile) {
             <span class="strong"><strong>printf</strong></span>("Cannot open file: %s\n", files[i]);
-            <span class="strong"><strong>exit</strong></span>(1 + i);
+            <span class="strong"><strong>abort</strong></span>();
         }
         <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_dl" title="6.1. igraph_read_graph_dl — Read a file in the DL format of UCINET">igraph_read_graph_dl</a></strong></span>(&amp;g, infile, <span class="emphasis"><em>/*directed=*/</em></span> 1);
         ret = <span class="strong"><strong>fclose</strong></span>(infile);
         <span class="strong"><strong>if</strong></span> (ret) {
             <span class="strong"><strong>printf</strong></span>("Cannot close file: %s\n", files[i]);
-            <span class="strong"><strong>exit</strong></span>(101 + i);
+            <span class="strong"><strong>abort</strong></span>();
         }
         <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
         <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
@@ -2797,7 +2809,7 @@ to the file.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format"><code class="function">igraph_write_graph_graphml()</code></a> for a more modern format.
+  <a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format."><code class="function">igraph_write_graph_graphml()</code></a> for a more modern format.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2842,6 +2854,70 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 </div>
 <br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="deprecated-formats"></a>8. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_dimacs">8.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_dimacs">8.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_read_graph_dimacs"></a>8.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.22.11.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_read_graph_dimacs(igraph_t *graph, FILE *instream,
+                             igraph_strvector_t *problem,
+                             igraph_vector_int_t *label,
+                             igraph_integer_t *source,
+                             igraph_integer_t *target,
+                             igraph_vector_t *capacity,
+                             igraph_bool_t directed);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Foreign.html#igraph_read_graph_dimacs_flow" title="1.7. igraph_read_graph_dimacs_flow — Read a graph in DIMACS format."><code class="function">igraph_read_graph_dimacs_flow()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_write_graph_dimacs"></a>8.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.22.11.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_write_graph_dimacs(const igraph_t *graph, FILE *outstream,
+                              igraph_integer_t source, igraph_integer_t target,
+                              const igraph_vector_t *capacity);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Foreign.html#igraph_write_graph_dimacs_flow" title="1.8. igraph_write_graph_dimacs_flow — Write a graph in DIMACS format."><code class="function">igraph_write_graph_dimacs_flow()</code></a>
+instead.</p>
 </div>
 <p> 
 </p>

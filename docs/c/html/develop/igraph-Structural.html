@@ -172,6 +172,7 @@
 <dt><span class="section"><a href="igraph-Structural.html#matchings">23. Matchings</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#unfolding-a-graph-into-a-tree">24. Unfolding a graph into a tree</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#other-operations">25. Other operations</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#structural-properties-deprecated">26. Deprecated functions</a></span></dt>
 </dl></div>
 <p>These functions usually calculate some structural property
 of a graph, like its diameter, the degree of the nodes, etc.</p>
@@ -381,10 +382,10 @@ Time complexity: The algorithm is a randomized Las Vegas algorithm. The expected
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="shortest-path-related-functions"></a>3. (Shortest)-path related functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths">3.1. <code class="function">igraph_shortest_paths</code> —  The length of the shortest paths between vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_dijkstra">3.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_bellman_ford">3.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_johnson">3.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_distances">3.1. <code class="function">igraph_distances</code> —  Length of the shortest paths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_distances_dijkstra">3.2. <code class="function">igraph_distances_dijkstra</code> —  Weighted shortest path lengths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_distances_bellman_ford">3.3. <code class="function">igraph_distances_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_distances_johnson">3.4. <code class="function">igraph_distances_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_shortest_paths">3.5. <code class="function">igraph_get_shortest_paths</code> —  Shortest paths from a vertex.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_shortest_path">3.6. <code class="function">igraph_get_shortest_path</code> —  Shortest path from one vertex to another one.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_shortest_paths_dijkstra">3.7. <code class="function">igraph_get_shortest_paths_dijkstra</code> —  Weighted shortest paths from a vertex.</a></span></dt>
@@ -406,11 +407,11 @@ Time complexity: The algorithm is a randomized Las Vegas algorithm. The expected
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths"></a>3.1. <code class="function">igraph_shortest_paths</code> —  The length of the shortest paths between vertices.</h3></div></div></div>
+<a name="igraph_distances"></a>3.1. <code class="function">igraph_distances</code> —  Length of the shortest paths between vertices.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_shortest_paths(const igraph_t *graph, igraph_matrix_t *res,
+igraph_error_t igraph_distances(const igraph_t *graph, igraph_matrix_t *res,
                           const igraph_vs_t from, const igraph_vs_t to,
                           igraph_neimode_t mode);
 </pre></div>
@@ -579,7 +580,9 @@ edges in the graph.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.5. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> to get the paths themselves,
-<a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> for the weighted version.
+<a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> for the weighted version with non-negative
+weights, <a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_distances_bellman_ford()</code></a> if you also have negative
+weights.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -589,11 +592,11 @@ edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_dijkstra"></a>3.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices.</h3></div></div></div>
+<a name="igraph_distances_dijkstra"></a>3.2. <code class="function">igraph_distances_dijkstra</code> —  Weighted shortest path lengths between vertices.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_shortest_paths_dijkstra(const igraph_t *graph,
+igraph_error_t igraph_distances_dijkstra(const igraph_t *graph,
                                    igraph_matrix_t *res,
                                    const igraph_vs_t from,
                                    const igraph_vs_t to,
@@ -659,7 +662,7 @@ This implementation uses a binary heap for efficiency.
    non-negative for Dijkstra's algorithm to work. Additionally, no
    edge weight may be NaN. If either case does not hold, an error
    is returned. If this is a null pointer, then the unweighted
-   version, <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> is called.
+   version, <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> is called.
 </p></td>
 </tr>
 <tr>
@@ -703,10 +706,10 @@ vertices, |E| the number of edges and s the number of sources.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> for a (slightly) faster unweighted
-version or <a class="link" href="igraph-Structural.html#igraph_shortest_paths_bellman_ford" title="3.3. igraph_shortest_paths_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_shortest_paths_bellman_ford()</code></a> for a weighted
+  <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> for a (slightly) faster unweighted
+version or <a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_distances_bellman_ford()</code></a> for a weighted
 variant that works in the presence of negative edge weights (but no
-negative loops).
+negative loops)
   </p></td>
 </tr></tbody>
 </table></div>
@@ -764,8 +767,8 @@ int <span class="strong"><strong>main</strong></span>() {
                        <span class="strong"><strong>sizeof</strong></span>(weights_data) / <span class="strong"><strong>sizeof</strong></span>(weights_data[0]));
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;res, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices.">igraph_shortest_paths_dijkstra</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                   &amp;weights, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices.">igraph_distances_dijkstra</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                              &amp;weights, IGRAPH_OUT);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;res);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;res);
@@ -784,11 +787,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_bellman_ford"></a>3.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights.</h3></div></div></div>
+<a name="igraph_distances_bellman_ford"></a>3.3. <code class="function">igraph_distances_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_shortest_paths_bellman_ford(const igraph_t *graph,
+igraph_error_t igraph_distances_bellman_ford(const igraph_t *graph,
                                        igraph_matrix_t *res,
                                        const igraph_vs_t from,
                                        const igraph_vs_t to,
@@ -804,7 +807,7 @@ igraph_error_t igraph_shortest_paths_bellman_ford(const igraph_t *graph,
 This function implements the Bellman-Ford algorithm to find the weighted
 shortest paths to all vertices from a single source, allowing negative weights.
 It is run independently for the given sources. If there are no negative
-weights, you are better off with <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> .
+weights, you are better off with <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> .
 
 </p>
 <p><b>Arguments: </b>
@@ -853,7 +856,7 @@ weights, you are better off with <a class="link" href="igraph-Structural.html#ig
    vertex of this loop infinitely). Additionally, no edge weight may
    be NaN. If either case does not hold, an error is returned. If this
    is a null pointer, then the unweighted version,
-   <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> is called.
+   <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> is called.
 </p></td>
 </tr>
 <tr>
@@ -897,8 +900,8 @@ vertices, |E| the number of edges and s the number of sources.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> for a faster unweighted version
-or <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> if you do not have negative
+  <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> for a faster unweighted version
+or <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you do not have negative
 edge weights.
   </p></td>
 </tr></tbody>
@@ -960,8 +963,8 @@ int <span class="strong"><strong>main</strong></span>() {
                        <span class="strong"><strong>sizeof</strong></span>(weights_data_0) / <span class="strong"><strong>sizeof</strong></span>(weights_data_0[0]));
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;res, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_shortest_paths_bellman_ford" title="3.3. igraph_shortest_paths_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_shortest_paths_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                       &amp;weights, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_distances_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                  &amp;weights, IGRAPH_OUT);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;res);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;res);
@@ -979,8 +982,8 @@ int <span class="strong"><strong>main</strong></span>() {
                        <span class="strong"><strong>sizeof</strong></span>(weights_data_1) / <span class="strong"><strong>sizeof</strong></span>(weights_data_1[0]));
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;res, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_shortest_paths_bellman_ford" title="3.3. igraph_shortest_paths_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_shortest_paths_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                       <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), &amp;weights, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_distances_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                  <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), &amp;weights, IGRAPH_OUT);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;res);
 
     <span class="emphasis"><em>/***************************************/</em></span>
@@ -989,9 +992,9 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;weights, weights_data_2,
                        <span class="strong"><strong>sizeof</strong></span>(weights_data_2) / <span class="strong"><strong>sizeof</strong></span>(weights_data_2[0]));
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_shortest_paths_bellman_ford" title="3.3. igraph_shortest_paths_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_shortest_paths_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                           <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                           &amp;weights, IGRAPH_OUT) != IGRAPH_ENEGLOOP) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights.">igraph_distances_bellman_ford</a></strong></span>(&amp;g, &amp;res, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                      <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                      &amp;weights, IGRAPH_OUT) != IGRAPH_ENEGLOOP) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
@@ -1015,11 +1018,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_johnson"></a>3.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm.</h3></div></div></div>
+<a name="igraph_distances_johnson"></a>3.4. <code class="function">igraph_distances_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_shortest_paths_johnson(const igraph_t *graph,
+igraph_error_t igraph_distances_johnson(const igraph_t *graph,
                                   igraph_matrix_t *res,
                                   const igraph_vs_t from,
                                   const igraph_vs_t to,
@@ -1039,13 +1042,13 @@ calculate the shortest paths from many sources.
 </p>
 <p>
 If no edge weights are supplied, then the unweighted
-version, <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> is called.
+version, <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> is called.
 
 </p>
 <p>
 If all the supplied edge weights are non-negative,
 then Dijkstra's algorithm is used by calling
-<a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a>.
+<a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -1088,7 +1091,8 @@ then Dijkstra's algorithm is used by calling
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
   Optional edge weights. If it is a null-pointer, then
-  the unweighted breadth-first search based <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> will be called.
+  the unweighted breadth-first search based <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> will
+  be called.
 </p></td>
 </tr>
 </tbody>
@@ -1123,9 +1127,9 @@ of vertices and edges, s is the number of source vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> for a faster unweighted version
-or <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> if you do not have negative
-edge weights, <a class="link" href="igraph-Structural.html#igraph_shortest_paths_bellman_ford" title="3.3. igraph_shortest_paths_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_shortest_paths_bellman_ford()</code></a> if you only
+  <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> for a faster unweighted version,
+<a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you do not have negative
+edge weights, <a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_distances_bellman_ford()</code></a> if you only
 need to calculate shortest paths from a couple of sources.
   </p></td>
 </tr></tbody>
@@ -1350,7 +1354,7 @@ graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> if you only need the path length but
+  <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> if you only need the path lengths but
 not the paths themselves.
   </p></td>
 </tr></tbody>
@@ -1812,7 +1816,7 @@ vertices and |E| is the number of edges
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> if you only need the path length but
+  <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you only need the path length but
 not the paths themselves, <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.5. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> if all edge
 weights are equal.
   </p></td>
@@ -2236,7 +2240,7 @@ If there are no negative weights, you are better off with
    the graph that has a negative total weight (since this would allow
    us to decrease the weight of any path containing at least a single
    vertex of this loop infinitely). If this is a null pointer, then the
-   unweighted version, <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> is called.
+   unweighted version, <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.5. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> is called.
 </p></td>
 </tr>
 <tr>
@@ -2352,8 +2356,8 @@ vertices, |E| the number of edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a> for a faster unweighted version
-or <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> if you do not have negative
+  <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.5. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> for a faster unweighted version
+or <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths_dijkstra" title="3.7. igraph_get_shortest_paths_dijkstra — Weighted shortest paths from a vertex."><code class="function">igraph_get_shortest_paths_dijkstra()</code></a> if you do not have negative
 edge weights.
   </p></td>
 </tr></tbody>
@@ -2897,7 +2901,7 @@ vertices and |E| is the number of edges
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_shortest_paths_dijkstra" title="3.2. igraph_shortest_paths_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_shortest_paths_dijkstra()</code></a> if you only need the path
+  <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you only need the path
 length but not the paths themselves, <a class="link" href="igraph-Structural.html#igraph_get_all_shortest_paths" title="3.11. igraph_get_all_shortest_paths — All shortest paths (geodesics) from a vertex."><code class="function">igraph_get_all_shortest_paths()</code></a>
 if all edge weights are equal.
   </p></td>
@@ -3051,7 +3055,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Regular lattice with some heavyweight edges */</em></span>
     <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;dim_vec, dim, <span class="strong"><strong>sizeof</strong></span>(dim) / <span class="strong"><strong>sizeof</strong></span>(dim[0]));
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lattice" title="1.8. igraph_lattice — Arbitrary dimensional square lattices.">igraph_lattice</a></strong></span>(&amp;g, &amp;dim_vec, 1, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.8. igraph_square_lattice — Arbitrary dimensional square lattices.">igraph_square_lattice</a></strong></span>(&amp;g, &amp;dim_vec, 1, 0, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_vector_small" title="2.7. igraph_vs_vector_small — Create a vertex set by giving its elements.">igraph_vs_vector_small</a></strong></span>(&amp;vs, 3, 12, 15, -1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights_vec, 24);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;weights_vec, 1);
@@ -3636,7 +3640,7 @@ of edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.14. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> and <a class="link" href="igraph-Structural.html#igraph_shortest_paths" title="3.1. igraph_shortest_paths — The length of the shortest paths between vertices."><code class="function">igraph_shortest_paths()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.14. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> and <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8214,10 +8218,11 @@ Brisbane, Australia, April 1998.
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   Options for the ARPACK method. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the <code class="literal">n</code> (number
-   of vertices), <code class="literal">nev</code> (1), <code class="literal">ncv</code> (3) and <code class="literal">which</code>
-   (LM) parameters and it always starts the calculation from a non-random vector
-   calculated based on the degree of the vertices.
+   for details. Supply <code class="constant">NULL</code> here to use the defaults. Note that the function
+   overwrites the <code class="literal">n</code> (number of vertices), <code class="literal">nev</code> (1),
+   <code class="literal">ncv</code> (3) and <code class="literal">which</code> (LM) parameters and it always
+   starts the calculation from a non-random vector calculated based on the
+   degree of the vertices.
 </p></td>
 </tr>
 </tbody>
@@ -8427,10 +8432,11 @@ does not result in any performance increase at all.
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   Options for the ARPACK method. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the <code class="literal">n</code> (number
-   of vertices), <code class="literal">nev</code> (1), <code class="literal">ncv</code> (3) and <code class="literal">which</code>
-   (LM) parameters and it always starts the calculation from a non-random vector
-   calculated based on the degree of the vertices.
+   for details. Supply <code class="constant">NULL</code> here to use the defaults. Note that the function
+   overwrites the <code class="literal">n</code> (number of vertices), <code class="literal">nev</code> (1),
+   <code class="literal">ncv</code> (3) and <code class="literal">which</code> (LM) parameters and it always
+   starts the calculation from a non-random vector calculated based on the
+   degree of the vertices.
 </p></td>
 </tr>
 </tbody>
@@ -8598,10 +8604,11 @@ does not result in any performance increase at all.
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   Options for the ARPACK method. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the <code class="literal">n</code> (number
-   of vertices), <code class="literal">nev</code> (1), <code class="literal">ncv</code> (3) and <code class="literal">which</code>
-   (LM) parameters and it always starts the calculation from a non-random vector
-   calculated based on the degree of the vertices.
+   for details. Supply <code class="constant">NULL</code> here to use the defaults. Note that the function
+   overwrites the <code class="literal">n</code> (number of vertices), <code class="literal">nev</code> (1),
+   <code class="literal">ncv</code> (3) and <code class="literal">which</code> (LM) parameters and it always
+   starts the calculation from a non-random vector calculated based on the
+   degree of the vertices.
 </p></td>
 </tr>
 </tbody>
@@ -9098,8 +9105,8 @@ to zero.
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   Options to ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the
-   <code class="literal">n</code> (number of vertices) parameter and
+   for details. Supply <code class="constant">NULL</code> here to use the defaults. Note that the
+   function overwrites the <code class="literal">n</code> (number of vertices) parameter and
    it always starts the calculation from a non-random vector
    calculated based on the degree of the vertices.
 </p></td>
@@ -9191,10 +9198,11 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Special cases: check for full graph, zero weights */</em></span>
+    <span class="emphasis"><em>/* Note that it is not mandatory to supply ARPACK options */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.12. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 10, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 45);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;weights, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="9.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices">igraph_eigenvector_centrality</a></strong></span>(&amp;g, &amp;v, &amp;value, 0, 0, &amp;weights, &amp;options);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="9.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices">igraph_eigenvector_centrality</a></strong></span>(&amp;g, &amp;v, &amp;value, 0, 0, &amp;weights, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
     <span class="strong"><strong>if</strong></span> (value != 0.0) {
         <span class="strong"><strong>return</strong></span> 2;
@@ -10494,19 +10502,19 @@ Time complexity: O(|S||E|),
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="centralization"></a>12. Centralization</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization">12.1. <code class="function">igraph_centralization</code> — Calculate the centralization score from the node level scores</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_degree">12.2. <code class="function">igraph_centralization_degree</code> — Calculate vertex degree and graph centralization</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_betweenness">12.3. <code class="function">igraph_centralization_betweenness</code> — Calculate vertex betweenness and graph centralization</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_closeness">12.4. <code class="function">igraph_centralization_closeness</code> — Calculate vertex closeness and graph centralization</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_eigenvector_centrality">12.5. <code class="function">igraph_centralization_eigenvector_centrality</code> — Calculate eigenvector centrality scores and graph centralization</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_degree_tmax">12.6. <code class="function">igraph_centralization_degree_tmax</code> — Theoretical maximum for graph centralization based on degree</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_betweenness_tmax">12.7. <code class="function">igraph_centralization_betweenness_tmax</code> — Theoretical maximum for graph centralization based on betweenness</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_closeness_tmax">12.8. <code class="function">igraph_centralization_closeness_tmax</code> — Theoretical maximum for graph centralization based on closeness</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_eigenvector_centrality_tmax">12.9. <code class="function">igraph_centralization_eigenvector_centrality_tmax</code> — Theoretical maximum centralization for eigenvector centrality</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization">12.1. <code class="function">igraph_centralization</code> —  Calculate the centralization score from the node level scores.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_degree">12.2. <code class="function">igraph_centralization_degree</code> —  Calculate vertex degree and graph centralization.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_betweenness">12.3. <code class="function">igraph_centralization_betweenness</code> —  Calculate vertex betweenness and graph centralization.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_closeness">12.4. <code class="function">igraph_centralization_closeness</code> —  Calculate vertex closeness and graph centralization.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_eigenvector_centrality">12.5. <code class="function">igraph_centralization_eigenvector_centrality</code> —  Calculate eigenvector centrality scores and graph centralization.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_degree_tmax">12.6. <code class="function">igraph_centralization_degree_tmax</code> —  Theoretical maximum for graph centralization based on degree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_betweenness_tmax">12.7. <code class="function">igraph_centralization_betweenness_tmax</code> —  Theoretical maximum for graph centralization based on betweenness.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_closeness_tmax">12.8. <code class="function">igraph_centralization_closeness_tmax</code> —  Theoretical maximum for graph centralization based on closeness.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_centralization_eigenvector_centrality_tmax">12.9. <code class="function">igraph_centralization_eigenvector_centrality_tmax</code> —  Theoretical maximum centralization for eigenvector centrality.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization"></a>12.1. <code class="function">igraph_centralization</code> — Calculate the centralization score from the node level scores</h3></div></div></div>
+<a name="igraph_centralization"></a>12.1. <code class="function">igraph_centralization</code> —  Calculate the centralization score from the node level scores.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -10604,7 +10612,7 @@ all the measure-specific centralization functions.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization"><code class="function">igraph_centralization_degree()</code></a>, <a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization"><code class="function">igraph_centralization_betweenness()</code></a>, <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization"><code class="function">igraph_centralization_closeness()</code></a>, and <a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization"><code class="function">igraph_centralization_eigenvector_centrality()</code></a> for specific
+  <a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization."><code class="function">igraph_centralization_degree()</code></a>, <a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization."><code class="function">igraph_centralization_betweenness()</code></a>, <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization."><code class="function">igraph_centralization_closeness()</code></a>, and <a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization."><code class="function">igraph_centralization_eigenvector_centrality()</code></a> for specific
 centralization functions.
   </p></td>
 </tr></tbody>
@@ -10633,7 +10641,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* in-star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_IN, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_IN, IGRAPH_NO_LOOPS,
                                  &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                  <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10642,7 +10650,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                       IGRAPH_UNDIRECTED, &amp;cent,
                                       <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                       <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10659,7 +10667,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* out-star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_OUT, IGRAPH_NO_LOOPS,
                                  &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                  <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10668,7 +10676,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 11;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                       IGRAPH_UNDIRECTED, &amp;cent,
                                       <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                       <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10685,7 +10693,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* undirected star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_ALL, IGRAPH_NO_LOOPS,
                                  &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                  <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10694,7 +10702,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 21;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                       IGRAPH_UNDIRECTED, &amp;cent,
                                       <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                       <span class="emphasis"><em>/*normalized=*/</em></span> 1);
@@ -10703,7 +10711,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 22;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
                                     IGRAPH_ALL, &amp;cent,
                                     <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
                                     <span class="emphasis"><em>/*normalization=*/</em></span> 1);
@@ -10722,7 +10730,7 @@ int <span class="strong"><strong>main</strong></span>() {
                  0, 1, -1);
 
     <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options">igraph_arpack_options_init</a></strong></span>(&amp;arpack_options);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
             <span class="emphasis"><em>/*value=*/</em></span> 0,
             <span class="emphasis"><em>/*directed=*/</em></span> 1,
             <span class="emphasis"><em>/*scale=*/</em></span> 1,
@@ -10735,7 +10743,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 24;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="12.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
             <span class="emphasis"><em>/*value=*/</em></span> 0,
             <span class="emphasis"><em>/*directed=*/</em></span> 1,
             <span class="emphasis"><em>/*scale=*/</em></span> 0,
@@ -10763,7 +10771,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_degree"></a>12.2. <code class="function">igraph_centralization_degree</code> — Calculate vertex degree and graph centralization</h3></div></div></div>
+<a name="igraph_centralization_degree"></a>12.2. <code class="function">igraph_centralization_degree</code> —  Calculate vertex degree and graph centralization.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -10781,7 +10789,8 @@ igraph_error_t igraph_centralization_degree(const igraph_t *graph, igraph_vector
 
 This function calculates the degree of the vertices by passing its
 arguments to <a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>; and it calculates the graph
-level centralization index based on the results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+level centralization index based on the results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -10838,7 +10847,7 @@ level centralization index based on the results by calling <a class="link" href=
 <td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to calculate a normalized
-    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a> for how
+    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a> for how
     the normalization is done.
 </p></td>
 </tr>
@@ -10871,7 +10880,7 @@ level centralization index based on the results by calling <a class="link" href=
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -10885,7 +10894,7 @@ score.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_betweenness"></a>12.3. <code class="function">igraph_centralization_betweenness</code> — Calculate vertex betweenness and graph centralization</h3></div></div></div>
+<a name="igraph_centralization_betweenness"></a>12.3. <code class="function">igraph_centralization_betweenness</code> —  Calculate vertex betweenness and graph centralization.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -10905,7 +10914,8 @@ igraph_error_t igraph_centralization_betweenness(const igraph_t *graph,
 This function calculates the betweenness centrality of the vertices
 by passing its arguments to <a class="link" href="igraph-Structural.html#igraph_betweenness" title="9.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>; and it
 calculates the graph level centralization index based on the
-results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -10955,7 +10965,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to calculate a normalized
-    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a> for how
+    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a> for how
     the normalization is done.
 </p></td>
 </tr>
@@ -10988,7 +10998,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_betweenness" title="9.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_betweenness" title="9.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11002,7 +11012,7 @@ centralization score.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_closeness"></a>12.4. <code class="function">igraph_centralization_closeness</code> — Calculate vertex closeness and graph centralization</h3></div></div></div>
+<a name="igraph_centralization_closeness"></a>12.4. <code class="function">igraph_centralization_closeness</code> —  Calculate vertex closeness and graph centralization.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11022,7 +11032,8 @@ igraph_error_t igraph_centralization_closeness(const igraph_t *graph,
 This function calculates the closeness centrality of the vertices
 by passing its arguments to <a class="link" href="igraph-Structural.html#igraph_closeness" title="9.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a>; and it
 calculates the graph level centralization index based on the
-results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -11073,7 +11084,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to calculate a normalized
-    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a> for how
+    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a> for how
     the normalization is done.
 </p></td>
 </tr>
@@ -11106,7 +11117,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_closeness" title="9.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_closeness" title="9.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11120,7 +11131,7 @@ centralization score.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_eigenvector_centrality"></a>12.5. <code class="function">igraph_centralization_eigenvector_centrality</code> — Calculate eigenvector centrality scores and graph centralization</h3></div></div></div>
+<a name="igraph_centralization_eigenvector_centrality"></a>12.5. <code class="function">igraph_centralization_eigenvector_centrality</code> —  Calculate eigenvector centrality scores and graph centralization.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11144,7 +11155,7 @@ igraph_error_t igraph_centralization_eigenvector_centrality(
 This function calculates the eigenvector centrality of the vertices
 by passing its arguments to <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="9.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices"><code class="function">igraph_eigenvector_centrality</code></a>);
 and it calculates the graph level centralization index based on the
-results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -11211,7 +11222,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to calculate a normalized
-    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a> for how
+    centralization score. See <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a> for how
     the normalization is done.
 </p></td>
 </tr>
@@ -11244,7 +11255,7 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="9.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices"><code class="function">igraph_eigenvector_centrality()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>, <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="9.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices"><code class="function">igraph_eigenvector_centrality()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11257,7 +11268,7 @@ for the calculating the centralization.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_degree_tmax"></a>12.6. <code class="function">igraph_centralization_degree_tmax</code> — Theoretical maximum for graph centralization based on degree</h3></div></div></div>
+<a name="igraph_centralization_degree_tmax"></a>12.6. <code class="function">igraph_centralization_degree_tmax</code> —  Theoretical maximum for graph centralization based on degree.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11296,6 +11307,7 @@ arguments are considered.
 The most centralized structure is the star. More specifically, for
 undirected graphs it is the star, for directed graphs it is the
 in-star or the out-star.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -11373,7 +11385,7 @@ Time complexity: O(1).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization"><code class="function">igraph_centralization_degree()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="12.2. igraph_centralization_degree — Calculate vertex degree and graph centralization."><code class="function">igraph_centralization_degree()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11383,7 +11395,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_betweenness_tmax"></a>12.7. <code class="function">igraph_centralization_betweenness_tmax</code> — Theoretical maximum for graph centralization based on betweenness</h3></div></div></div>
+<a name="igraph_centralization_betweenness_tmax"></a>12.7. <code class="function">igraph_centralization_betweenness_tmax</code> —  Theoretical maximum for graph centralization based on betweenness.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11419,6 +11431,7 @@ arguments are considered.
 </p>
 <p>
 The most centralized structure is the star.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -11487,7 +11500,7 @@ Time complexity: O(1).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization"><code class="function">igraph_centralization_betweenness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="12.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization."><code class="function">igraph_centralization_betweenness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11497,7 +11510,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_closeness_tmax"></a>12.8. <code class="function">igraph_centralization_closeness_tmax</code> — Theoretical maximum for graph centralization based on closeness</h3></div></div></div>
+<a name="igraph_centralization_closeness_tmax"></a>12.8. <code class="function">igraph_centralization_closeness_tmax</code> —  Theoretical maximum for graph centralization based on closeness.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11603,7 +11616,7 @@ Time complexity: O(1).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization"><code class="function">igraph_centralization_closeness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization."><code class="function">igraph_centralization_closeness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11613,7 +11626,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_centralization_eigenvector_centrality_tmax"></a>12.9. <code class="function">igraph_centralization_eigenvector_centrality_tmax</code> — Theoretical maximum centralization for eigenvector centrality</h3></div></div></div>
+<a name="igraph_centralization_eigenvector_centrality_tmax"></a>12.9. <code class="function">igraph_centralization_eigenvector_centrality_tmax</code> —  Theoretical maximum centralization for eigenvector centrality.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.14.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -11727,7 +11740,7 @@ Time complexity: O(1).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization"><code class="function">igraph_centralization_closeness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores"><code class="function">igraph_centralization()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="12.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization."><code class="function">igraph_centralization_closeness()</code></a> and <a class="link" href="igraph-Structural.html#igraph_centralization" title="12.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -16405,7 +16418,7 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_t g;
 
     <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;v, 2, 5, 5);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lattice" title="1.8. igraph_lattice — Arbitrary dimensional square lattices.">igraph_lattice</a></strong></span>(&amp;g, &amp;v, 1, IGRAPH_DIRECTED, 1 <span class="emphasis"><em>/*mutual*/</em></span>, 0 <span class="emphasis"><em>/*circular*/</em></span>);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.8. igraph_square_lattice — Arbitrary dimensional square lattices.">igraph_square_lattice</a></strong></span>(&amp;g, &amp;v, 1, IGRAPH_DIRECTED, 1 <span class="emphasis"><em>/*mutual*/</em></span>, 0 <span class="emphasis"><em>/*periodic*/</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_to_undirected" title="16.2. igraph_to_undirected — Convert a directed graph to an undirected one.">igraph_to_undirected</a></strong></span>(&amp;g, IGRAPH_TO_UNDIRECTED_COLLAPSE,
                          <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
@@ -21302,6 +21315,130 @@ This function checks whether a graph is acyclic or not.
 Time complexity: O(|V|+|E|), where |V| and |E| are the number of
 vertices and edges in the original input graph.
  
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="structural-properties-deprecated"></a>26. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths">26.1. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_dijkstra">26.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_bellman_ford">26.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_johnson">26.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_shortest_paths"></a>26.1. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_shortest_paths(const igraph_t *graph,
+                                     igraph_matrix_t *res,
+                                     const igraph_vs_t from,
+                                     const igraph_vs_t to,
+                                     igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_shortest_paths_dijkstra"></a>26.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_shortest_paths_dijkstra(const igraph_t *graph,
+                                       igraph_matrix_t *res,
+                                       const igraph_vs_t from,
+                                       const igraph_vs_t to,
+                                       const igraph_vector_t *weights,
+                                       igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.2. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_shortest_paths_bellman_ford"></a>26.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_shortest_paths_bellman_ford(const igraph_t *graph,
+                                       igraph_matrix_t *res,
+                                       const igraph_vs_t from,
+                                       const igraph_vs_t to,
+                                       const igraph_vector_t *weights,
+                                       igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_distances_bellman_ford" title="3.3. igraph_distances_bellman_ford — Weighted shortest path lengths between vertices, allowing negative weights."><code class="function">igraph_distances_bellman_ford()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_shortest_paths_johnson"></a>26.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_shortest_paths_johnson(const igraph_t *graph,
+                                  igraph_matrix_t *res,
+                                  const igraph_vs_t from,
+                                  const igraph_vs_t to,
+                                  const igraph_vector_t *weights);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_distances_johnson" title="3.4. igraph_distances_johnson — Weighted shortest path lengths between vertices, using Johnson's algorithm."><code class="function">igraph_distances_johnson()</code></a>
+instead.</p>
+</div>
+<p> 
 </p>
 </div>
 </div>

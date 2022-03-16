@@ -1,0 +1,47 @@
+---
+title: C/igraph 0.9.7
+date: 2022-03-16
+tags: c
+---
+
+[C/igraph](https://igraph.org/c/) 0.9.7, the seventh bugfix release of the 0.9 series, has arrived.
+
+The source can be obtained from [the GitHub releases
+page](https://github.com/igraph/igraph/releases/tag/0.9.7).
+
+This release includes bug fixes, build system tweaks and minor (performance and
+non-performance-related) improvements. Read on for more details.
+
+<!--more-->
+
+### Changed
+
+ - `igraph_get_all_shortest_paths_dijsktra()` now uses tolerances when comparing path
+   lengths, and is thus robust to numerical roundoff errors.
+ - `igraph_vector_*_swap` and `igraph_matrix_swap` now take O(1) instead of O(n) and accept all sizes.
+
+### Fixed
+
+ - NCOL and LGL format writers no longer accept "name" and "weight" attributes
+   of invalid types.
+ - The LGL writer could not access numerical weight attributes, potentially leading
+   to crashes.
+ - External PLFIT libraries and their headers are now detected at their standard
+   installation location.
+ - `igraph_vector_init()` no longer accepts negative vector sizes.
+ - `igraph_assortativity_nominal()` crashed on the null graph.
+ - Label propagation now ensures that all labels are dominant.
+ - Fixed incorrect partition results for walktrap algorithm (issue #1927)
+ - Negative values returned by `igraph_rng_get_integer()` and `RNG_INTEGER()` were incorrect,
+   one larger than they should have been.
+ - `igraph_community_walktrap()` now checks its `steps` input argument.
+ - The first modularity value reported by `igraph_community_walktrap()` was
+   incorrect (it was always zero). This is now fixed.
+ - `igraph_correlated_game()` would return incorrect results, or exhaust the memory,
+    for most input graphs that were not generated with `igraph_erdos_renyi_game_gnp()`.
+
+### Other
+
+ - The C attribute handler now verifies attribute types when retrieving attributes.
+ - Documentation improvements
+
