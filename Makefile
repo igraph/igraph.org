@@ -92,7 +92,7 @@ $(R)/stamp:
 ######################################################################
 ## Python stuff
 
-ARCHFLAGS=-Wno-error=unused-command-line-argument
+PY_ARCHFLAGS=-Wno-error=unused-command-line-argument -Wno-error=unused-but-set-variable
 
 PY=_build/python
 
@@ -101,29 +101,20 @@ clean_python:
 	rm -rf python/tutorial
 	rm -rf $(PY)
 
-python: core python/api/stamp python/tutorial/stamp
+update_python:
+	rm -rf python/stamp $(PY)/stamp
+	$(MAKE) python
 
-python/api/stamp: $(PY)/doc/api/stamp
-	rm -rf python/api
-	mkdir -p python/api
+python: core python/stamp
+
+python/stamp: $(PY)/stamp
+	export ARCHFLAGS="$(PY_ARCHFLAGS)" && _tools/py_build_versioned.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
+	rm -rf python/api python/tutorial
+	mkdir -p python/api python/tutorial
 	cp -r $(PY)/doc/api_versions/* python/api/
-	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
-	touch $@
-
-$(PY)/doc/api/stamp: $(PY)/stamp
-	export ARCHFLAGS=$(ARCHFLAGS) && _tools/py_build_versioned_api.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
-	touch $@
-
-python/tutorial/stamp: $(PY)/doc/tutorial/stamp
-	rm -rf python/tutorial
-	mkdir -p python/tutorial
 	cp -r $(PY)/doc/tutorial/* python/tutorial/
-	rm $@
+	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
 	_tools/py_postprocess_html_tutorial.py python/tutorial $(PYVERSION)
-	touch $@
-
-$(PY)/doc/tutorial/stamp: $(PY)/stamp
-	_tools/py_build_versioned_tutorial.sh $(PY) $(PYVERSIONS)
 	touch $@
 
 $(PY)/stamp:
@@ -143,8 +134,6 @@ $(PY)/stamp:
 		python3 -m venv .venv && \
 		.venv/bin/pip install epydoc matplotlib pydoctor wheel Sphinx sphinxbootstrap4theme; \
 	fi
-	# Patch pydoctor until they fix it
-	_tools/patch-pydoctor.sh $(PY)
 	touch $@
 
 ######################################################################

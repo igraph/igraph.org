@@ -44,9 +44,18 @@ if __name__ == '__main__':
         print('Processing version: '+version)
 
         if version in ['0.8.1', '0.9.0']:
+            # These versions used Epydoc to generate the documentation
             docgenerator = 'epydoc'
             header = header_epydoc
+        elif version in ['develop']:
+            # These versions used PyDoctor to generate the documentation and the
+            # generated files are already pre-processed for Jekyll
+            docgenerator = 'pydoctor_preprocessed'
+            header = header_pydoctor
         else:
+            # These versions used PyDoctor to generate the documentation, but
+            # we need to strip PyDoctor-specific stuff for them and wrap them
+            # in Jekyll-specific stuff
             docgenerator = 'pydoctor'
             header = header_pydoctor
 
@@ -89,6 +98,22 @@ if __name__ == '__main__':
                             tmpfile.write(line)
                         line = '</div>'
                         tmpfile.write(line+'\n')
+
+                elif docgenerator == "pydoctor_preprocessed":
+                    with open(ihname, 'rt') as ih:
+                        line = next(ih, None)
+                        if line.startswith("---"):
+                            # File has frontmatter, skip it
+                            for line in ih:
+                                if line.startswith("---"):
+                                    break
+                            line = ""
+
+                        tmpfile.write(line)
+
+                        # Copy until end
+                        for line in ih:
+                            tmpfile.write(line)
 
                 else:
                     with open(ihname, 'rt') as ih:
