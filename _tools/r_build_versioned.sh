@@ -31,7 +31,7 @@ for i in "${!RVERSIONS[@]}"; do
   echo "Download from CRAN"
 
   if [ ! -f igraph_${version}.tar.gz ]; then
-   # The latest version is here, the rest in an "Archive" folder
+    # The latest version is here, the rest in an "Archive" folder
     if [ ${version} == ${CRAN_VERSION} ]; then
       curl -o igraph_${version}.tar.gz -s https://cran.r-project.org/src/contrib/igraph_${version}.tar.gz
     else

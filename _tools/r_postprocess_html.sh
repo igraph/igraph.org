@@ -62,7 +62,7 @@ for version in $versions; do
 	  # TODO(ntamas)
 	  cat ${ih} |
 	  sed -f $sedfile2 |
-	  cat >> ${oh}
+	  cat > ${oh}
   done
   
   inhtml=`ls ${indir}/${version}/html/*.html`
