@@ -1,5 +1,5 @@
 let igraph_doc_versions = {
-    c: '0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 master develop',
+    c: '0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 master develop',
     r: '1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0',
     python: '0.9.6 0.9.7 0.9.8 0.9.9 master develop',
 };
