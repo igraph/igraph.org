@@ -124,21 +124,117 @@
   <div class="bs-docs-section">
 
     
-<div<body>
+<nav class="navbar navbar-default">
+  
+  <div class="container">
 
-    <nav class="pydoctor-navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header navbar-brand">
-          <a href="https://igraph.org/python">igraph</a>
-          <a href="index.html">API Documentation</a>
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          <a href="https://igraph.org/python" class="projecthome">"igraph"</a> <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="search-results-container" style="display: none;">
+        
+        <div id="search-buttons">
+          <span class="label label-default" id="search-docstrings-button">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+              search in docstrings
+            </input>
+          </label>
+          </span>
+          
+        </div>
+        
+        <noscript>
+            <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+        </noscript>
+
+        <div class="hint" id="search-help-box">
+          <p class="rst-last">
+      
+            Search bar offers the following options:
+            <ul>   
+                <li>
+                  <strong>Term presence.</strong> The below example searches for documents that 
+                    must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                </li> 
+
+                <li>
+                  <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                </li> 
+
+                <li>
+                  <strong>Search in specific fields.</strong> The following search matches all objects 
+                  in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+
+                  <p>
+                    Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                    Last two fields are only applicable if "search in docstrings" is enabled.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>Fuzzy matches.</strong> The following search matches all documents 
+                  that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                </li>
+            </ul>
+
+          </p>
+        </div>
+
+        <div id="search-status"> </div>
+
+        <div class="warning" id="search-warn-box" style="display: none;">
+          <p class="rst-last"><span id="search-warn"></span></p>
+        </div>
+
+        <table id="search-results">
+          <!-- Filled dynamically by JS -->
+        </table>
+        
+        <div style="margin-top: 8px;">
+          <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
         </div>
       </div>
-    </nav>
+
+    </div>
+  </div>
+</nav>
+
+    
 
     <div class="container">
 
       <div class="page-header">
-        <h1 class="class"><code><code><a href="igraph.html">igraph</a></code>.<code><a href="igraph.clustering.html">clustering</a></code>.<code><a href="igraph.clustering.Dendrogram.html">Dendrogram</a></code></code></h1>
+        <h1 class="class"><code><code><a href="index.html" class="internal-link">igraph</a></code><wbr></wbr>.<code><a href="igraph.clustering.html" class="internal-link" title="igraph.clustering">clustering</a></code><wbr></wbr>.<code><a href="igraph.clustering.Dendrogram.html" class="internal-link" title="igraph.clustering.Dendrogram">Dendrogram</a></code></code></h1>
         <div id="showPrivate">
           <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
         </div>
@@ -149,12 +245,15 @@
       </div>
 
       <div class="extrasDocstring">
-        <p><code><span class="py-keyword">class</span> <span class="py-defname">Dendrogram</span>:</code></p><p>Known subclasses: <code><a href="igraph.clustering.VertexDendrogram.html">igraph.clustering.VertexDendrogram</a></code></p>
+        <p><code><span class="py-keyword">class</span> <span class="py-defname">Dendrogram</span>:</code></p><p>Known subclasses: <code><a href="igraph.clustering.VertexDendrogram.html" class="internal-link">igraph.clustering.VertexDendrogram</a></code></p>
         <p><a href="classIndex.html#igraph.clustering.Dendrogram">View In Hierarchy</a></p>
       </div>
 
       <div class="moduleDocstring">
-        <div><p>The hierarchical clustering (dendrogram) of some dataset.</p><p>A hierarchical clustering means that we know not only the way the elements are separated into groups, but also the exact history of how individual elements were joined into larger subgroups.</p><p>This class internally represents the hierarchy by a matrix with n rows and 2 columns -- or more precisely, a list of lists of size 2. This is exactly the same as the original format used by <code>igraph</code>'s C core. The <i class="math">i</i>th row of the matrix contains the indices of the two clusters being joined in time step <i class="math">i</i>. The joint group will be represented by the ID <i class="math">n+i</i>, with <i class="math">i</i> starting from one. The ID of the joint group will be referenced in the upcoming steps instead of any of its individual members. So, IDs less than or equal to <i class="math">n</i> (where <i class="math">n</i> is the number of rows in the matrix) mean the original members of the dataset (with ID from 0 to <i class="math">n</i>), while IDs up from <i class="math">n+1</i> mean joint groups. As an example, take a look at the dendrogram and the internal representation of a given clustering of five nodes:</p><pre class="literalblock">
+        <div><p>The hierarchical clustering (dendrogram) of some dataset.</p>
+<p>A hierarchical clustering means that we know not only the way the elements are separated into groups, but also the exact history of how individual elements were joined into larger subgroups.</p>
+<p>This class internally represents the hierarchy by a matrix with n rows and 2 columns -- or more precisely, a list of lists of size 2. This is exactly the same as the original format used by <tt class="rst-docutils literal">igraph</tt>'s C core. The <span class="rst-math rst-formula"><i>i</i></span>th row of the matrix contains the indices of the two clusters being joined in time step <span class="rst-math rst-formula"><i>i</i></span>. The joint group will be represented by the ID <span class="rst-math rst-formula"><i>n</i> + <i>i</i></span>, with <span class="rst-math rst-formula"><i>i</i></span> starting from one. The ID of the joint group will be referenced in the upcoming steps instead of any of its individual members. So, IDs less than or equal to <span class="rst-math rst-formula"><i>n</i></span> (where <span class="rst-math rst-formula"><i>n</i></span> is the number of rows in the matrix) mean the original members of the dataset (with ID from 0 to <span class="rst-math rst-formula"><i>n</i></span>), while IDs up from <span class="rst-math rst-formula"><i>n</i> + 1</span> mean joint groups. As an example, take a look at the dendrogram and the internal representation of a given clustering of five nodes:</p>
+<pre class="rst-literal-block">
   0 -+
      |
   1 -+-+
@@ -164,82 +263,84 @@
   3 -+   |
      |   |
   4 -+---+---
-</pre></div>
+</pre>
+</div>
       </div>
 
       <div id="splitTables">
-        <table class="children sortable" id="id33">
+        <table class="children sortable" id="id28">
+  
   
   <tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__init__">__init__</a></code></td>
-    <td><span>Creates a hierarchical clustering.</span></td>
+    <td><code><a href="#__init__" class="internal-link" title="igraph.clustering.Dendrogram.__init__">__init__</a></code></td>
+    <td>Creates a hierarchical clustering.</td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__str__">__str__</a></code></td>
+    <td><code><a href="#__plot__" class="internal-link" title="igraph.clustering.Dendrogram.__plot__">__plot__</a></code></td>
+    <td>Draws the dendrogram on the given Cairo context or matplotlib Axes.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#__str__" class="internal-link" title="igraph.clustering.Dendrogram.__str__">__str__</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#format">format</a></code></td>
-    <td><span>Formats the dendrogram in a foreign format.</span></td>
+    <td><code><a href="#format" class="internal-link" title="igraph.clustering.Dendrogram.format">format</a></code></td>
+    <td>Formats the dendrogram in a foreign format.</td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#summary">summary</a></code></td>
-    <td><span>Returns the summary of the dendrogram.</span></td>
+    <td><code><a href="#names.setter" class="internal-link" title="igraph.clustering.Dendrogram.names.setter">names​.setter</a></code></td>
+    <td>Sets the names of the nodes in the dendrogram</td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__plot__">__plot__</a></code></td>
-    <td><span>Draws the dendrogram on the given Cairo context or matplotlib Axes.</span></td>
+    <td><code><a href="#summary" class="internal-link" title="igraph.clustering.Dendrogram.summary">summary</a></code></td>
+    <td>Returns the summary of the dendrogram.</td>
   </tr><tr class="property">
     
     <td>Property</td>
-    <td><code><a href="#merges">merges</a></code></td>
-    <td><span>Returns the performed merges in matrix format</span></td>
+    <td><code><a href="#merges" class="internal-link" title="igraph.clustering.Dendrogram.merges">merges</a></code></td>
+    <td>Returns the performed merges in matrix format</td>
   </tr><tr class="property">
     
     <td>Property</td>
-    <td><code><a href="#names">names</a></code></td>
-    <td><span>Returns the names of the nodes in the dendrogram</span></td>
-  </tr><tr class="method">
-    
-    <td>Method</td>
-    <td><code><a href="#names.setter">names.setter</a></code></td>
-    <td><span>Sets the names of the nodes in the dendrogram</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_merges">_merges</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_nmerges">_nmerges</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_nitems">_nitems</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_names">_names</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td><code><a href="#names" class="internal-link" title="igraph.clustering.Dendrogram.names">names</a></code></td>
+    <td>Returns the names of the nodes in the dendrogram</td>
   </tr><tr class="staticmethod private">
     
     <td>Static Method</td>
-    <td><code><a href="#_convert_matrix_to_tuple_repr">_convert_matrix_to_tuple_repr</a></code></td>
-    <td><span>Converts the matrix representation of a clustering to a tuple representation.</span></td>
+    <td><code><a href="#_convert_matrix_to_tuple_repr" class="internal-link" title="igraph.clustering.Dendrogram._convert_matrix_to_tuple_repr">_convert​_matrix​_to​_tuple​_repr</a></code></td>
+    <td>Converts the matrix representation of a clustering to a tuple representation.</td>
   </tr><tr class="method private">
     
     <td>Method</td>
-    <td><code><a href="#_traverse_inorder">_traverse_inorder</a></code></td>
-    <td><span>Conducts an inorder traversal of the merge tree.</span></td>
+    <td><code><a href="#_traverse_inorder" class="internal-link" title="igraph.clustering.Dendrogram._traverse_inorder">_traverse​_inorder</a></code></td>
+    <td>Conducts an inorder traversal of the merge tree.</td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_merges" class="internal-link" title="igraph.clustering.Dendrogram._merges">_merges</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_names" class="internal-link" title="igraph.clustering.Dendrogram._names">_names</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_nitems" class="internal-link" title="igraph.clustering.Dendrogram._nitems">_nitems</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_nmerges" class="internal-link" title="igraph.clustering.Dendrogram._nmerges">_nmerges</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr>
 </table>
         
@@ -250,6 +351,7 @@
       <div id="childList">
 
         <div class="basemethod">
+  
   
   <a name="igraph.clustering.Dendrogram.__init__">
     
@@ -263,119 +365,36 @@
     
   </div>
   <div class="docstring functionBody">
-    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html">igraph.clustering.VertexDendrogram</a></code></div>
+    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html" class="internal-link">igraph.clustering.VertexDendrogram</a></code></div>
     
-    <div><p>Creates a hierarchical clustering.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">merges</td><td>the merge history either in matrix or tuple format</td></tr></table></div>
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  <a name="igraph.clustering.Dendrogram._merges">
-    
-  </a>
-  <a name="_merges">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_merges</span> =
-    
-  </div>
-  <div class="functionBody">
-    
-    
-    <div><p class="undocumented">Undocumented</p></div>
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  <a name="igraph.clustering.Dendrogram._nmerges">
-    
-  </a>
-  <a name="_nmerges">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_nmerges</span> =
-    
-  </div>
-  <div class="functionBody">
-    
-    
-    <div><p class="undocumented">Undocumented</p></div>
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  <a name="igraph.clustering.Dendrogram._nitems">
-    
-  </a>
-  <a name="_nitems">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_nitems</span> =
-    
-  </div>
-  <div class="functionBody">
-    
-    
-    <div><p class="undocumented">Undocumented</p></div> (type: <code>int</code>)
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  <a name="igraph.clustering.Dendrogram._names">
-    
-  </a>
-  <a name="_names">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_names</span> =
-    
-  </div>
-  <div class="functionBody">
-    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html">igraph.clustering.VertexDendrogram</a></code></div>
-    
-    <div><p class="undocumented">Undocumented</p></div>
-  </div>
-</div><div class="basestaticmethod private">
-  
-  <a name="igraph.clustering.Dendrogram._convert_matrix_to_tuple_repr">
-    
-  </a>
-  <a name="_convert_matrix_to_tuple_repr">
-    
-  </a>
-  <div class="functionHeader">
-    @staticmethod<br />
-    <span class="py-keyword">def</span> <span class="py-defname">_convert_matrix_to_tuple_repr</span>(merges, n=None):
-    
-  </div>
-  <div class="docstring functionBody">
-    
-    
-    <div><p>Converts the matrix representation of a clustering to a tuple representation.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">merges</td><td>the matrix representation of the clustering</td></tr><tr><td></td><td class="fieldArg">n</td><td><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">the tuple representation of the clustering</td></tr></table></div>
-  </div>
-</div><div class="basemethod private">
-  
-  <a name="igraph.clustering.Dendrogram._traverse_inorder">
-    
-  </a>
-  <a name="_traverse_inorder">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-keyword">def</span> <span class="py-defname">_traverse_inorder</span>(self):
-    
-  </div>
-  <div class="docstring functionBody">
-    
-    
-    <div><p>Conducts an inorder traversal of the merge tree.</p><p>The inorder traversal returns the nodes on the last level in the order they should be drawn so that no edges cross each other.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">the result of the inorder traversal in a list.</td></tr></table></div>
+    <div>Creates a hierarchical clustering.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">merges</span></td><td class="fieldArgDesc">the merge history either in matrix or tuple format</td></tr></table></div>
   </div>
 </div><div class="basemethod">
+  
+  
+  <a name="igraph.clustering.Dendrogram.__plot__">
+    
+  </a>
+  <a name="__plot__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__plot__</span>(self, backend, context, *args, **kwds):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html" class="internal-link">igraph.clustering.VertexDendrogram</a></code></div>
+    
+    <div><p>Draws the dendrogram on the given Cairo context or matplotlib Axes.</p>
+<p>Supported keyword arguments are:</p>
+<ul class="rst-simple">
+<li><tt class="rst-docutils literal">orientation</tt>: the orientation of the dendrogram. Must be one of the following values: <tt class="rst-docutils literal"><span class="pre">left-right</span></tt>, <tt class="rst-docutils literal"><span class="pre">bottom-top</span></tt>, <tt class="rst-docutils literal"><span class="pre">right-left</span></tt> or <tt class="rst-docutils literal"><span class="pre">top-bottom</span></tt>. Individual elements are always placed at the former edge and merges are performed towards the latter edge. Possible aliases: <tt class="rst-docutils literal">horizontal</tt> = <tt class="rst-docutils literal"><span class="pre">left-right</span></tt>, <tt class="rst-docutils literal">vertical</tt> = <tt class="rst-docutils literal"><span class="pre">bottom-top</span></tt>, <tt class="rst-docutils literal">lr</tt> = <tt class="rst-docutils literal"><span class="pre">left-right</span></tt>, <tt class="rst-docutils literal">rl</tt> = <tt class="rst-docutils literal"><span class="pre">right-left</span></tt>, <tt class="rst-docutils literal">tb</tt> = <tt class="rst-docutils literal"><span class="pre">top-bottom</span></tt>, <tt class="rst-docutils literal">bt</tt> = <tt class="rst-docutils literal"><span class="pre">bottom-top</span></tt>. The default is <tt class="rst-docutils literal"><span class="pre">left-right</span></tt>.</li>
+</ul>
+</div>
+  </div>
+</div><div class="basemethod">
+  
   
   <a name="igraph.clustering.Dendrogram.__str__">
     
@@ -395,6 +414,7 @@
   </div>
 </div><div class="basemethod">
   
+  
   <a name="igraph.clustering.Dendrogram.format">
     
   </a>
@@ -403,13 +423,16 @@
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">format</span>(self, format='newick'):
+    <span class="py-keyword">def</span> <span class="py-defname">format</span>(self, format=<span class="rst-variable-quote">'</span><span class="rst-variable-string">newick</span><span class="rst-variable-quote">'</span>):
     
   </div>
   <div class="docstring functionBody">
     
     
-    <div><p>Formats the dendrogram in a foreign format.</p><p>Currently only the Newick format is supported.</p><p>Example:</p><pre class="py-doctest">
+    <div><p>Formats the dendrogram in a foreign format.</p>
+<p>Currently only the Newick format is supported.</p>
+<p>Example:</p>
+<pre class="py-doctest">
 <span class="py-prompt">&gt;&gt;&gt; </span>d = Dendrogram([(2, 3), (0, 1), (4, 5)])
 <span class="py-prompt">&gt;&gt;&gt; </span>d.format()
 <span class="py-output">'((2,3)4,(0,1)5)6;'</span>
@@ -419,6 +442,26 @@
 </pre></div>
   </div>
 </div><div class="basemethod">
+  
+  
+  <a name="igraph.clustering.Dendrogram.names.setter">
+    
+  </a>
+  <a name="names.setter">
+    
+  </a>
+  <div class="functionHeader">
+    @<a href="#names.setter" class="internal-link" title="igraph.clustering.Dendrogram.names.setter">names.setter</a><br />
+    <span class="py-keyword">def</span> <span class="py-defname">names</span>(self, items):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div>Sets the names of the nodes in the dendrogram</div>
+  </div>
+</div><div class="basemethod">
+  
   
   <a name="igraph.clustering.Dendrogram.summary">
     
@@ -434,27 +477,12 @@
   <div class="docstring functionBody">
     
     
-    <div><p>Returns the summary of the dendrogram.</p><p>The summary includes the number of leafs and branches, and also an ASCII art representation of the dendrogram unless it is too large.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">verbosity</td><td>determines whether the ASCII representation of the dendrogram should be printed. Zero verbosity prints only the number of leafs and branches.</td></tr><tr><td></td><td class="fieldArg">max_leaf_count</td><td>the maximal number of leafs to print in the ASCII representation. If the dendrogram has more leafs than this limit, the ASCII representation will not be printed even if the verbosity is larger than or equal to 1.</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2">the summary of the dendrogram as a string.</td></tr></table></div>
-  </div>
-</div><div class="basemethod">
-  
-  <a name="igraph.clustering.Dendrogram.__plot__">
-    
-  </a>
-  <a name="__plot__">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-keyword">def</span> <span class="py-defname">__plot__</span>(self, backend, context, *args, **kwds):
-    
-  </div>
-  <div class="docstring functionBody">
-    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html">igraph.clustering.VertexDendrogram</a></code></div>
-    
-    <div><p>Draws the dendrogram on the given Cairo context or matplotlib Axes.</p><p>Supported keyword arguments are:</p><ul><li><code>orientation</code>: the orientation of the dendrogram. Must be one of the following values: <code>left-right</code>, <code>bottom-top</code>, <code>right-left</code> or <code>top-bottom</code>. Individual elements are always placed at the former edge and merges are performed towards the latter edge. Possible aliases: <code>horizontal</code> = <code>left-right</code>, <code>vertical</code> = <code>bottom-top</code>, <code>lr</code> = <code>left-right</code>, <code>rl</code> = <code>right-left</code>, <code>tb</code> = <code>top-bottom</code>, <code>bt</code> = <code>bottom-top</code>. The default is <code>left-right</code>.</li></ul></div>
+    <div><p>Returns the summary of the dendrogram.</p>
+<p>The summary includes the number of leafs and branches, and also an ASCII art representation of the dendrogram unless it is too large.</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">verbosity</span></td><td class="fieldArgDesc">determines whether the ASCII representation of the dendrogram should be printed. Zero verbosity prints only the number of leafs and branches.</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">max​_leaf​_count</span></td><td class="fieldArgDesc">the maximal number of leafs to print in the ASCII representation. If the dendrogram has more leafs than this limit, the ASCII representation will not be printed even if the verbosity is larger than or equal to 1.</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td colspan="2">the summary of the dendrogram as a string.</td></tr></table></div>
   </div>
 </div><div class="baseproperty">
+  
   
   <a name="igraph.clustering.Dendrogram.merges">
     
@@ -470,9 +498,11 @@
   <div class="functionBody">
     
     
-    <div><p>Returns the performed merges in matrix format</p></div>
+    <div>Returns the performed merges in matrix format</div>
+    
   </div>
 </div><div class="baseproperty">
+  
   
   <a name="igraph.clustering.Dendrogram.names">
     
@@ -488,39 +518,135 @@
   <div class="functionBody">
     
     
-    <div><p>Returns the names of the nodes in the dendrogram</p></div>
+    <div>Returns the names of the nodes in the dendrogram</div>
+    
   </div>
-</div><div class="basemethod">
+</div><div class="basestaticmethod private">
   
-  <a name="igraph.clustering.Dendrogram.names.setter">
+  
+  <a name="igraph.clustering.Dendrogram._convert_matrix_to_tuple_repr">
     
   </a>
-  <a name="names.setter">
+  <a name="_convert_matrix_to_tuple_repr">
     
   </a>
   <div class="functionHeader">
-    @names.setter<br />
-    <span class="py-keyword">def</span> <span class="py-defname">names</span>(self, items):
+    @staticmethod<br />
+    <span class="py-keyword">def</span> <span class="py-defname">_convert_matrix_to_tuple_repr</span>(merges, n=None):
     
   </div>
   <div class="docstring functionBody">
     
     
-    <div><p>Sets the names of the nodes in the dendrogram</p></div>
+    <div>Converts the matrix representation of a clustering to a tuple representation.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">merges</span></td><td class="fieldArgDesc">the matrix representation of the clustering</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n</span></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td colspan="2">the tuple representation of the clustering</td></tr></table></div>
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="igraph.clustering.Dendrogram._traverse_inorder">
+    
+  </a>
+  <a name="_traverse_inorder">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_traverse_inorder</span>(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    
+    <div><p>Conducts an inorder traversal of the merge tree.</p>
+<p>The inorder traversal returns the nodes on the last level in the order they should be drawn so that no edges cross each other.</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td colspan="2">the result of the inorder traversal in a list.</td></tr></table></div>
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="igraph.clustering.Dendrogram._merges">
+    
+  </a>
+  <a name="_merges">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_merges</span> =
+    
+  </div>
+  <div class="functionBody">
+    
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="igraph.clustering.Dendrogram._names">
+    
+  </a>
+  <a name="_names">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_names</span> =
+    
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="igraph.clustering.VertexDendrogram.html" class="internal-link">igraph.clustering.VertexDendrogram</a></code></div>
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="igraph.clustering.Dendrogram._nitems">
+    
+  </a>
+  <a name="_nitems">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_nitems</span> =
+    
+  </div>
+  <div class="functionBody">
+    
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="igraph.clustering.Dendrogram._nmerges">
+    
+  </a>
+  <a name="_nmerges">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_nmerges</span> =
+    
+  </div>
+  <div class="functionBody">
+    
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
   </div>
 </div>
 
       </div>
-      <address>
-        <a href="index.html">API Documentation</a> for <a href="https://igraph.org/python">igraph</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2.
-      </address>
-
     </div>
 
-    <script src="pydoctor.js" type="text/javascript"></script>
-
-</div>
-
+    
 
 
   </div>
