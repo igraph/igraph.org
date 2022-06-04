@@ -9,7 +9,7 @@ import sys
 
 from argparse import ArgumentParser
 from pathlib import Path
-from shutil import copytree, move, rmtree
+from shutil import copy, move, rmtree
 
 
 BANNER = """\
@@ -28,7 +28,7 @@ def fail(msg, code=1):
     sys.exit(code)
 
 
-def process_html_file(path, version, latest_version):
+def process_html_file(path, version):
     tmp_path = path.with_suffix(".html.tmp")
     with tmp_path.open("w") as outfp:
         outfp.write(BANNER)
@@ -55,7 +55,7 @@ def process_html_file(path, version, latest_version):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("source_dir", help="source folder of igraph's C core")
+    parser.add_argument("source_dir", help="source folder of igraph's C core, one version in one subfolder")
     parser.add_argument("out_dir", help="output folder of igraph's C core")
     parser.add_argument("versions", help="versions to build")
     parser.add_argument("latest", help="latest version to redirect")
@@ -72,14 +72,22 @@ def main():
     if jekyll_dir.exists():
         rmtree(jekyll_dir)
 
-    copytree(doc_dir, jekyll_dir)
-
     for version in versions:
+        doc_dir_version = doc_dir / version
         jekyll_dir_version = jekyll_dir / version
+        should_skip = (
+            (jekyll_dir_version / "index.html").exists() \
+            and not (doc_dir_version / "index.html").exists()
+        )
+        if should_skip:
+            continue
+
         print(jekyll_dir_version)
-        for html_file in jekyll_dir_version.glob("*.html"):
-            print(html_file)
-            process_html_file(html_file, version, latest)
+        jekyll_dir_version.mkdir(parents=True, exist_ok=True)
+        for html_file in doc_dir_version.glob("*.html"):
+            jekyll_html_file = jekyll_dir_version / html_file.name
+            copy(html_file, jekyll_html_file)
+            process_html_file(jekyll_html_file, version)
 
 
 if __name__ == "__main__":

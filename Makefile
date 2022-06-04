@@ -4,12 +4,12 @@ all: jekyll
 .PHONY: all core c r python jekyll devserver
 
 # Default doc version
-CVERSION?=0.9.8
+CVERSION?=0.9.9
 RVERSION?=1.3.0
 PYVERSION?=0.9.10
 
 # Available versions
-CVERSIONS?='0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 master develop'
+CVERSIONS?='0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 0.9.9 master develop'
 RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0'
 PYVERSIONS?='0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 master develop'
 PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.6 0.9.8 0.9.8 develop'
@@ -41,9 +41,7 @@ c: core c/stamp
 
 c/stamp: $(C)/build/doc/stamp
 	mkdir -p c/pre
-	cp -r $(C)/build/doc/html/* c/pre/
-	python3 _tools/c_postprocess_html.py c/pre c/html $(CVERSIONS) $(CVERSION)
-	rm -rf c/pre
+	python3 _tools/c_postprocess_html.py $(C)/build/doc/html c/html $(CVERSIONS) $(CVERSION)
 	cp -r $(C)/build/doc/pdf c/
 	touch $@
 

@@ -7,6 +7,8 @@ CVERSIONS=${2}
 CFOLDER_ABS=$(realpath $CFOLDER)
 IFS=' '; read -ra CVERSIONS <<< $CVERSIONS
 
+ROOT_ABS=$(pwd)
+
 cd $CFOLDER_ABS
 mkdir -p build_versions
 mkdir -p build/doc/html
@@ -16,7 +18,14 @@ for i in "${!CVERSIONS[@]}"; do
   version=${CVERSIONS[$i]}
 
   if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+    SKIP=0
+    if [ -f "${ROOT_ABS}/c/html/${version}/index.html" -a -d "${ROOT_ABS}/c/pdf/${version}" ]; then
+      SKIP=1
+    fi
     if [ -d "build/doc/html/${version}" -a -d "build/doc/pdf/${version}" ]; then
+      SKIP=1
+    fi
+    if [ "x$SKIP" = x1 ]; then
       echo "Skipping already built version: $version"
       continue
     fi
