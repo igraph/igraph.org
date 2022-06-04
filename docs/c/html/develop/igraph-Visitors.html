@@ -150,6 +150,7 @@
 <dt><span class="section"><a href="igraph-Visitors.html#breadth-first-search">1. Breadth-first search</a></span></dt>
 <dt><span class="section"><a href="igraph-Visitors.html#depth-first-search">2. Depth-first search</a></span></dt>
 <dt><span class="section"><a href="igraph-Visitors.html#random-walks">3. Random walks</a></span></dt>
+<dt><span class="section"><a href="igraph-Visitors.html#igraph-Visitors-deprecated">4. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -482,7 +483,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.16.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_bfs_simple(igraph_t *graph, igraph_integer_t root, igraph_neimode_t mode,
+igraph_error_t igraph_bfs_simple(const igraph_t *graph, igraph_integer_t root, igraph_neimode_t mode,
                       igraph_vector_int_t *order, igraph_vector_int_t *layers,
                       igraph_vector_int_t *parents);
 </pre></div>
@@ -1007,18 +1008,19 @@ completed. These callbacks must be of type <code class="constant">igraph_dfshand
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="random-walks"></a>3. Random walks</h2></div></div></div>
-<div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Visitors.html#igraph_random_walk">3.1. <code class="function">igraph_random_walk</code> —  Perform a random walk on a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Visitors.html#igraph_random_edge_walk">3.2. <code class="function">igraph_random_edge_walk</code> —  Perform a random walk on a graph and return the traversed edges</a></span></dt>
-</dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Visitors.html#igraph_random_walk">3.1. <code class="function">igraph_random_walk</code> —  Performs a random walk on a graph.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_random_walk"></a>3.1. <code class="function">igraph_random_walk</code> —  Perform a random walk on a graph.</h3></div></div></div>
+<a name="igraph_random_walk"></a>3.1. <code class="function">igraph_random_walk</code> —  Performs a random walk on a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.16.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_random_walk(const igraph_t *graph, igraph_vector_int_t *walk,
-                       igraph_integer_t start, igraph_neimode_t mode,
+igraph_error_t igraph_random_walk(const igraph_t *graph,
+                       const igraph_vector_t *weights,
+                       igraph_vector_int_t *vertices,
+                       igraph_vector_int_t *edges,
+                       igraph_integer_t start,
+                       igraph_neimode_t mode,
                        igraph_integer_t steps,
                        igraph_random_walk_stuck_t stuck);
 </pre></div>
@@ -1049,11 +1051,30 @@ the <em class="parameter"><code>mode</code></em> argument.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>walk</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector of non-negative edge weights. It is assumed
+  that at least one strictly positive weight is found among the
+  outgoing edges of each vertex. Additionally, no edge weight may
+  be NaN. If either case does not hold, an error is returned. If it
+  is <code class="constant">NULL</code>, all edges are considered to have equal weight.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertices</code></em>:</span></p></td>
 <td><p>
   An allocated vector, the result is stored here as
-  a list of vertex IDs.
-  It will be resized as needed.
+  a list of vertex IDs. It will be resized as needed.
+  It includes the vertex IDs of starting and ending vertices.
+  Length of the vertices vector: <em class="parameter"><code>steps</code></em> + 1
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the indices of traversed
+  edges are stored here. It will be resized as needed.
+  Length of the edges vector: <em class="parameter"><code>steps</code></em>
 </p></td>
 </tr>
 <tr>
@@ -1066,8 +1087,8 @@ the <em class="parameter"><code>mode</code></em> argument.
 <td><p><span class="term"><em class="parameter"><code>steps</code></em>:</span></p></td>
 <td><p>
   The number of steps to take. If the random walk gets
-  stuck, then the <em class="parameter"><code>stuck</code></em> argument specifies what happens. The
-  starting vertex counts as one step.
+  stuck, then the <em class="parameter"><code>stuck</code></em> argument specifies what happens.
+  <em class="parameter"><code>steps</code></em> is the number of edges to traverse during the walk.
 </p></td>
 </tr>
 <tr>
@@ -1085,8 +1106,9 @@ the <em class="parameter"><code>mode</code></em> argument.
   What to do if the random walk gets stuck.
   <code class="constant">IGRAPH_RANDOM_WALK_STUCK_RETURN</code> means that the function returns
   with a shorter walk; <code class="constant">IGRAPH_RANDOM_WALK_STUCK_ERROR</code> means
-  that an error is reported. In both cases <em class="parameter"><code>walk</code></em> is truncated
-  to contain the actual interrupted walk.
+  that an <code class="constant">IGRAPH_ERWSTUCK</code> error is reported.
+  In both cases, <em class="parameter"><code>vertices</code></em> and <em class="parameter"><code>edges</code></em> are truncated to contain
+  the actual interrupted walk.
 </p></td>
 </tr>
 </tbody>
@@ -1102,29 +1124,38 @@ the <em class="parameter"><code>mode</code></em> argument.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code.
+  Error code: <code class="constant">IGRAPH_ERWSTUCK</code> if the walk got stuck.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
-Time complexity: O(l + d), where <code class="constant">l</code> is the length of the
-walk, and <code class="constant">d</code> is the total degree of the visited nodes.
+Time complexity:
+  O(l + d) for unweighted graphs and
+  O(l * log(k) + d) for weighted graphs,
+  where <code class="constant">l</code> is the length of the walk, <code class="constant">d</code> is the total degree of the visited nodes
+  and <code class="constant">k</code> is the average degree of vertices of the given graph.
  
 </p>
 </div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph-Visitors-deprecated"></a>4. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Visitors.html#igraph_random_edge_walk">4.1. <code class="function">igraph_random_edge_walk</code> —  Performs a random walk on a graph and returns the traversed edges.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_random_edge_walk"></a>3.2. <code class="function">igraph_random_edge_walk</code> —  Perform a random walk on a graph and return the traversed edges</h3></div></div></div>
-<a class="indexterm" name="id-1.16.4.3.2"></a><p>
+<a name="igraph_random_edge_walk"></a>4.1. <code class="function">igraph_random_edge_walk</code> —  Performs a random walk on a graph and returns the traversed edges.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_random_edge_walk(const igraph_t *graph,
-                            const igraph_vector_t *weights,
-                            igraph_vector_int_t *edgewalk,
-                            igraph_integer_t start, igraph_neimode_t mode,
-                            igraph_integer_t steps,
-                            igraph_random_walk_stuck_t stuck);
+igraph_error_t igraph_random_edge_walk(
+        const igraph_t *graph,
+        const igraph_vector_t *weights,
+        igraph_vector_int_t *edgewalk,
+        igraph_integer_t start, igraph_neimode_t mode,
+        igraph_integer_t steps,
+        igraph_random_walk_stuck_t stuck);
 </pre></div>
 <p>
 </p>
@@ -1197,8 +1228,8 @@ the <em class="parameter"><code>mode</code></em> argument.
   What to do if the random walk gets stuck.
   <code class="constant">IGRAPH_RANDOM_WALK_STUCK_RETURN</code> means that the function returns
   with a shorter walk; <code class="constant">IGRAPH_RANDOM_WALK_STUCK_ERROR</code> means
-  that an error is reported. In both cases, <em class="parameter"><code>edgewalk</code></em> is truncated
-  to contain the actual interrupted walk.</p></td>
+  that an <code class="constant">IGRAPH_ERWSTUCK</code> error is reported. In both cases,
+  <em class="parameter"><code>edgewalk</code></em> is truncated to contain the actual interrupted walk.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -1221,7 +1252,14 @@ the <em class="parameter"><code>mode</code></em> argument.
 </table></div>
 <p>
 
- 
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Visitors.html#igraph_random_walk" title="3.1. igraph_random_walk — Performs a random walk on a graph."><code class="function">igraph_random_walk()</code></a>
+instead.</p>
+</div>
+<p> 
 </p>
 </div>
 </div>

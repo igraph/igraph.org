@@ -1305,10 +1305,36 @@ igraph_error_t igraph_layout_fruchterman_reingold(const igraph_t *graph,
 
 </p>
 <p>
-This is a force-directed layout, see Fruchterman, T.M.J. and
-Reingold, E.M.: Graph Drawing by Force-directed Placement.
+This is a force-directed layout that simulates an attractive force <code class="constant">f_a</code> between
+connected vertex pairs and a repulsive force <code class="constant">f_r</code> between all vertex pairs.
+The forces are computed as a function of the distance <code class="constant">d</code> between the two vertices as
+
+</p>
+<p>
+<code class="literal">f_a(d) = -w * d^2</code> and <code class="literal">f_r(d) = 1/d</code>,
+
+</p>
+<p>
+where <code class="constant">w</code> represents the edge weight. The equilibrium distance of two connected
+vertices is thus <code class="literal">1/w^3</code>, assuming no other forces acting on them.
+
+</p>
+<p>
+In disconnected graphs, igraph effectively inserts a weak connection of weight
+<code class="literal">n^(-3/2)</code> between all pairs of vertices, where <code class="constant">n</code> is the vertex count.
+This ensures that components are kept near each other.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Fruchterman, T.M.J. and Reingold, E.M.:
+Graph Drawing by Force-directed Placement.
 Software -- Practice and Experience, 21/11, 1129--1164,
-1991.
+1991. <a class="ulink" href="https://doi.org/10.1002/spe.4380211102" target="_top">https://doi.org/10.1002/spe.4380211102</a>
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1454,6 +1480,11 @@ between the corresponding pair of vertices. Thus, in a weighted graph, increasin
 the weight between two vertices pushes them apart. The Young modulus of springs
 is inversely proportional to the graph distance, ensuring that springs between
 far-apart veritces will have a smaller effect on the layout.
+
+</p>
+<p>
+This layout works particularly well for locally connected spatial networks
+such as lattices.
 
 </p>
 <p>
@@ -2113,6 +2144,7 @@ in the same grid cell.
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_reingold_tilford_circular">2.2. <code class="function">igraph_layout_reingold_tilford_circular</code> —  Circular Reingold-Tilford layout for trees</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_roots_for_tree_layout">2.3. <code class="function">igraph_roots_for_tree_layout</code> —  Roots suitable for a nice tree layout.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sugiyama">2.4. <code class="function">igraph_layout_sugiyama</code> —  Sugiyama layout algorithm for layered directed acyclic graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_umap">2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection for Dimension Reduction</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -2658,6 +2690,209 @@ Cybernetics 11(2):109-125, 1981.
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_umap"></a>2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection for Dimension Reduction</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_layout_umap(const igraph_t *graph,
+                                  igraph_matrix_t *res,
+                                  igraph_bool_t use_seed,
+                                  const igraph_vector_t *distances,
+                                  igraph_real_t min_dist,
+                                  igraph_integer_t epochs,
+                                  igraph_real_t sampling_prob);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+UMAP is a mostly used to embed high-dimensional vectors in a low-dimensional space
+(most commonly by far, 2D). The algorithm is probabilistic and introduces
+nonlinearities, unlike e.g. PCA and similar to T-distributed Stochastic Neighbor
+Embedding (t-SNE). Nonlinearity helps "cluster" very similar vectors together without
+imposing a global geometry on the embedded space (e.g. a rigid rotation + compression
+in PCA).
+
+</p>
+<p>
+
+However, UMAP uses a graph with distances associated to the edges as a key
+intermediate representation of the high-dimensional space, so it is also useful as
+a general graph layouting algorithm, hence its inclusion in igraph.
+
+</p>
+<p>
+
+Importantly, the edge-associated distances are derived from a similarity metric
+between the high-dimensional vectors, often Pearson correlation:
+
+</p>
+<p>
+
+<code class="literal">corr(v1, v2) = v1 x v2 / [ sqrt(v1 x v1) * sqrt(v2 x v2) ]</code>
+
+</p>
+<p>
+
+In this case, the associated distance is usually defined as:
+
+</p>
+<p>
+
+<code class="literal">d(v1, v2) = 1 - corr(v1, v2)</code>
+
+</p>
+<p>
+
+This implementation can also work with unweighted similarity graphs, in which case
+the distance parameter should be a null pointer and all edges beget a similarity
+score of 1 (a distance of 0).
+
+</p>
+<p>
+
+While all similarity graphs are theoretically embeddable, UMAP's stochastic gradient
+descent approach really shines when the graph is sparse. In practice, most people
+feed a k-nearest neighbor (either computed exactly or approximated) similarity graph
+with some additional cutoff to exclude "quasi-neighbors" that lie beyond a certain
+distance (e.g. correlation less than 0.2).
+
+</p>
+<p>
+
+Therefore, if you are trying to use this function to embed high-dimensional vectors,
+the steps are:
+
+</p>
+<p>
+
+1. Compute a sparse similarity graph (either exact or approximate) from your vectors,
+   weighted or unweighted. If unsure, compute a knn.
+
+</p>
+<p>
+
+2. If you keep the weights, convert them into distances or store them as a "weight"
+   edge attribute and use a null pointer for the distances. If using similarity
+   weights instead of distances, make sure they do not exceed 1.
+
+</p>
+<p>
+
+3. Feed the graph (and distances, if you have them) into this function.
+
+</p>
+<p>
+
+Note: Step 1 above involves deciding if two high-dimensional vectors "look similar"
+      which, because of the curse of dimensionality, is in many cases a highly
+      subjective and potentially controversial operation: thread with care and at
+      your own risk. Two high-dimensional vectors might look similar or extremely
+      different depending on the point of view/angle, and there are a lot of
+      viewpoints when the dimensionality ramps up.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to the similarity graph to find a layout for (i.e. to embed).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to the n by 2 matrix where the layout coordinates will be stored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical, if true the supplied values in the <em class="parameter"><code>res</code></em> argument are used
+  as an initial layout, if false a random initial layout is used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>distances</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector of edge lengths. Similarity graphs for
+  UMAP are often originally meant in terms of similarity weights (e.g. correlation between
+  high-dimensional vectors) and converted into distances by crude dist := 1 - corr. That is
+  fine here too. If this argument is a NULL pointer (NULL), all lengths are assumed equal.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_dist</code></em>:</span></p></td>
+<td><p>
+  A fudge parameter that decides how close two unconnected vertices can be in the
+  embedding before feeling a repulsive force. It should be positive. Typically, 0.01 is a good
+  number.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>epochs</code></em>:</span></p></td>
+<td><p>
+  Number of iterations of the main stochastic gradient descent loop on the
+  cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
+  (less than 50k edges), 50 epochs are used for larger graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sampling_prob</code></em>:</span></p></td>
+<td><p>
+  The fraction of vertices moved at each iteration of the stochastic gradient
+  descent (epoch). At fixed number of epochs, a higher fraction makes the algorithm slower.
+  Vice versa, a too low number will converge very slowly, possibly too slowly.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -2668,6 +2903,7 @@ Cybernetics 11(2):109-125, 1981.
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid_3d">3.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold_3d">3.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai_3d">3.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_umap_3d">3.6. <code class="function">igraph_layout_umap_3d</code> —  3D layout using UMAP.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -2909,8 +3145,8 @@ igraph_error_t igraph_layout_fruchterman_reingold_3d(const igraph_t *graph,
 
 
 
-This is the 3D version of the force based
-Fruchterman-Reingold layout (see <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold</code></a> for the 2D version
+This is the 3D version of the force based Fruchterman-Reingold layout.
+See <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold()</code></a> for the 2D version.
 
 </p>
 <p><b>Arguments: </b>
@@ -3061,7 +3297,7 @@ igraph_error_t igraph_layout_kamada_kawai_3d(const igraph_t *graph, igraph_matri
 
 
 
-This is the 3D version of igraph_layout_kamada_kawai().
+This is the 3D version of <a class="link" href="igraph-Layout.html#igraph_layout_kamada_kawai" title="1.9. igraph_layout_kamada_kawai — Places the vertices on a plane according to the Kamada-Kawai algorithm."><code class="function">igraph_layout_kamada_kawai()</code></a>.
 See the documentation of that function for more information.
 
 </p>
@@ -3200,6 +3436,118 @@ log|V|) initialization step. |V| is the number of vertices in the
 graph.
  
 </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_umap_3d"></a>3.6. <code class="function">igraph_layout_umap_3d</code> —  3D layout using UMAP.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.4.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
+                                     igraph_matrix_t *res,
+                                     igraph_bool_t use_seed,
+                                     const igraph_vector_t *distances,
+                                     igraph_real_t min_dist,
+                                     igraph_integer_t epochs,
+                                     igraph_real_t sampling_prob);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This is the 3D version of the UMAP algorithm (see <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection for Dimension Reduction"><code class="function">igraph_layout_umap()</code></a> for the 2D version).
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to the similarity graph to find a layout for (i.e. to embed).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to the n by 3 matrix where the layout coordinates will be stored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical, if true the supplied values in the <em class="parameter"><code>res</code></em> argument are used
+  as an initial layout, if false a random initial layout is used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>distances</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector of edge lengths. Similarity graphs for
+  UMAP are often originally meant in terms of similarity weights (e.g. correlation between
+  high-dimensional vectors) and converted into distances by crude dist := 1 - corr. That is
+  fine here too. If this argument is a NULL pointer (NULL), all lengths are assumed equal.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_dist</code></em>:</span></p></td>
+<td><p>
+  A fudge parameter that decides how close two unconnected vertices can be in the
+  embedding before feeling a repulsive force. It should be positive. Typically, 0.01 is a good
+  number.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>epochs</code></em>:</span></p></td>
+<td><p>
+  Number of iterations of the main stochastic gradient descent loop on the
+  cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
+  (less than 50k edges), 50 epochs are used for larger graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sampling_prob</code></em>:</span></p></td>
+<td><p>
+  The fraction of vertices moved at each iteration of the stochastic gradient
+  descent (epoch). At fixed number of epochs, a higher fraction makes the algorithm slower.
+  Vice versa, a too low number will converge very slowly, possibly too slowly.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
 </div>
 </div>
 <div class="section">

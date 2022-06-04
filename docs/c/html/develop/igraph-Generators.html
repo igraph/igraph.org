@@ -296,7 +296,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="25.11. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v1);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_vector_int_all_e</strong></span>(&amp;v1, &amp;v2)) {
@@ -309,7 +309,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="25.11. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v1);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_vector_int_all_e</strong></span>(&amp;v1, &amp;v2)) {
@@ -493,8 +493,10 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.10.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_adjacency(igraph_t *graph, const igraph_matrix_t *adjmatrix,
-                     igraph_adjacency_t mode);
+igraph_error_t igraph_adjacency(
+    igraph_t *graph, const igraph_matrix_t *adjmatrix, igraph_adjacency_t mode,
+    igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>
@@ -533,11 +535,8 @@ next row is for vertex 1, etc.
 <td>
 <p>
   Constant to specify how the given matrix is interpreted
-       as an adjacency matrix. Possible values
-       (A(i,j)
-       is the element in row i and column
-       j in the adjacency matrix
-       <em class="parameter"><code>adjmatrix</code></em>):
+       as an adjacency matrix. Possible values (A(i,j) is the element in
+       row i and column j in the adjacency matrix <em class="parameter"><code>adjmatrix</code></em>):
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -625,6 +624,52 @@ next row is for vertex 1, etc.
 </p>
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td>
+<p>
+  Constant to specify how the diagonal of the matrix should be
+       treated when creating loop edges.
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_NO_LOOPS</code></span></p></td>
+<td><p>
+
+         Ignore the diagonal of the input matrix and do not create loops.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_ONCE</code></span></p></td>
+<td><p>
+
+         Treat the diagonal entries as the number of loop edges incident on
+         the corresponding vertex.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_TWICE</code></span></p></td>
+<td><p>
+
+         Treat the diagonal entries as <span class="emphasis"><em>twice</em></span> the number of loop edges
+         incident on the corresponding vertex. Odd numbers in the diagonal
+         will return an error code.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -640,7 +685,8 @@ next row is for vertex 1, etc.
 <td><p>
   Error code,
         <code class="constant">IGRAPH_NONSQUARE</code>: non-square matrix.
-        <code class="constant">IGRAPH_EINVAL</code>: Negative entry found in adjacency matrix.
+        <code class="constant">IGRAPH_EINVAL</code>: Negative entry was found in adjacency matrix, or an
+        odd number was found in the diagonal with <code class="constant">IGRAPH_LOOPS_TWICE</code>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -675,9 +721,10 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.10.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_weighted_adjacency(igraph_t *graph, const igraph_matrix_t *adjmatrix,
-                              igraph_adjacency_t mode, const char* attr,
-                              igraph_bool_t loops);
+igraph_error_t igraph_weighted_adjacency(
+    igraph_t *graph, const igraph_matrix_t *adjmatrix, igraph_adjacency_t mode,
+    igraph_vector_t *weights, igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>
@@ -811,18 +858,55 @@ next row is for vertex 1, etc.
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>attr</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  the name of the attribute that will store the edge weights.
-        If <code class="constant">NULL</code> , it will use <code class="constant">weight</code> as the attribute name.
+  Pointer to an initialized vector, the weights will be stored here.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td>
+<p>
+  Constant to specify how the diagonal of the matrix should be
+       treated when creating loop edges.
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_NO_LOOPS</code></span></p></td>
 <td><p>
-  Logical scalar, whether to ignore the diagonal elements
-        in the adjacency matrix.
+
+         Ignore the diagonal of the input matrix and do not create loops.
+       
 </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_ONCE</code></span></p></td>
+<td><p>
+
+         Treat the diagonal entries as the weight of the loop edge incident
+         on the corresponding vertex.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_TWICE</code></span></p></td>
+<td><p>
+
+         Treat the diagonal entries as <span class="emphasis"><em>twice</em></span> the weight of the loop edge
+         incident on the corresponding vertex.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -855,91 +939,36 @@ Time complexity: O(|V||V|),
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdarg.h&gt;
 
-void <span class="strong"><strong>print</strong></span>(igraph_t *g) {
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_matrix_t mat;
+    igraph_t g;
+    int m[4][4] = { { 0, 1, 2, 0 }, { 2, 0, 0, 1 }, { 0, 0, 1, 0 }, { 0, 1, 0, 0 } };
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
     igraph_vector_int_t el;
     igraph_integer_t i, j, n;
-    char ch = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="3.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(g) ? '&gt;' : '-';
-
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;el, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="25.11. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(g, &amp;el, 0);
-    n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(g);
-
-    <span class="strong"><strong>for</strong></span> (i = 0, j = 0; i &lt; n; i++, j += 2) {
-        <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " --%c %" IGRAPH_PRId ": %" IGRAPH_PRId "\n",
-               <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(el)[j], ch, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(el)[j + 1], (igraph_integer_t)<span class="strong"><strong><a class="link" href="igraph-Attributes.html#EAN" title="3.1.22. EAN — Query a numeric edge attribute.">EAN</a></strong></span>(g, "weight", i));
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;el);
-}
-
-int <span class="strong"><strong>main</strong></span>() {
-    igraph_t g;
-    igraph_matrix_t mat;
-    int m[4][4] = { { 0, 1, 2, 0 }, { 2, 0, 0, 1 }, { 0, 0, 1, 0 }, { 0, 1, 0, 0 } };
-    igraph_integer_t i, j;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;mat, 4, 4);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 4; i++) <span class="strong"><strong>for</strong></span> (j = 0; j &lt; 4; j++) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.5.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(mat, i, j) = m[i][j];
-        }
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
-
-    <span class="emphasis"><em>/* [ 0 1 2 0 ]</em></span>
-<span class="emphasis"><em>       [ 2 0 0 1 ]</em></span>
-<span class="emphasis"><em>       [ 0 0 1 0 ]</em></span>
-<span class="emphasis"><em>       [ 0 1 0 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_DIRECTED, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* [ 0 1 2 0 ]</em></span>
-<span class="emphasis"><em>       [ - 0 0 1 ]</em></span>
-<span class="emphasis"><em>       [ - - 1 0 ]</em></span>
-<span class="emphasis"><em>       [ - - - 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_UPPER, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* [ 0 - - - ]</em></span>
-<span class="emphasis"><em>       [ 2 0 - - ]</em></span>
-<span class="emphasis"><em>       [ 0 0 1 - ]</em></span>
-<span class="emphasis"><em>       [ 0 1 0 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_LOWER, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* [ 0 1 0 0 ]</em></span>
-<span class="emphasis"><em>       [ 1 0 0 1 ]</em></span>
-<span class="emphasis"><em>       [ 0 0 1 0 ]</em></span>
-<span class="emphasis"><em>       [ 0 1 0 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_MIN, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* [ 0 2 2 0 ]</em></span>
-<span class="emphasis"><em>       [ 2 0 0 1 ]</em></span>
-<span class="emphasis"><em>       [ 2 0 1 0 ]</em></span>
-<span class="emphasis"><em>       [ 0 1 0 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_MAX, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* [ 0 3 2 0 ]</em></span>
-<span class="emphasis"><em>       [ 3 0 0 2 ]</em></span>
-<span class="emphasis"><em>       [ 2 0 1 0 ]</em></span>
-<span class="emphasis"><em>       [ 0 2 0 0 ] */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_PLUS, 0, <span class="emphasis"><em>/*loops=*/</em></span> 1);
-    <span class="strong"><strong>print</strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>IGRAPH_FINALLY_STACK_SIZE</strong></span>() != 0) {
-        <span class="strong"><strong>return</strong></span> 1;
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(mat, i, j) = m[i][j];
     }
 
-    <span class="strong"><strong>return</strong></span> 0;
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_DIRECTED, &amp;weights, IGRAPH_LOOPS_ONCE);
+
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;el, 0);
+    n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>for</strong></span> (i = 0, j = 0; i &lt; n; i++, j += 2) {
+        <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " --&gt; %" IGRAPH_PRId ": %g\n",
+               <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(el)[j], <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(el)[j + 1], <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(weights)[i]);
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;el);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
 }
 </pre>
 <p></p>
@@ -1737,7 +1766,7 @@ to the number of children.
 </p>
 <p>
 Note that for <code class="literal">n=0</code>, the null graph is returned,
-which is not considered to be a tree by <a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree."><code class="function">igraph_is_tree()</code></a>.
+which is not considered to be a tree by <a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree."><code class="function">igraph_is_tree()</code></a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -1869,10 +1898,10 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>       with edges pointing towards the root. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;graph, 15, 2, IGRAPH_TREE_IN);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
     <span class="strong"><strong>printf</strong></span>("Is it an in-tree? %s\n", res ? "Yes" : "No");
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_OUT);
     <span class="strong"><strong>printf</strong></span>("Is it an out-tree? %s\n", res ? "Yes" : "No");
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -2036,10 +2065,10 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>       with edges pointing towards the root. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_symmetric_tree" title="1.11. igraph_symmetric_tree — Creates a symmetric tree with the specified number of branches at each level.">igraph_symmetric_tree</a></strong></span>(&amp;graph, &amp;v, IGRAPH_TREE_IN);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
     <span class="strong"><strong>printf</strong></span>("Is it an in-tree? %s\n", res ? "Yes" : "No");
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_OUT);
     <span class="strong"><strong>printf</strong></span>("Is it an out-tree? %s\n", res ? "Yes" : "No");
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -2204,12 +2233,12 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.12. igraph_regular_tree — Creates a regular tree.">igraph_regular_tree</a></strong></span>(&amp;tree, 4, 3, IGRAPH_TREE_UNDIRECTED);
 
     <span class="emphasis"><em>/* Bethe lattices are trees. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;tree, &amp;is_tree, NULL, IGRAPH_ALL);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;tree, &amp;is_tree, NULL, IGRAPH_ALL);
     <span class="strong"><strong>printf</strong></span>("Is it a tree? %s\n", is_tree ? "Yes." : "No.");
 
     <span class="emphasis"><em>/* Compute and print eccentricities. The root is the most central. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eccentricity, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.20. igraph_eccentricity — Eccentricity of some vertices.">igraph_eccentricity</a></strong></span>(&amp;tree, &amp;eccentricity, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.21. igraph_eccentricity — Eccentricity of some vertices.">igraph_eccentricity</a></strong></span>(&amp;tree, &amp;eccentricity, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL);
     <span class="strong"><strong>printf</strong></span>("Vertex eccentricities:\n");
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;eccentricity);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;eccentricity);
@@ -2734,16 +2763,65 @@ Connectivity matters: Construction and exact random sampling of connected graphs
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="8.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a> to test graphicality without generating a graph;
+  <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="9.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a> to test graphicality without generating a graph;
      <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.7. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> to generate random graphs with a given degree sequence;
      <a class="link" href="igraph-Generators.html#igraph_k_regular_game" title="2.8. igraph_k_regular_game — Generates a random graph where each vertex has the same degree."><code class="function">igraph_k_regular_game()</code></a> to generate random regular graphs;
-     <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving the degree distribution."><code class="function">igraph_rewire()</code></a> to randomly rewire the edges of a graph while preserving its degree sequence.
+     <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a> to randomly rewire the edges of a graph while preserving its degree sequence.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
- 
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.10.4.16.18.1"></a><p class="title"><b>Example 9.11.  File <code class="code">examples/simple/igraph_realize_degree_sequence.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(){
+    igraph_t g1, g2, g3;
+    igraph_integer_t nodes = 500, A = 0, power = 1, m = 1;
+    igraph_real_t assortativity;
+    
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
+    <span class="strong"><strong>printf</strong></span>("Demonstration of difference in assortativities of graphs with the same degree sequence but different linkages:\n\nInitial graph based on the Barabasi-Albert model with %" IGRAPH_PRId " nodes.\n", nodes);
+    
+    <span class="emphasis"><em>/* Graph 1 generated by a randomized graph generator */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g1, nodes, power, m, NULL, <span class="emphasis"><em>/* outpref */</em></span> 0, A, IGRAPH_UNDIRECTED, IGRAPH_BARABASI_PSUMTREE, <span class="emphasis"><em>/* start from */</em></span> NULL);
+
+    igraph_vector_int_t degree;
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;degree, nodes);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g1, &amp;degree, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_NO_LOOPS);
+
+    <span class="emphasis"><em>/* Measuring assortativity of the first graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g1, &amp;assortativity, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong>printf</strong></span>("Assortativity of initial graph = %g\n\n", assortativity);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+
+    <span class="emphasis"><em>/* Graph 2 (with the same degree sequence) generated by selecting vertices with the smallest degree first */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.15. igraph_realize_degree_sequence — Generates a graph with the given degree sequence.">igraph_realize_degree_sequence</a></strong></span>(&amp;g2, &amp;degree, NULL, IGRAPH_SIMPLE_SW, IGRAPH_REALIZE_DEGSEQ_SMALLEST);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g2, &amp;assortativity, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong>printf</strong></span>("Assortativity after choosing vertices with the smallest degrees first = %g\n\n", assortativity);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+
+    <span class="emphasis"><em>/* Graph 3 (with the same degree sequence) generated by selecting vertices with the largest degree first */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.15. igraph_realize_degree_sequence — Generates a graph with the given degree sequence.">igraph_realize_degree_sequence</a></strong></span>(&amp;g3, &amp;degree, NULL, IGRAPH_SIMPLE_SW, IGRAPH_REALIZE_DEGSEQ_LARGEST);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g3, &amp;assortativity, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong>printf</strong></span>("Assortativity after choosing vertices with the largest degrees first = %g\n", assortativity);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g3);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;degree);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
 </p>
 </div>
 <div class="section">
@@ -3255,7 +3333,7 @@ of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.4.18.11.1"></a><p class="title"><b>Example 9.11.  File <code class="code">examples/simple/igraph_lcf.c</code></b></p>
+<a name="id-1.10.4.18.11.1"></a><p class="title"><b>Example 9.12.  File <code class="code">examples/simple/igraph_lcf.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -3523,7 +3601,7 @@ Linear-time Algorithms for Encoding Trees as Sequences of Node Labels
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_to_prufer" title="14.7. igraph_to_prufer — Converts a tree to its Prüfer sequence"><code class="function">igraph_to_prufer()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.28. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_to_prufer" title="15.7. igraph_to_prufer — Converts a tree to its Prüfer sequence"><code class="function">igraph_to_prufer()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.28. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3617,7 +3695,7 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.4.21.10.1"></a><p class="title"><b>Example 9.12.  File <code class="code">examples/simple/igraph_atlas.c</code></b></p>
+<a name="id-1.10.4.21.10.1"></a><p class="title"><b>Example 9.13.  File <code class="code">examples/simple/igraph_atlas.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -4194,7 +4272,7 @@ of edges.
 <dt><span class="section"><a href="igraph-Generators.html#igraph_static_fitness_game">2.9. <code class="function">igraph_static_fitness_game</code> —  Non-growing random graph with edge probabilities proportional to node fitness scores.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_static_power_law_game">2.10. <code class="function">igraph_static_power_law_game</code> —  Generates a non-growing random graph with expected power-law degree distributions.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_forest_fire_game">2.11. <code class="function">igraph_forest_fire_game</code> —  Generates a network according to the <span class="quote">“<span class="quote">forest fire game</span>”</span>.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire">2.12. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving the degree distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire">2.12. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_growing_random_game">2.13. <code class="function">igraph_growing_random_game</code> —  Generates a growing random graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_callaway_traits_game">2.14. <code class="function">igraph_callaway_traits_game</code> —  Simulates a growing network with vertex types.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_establishment_game">2.15. <code class="function">igraph_establishment_game</code> —  Generates a graph with a simple growing model with vertex types.</a></span></dt>
@@ -4314,7 +4392,7 @@ Time complexity: TODO, less than O(|V|^2+|E|).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.3.9.1"></a><p class="title"><b>Example 9.13.  File <code class="code">examples/simple/igraph_grg_game.c</code></b></p>
+<a name="id-1.10.5.3.9.1"></a><p class="title"><b>Example 9.14.  File <code class="code">examples/simple/igraph_grg_game.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
@@ -4352,7 +4430,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Compute average path length */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length_dijkstra" title="3.15. igraph_average_path_length_dijkstra — Calculates the average weighted shortest path length between all vertex pairs.">igraph_average_path_length_dijkstra</a></strong></span>(&amp;graph, &amp;avg_dist, NULL, &amp;weights, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn */</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length_dijkstra" title="3.16. igraph_average_path_length_dijkstra — Calculates the average weighted shortest path length between all vertex pairs.">igraph_average_path_length_dijkstra</a></strong></span>(&amp;graph, &amp;avg_dist, NULL, &amp;weights, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn */</em></span> 1);
 
     <span class="strong"><strong>printf</strong></span>("Average distance in the geometric graph: %g.\n", avg_dist);
 
@@ -4565,7 +4643,7 @@ number of vertices plus the number of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.4.8.1"></a><p class="title"><b>Example 9.14.  File <code class="code">examples/simple/igraph_barabasi_game.c</code></b></p>
+<a name="id-1.10.5.4.8.1"></a><p class="title"><b>Example 9.15.  File <code class="code">examples/simple/igraph_barabasi_game.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -4589,7 +4667,7 @@ int <span class="strong"><strong>main</strong></span>() {
     }
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="25.11. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i] &lt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i + 1]) {
             <span class="strong"><strong>return</strong></span> 4;
@@ -4625,7 +4703,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*power=*/</em></span> 1, 2, 0, 1, <span class="emphasis"><em>/*A=*/</em></span> 1, 1,
                          IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="25.11. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — Returns the list of edges in a graph">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i] &lt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i + 1]) {
             <span class="strong"><strong>return</strong></span> 7;
@@ -4667,7 +4745,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.4.8.2"></a><p class="title"><b>Example 9.15.  File <code class="code">examples/simple/igraph_barabasi_game2.c</code></b></p>
+<a name="id-1.10.5.4.8.2"></a><p class="title"><b>Example 9.16.  File <code class="code">examples/simple/igraph_barabasi_game2.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -4694,7 +4772,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 100) {
         <span class="strong"><strong>return</strong></span> 2;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
     <span class="strong"><strong>if</strong></span> (!simple) {
         <span class="strong"><strong>return</strong></span> 3;
     }
@@ -4720,7 +4798,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 100) {
         <span class="strong"><strong>return</strong></span> 5;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
     <span class="strong"><strong>if</strong></span> (simple) {
         <span class="strong"><strong>return</strong></span> 6;
     }
@@ -4746,7 +4824,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 100) {
         <span class="strong"><strong>return</strong></span> 8;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;simple);
     <span class="strong"><strong>if</strong></span> (simple) {
         <span class="strong"><strong>return</strong></span> 9;
     }
@@ -4909,7 +4987,7 @@ number of vertices plus the number of edges in the graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.5.10.1"></a><p class="title"><b>Example 9.16.  File <code class="code">examples/simple/igraph_erdos_renyi_game.c</code></b></p>
+<a name="id-1.10.5.5.10.1"></a><p class="title"><b>Example 9.17.  File <code class="code">examples/simple/igraph_erdos_renyi_game.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -4929,7 +5007,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Compute the fraction of vertices contained within the largest connected component */</em></span>
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;component_sizes, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_connected_components" title="7.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph.">igraph_connected_components</a></strong></span>(&amp;graph, NULL, &amp;component_sizes, NULL, IGRAPH_STRONG);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph.">igraph_connected_components</a></strong></span>(&amp;graph, NULL, &amp;component_sizes, NULL, IGRAPH_STRONG);
 
     <span class="strong"><strong>printf</strong></span>(
         "Fraction of vertices in giant component: %g\n",
@@ -5305,7 +5383,7 @@ call <a class="link" href="igraph-Basic.html#igraph_copy" title="3.1.3. igraph_
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.5. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a>, <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving the degree distribution."><code class="function">igraph_rewire()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.5. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a>, <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5432,7 +5510,7 @@ igraph_error_t igraph_degree_sequence_game(igraph_t *graph, const igraph_vector_
          This is an MCMC sampler based on degree-preserving edge switches.
          It generates simple undirected or directed graphs.
          It uses <a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.15. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct an initial
-         graph, then rewires it using <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving the degree distribution."><code class="function">igraph_rewire()</code></a>.
+         graph, then rewires it using <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>.
          
 </p></td>
 </tr>
@@ -5500,7 +5578,7 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model."><code class="function">igraph_barabasi_game()</code></a>, <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game()</code></a>,
-    <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="8.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a>
+    <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="9.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5509,7 +5587,7 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.9.10.1"></a><p class="title"><b>Example 9.17.  File <code class="code">examples/simple/igraph_degree_sequence_game.c</code></b></p>
+<a name="id-1.10.5.9.10.1"></a><p class="title"><b>Example 9.18.  File <code class="code">examples/simple/igraph_degree_sequence_game.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -5542,7 +5620,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="3.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 3;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 4;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 0)) {
@@ -5571,7 +5649,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="3.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 9;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 10;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
@@ -5585,7 +5663,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="3.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 12;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="18.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 13;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="3.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
@@ -6119,7 +6197,7 @@ implementation is based on this.
 <td><p><span class="term"><em class="parameter"><code>bw_factor</code></em>:</span></p></td>
 <td><p>
   The backward burning ratio. The backward burning
-      probability is calculated as <code class="literal">bw.factor*fw.prob</code>.
+      probability is calculated as <code class="literal">bw_factor * fw_prob</code>.
 </p></td>
 </tr>
 <tr>
@@ -6159,7 +6237,7 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rewire"></a>2.12. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving the degree distribution.</h3></div></div></div>
+<a name="igraph_rewire"></a>2.12. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</h3></div></div></div>
 <a class="indexterm" name="id-1.10.5.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -6175,10 +6253,10 @@ igraph_error_t igraph_rewire(igraph_t *graph, igraph_integer_t n, igraph_rewirin
 </p>
 <p>
 This function generates a new graph based on the original one by randomly
-rewiring edges while preserving the original graph's degree distribution.
-Please note that the rewiring is done "in place", so no new graph will
+rewiring edges while preserving the original graph's degree sequence.
+The rewiring is done "in place", so no new graph will
 be allocated. If you would like to keep the original graph intact, use
-<a class="link" href="igraph-Basic.html#igraph_copy" title="3.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a> beforehand.
+<a class="link" href="igraph-Basic.html#igraph_copy" title="3.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a> beforehand. All graph attributes will be lost.
 
 </p>
 <p><b>Arguments: </b>
@@ -7912,7 +7990,7 @@ stochastic block model.
 <td><p>
   A square, symmetric numeric matrix, the Bernoulli rates for
        the clusters within a block. Its size must mach the size of the
-       \code{rho} vector.
+       <em class="parameter"><code>rho</code></em> vector.
 </p></td>
 </tr>
 <tr>
@@ -8156,7 +8234,7 @@ and m is the length of the latent vectors.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Nongraph.html#igraph_sample_dirichlet" title="4.3. igraph_sample_dirichlet — Sample points from a Dirichlet distribution."><code class="function">igraph_sample_dirichlet()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_volume" title="4.2. igraph_sample_sphere_volume — Sample points uniformly from the volume of a sphere"><code class="function">igraph_sample_sphere_volume()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_surface" title="4.1. igraph_sample_sphere_surface — Sample points uniformly from the surface of a sphere"><code class="function">igraph_sample_sphere_surface()</code></a>
+  <a class="link" href="igraph-Nongraph.html#igraph_sample_dirichlet" title="4.3. igraph_sample_dirichlet — Sample points from a Dirichlet distribution."><code class="function">igraph_sample_dirichlet()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_volume" title="4.2. igraph_sample_sphere_volume — Sample points uniformly from the volume of a sphere."><code class="function">igraph_sample_sphere_volume()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_surface" title="4.1. igraph_sample_sphere_surface — Sample points uniformly from the surface of a sphere."><code class="function">igraph_sample_sphere_surface()</code></a>
 for functions to generate the latent vectors.
   </p></td>
 </tr></tbody>
@@ -8186,7 +8264,7 @@ i.e. it generates each labelled tree with the same probability.
 </p>
 <p>
 Note that for <code class="literal">n=0</code>, the null graph is returned,
-which is not considered to be a tree by <a class="link" href="igraph-Structural.html#igraph_is_tree" title="14.5. igraph_is_tree — Decides whether the graph is a tree."><code class="function">igraph_is_tree()</code></a>.
+which is not considered to be a tree by <a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree."><code class="function">igraph_is_tree()</code></a>.
 
 </p>
 <p><b>Arguments: </b>

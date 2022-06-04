@@ -151,7 +151,7 @@
 <dt><span class="section"><a href="igraph-Isomorphism.html#bliss-algorithm">2. The BLISS algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#vf2-algorithm">3. The VF2 algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#lad-algorithm">4. The LAD algorithm</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for graphs with 3 or 4 vertices</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for small graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-utility-functions">6. Utility functions</a></span></dt>
 </dl></div>
 <div class="section">
@@ -573,7 +573,7 @@ algorithm.
 <td><p>
   The size of the automorphism group of the graph,
    given as a string. It should be deallocated via
-   <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> if not needed any more.</p></td>
+   <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> if not needed any more.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -2898,34 +2898,45 @@ void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="str
 
 void <span class="strong"><strong>test_motifs</strong></span>() {
     igraph_t graph;
+    igraph_integer_t count;
 
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
 
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 30, 400, <span class="emphasis"><em>/* directed = */</em></span> 1, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, 16, <span class="emphasis"><em>/* directed= */</em></span> 1); <span class="emphasis"><em>/* there are 16 size-3 directed graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, 218, <span class="emphasis"><em>/* directed= */</em></span> 1); <span class="emphasis"><em>/* there are 218 size-4 directed graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_DIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_DIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 }
 
 void <span class="strong"><strong>test_motifs_undirected</strong></span>() {
     igraph_t graph;
+    igraph_integer_t count;
 
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 137);
 
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 18, 100, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, 4,   <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 4   size-3 undirected graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, 11,  <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 11  size-4 undirected graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_UNDIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_UNDIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="emphasis"><em>/* Use a smaller graph so that the test would not take too long. */</em></span>
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 9, 36, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, 34,  <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 34  size-5 undirected graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, 156, <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 156 size-6 undirected graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(5, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, count, IGRAPH_UNDIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(6, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, count, IGRAPH_UNDIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 }
@@ -3088,12 +3099,13 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for graphs with 3 or 4 vertices</h2></div></div></div>
+<a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for small graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_subgraph">5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_create">5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_graph_count">5.5. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -3198,6 +3210,7 @@ isomorphism classes for directed graphs with three vertices is 16
 (between 0 and 15), for undirected graph it is only 4. For graphs
 with four vertices it is 218 (directed) and 11 (undirected).
 For 5 and 6 vertex undirected graphs, it is 34 and 156, respectively.
+These values can also be retrieved using <a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices."><code class="function">igraph_graph_count()</code></a>.
 For more information, see <a class="ulink" href="https://oeis.org/A000273" target="_top">https://oeis.org/A000273</a> and <a class="ulink" href="https://oeis.org/A000088" target="_top">https://oeis.org/A000088</a>.
 
 </p>
@@ -3476,6 +3489,96 @@ undirected graphs are supported.
 
 Time complexity: O(|V|+|E|), the number of vertices plus the number
 of edges in the graph to create.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_graph_count"></a>5.5. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_graph_count(igraph_integer_t n, igraph_bool_t directed, igraph_integer_t *count);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Gives the number of unlabelled <span class="emphasis"><em>simple</em></span> graphs on the specified number of vertices.
+The "isoclass" of a graph of this size is at most one less than this value.
+
+</p>
+<p>
+This function is meant to be used in conjunction with isoclass and motif finder
+functions. It will only work for small <em class="parameter"><code>n</code></em> values for which the result is
+represetable in an <span class="type">igraph_integer_t</span>. For larger <em class="parameter"><code>n</code></em> values, an overflow
+error is raised.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p>
+  The number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to consider directed graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>count</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer, the result will be stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them."><code class="function">igraph_motifs_randesu_callback()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
  
 </p>
 </div>

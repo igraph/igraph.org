@@ -148,7 +148,9 @@
 <a name="igraph-Memory"></a>Chapter 6. Memory (de)allocation</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Memory.html#igraph_malloc">1. <code class="function">igraph_malloc</code> —  Allocate memory that can be safely deallocated by igraph functions.</a></span></dt>
-<dt><span class="section"><a href="igraph-Memory.html#igraph_free">2. <code class="function">igraph_free</code> —  Deallocate memory that was allocated by igraph functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Memory.html#igraph_calloc">2. <code class="function">igraph_calloc</code> —  Allocate memory that can be safely deallocated by igraph functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Memory.html#igraph_realloc">3. <code class="function">igraph_realloc</code> —  Reallocate memory that can be safely deallocated by igraph functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Memory.html#igraph_free">4. <code class="function">igraph_free</code> —  Deallocate memory that was allocated by igraph functions.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -156,7 +158,7 @@
 <a class="indexterm" name="id-1.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void *igraph_malloc(size_t n);
+void *igraph_malloc(size_t size);
 </pre></div>
 <p>
 </p>
@@ -164,12 +166,8 @@ void *igraph_malloc(size_t n);
 
 
 
-Some igraph functions, such as <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_free_all" title="2.16.4. igraph_vector_ptr_free_all — Frees all the elements of a pointer vector."><code class="function">igraph_vector_ptr_free_all()</code></a> and
-<a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a> can free memory that may have been
-allocated by the user.  <code class="constant">igraph_malloc</code>() works exactly like <code class="constant">malloc</code>()
-from the C standard library, but it is guaranteed that it can be safely
-paired with the <code class="constant">free</code>() function used by igraph internally (which is
-also user-accessible through <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>).
+This function behaves like <code class="constant">malloc</code>(), but it ensures that at least one
+byte is allocated even when the caller asks for zero bytes.
 
 </p>
 <p><b>Arguments: </b>
@@ -180,9 +178,9 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 <col>
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
 <td><p>
-  Number of bytes to be allocated.
+  Number of bytes to be allocated. Zero is treated as one byte.
 </p></td>
 </tr></tbody>
 </table></div>
@@ -197,7 +195,8 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Pointer to the piece of allocated memory.
+  Pointer to the piece of allocated memory; <code class="constant">NULL</code> if the allocation
+failed.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -213,7 +212,7 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>
+  <a class="link" href="igraph-Memory.html#igraph_calloc" title="2. igraph_calloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_calloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_realloc" title="3. igraph_realloc — Reallocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_realloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -223,11 +222,11 @@ also user-accessible through <a class="link" href="igraph-Memory.html#igraph_fre
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph_free"></a>2. <code class="function">igraph_free</code> —  Deallocate memory that was allocated by igraph functions.</h2></div></div></div>
+<a name="igraph_calloc"></a>2. <code class="function">igraph_calloc</code> —  Allocate memory that can be safely deallocated by igraph functions.</h2></div></div></div>
 <a class="indexterm" name="id-1.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void igraph_free(void *p);
+void *igraph_calloc(size_t count, size_t size);
 </pre></div>
 <p>
 </p>
@@ -235,11 +234,8 @@ void igraph_free(void *p);
 
 
 
-Some igraph functions return a pointer vector (igraph_vector_ptr_t)
-containing pointers to other igraph or other data types. These data
-types are dynamically allocated and have to be deallocated
-manually when the user does not need them any more. This can be done
-by calling <code class="constant">igraph_free</code>() on them.
+This function behaves like <code class="constant">calloc</code>(), but it ensures that at least one
+byte is allocated even when the caller asks for zero bytes.
 
 </p>
 <p><b>Arguments: </b>
@@ -249,12 +245,20 @@ by calling <code class="constant">igraph_free</code>() on them.
 <col align="left" valign="top">
 <col>
 </colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>count</code></em>:</span></p></td>
 <td><p>
-  Pointer to the piece of memory to be deallocated.
+  Number of items to be allocated.
 </p></td>
-</tr></tbody>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
+<td><p>
+  Size of a single item to be allocated.
+</p></td>
+</tr>
+</tbody>
 </table></div>
 <p>
 </p>
@@ -267,11 +271,139 @@ by calling <code class="constant">igraph_free</code>() on them.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code, currently always zero, meaning success.
+  Pointer to the piece of allocated memory; <code class="constant">NULL</code> if the allocation
+failed.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Memory.html#igraph_malloc" title="1. igraph_malloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_malloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_realloc" title="3. igraph_realloc — Reallocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_realloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_realloc"></a>3. <code class="function">igraph_realloc</code> —  Reallocate memory that can be safely deallocated by igraph functions.</h2></div></div></div>
+<a class="indexterm" name="id-1.7.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void *igraph_realloc(void* ptr, size_t size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function behaves like <code class="constant">realloc</code>(), but it ensures that at least one
+byte is allocated even when the caller asks for zero bytes.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ptr</code></em>:</span></p></td>
+<td><p>
+  The pointer to reallocate.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
+<td><p>
+  Number of bytes to be allocated.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Pointer to the piece of allocated memory; <code class="constant">NULL</code> if the allocation
+failed.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>, <a class="link" href="igraph-Memory.html#igraph_malloc" title="1. igraph_malloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_malloc()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_free"></a>4. <code class="function">igraph_free</code> —  Deallocate memory that was allocated by igraph functions.</h2></div></div></div>
+<a class="indexterm" name="id-1.7.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_free(void *ptr);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function exposes the <code class="constant">free</code>() function used internally by igraph.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>ptr</code></em>:</span></p></td>
+<td><p>
+  Pointer to the piece of memory to be deallocated.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 
 Time complexity: platform dependent, ideally it should be O(1).
 
@@ -285,7 +417,7 @@ Time complexity: platform dependent, ideally it should be O(1).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Memory.html#igraph_malloc" title="1. igraph_malloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_malloc()</code></a>
+  <a class="link" href="igraph-Memory.html#igraph_calloc" title="2. igraph_calloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_calloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_malloc" title="1. igraph_malloc — Allocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_malloc()</code></a>, <a class="link" href="igraph-Memory.html#igraph_realloc" title="3. igraph_realloc — Reallocate memory that can be safely deallocated by igraph functions."><code class="function">igraph_realloc()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>

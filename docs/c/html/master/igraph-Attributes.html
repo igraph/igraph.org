@@ -969,20 +969,23 @@ igraph functions, otherwise you might end up with graphs without
 attributes and an active attribute handler, which might cause
 unexpected program behaviour. The rule is that you attach the
 attribute handler in the beginning of your
-<code class="function">main()</code> and never touch it again. (Detaching
-the attribute handler might lead to memory leaks.)</p>
+<code class="function">main()</code> and never touch it again. Detaching
+the attribute handler might lead to memory leaks.</p>
 <p>It is not currently possible to have attribute handlers on a
 per-graph basis. All graphs in an application must be managed with
-the same attribute handler. (Including the default case when there
-is no attribute handler at all.</p>
-<p>The C attribute handler supports attaching real numbers and
-character strings as attributes. No vectors are allowed, i.e. every
-vertex might have an attribute called <code class="literal">name</code>, but it is
-not possible to have a <code class="literal">coords</code> graph (or other)
-attribute which is a vector of numbers.</p>
+the same attribute handler. This also applies to the default case
+when there is no attribute handler at all.</p>
+<p>The C attribute handler supports attaching real numbers, boolean
+values and character strings as attributes. No vector values are allowed.
+For example, vertices have a <code class="literal">name</code> attribute holding a single
+string value for each vertex, but it is not possible to have a <code class="literal">coords</code>
+attribute which is a vector of numbers per vertex.</p>
+<p>The functions documented in this section are specific to the C
+attribute handler. Code using these functions will not function when
+a different attribute handler is attached.</p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.6"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/cattributes.c</code></b></p>
+<a name="id-1.13.7.7"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/cattributes.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -1429,7 +1432,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.7"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/cattributes2.c</code></b></p>
+<a name="id-1.13.7.8"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/cattributes2.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -1516,7 +1519,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.8"></a><p class="title"><b>Example 12.3.  File <code class="code">examples/simple/cattributes3.c</code></b></p>
+<a name="id-1.13.7.9"></a><p class="title"><b>Example 12.3.  File <code class="code">examples/simple/cattributes3.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -1684,7 +1687,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.9"></a><p class="title"><b>Example 12.4.  File <code class="code">examples/simple/cattributes4.c</code></b></p>
+<a name="id-1.13.7.10"></a><p class="title"><b>Example 12.4.  File <code class="code">examples/simple/cattributes4.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
 <span class="emphasis"><em>/*</em></span>
@@ -1814,7 +1817,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_list"></a>3.1.1. <code class="function">igraph_cattribute_list</code> — List all attributes</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.2.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_list(const igraph_t *graph,
@@ -1910,7 +1913,7 @@ Time complexity: O(Ag+Av+Ae), the number of all attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_has_attr"></a>3.1.2. <code class="function">igraph_cattribute_has_attr</code> — Checks whether a (graph, vertex or edge) attribute exists</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.3.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_cattribute_has_attr(const igraph_t *graph,
@@ -1978,7 +1981,7 @@ attributes, assuming attribute names are not too long.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAN"></a>3.1.3. <code class="function">igraph_cattribute_GAN</code> — Query a numeric graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.4.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_cattribute_GAN(const igraph_t *graph, const char *name);
@@ -2054,7 +2057,7 @@ Time complexity: O(Ag), the number of graph attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="GAN"></a>3.1.4. <code class="function">GAN</code> — Query a numeric graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.5.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.5.2"></a><p>
 </p>
 <pre class="programlisting">
 #define GAN(graph,n)
@@ -2110,7 +2113,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAB"></a>3.1.5. <code class="function">igraph_cattribute_GAB</code> — Query a boolean graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.6.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_cattribute_GAB(const igraph_t *graph, const char *name);
@@ -2186,7 +2189,7 @@ Time complexity: O(Ag), the number of graph attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="GAB"></a>3.1.6. <code class="function">GAB</code> — Query a boolean graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.7.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.7.2"></a><p>
 </p>
 <pre class="programlisting">
 #define GAB(graph,n)
@@ -2242,7 +2245,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAS"></a>3.1.7. <code class="function">igraph_cattribute_GAS</code> — Query a string graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.8.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 const char* igraph_cattribute_GAS(const igraph_t *graph, const char *name);
@@ -2319,7 +2322,7 @@ Time complexity: O(Ag), the number of graph attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="GAS"></a>3.1.8. <code class="function">GAS</code> — Query a string graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.9.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define GAS(graph,n)
@@ -2375,7 +2378,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAN"></a>3.1.9. <code class="function">igraph_cattribute_VAN</code> — Query a numeric vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.10.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_cattribute_VAN(const igraph_t *graph, const char *name,
@@ -2457,7 +2460,7 @@ Time complexity: O(Av), the number of vertex attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VAN"></a>3.1.10. <code class="function">VAN</code> — Query a numeric vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.11.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.11.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VAN(graph,n,v)
@@ -2519,7 +2522,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VANV"></a>3.1.11. <code class="function">igraph_cattribute_VANV</code> — Query a numeric vertex attribute for many vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.12.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VANV(const igraph_t *graph, const char *name,
@@ -2591,7 +2594,7 @@ Time complexity: O(v), where v is the number of vertices in 'vids'.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VANV"></a>3.1.12. <code class="function">VANV</code> — Query a numeric vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.13.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.13.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VANV(graph,n,vec)
@@ -2654,7 +2657,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAB"></a>3.1.13. <code class="function">igraph_cattribute_VAB</code> — Query a boolean vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.14.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_cattribute_VAB(const igraph_t *graph, const char *name,
@@ -2736,7 +2739,7 @@ Time complexity: O(Av), the number of vertex attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VAB"></a>3.1.14. <code class="function">VAB</code> — Query a boolean vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.15.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.15.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VAB(graph,n,v)
@@ -2798,7 +2801,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VABV"></a>3.1.15. <code class="function">igraph_cattribute_VABV</code> — Query a boolean vertex attribute for many vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.16.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VABV(const igraph_t *graph, const char *name,
@@ -2870,7 +2873,7 @@ Time complexity: O(v), where v is the number of vertices in 'vids'.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VABV"></a>3.1.16. <code class="function">VABV</code> — Query a boolean vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.17.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.17.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VABV(graph,n,vec)
@@ -2933,7 +2936,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAS"></a>3.1.17. <code class="function">igraph_cattribute_VAS</code> — Query a string vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.18.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 const char* igraph_cattribute_VAS(const igraph_t *graph, const char *name,
@@ -3015,7 +3018,7 @@ Time complexity: O(Av), the number of vertex attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VAS"></a>3.1.18. <code class="function">VAS</code> — Query a string vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.19.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.19.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VAS(graph,n,v)
@@ -3077,7 +3080,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VASV"></a>3.1.19. <code class="function">igraph_cattribute_VASV</code> — Query a string vertex attribute for many vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.20.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.20.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VASV(const igraph_t *graph, const char *name,
@@ -3150,7 +3153,7 @@ Time complexity: O(v), where v is the number of vertices in 'vids'.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="VASV"></a>3.1.20. <code class="function">VASV</code> — Query a string vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.21.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.21.2"></a><p>
 </p>
 <pre class="programlisting">
 #define VASV(graph,n,vec)
@@ -3213,7 +3216,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAN"></a>3.1.21. <code class="function">igraph_cattribute_EAN</code> — Query a numeric edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.22.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.22.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_cattribute_EAN(const igraph_t *graph, const char *name,
@@ -3295,7 +3298,7 @@ Time complexity: O(Ae), the number of edge attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EAN"></a>3.1.22. <code class="function">EAN</code> — Query a numeric edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.23.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.23.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EAN(graph,n,e)
@@ -3357,7 +3360,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EANV"></a>3.1.23. <code class="function">igraph_cattribute_EANV</code> — Query a numeric edge attribute for many edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.24.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.24.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EANV(const igraph_t *graph, const char *name,
@@ -3429,7 +3432,7 @@ Time complexity: O(e), where e is the number of edges in 'eids'.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EANV"></a>3.1.24. <code class="function">EANV</code> — Query a numeric edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.25.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.25.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EANV(graph,n,vec)
@@ -3492,7 +3495,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAB"></a>3.1.25. <code class="function">igraph_cattribute_EAB</code> — Query a boolean edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.26.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.26.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_cattribute_EAB(const igraph_t *graph, const char *name,
@@ -3574,7 +3577,7 @@ Time complexity: O(Ae), the number of edge attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EAB"></a>3.1.26. <code class="function">EAB</code> — Query a boolean edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.27.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.27.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EAB(graph,n,e)
@@ -3636,7 +3639,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EABV"></a>3.1.27. <code class="function">igraph_cattribute_EABV</code> — Query a boolean edge attribute for many edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.28.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.28.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EABV(const igraph_t *graph, const char *name,
@@ -3708,7 +3711,7 @@ Time complexity: O(e), where e is the number of edges in 'eids'.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EABV"></a>3.1.28. <code class="function">EABV</code> — Query a boolean edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.29.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.29.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EABV(graph,n,vec)
@@ -3771,7 +3774,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAS"></a>3.1.29. <code class="function">igraph_cattribute_EAS</code> — Query a string edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.30.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.30.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 const char* igraph_cattribute_EAS(const igraph_t *graph, const char *name,
@@ -3839,7 +3842,7 @@ Time complexity: O(Ae), the number of edge attributes.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EAS"></a>3.1.30. <code class="function">EAS</code> — Query a string edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.31.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.31.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EAS(graph,n,e)
@@ -3901,7 +3904,7 @@ This is shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattri
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EASV"></a>3.1.31. <code class="function">igraph_cattribute_EASV</code> — Query a string edge attribute for many edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.32.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.32.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EASV(const igraph_t *graph, const char *name,
@@ -3974,7 +3977,7 @@ Time complexity: O(e), where e is the number of edges in
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="EASV"></a>3.1.32. <code class="function">EASV</code> — Query a string edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.10.33.2"></a><p>
+<a class="indexterm" name="id-1.13.7.11.33.2"></a><p>
 </p>
 <pre class="programlisting">
 #define EASV(graph,n,vec)
@@ -4073,7 +4076,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAN_set"></a>3.2.1. <code class="function">igraph_cattribute_GAN_set</code> — Set a numeric graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.2.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_GAN_set(igraph_t *graph, const char *name,
@@ -4141,7 +4144,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETGAN"></a>3.2.2. <code class="function">SETGAN</code> — Set a numeric graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.3.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.3.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETGAN(graph,n,value)
@@ -4203,7 +4206,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAB_set"></a>3.2.3. <code class="function">igraph_cattribute_GAB_set</code> — Set a boolean graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.4.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_GAB_set(igraph_t *graph, const char *name,
@@ -4271,7 +4274,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETGAB"></a>3.2.4. <code class="function">SETGAB</code> — Set a boolean graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.5.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.5.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETGAB(graph,n,value)
@@ -4333,7 +4336,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_GAS_set"></a>3.2.5. <code class="function">igraph_cattribute_GAS_set</code> — Set a string graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.6.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_GAS_set(igraph_t *graph, const char *name,
@@ -4402,7 +4405,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETGAS"></a>3.2.6. <code class="function">SETGAS</code> — Set a string graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.7.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.7.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETGAS(graph,n,value)
@@ -4464,7 +4467,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAN_set"></a>3.2.7. <code class="function">igraph_cattribute_VAN_set</code> — Set a numeric vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.8.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAN_set(igraph_t *graph, const char *name,
@@ -4555,7 +4558,7 @@ new, O(|vid|) otherwise.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVAN"></a>3.2.8. <code class="function">SETVAN</code> — Set a numeric vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.9.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVAN(graph,n,vid,value)
@@ -4623,7 +4626,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAB_set"></a>3.2.9. <code class="function">igraph_cattribute_VAB_set</code> — Set a boolean vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.10.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAB_set(igraph_t *graph, const char *name,
@@ -4714,7 +4717,7 @@ new, O(|vid|) otherwise.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVAB"></a>3.2.10. <code class="function">SETVAB</code> — Set a boolean vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.11.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.11.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVAB(graph,n,vid,value)
@@ -4782,7 +4785,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAS_set"></a>3.2.11. <code class="function">igraph_cattribute_VAS_set</code> — Set a string vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.12.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAS_set(igraph_t *graph, const char *name,
@@ -4874,7 +4877,7 @@ O(|vid|*l).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVAS"></a>3.2.12. <code class="function">SETVAS</code> — Set a string vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.13.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.13.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVAS(graph,n,vid,value)
@@ -4942,7 +4945,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAN_set"></a>3.2.13. <code class="function">igraph_cattribute_EAN_set</code> — Set a numeric edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.14.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAN_set(igraph_t *graph, const char *name,
@@ -5033,7 +5036,7 @@ new, O(|eid|) otherwise.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEAN"></a>3.2.14. <code class="function">SETEAN</code> — Set a numeric edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.15.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.15.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEAN(graph,n,eid,value)
@@ -5101,7 +5104,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAB_set"></a>3.2.15. <code class="function">igraph_cattribute_EAB_set</code> — Set a boolean edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.16.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAB_set(igraph_t *graph, const char *name,
@@ -5192,7 +5195,7 @@ new, O(|eid|) otherwise.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEAB"></a>3.2.16. <code class="function">SETEAB</code> — Set a boolean edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.17.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.17.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEAB(graph,n,eid,value)
@@ -5260,7 +5263,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAS_set"></a>3.2.17. <code class="function">igraph_cattribute_EAS_set</code> — Set a string edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.18.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAS_set(igraph_t *graph, const char *name,
@@ -5352,7 +5355,7 @@ O(|eid|*l).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEAS"></a>3.2.18. <code class="function">SETEAS</code> — Set a string edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.19.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.19.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEAS(graph,n,eid,value)
@@ -5420,7 +5423,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAN_setv"></a>3.2.19. <code class="function">igraph_cattribute_VAN_setv</code> — Set a numeric vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.20.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.20.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAN_setv(igraph_t *graph, const char *name,
@@ -5503,7 +5506,7 @@ Time complexity: O(n), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVANV"></a>3.2.20. <code class="function">SETVANV</code> — Set a numeric vertex attribute for all vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.21.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.21.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVANV(graph,n,v)
@@ -5565,7 +5568,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAB_setv"></a>3.2.21. <code class="function">igraph_cattribute_VAB_setv</code> — Set a boolean vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.22.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.22.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAB_setv(igraph_t *graph, const char *name,
@@ -5648,7 +5651,7 @@ Time complexity: O(n), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVABV"></a>3.2.22. <code class="function">SETVABV</code> — Set a boolean vertex attribute for all vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.23.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.23.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVABV(graph,n,v)
@@ -5710,7 +5713,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_VAS_setv"></a>3.2.23. <code class="function">igraph_cattribute_VAS_setv</code> — Set a string vertex attribute for all vertices.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.24.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.24.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_VAS_setv(igraph_t *graph, const char *name,
@@ -5794,7 +5797,7 @@ total length of the strings.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETVASV"></a>3.2.24. <code class="function">SETVASV</code> — Set a string vertex attribute for all vertices</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.25.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.25.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETVASV(graph,n,v)
@@ -5856,7 +5859,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAN_setv"></a>3.2.25. <code class="function">igraph_cattribute_EAN_setv</code> — Set a numeric edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.26.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.26.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAN_setv(igraph_t *graph, const char *name,
@@ -5939,7 +5942,7 @@ Time complexity: O(e), the number of edges.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEANV"></a>3.2.26. <code class="function">SETEANV</code> — Set a numeric edge attribute for all edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.27.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.27.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEANV(graph,n,v)
@@ -5986,7 +5989,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAB_setv"></a>3.2.27. <code class="function">igraph_cattribute_EAB_setv</code> — Set a boolean edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.28.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.28.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAB_setv(igraph_t *graph, const char *name,
@@ -6069,7 +6072,7 @@ Time complexity: O(e), the number of edges.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEABV"></a>3.2.28. <code class="function">SETEABV</code> — Set a boolean edge attribute for all edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.29.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.29.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEABV(graph,n,v)
@@ -6116,7 +6119,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_EAS_setv"></a>3.2.29. <code class="function">igraph_cattribute_EAS_setv</code> — Set a string edge attribute for all edges.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.30.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.30.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cattribute_EAS_setv(igraph_t *graph, const char *name,
@@ -6200,7 +6203,7 @@ total length of the strings.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="SETEASV"></a>3.2.30. <code class="function">SETEASV</code> — Set a string edge attribute for all edges</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.11.31.2"></a><p>
+<a class="indexterm" name="id-1.13.7.12.31.2"></a><p>
 </p>
 <pre class="programlisting">
 #define SETEASV(graph,n,v)
@@ -6264,7 +6267,7 @@ This is a shorthand for <a class="link" href="igraph-Attributes.html#igraph_catt
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_remove_g"></a>3.3.1. <code class="function">igraph_cattribute_remove_g</code> — Remove a graph attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.2.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_cattribute_remove_g(igraph_t *graph, const char *name);
@@ -6322,7 +6325,7 @@ void igraph_cattribute_remove_g(igraph_t *graph, const char *name);
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELGA"></a>3.3.2. <code class="function">DELGA</code> — Remove a graph attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.3.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.3.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELGA(graph,n)
@@ -6363,7 +6366,7 @@ A shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattribute_r
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_remove_v"></a>3.3.3. <code class="function">igraph_cattribute_remove_v</code> — Remove a vertex attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.4.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_cattribute_remove_v(igraph_t *graph, const char *name);
@@ -6421,7 +6424,7 @@ void igraph_cattribute_remove_v(igraph_t *graph, const char *name);
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELVA"></a>3.3.4. <code class="function">DELVA</code> — Remove a vertex attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.5.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.5.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELVA(graph,n)
@@ -6462,7 +6465,7 @@ A shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattribute_r
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_remove_e"></a>3.3.5. <code class="function">igraph_cattribute_remove_e</code> — Remove an edge attribute</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.6.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_cattribute_remove_e(igraph_t *graph, const char *name);
@@ -6520,7 +6523,7 @@ void igraph_cattribute_remove_e(igraph_t *graph, const char *name);
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELEA"></a>3.3.6. <code class="function">DELEA</code> — Remove an edge attribute.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.7.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.7.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELEA(graph,n)
@@ -6561,7 +6564,7 @@ A shorthand for <a class="link" href="igraph-Attributes.html#igraph_cattribute_r
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_cattribute_remove_all"></a>3.3.7. <code class="function">igraph_cattribute_remove_all</code> — Remove all graph/vertex/edge attributes</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.8.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_cattribute_remove_all(igraph_t *graph, igraph_bool_t g,
@@ -6632,7 +6635,7 @@ ways.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELGAS"></a>3.3.8. <code class="function">DELGAS</code> — Remove all graph attributes.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.9.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELGAS(graph)
@@ -6665,7 +6668,7 @@ Calls <a class="link" href="igraph-Attributes.html#igraph_cattribute_remove_all"
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELVAS"></a>3.3.9. <code class="function">DELVAS</code> — Remove all vertex attributes.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.10.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.10.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELVAS(graph)
@@ -6698,7 +6701,7 @@ Calls <a class="link" href="igraph-Attributes.html#igraph_cattribute_remove_all"
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELEAS"></a>3.3.10. <code class="function">DELEAS</code> — Remove all edge attributes.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.11.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.11.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELEAS(graph)
@@ -6731,7 +6734,7 @@ Calls <a class="link" href="igraph-Attributes.html#igraph_cattribute_remove_all"
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="DELALL"></a>3.3.11. <code class="function">DELALL</code> — Remove all attributes.</h4></div></div></div>
-<a class="indexterm" name="id-1.13.7.12.12.2"></a><p>
+<a class="indexterm" name="id-1.13.7.13.12.2"></a><p>
 </p>
 <pre class="programlisting">
 #define DELALL(graph)

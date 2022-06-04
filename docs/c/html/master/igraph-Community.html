@@ -1766,7 +1766,7 @@ Phys Rev E 74:036104 (2006).
    community <span class="quote">“<span class="quote">p</span>”</span>, the merge in the second line forms
    community <span class="quote">“<span class="quote">p+1</span>”</span>, etc. The matrix should be
    initialized before calling and will be resized as needed.
-   This argument is ignored of it is <code class="constant">NULL</code>.
+   This argument is ignored if it is <code class="constant">NULL</code>.
 </p></td>
 </tr>
 <tr>
@@ -2315,18 +2315,17 @@ int <span class="strong"><strong>main</strong></span>() {
     long int no_of_nodes;
     long int i;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
-
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED,
                  0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 1, 3, 1, 4, 2, 3, 2, 4, 3, 4,
-                 5, 6, 5, 7, 5, 8, 5, 9, 6, 7, 6, 8, 6, 9, 7, 8, 7, 9, 8, 9, 0, 5, -1);
+                 5, 6, 5, 7, 5, 8, 5, 9, 6, 7, 6, 8, 6, 9, 7, 8, 7, 9, 8, 9, 0, 5, 4, 9, -1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;modularity, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;merges, 0, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — This function is the implementation of the Walktrap community">igraph_community_walktrap</a></strong></span>(&amp;g, 0 <span class="emphasis"><em>/* no weights */</em></span>,
+    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — This function is the implementation of the Walktrap community">igraph_community_walktrap</a></strong></span>(&amp;g,
+                              NULL <span class="emphasis"><em>/* no weights */</em></span>,
                               4 <span class="emphasis"><em>/* steps */</em></span>,
                               &amp;merges, &amp;modularity,
-                              <span class="emphasis"><em>/* membership=*/</em></span> 0);
+                              <span class="emphasis"><em>/* membership=*/</em></span> NULL);
 
     no_of_nodes = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="strong"><strong>printf</strong></span>("Merges:\n");
@@ -2340,19 +2339,9 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="emphasis"><em>/* isolated vertices */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED, -1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — This function is the implementation of the Walktrap community">igraph_community_walktrap</a></strong></span>(&amp;g, 0 <span class="emphasis"><em>/* no weights */</em></span>, 4 <span class="emphasis"><em>/* steps */</em></span>, &amp;merges,
-                                  &amp;modularity, <span class="emphasis"><em>/* membership = */</em></span> 0)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_min" title="2.10.1. igraph_vector_min — Smallest element of a vector.">igraph_vector_min</a></strong></span>(&amp;modularity) != 0 || <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_max" title="2.10.2. igraph_vector_max — Largest element of a vector.">igraph_vector_max</a></strong></span>(&amp;modularity) != 0) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;merges);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;modularity);
+
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -3064,7 +3053,9 @@ void <span class="strong"><strong>show_results</strong></span>(igraph_t *g, <a c
 
     <span class="strong"><strong>if</strong></span> (mod != 0) {
         i = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_which_max" title="2.10.4. igraph_vector_which_max — Gives the index of the maximum element of the vector.">igraph_vector_which_max</a></strong></span>(mod);
-        <span class="strong"><strong>fprintf</strong></span>(f, "Modularity:  %f\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*mod)[i]);
+        <span class="strong"><strong>fprintf</strong></span>(f, "Modularity:  ");
+        <span class="strong"><strong>igraph_real_fprintf</strong></span>(f, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*mod)[i]);
+        <span class="strong"><strong>fprintf</strong></span>(f, "\n");
     } <span class="strong"><strong>else</strong></span> {
         <span class="strong"><strong>fprintf</strong></span>(f, "Modularity:  ---\n");
     }
@@ -3572,7 +3563,8 @@ edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_weights</code></em>:</span></p></td>
 <td><p>
-  Numeric vector containing node weights.
+  Numeric vector containing node weights. If <code class="constant">NULL</code>, every node
+   has equal weight of 1.
 </p></td>
 </tr>
 <tr>
@@ -3611,8 +3603,8 @@ edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>nb_clusters</code></em>:</span></p></td>
 <td><p>
-  The number of clusters contained in <code class="constant">membership</code>. Must
-   not be a <code class="constant">NULL</code> pointer.
+  The number of clusters contained in <code class="constant">membership</code>.
+   If <code class="constant">NULL</code>, the number of clusters will not be returned.
 </p></td>
 </tr>
 <tr>
@@ -3931,9 +3923,12 @@ Phys Rev E 76, 036106. (2007).
 <td><p>
   Boolean vector denoting which labels are fixed. Of course
   this makes sense only if you provided an initial state, otherwise
-  this element will be ignored. Also note that vertices without labels
-  cannot be fixed. If they are, this vector will be modified to
-  make it consistent with <em class="parameter"><code>initial</code></em>.
+  this element will be ignored. Note that vertices without labels
+  cannot be fixed. The fixed status will be ignord for these with a
+  warning. Also note that label numbers by themselves have no meaning,
+  and igraph may renumber labels. However, co-membership constraints
+  will be respected: two vertices can be fixed to be in the same or in
+  different communities.
 </p></td>
 </tr>
 <tr>

@@ -1332,10 +1332,36 @@ int igraph_layout_fruchterman_reingold(const igraph_t *graph,
 
 </p>
 <p>
-This is a force-directed layout, see Fruchterman, T.M.J. and
-Reingold, E.M.: Graph Drawing by Force-directed Placement.
+This is a force-directed layout that simulates an attractive force <code class="constant">f_a</code> between
+connected vertex pairs and a repulsive force <code class="constant">f_r</code> between all vertex pairs.
+The forces are computed as a function of the distance <code class="constant">d</code> between the two vertices as
+
+</p>
+<p>
+<code class="literal">f_a(d) = -w * d^2</code> and <code class="literal">f_r(d) = 1/d</code>,
+
+</p>
+<p>
+where <code class="constant">w</code> represents the edge weight. The equilibrium distance of two connected
+vertices is thus <code class="literal">1/w^3</code>, assuming no other forces acting on them.
+
+</p>
+<p>
+In disconnected graphs, igraph effectively inserts a weak connection of weight
+<code class="literal">n^(-3/2)</code> between all pairs of vertices, where <code class="constant">n</code> is the vertex count.
+This ensures that components are kept near each other.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Fruchterman, T.M.J. and Reingold, E.M.:
+Graph Drawing by Force-directed Placement.
 Software -- Practice and Experience, 21/11, 1129--1164,
-1991.
+1991. <a class="ulink" href="https://doi.org/10.1002/spe.4380211102" target="_top">https://doi.org/10.1002/spe.4380211102</a>
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1481,6 +1507,11 @@ between the corresponding pair of vertices. Thus, in a weighted graph, increasin
 the weight between two vertices pushes them apart. The Young modulus of springs
 is inversely proportional to the graph distance, ensuring that springs between
 far-apart veritces will have a smaller effect on the layout.
+
+</p>
+<p>
+This layout works particularly well for locally connected spatial networks
+such as lattices.
 
 </p>
 <p>
@@ -2827,8 +2858,8 @@ int igraph_layout_fruchterman_reingold_3d(const igraph_t *graph,
 
 
 
-This is the 3D version of the force based
-Fruchterman-Reingold layout (see <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold</code></a> for the 2D version
+This is the 3D version of the force based Fruchterman-Reingold layout.
+See <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold()</code></a> for the 2D version.
 
 </p>
 <p><b>Arguments: </b>
@@ -2979,7 +3010,7 @@ int igraph_layout_kamada_kawai_3d(const igraph_t *graph, igraph_matrix_t *res,
 
 
 
-This is the 3D version of igraph_layout_kamada_kawai().
+This is the 3D version of <a class="link" href="igraph-Layout.html#igraph_layout_kamada_kawai" title="1.9. igraph_layout_kamada_kawai — Places the vertices on a plane according to the Kamada-Kawai algorithm."><code class="function">igraph_layout_kamada_kawai()</code></a>.
 See the documentation of that function for more information.
 
 </p>
