@@ -1,0 +1,45 @@
+---
+title: C/igraph 0.9.9
+date: 2022-06-04
+tags: c
+---
+
+[C/igraph](https://igraph.org/c/) 0.9.9, the ninth bugfix release of the 0.9 series, has arrived.
+
+The source can be obtained from [the GitHub releases
+page](https://github.com/igraph/igraph/releases/tag/0.9.9).
+
+This release includes bug fixes and documentation improvements, focusing mainly
+on community detection and visualization functions. Read on for more details.
+
+<!--more-->
+
+### Changed
+
+ - `igraph_community_walktrap()` now uses double precision floating point operations internally instead of single precision.
+ - In `igraph_community_leiden()`, the `nb_clusters` output parameter is now optional (i.e. it can be `NULL`).
+ - `igraph_read_graph_graphml()` no longer attempts to temporarily set the C locale, and will therefore not work correctly if the current locale uses a decimal comma.
+
+### Fixed
+
+ - `igraph_community_walktrap()` would return an invalid `modularity` vector when the `merges` matrix was not requested.
+ - `igraph_community_walktrap()` would return a `modularity` vector that was too long for disconnected graphs. This would cause a failure in some weighted graphs when the `membership` vector was requested.
+ - `igraph_community_walktrap()` now checks the weight vector: only non-negative weights are accepted, and all vertices must have non-zero strength.
+ - `igraph_community_walktrap()` now returns a modularity score of NaN for graphs with no edges.
+ - `igraph_community_fast_greedy()` now returns a modularity score of NaN for graphs with no edges.
+ - `igraph_community_edge_betweenness()` now returns a modularity vector with a single NaN entry for graph with no edges. Previously it returned a zero-length vector.
+ - `igraph_community_leading_eigenvector()` does not ignore non-ARPACK-related errors from `igraph_arpack_rssolve()` any more.
+ - `igraph_preference_game()` now works correctly when `fixed_size` is true and `type_dist` is not given; earlier versions had a bug where more than half of the vertices mistakenly ended up in group 0.
+ - Fixed a memory leak in `igraph_hrg_fit()` when using `start=1`.
+ - `igraph_write_graph_dot()` now outputs NaN values unchanged.
+ - `igraph_write_graph_dot()` no longer produces invalid DOT files when empty string attributes are present.
+ - `igraph_layout_fruchterman_reingold()` and `igraph_layout_kamada_kawai()`, as well as their 3D versions, did not respect vertex coordinate bounds (`xmin`, `xmax`, etc.) when minimum values were large or maximum values were small. This is now fixed.
+ - The initial coordinates of the Kamada-Kawai layout (`igraph_layout_kamada_kawai()` and `igraph_layout_kamada_kawai_3d()`) are chosen to be more in line with the original publication, improving the stability of the result. See issue [#963](https://github.com/igraph/igraph/issues/963). This changes the output of the function for the same graph, compared with previous versions. To obtain the same layout, initialize coordinates with `igraph_layout_circle()` (in 2D) or `igraph_layout_sphere()` (in 3D).
+ - Improved numerical stability in Kamada-Kawai layout.
+ - Corrected a problem in the calculation of displacements in `igraph_layout_fruchterman_reingold()` and its 3D version. This fixes using the "grid" variant of the algorithm on disconnected graphs.
+ - `igraph_psumtree_search()` would consider search interval opens on the left and closed on the right, contrary to the documentation. This is now corrected to closed on the left and open on the right. In some cases this lead to a zero-weight element being returned for a zero search value. See issue #2080.
+
+### Other
+
+ - Documentation improvements.
+
