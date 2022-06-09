@@ -31,6 +31,7 @@ for i in "${!PYVERSIONS[@]}"; do
     # 'master' and 'develop' are "moving targets", we need to pull
     git pull
   fi
+  git submodule update --init --recursive
 
   echo "Build C core matching this version"
 
@@ -39,15 +40,6 @@ for i in "${!PYVERSIONS[@]}"; do
   if [ "${c_version}" != "master" -a "${c_version}" != "develop" -a -d vendor/cache/igraph_${c_version} ]; then
     echo "Copy C core cache for version: ${c_version}"
     cp -r vendor/cache/igraph_${c_version} vendor/install/igraph
-  # or build from scratch
-  else
-    cd vendor/source/igraph
-    git checkout $c_version
-    if [ "${c_version}" = "master" -o "${c_version}" = "develop" ]; then
-      # 'master' and 'develop' are "moving targets", we need to pull
-      git pull
-    fi
-    cd ../../..
   fi
 
   echo "Build extension"

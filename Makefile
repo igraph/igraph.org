@@ -6,19 +6,19 @@ all: jekyll
 # Default doc version
 CVERSION?=0.9.9
 RVERSION?=1.3.0
-PYVERSION?=0.9.10
+PYVERSION?=0.9.11
 
 # Available versions
-CVERSIONS?='0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 0.9.9 master develop'
-RVERSIONS?='1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0'
-PYVERSIONS?='0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 master develop'
-PYCVERSIONS?='0.9.4 0.9.4 0.9.4 0.9.6 0.9.8 0.9.8 develop'
+CVERSIONS   ?= '0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 0.9.9 master develop'
+RVERSIONS   ?= '1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0'
+PYVERSIONS  ?= '0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.9.11 master develop'
+PYCVERSIONS ?= '0.9.4 0.9.4 0.9.4 0.9.6  0.9.8  0.9.9  0.9.9 develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
 # CCOMMITHASH?=8bca587ad
 # optional variable so we can update the Python docs without making a release
-PYCOMMITHASH?=9bde4c29f
+# PYCOMMITHASH?=9bde4c29f
 
 CREPO=https://github.com/igraph/igraph
 RREPO=https://github.com/igraph/rigraph
