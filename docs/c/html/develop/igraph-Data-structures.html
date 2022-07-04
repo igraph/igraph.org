@@ -1676,7 +1676,7 @@ References:
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_INTEGER</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
-<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_UNIF</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.2. igraph_rng_get_unif — Generate real, uniform random numbers from an interval.">igraph_rng_get_unif</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
+<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_UNIF</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.3. igraph_rng_get_unif — Samples real numbers from a given interval.">igraph_rng_get_unif</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_real_t d;
@@ -3144,7 +3144,7 @@ Time complexity: O(n), the number of elements in the smaller vector.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_which_min">2.10.3. <code class="function">igraph_vector_which_min</code> —  Index of the smallest element.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_which_max">2.10.4. <code class="function">igraph_vector_which_max</code> —  Gives the index of the maximum element of the vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_minmax">2.10.5. <code class="function">igraph_vector_minmax</code> —  Minimum and maximum elements of a vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_which_minmax">2.10.6. <code class="function">igraph_vector_which_minmax</code> —  Index of the minimum and maximum elements</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_which_minmax">2.10.6. <code class="function">igraph_vector_which_minmax</code> —  Index of the minimum and maximum elements.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -3372,7 +3372,7 @@ Time complexity: O(n), n is the size of the vector.
 <a class="indexterm" name="id-1.8.3.11.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_minmax(const igraph_vector_t *v,
+void igraph_vector_minmax(const igraph_vector_t *v,
                                     igraph_real_t *min, igraph_real_t *max);
 </pre></div>
 <p>
@@ -3384,6 +3384,7 @@ igraph_error_t igraph_vector_minmax(const igraph_vector_t *v,
 Handy if you want to have both the smallest and largest element of
 a vector. The vector is only traversed once. The vector must be non-empty.
 If a vector contains at least one NaN, both <code class="constant">min</code> and <code class="constant">max</code> will be NaN.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -3402,35 +3403,18 @@ If a vector contains at least one NaN, both <code class="constant">min</code> an
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min</code></em>:</span></p></td>
 <td><p>
-  Pointer to a base type variable, the minimum is stored
-    here.
+  Pointer to a base type variable, the minimum is stored here.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max</code></em>:</span></p></td>
 <td><p>
-  Pointer to a base type variable, the maximum is stored
-    here.
-</p></td>
+  Pointer to a base type variable, the maximum is stored here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(n), the number of elements.
  
@@ -3438,11 +3422,11 @@ Time complexity: O(n), the number of elements.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_which_minmax"></a>2.10.6. <code class="function">igraph_vector_which_minmax</code> —  Index of the minimum and maximum elements</h4></div></div></div>
+<a name="igraph_vector_which_minmax"></a>2.10.6. <code class="function">igraph_vector_which_minmax</code> —  Index of the minimum and maximum elements.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.11.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_which_minmax(const igraph_vector_t *v,
+void igraph_vector_which_minmax(const igraph_vector_t *v,
         igraph_integer_t *which_min, igraph_integer_t *which_max);
 </pre></div>
 <p>
@@ -3451,14 +3435,13 @@ igraph_error_t igraph_vector_which_minmax(const igraph_vector_t *v,
 
 
 
-</p>
-<p>
 Handy if you need the indices of the smallest and largest
 elements. The vector is traversed only once. The vector must be
 non-empty. If the minimum or maximum is not unique, the index
 of the first minimum or the first maximum is returned, respectively.
 If a vector contains at least one NaN, both <code class="constant">which_min</code> and <code class="constant">which_max</code>
 will point to the first NaN value.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -3485,27 +3468,12 @@ will point to the first NaN value.
 <td><p><span class="term"><em class="parameter"><code>which_max</code></em>:</span></p></td>
 <td><p>
   The index of the maximum element will be stored
-  here.
-</p></td>
+  here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(n), the number of elements.
  
@@ -9870,7 +9838,7 @@ Time complexity: O(mn), the number of elements in the matrix.
 <a class="indexterm" name="id-1.8.4.12.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_matrix_which_min(
+void igraph_matrix_which_min(
         const igraph_matrix_t *m, igraph_integer_t *i, igraph_integer_t *j);
 </pre></div>
 <p>
@@ -9879,11 +9847,10 @@ igraph_error_t igraph_matrix_which_min(
 
 
 
-</p>
-<p>
 The matrix must be non-empty. If the smallest element is not unique,
 then the indices of the first such element are returned. If the matrix contains
 NaN values, the indices of the first NaN value are returned.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -9910,27 +9877,12 @@ NaN values, the indices of the first NaN value are returned.
 <td><p><span class="term"><em class="parameter"><code>j</code></em>:</span></p></td>
 <td><p>
   Pointer to an <span class="type">igraph_integer_t</span>. The column index of
-  the minimum is stored here.
-</p></td>
+  the minimum is stored here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(mn), the number of elements.
  
@@ -9942,7 +9894,7 @@ Time complexity: O(mn), the number of elements.
 <a class="indexterm" name="id-1.8.4.12.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_matrix_which_max(
+void igraph_matrix_which_max(
         const igraph_matrix_t *m, igraph_integer_t *i, igraph_integer_t *j);
 </pre></div>
 <p>
@@ -9951,11 +9903,10 @@ igraph_error_t igraph_matrix_which_max(
 
 
 
-</p>
-<p>
 The matrix must be non-empty. If the largest element is not unique,
 then the indices of the first such element are returned. If the matrix contains
 NaN values, the indices of the first NaN value are returned.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -9982,27 +9933,12 @@ NaN values, the indices of the first NaN value are returned.
 <td><p><span class="term"><em class="parameter"><code>j</code></em>:</span></p></td>
 <td><p>
   Pointer to an <span class="type">igraph_integer_t</span>. The column index of
-  the maximum is stored here.
-</p></td>
+  the maximum is stored here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(mn), the number of elements.
  
@@ -10014,7 +9950,7 @@ Time complexity: O(mn), the number of elements.
 <a class="indexterm" name="id-1.8.4.12.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_matrix_minmax(const igraph_matrix_t *m,
+void igraph_matrix_minmax(const igraph_matrix_t *m,
                                     igraph_real_t *min, igraph_real_t *max);
 </pre></div>
 <p>
@@ -10026,6 +9962,7 @@ igraph_error_t igraph_matrix_minmax(const igraph_matrix_t *m,
 Handy if you want to have both the smallest and largest element of
 a matrix. The matrix is only traversed once. The matrix must be non-empty.
 If a matrix contains at least one NaN, both <code class="constant">min</code> and <code class="constant">max</code> will be NaN.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -10050,27 +9987,12 @@ If a matrix contains at least one NaN, both <code class="constant">min</code> an
 <tr>
 <td><p><span class="term"><em class="parameter"><code>max</code></em>:</span></p></td>
 <td><p>
-  Pointer to a base type variable. The maximum is stored here.
-</p></td>
+  Pointer to a base type variable. The maximum is stored here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(mn), the number of elements.
  
@@ -10082,7 +10004,7 @@ Time complexity: O(mn), the number of elements.
 <a class="indexterm" name="id-1.8.4.12.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_matrix_which_minmax(const igraph_matrix_t *m,
+void igraph_matrix_which_minmax(const igraph_matrix_t *m,
         igraph_integer_t *imin, igraph_integer_t *jmin,
         igraph_integer_t *imax, igraph_integer_t *jmax);
 </pre></div>
@@ -10092,14 +10014,13 @@ igraph_error_t igraph_matrix_which_minmax(const igraph_matrix_t *m,
 
 
 
-</p>
-<p>
 Handy if you need the indices of the smallest and largest
 elements. The matrix is traversed only once. The matrix must be
 non-empty. If the minimum or maximum is not unique, the index
 of the first minimum or the first maximum is returned, respectively.
 If a matrix contains at least one NaN, both <code class="constant">which_min</code> and <code class="constant">which_max</code>
 will point to the first NaN value.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -10140,27 +10061,12 @@ will point to the first NaN value.
 <td><p><span class="term"><em class="parameter"><code>jmax</code></em>:</span></p></td>
 <td><p>
   Pointer to an <span class="type">igraph_integer_t</span>, the column index of
-  the maximum is stored here.
-</p></td>
+  the maximum is stored here.</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
+
 
 Time complexity: O(mn), the number of elements.
  
@@ -11728,7 +11634,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Convert a ring graph to a matrix, print it, compress, print again */</em></span>
 <span class="strong"><strong>#define</strong></span> VC 10
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.9. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;G, VC, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;G, VC, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH, NULL, IGRAPH_LOOPS_ONCE);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
 
@@ -11789,12 +11695,12 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Transpose matrices */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.12. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH, NULL, IGRAPH_LOOPS_ONCE);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_print" title="4.10.1. igraph_sparsemat_print — Prints a sparse matrix to a file.">igraph_sparsemat_print</a></strong></span>(&amp;B, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;C, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;C);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_print" title="4.10.1. igraph_sparsemat_print — Prints a sparse matrix to a file.">igraph_sparsemat_print</a></strong></span>(&amp;C, stdout);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
@@ -11842,8 +11748,8 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;B, 1, 1, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.6. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;G, 10, IGRAPH_STAR_OUT, <span class="emphasis"><em>/*center=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.9. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;H, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;G, 10, IGRAPH_STAR_OUT, <span class="emphasis"><em>/*center=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;H, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH, NULL, IGRAPH_LOOPS_ONCE);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;H, &amp;B, IGRAPH_GET_ADJACENCY_BOTH, NULL, IGRAPH_LOOPS_ONCE);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
@@ -11870,10 +11776,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="example">
 <a name="id-1.8.5.2.7.2"></a><p class="title"><b>Example 7.5.  File <code class="code">examples/simple/igraph_sparsemat3.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;cs.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>permute</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
             <span class="strong"><strong>const</strong></span> igraph_vector_int_t *p,
@@ -11953,36 +11856,15 @@ int <span class="strong"><strong>permute_cols</strong></span>(<span class="stron
 
 igraph_bool_t <span class="strong"><strong>check_same</strong></span>(<span class="strong"><strong>const</strong></span> igraph_sparsemat_t *A,
                          <span class="strong"><strong>const</strong></span> igraph_matrix_t *M) {
+    igraph_matrix_t A_dense;
+    igraph_bool_t result;
 
-    igraph_integer_t nrow = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_nrow" title="4.3.2. igraph_sparsemat_nrow — Number of rows.">igraph_sparsemat_nrow</a></strong></span>(A);
-    igraph_integer_t ncol = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_ncol" title="4.3.3. igraph_sparsemat_ncol — Number of columns.">igraph_sparsemat_ncol</a></strong></span>(A);
-    igraph_integer_t j, p, nzero = 0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A_dense, 1, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;A_dense, A);
+    result = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_all_e" title="3.9.1. igraph_matrix_all_e — Are all elements equal?">igraph_matrix_all_e</a></strong></span>(&amp;A_dense, M);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;A_dense);
 
-    <span class="strong"><strong>if</strong></span> (nrow != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(M) ||
-        ncol != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(M)) {
-        <span class="strong"><strong>return</strong></span> 0;
-    }
-
-    <span class="strong"><strong>for</strong></span> (j = 0; j &lt; A-&gt;cs-&gt;n; j++) {
-        <span class="strong"><strong>for</strong></span> (p = A-&gt;cs-&gt;p[j]; p &lt; A-&gt;cs-&gt;p[j + 1]; p++) {
-            igraph_integer_t to = A-&gt;cs-&gt;i[p];
-            igraph_real_t value = A-&gt;cs-&gt;x[p];
-            <span class="strong"><strong>if</strong></span> (value != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*M, to, j)) {
-                <span class="strong"><strong>return</strong></span> 0;
-            }
-            nzero += 1;
-        }
-    }
-
-    <span class="strong"><strong>for</strong></span> (j = 0; j &lt; nrow; j++) {
-        <span class="strong"><strong>for</strong></span> (p = 0; p &lt; ncol; p++) {
-            <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*M, j, p) != 0) {
-                nzero -= 1;
-            }
-        }
-    }
-
-    <span class="strong"><strong>return</strong></span> nzero == 0;
+    <span class="strong"><strong>return</strong></span> result;
 }
 
 int <span class="strong"><strong>main</strong></span>() {
@@ -11991,6 +11873,8 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_matrix_t M, N;
     igraph_vector_int_t p, q;
     igraph_integer_t i;
+
+    <span class="strong"><strong>RNG_BEGIN</strong></span>();
 
     <span class="emphasis"><em>/* Permutation of a matrix */</em></span>
 
@@ -12087,7 +11971,9 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 3;
     }
 
-    <span class="emphasis"><em>/* A single element */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
+
+    <span class="emphasis"><em>/* Getting single elements with index() */</em></span>
 
     <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;p, 1);
     <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;q, 1);
@@ -12102,7 +11988,20 @@ int <span class="strong"><strong>main</strong></span>() {
         }
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
+    <span class="emphasis"><em>/* Getting single elements with get() */</em></span>
+
+    <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;p, 1);
+    <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;q, 1);
+
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 100; i++) {
+        igraph_integer_t row = <span class="strong"><strong>RNG_INTEGER</strong></span>(0, NROW - 1);
+        igraph_integer_t col = <span class="strong"><strong>RNG_INTEGER</strong></span>(0, NCOL - 1);
+        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_get" title="4.3.7. igraph_sparsemat_get — Return the value of a single element from a sparse matrix.">igraph_sparsemat_get</a></strong></span>(&amp;B, row, col) != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(M, row, col)) {
+            <span class="strong"><strong>return</strong></span> 4;
+        }
+    }
+
+    <span class="emphasis"><em>/* Getting submatrices with index() */</em></span>
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 100; i++) {
         igraph_real_t value;
@@ -12169,6 +12068,8 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
 
+    <span class="strong"><strong>RNG_END</strong></span>();
+
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -12181,34 +12082,43 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="example">
 <a name="id-1.8.5.2.7.3"></a><p class="title"><b>Example 7.6.  File <code class="code">examples/simple/igraph_sparsemat4.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="strong"><strong>#define</strong></span> NCOMPLEX  <span class="emphasis"><em>/* to make it compile with MSVC on Windows */</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;cs.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 igraph_bool_t <span class="strong"><strong>check_solution</strong></span>(<span class="strong"><strong>const</strong></span> igraph_sparsemat_t *A,
                              <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *x,
                              <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *b) {
 
-    igraph_integer_t dim = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(x);
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> res;
-    igraph_integer_t j, p;
     igraph_real_t min, max;
+    igraph_bool_t success;
+    igraph_sparsemat_iterator_t it;
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_copy" title="2.2.3. igraph_vector_init_copy — Initializes a vector from another vector object (constructor).">igraph_vector_init_copy</a></strong></span>(&amp;res, b);
 
-    <span class="strong"><strong>for</strong></span> (j = 0; j &lt; dim; j++) {
-        <span class="strong"><strong>for</strong></span> (p = A-&gt;cs-&gt;p[j]; p &lt; A-&gt;cs-&gt;p[j + 1]; p++) {
-            igraph_integer_t from = A-&gt;cs-&gt;i[p];
-            igraph_real_t value = A-&gt;cs-&gt;x[p];
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(res)[from] -= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*x)[j] * value;
-        }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_init" title="4.5.1. igraph_sparsemat_iterator_init — Initialize a sparse matrix iterator.">igraph_sparsemat_iterator_init</a></strong></span>(&amp;it, (igraph_sparsemat_t*) A);
+    <span class="strong"><strong>while</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_end" title="4.5.3. igraph_sparsemat_iterator_end — Query if the iterator is past the last element.">igraph_sparsemat_iterator_end</a></strong></span>(&amp;it)) {
+        igraph_integer_t row = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_row" title="4.5.4. igraph_sparsemat_iterator_row — Return the row of the iterator.">igraph_sparsemat_iterator_row</a></strong></span>(&amp;it);
+        igraph_integer_t col = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_col" title="4.5.5. igraph_sparsemat_iterator_col — Return the column of the iterator.">igraph_sparsemat_iterator_col</a></strong></span>(&amp;it);
+        igraph_real_t value = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_get" title="4.5.6. igraph_sparsemat_iterator_get — Return the element at the current iterator position.">igraph_sparsemat_iterator_get</a></strong></span>(&amp;it);
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(res)[row] -= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*x)[col] * value;
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_iterator_next" title="4.5.7. igraph_sparsemat_iterator_next — Let a sparse matrix iterator go to the next element.">igraph_sparsemat_iterator_next</a></strong></span>(&amp;it);
     }
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_minmax" title="2.10.5. igraph_vector_minmax — Minimum and maximum elements of a vector.">igraph_vector_minmax</a></strong></span>(&amp;res, &amp;min, &amp;max);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;res);
 
-    <span class="strong"><strong>return</strong></span> <span class="strong"><strong>fabs</strong></span>(min) &lt; 1e-15 &amp;&amp; <span class="strong"><strong>fabs</strong></span>(max) &lt; 1e-15;
+    success = <span class="strong"><strong>fabs</strong></span>(min) &lt; 1e-12 &amp;&amp; <span class="strong"><strong>fabs</strong></span>(max) &lt; 1e-12;
+
+    <span class="strong"><strong>if</strong></span> (!success) {
+        <span class="strong"><strong>printf</strong></span>("Incorrect solution.\n\n");
+        <span class="strong"><strong>printf</strong></span>("A =\n"); <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_print" title="4.10.1. igraph_sparsemat_print — Prints a sparse matrix to a file.">igraph_sparsemat_print</a></strong></span>(A, stdout); <span class="strong"><strong>printf</strong></span>("\n");
+        <span class="strong"><strong>printf</strong></span>("x =\n"); <span class="strong"><strong>igraph_vector_print</strong></span>(x); <span class="strong"><strong>printf</strong></span>("\n");
+        <span class="strong"><strong>printf</strong></span>("b =\n"); <span class="strong"><strong>igraph_vector_print</strong></span>(b); <span class="strong"><strong>printf</strong></span>("\n");
+        <span class="strong"><strong>printf</strong></span>("difference between A*x and b =\n");
+        <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res); <span class="strong"><strong>printf</strong></span>("\n\n");
+    }
+
+    <span class="strong"><strong>return</strong></span> success;
 }
 
 int <span class="strong"><strong>main</strong></span>() {
@@ -12216,6 +12126,8 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_sparsemat_t A, B, C;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> b, x;
     igraph_integer_t i;
+
+    <span class="strong"><strong>RNG_BEGIN</strong></span>();
 
     <span class="emphasis"><em>/* lsolve */</em></span>
 
@@ -12280,7 +12192,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;x, DIM);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_ltsolve" title="4.7.4. igraph_sparsemat_ltsolve — Solves an upper-triangular linear system.">igraph_sparsemat_ltsolve</a></strong></span>(&amp;B, &amp;b, &amp;x);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A);
     <span class="strong"><strong>if</strong></span> (! <span class="strong"><strong>check_solution</strong></span>(&amp;A, &amp;x, &amp;b)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
@@ -12310,7 +12222,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_dupl" title="4.6.2. igraph_sparsemat_dupl — Removes duplicate elements from a sparse matrix.">igraph_sparsemat_dupl</a></strong></span>(&amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;b, DIM);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; DIM; i++) {
@@ -12349,7 +12261,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_dupl" title="4.6.2. igraph_sparsemat_dupl — Removes duplicate elements from a sparse matrix.">igraph_sparsemat_dupl</a></strong></span>(&amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;b, DIM);
@@ -12360,7 +12272,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;x, DIM);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_utsolve" title="4.7.6. igraph_sparsemat_utsolve — Solves a lower-triangular linear system.">igraph_sparsemat_utsolve</a></strong></span>(&amp;A, &amp;b, &amp;x);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;A, &amp;B, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong>if</strong></span> (! <span class="strong"><strong>check_solution</strong></span>(&amp;B, &amp;x, &amp;b)) {
         <span class="strong"><strong>return</strong></span> 4;
     }
@@ -12393,7 +12305,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_dupl" title="4.6.2. igraph_sparsemat_dupl — Removes duplicate elements from a sparse matrix.">igraph_sparsemat_dupl</a></strong></span>(&amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A, <span class="emphasis"><em>/*values=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_transpose" title="4.4.7. igraph_sparsemat_transpose — Transposes a sparse matrix.">igraph_sparsemat_transpose</a></strong></span>(&amp;B, &amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_multiply" title="4.4.9. igraph_sparsemat_multiply — Matrix multiplication.">igraph_sparsemat_multiply</a></strong></span>(&amp;A, &amp;B, &amp;C);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
@@ -12453,6 +12365,8 @@ int <span class="strong"><strong>main</strong></span>() {
 
 <span class="strong"><strong>#undef</strong></span> DIM
 <span class="strong"><strong>#undef</strong></span> EDGES
+
+    <span class="strong"><strong>RNG_END</strong></span>();
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -12546,20 +12460,20 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;spmat, &amp;spmat2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;mat, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;mat, &amp;spmat2);
-    m1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_min" title="4.3.8. igraph_sparsemat_min — Minimum of a sparse matrix.">igraph_sparsemat_min</a></strong></span>(&amp;spmat2);
+    m1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_min" title="4.3.10. igraph_sparsemat_min — Minimum of a sparse matrix.">igraph_sparsemat_min</a></strong></span>(&amp;spmat2);
     m2 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_min" title="3.11.1. igraph_matrix_min — Smallest element of a matrix.">igraph_matrix_min</a></strong></span>(&amp;mat);
     <span class="strong"><strong>if</strong></span> (m1 != m2) {
         <span class="strong"><strong>printf</strong></span>("%f %f\n", m1, m2);
         <span class="strong"><strong>return</strong></span> 1;
     }
-    m1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_max" title="4.3.9. igraph_sparsemat_max — Maximum of a sparse matrix.">igraph_sparsemat_max</a></strong></span>(&amp;spmat2);
+    m1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_max" title="4.3.11. igraph_sparsemat_max — Maximum of a sparse matrix.">igraph_sparsemat_max</a></strong></span>(&amp;spmat2);
     m2 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_max" title="3.11.2. igraph_matrix_max — Largest element of a matrix.">igraph_matrix_max</a></strong></span>(&amp;mat);
     <span class="strong"><strong>if</strong></span> (m1 != m2) {
         <span class="strong"><strong>printf</strong></span>("%f %f\n", m1, m2);
         <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_minmax" title="4.3.10. igraph_sparsemat_minmax — Minimum and maximum of a sparse matrix.">igraph_sparsemat_minmax</a></strong></span>(&amp;spmat2, &amp;m1, &amp;m2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_minmax" title="4.3.12. igraph_sparsemat_minmax — Minimum and maximum of a sparse matrix.">igraph_sparsemat_minmax</a></strong></span>(&amp;spmat2, &amp;m1, &amp;m2);
     <span class="strong"><strong>if</strong></span> (m1 != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_min" title="3.11.1. igraph_matrix_min — Smallest element of a matrix.">igraph_matrix_min</a></strong></span>(&amp;mat)) {
         <span class="strong"><strong>return</strong></span> 3;
     }
@@ -12645,22 +12559,22 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;mat, &amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;sums1, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;sums2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_colsums" title="4.3.14. igraph_sparsemat_colsums — Column-wise sums.">igraph_sparsemat_colsums</a></strong></span>(&amp;spmat, &amp;sums1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_colsums" title="4.3.16. igraph_sparsemat_colsums — Column-wise sums.">igraph_sparsemat_colsums</a></strong></span>(&amp;spmat, &amp;sums1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_colsum" title="3.8.10. igraph_matrix_colsum — Columnwise sum.">igraph_matrix_colsum</a></strong></span>(&amp;mat, &amp;sums2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?">igraph_vector_all_e</a></strong></span>(&amp;sums1, &amp;sums2)) {
         <span class="strong"><strong>return</strong></span> 3;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_colsums" title="4.3.14. igraph_sparsemat_colsums — Column-wise sums.">igraph_sparsemat_colsums</a></strong></span>(&amp;spmat2, &amp;sums1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_colsums" title="4.3.16. igraph_sparsemat_colsums — Column-wise sums.">igraph_sparsemat_colsums</a></strong></span>(&amp;spmat2, &amp;sums1);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?">igraph_vector_all_e</a></strong></span>(&amp;sums1, &amp;sums2)) {
         <span class="strong"><strong>return</strong></span> 4;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_rowsums" title="4.3.13. igraph_sparsemat_rowsums — Row-wise sums.">igraph_sparsemat_rowsums</a></strong></span>(&amp;spmat, &amp;sums1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_rowsums" title="4.3.15. igraph_sparsemat_rowsums — Row-wise sums.">igraph_sparsemat_rowsums</a></strong></span>(&amp;spmat, &amp;sums1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_rowsum" title="3.8.9. igraph_matrix_rowsum — Rowwise sum.">igraph_matrix_rowsum</a></strong></span>(&amp;mat, &amp;sums2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?">igraph_vector_all_e</a></strong></span>(&amp;sums1, &amp;sums2)) {
         <span class="strong"><strong>return</strong></span> 5;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_rowsums" title="4.3.13. igraph_sparsemat_rowsums — Row-wise sums.">igraph_sparsemat_rowsums</a></strong></span>(&amp;spmat2, &amp;sums1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_rowsums" title="4.3.15. igraph_sparsemat_rowsums — Row-wise sums.">igraph_sparsemat_rowsums</a></strong></span>(&amp;spmat2, &amp;sums1);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?">igraph_vector_all_e</a></strong></span>(&amp;sums1, &amp;sums2)) {
         <span class="strong"><strong>return</strong></span> 6;
     }
@@ -12685,7 +12599,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;mat, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;mat, &amp;spmat2);
 
-    nz1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_count_nonzero" title="4.3.11. igraph_sparsemat_count_nonzero — Counts nonzero elements of a sparse matrix.">igraph_sparsemat_count_nonzero</a></strong></span>(&amp;spmat2);
+    nz1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_count_nonzero" title="4.3.13. igraph_sparsemat_count_nonzero — Counts nonzero elements of a sparse matrix.">igraph_sparsemat_count_nonzero</a></strong></span>(&amp;spmat2);
     <span class="strong"><strong>for</strong></span> (nz2 = 0, i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;mat); i++) {
         <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(&amp;mat); j++) {
             <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(mat, i, j) != 0) {
@@ -12698,7 +12612,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 7;
     }
 
-    nz1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_count_nonzerotol" title="4.3.12. igraph_sparsemat_count_nonzerotol — Counts nonzero elements of a sparse matrix, ignoring elements close to zero.">igraph_sparsemat_count_nonzerotol</a></strong></span>(&amp;spmat2, 1e-10);
+    nz1 = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_count_nonzerotol" title="4.3.14. igraph_sparsemat_count_nonzerotol — Counts nonzero elements of a sparse matrix, ignoring elements close to zero.">igraph_sparsemat_count_nonzerotol</a></strong></span>(&amp;spmat2, 1e-10);
     <span class="strong"><strong>for</strong></span> (nz2 = 0, i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;mat); i++) {
         <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(&amp;mat); j++) {
             <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(mat, i, j)) &gt;= 1e-10) {
@@ -13343,15 +13257,17 @@ Time complexity: O(1).
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_type">4.3.4. <code class="function">igraph_sparsemat_type</code> —  Type of a sparse matrix (triplet or column-compressed).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_is_triplet">4.3.5. <code class="function">igraph_sparsemat_is_triplet</code> —  Is this sparse matrix in triplet format?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_is_cc">4.3.6. <code class="function">igraph_sparsemat_is_cc</code> —  Is this sparse matrix in column-compressed format?</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_getelements_sorted">4.3.7. <code class="function">igraph_sparsemat_getelements_sorted</code> —  Returns the sorted elements of a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_min">4.3.8. <code class="function">igraph_sparsemat_min</code> —  Minimum of a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_max">4.3.9. <code class="function">igraph_sparsemat_max</code> —  Maximum of a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_minmax">4.3.10. <code class="function">igraph_sparsemat_minmax</code> —  Minimum and maximum of a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_count_nonzero">4.3.11. <code class="function">igraph_sparsemat_count_nonzero</code> —  Counts nonzero elements of a sparse matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_count_nonzerotol">4.3.12. <code class="function">igraph_sparsemat_count_nonzerotol</code> —  Counts nonzero elements of a sparse matrix, ignoring elements close to zero.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_rowsums">4.3.13. <code class="function">igraph_sparsemat_rowsums</code> —  Row-wise sums.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_colsums">4.3.14. <code class="function">igraph_sparsemat_colsums</code> —  Column-wise sums.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_nonzero_storage">4.3.15. <code class="function">igraph_sparsemat_nonzero_storage</code> —  Returns number of stored entries of a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_get">4.3.7. <code class="function">igraph_sparsemat_get</code> —  Return the value of a single element from a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_getelements">4.3.8. <code class="function">igraph_sparsemat_getelements</code> —  Returns all elements of a sparse matrix</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_getelements_sorted">4.3.9. <code class="function">igraph_sparsemat_getelements_sorted</code> —  Returns all elements of a sparse matrix, sorted by row and column indices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_min">4.3.10. <code class="function">igraph_sparsemat_min</code> —  Minimum of a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_max">4.3.11. <code class="function">igraph_sparsemat_max</code> —  Maximum of a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_minmax">4.3.12. <code class="function">igraph_sparsemat_minmax</code> —  Minimum and maximum of a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_count_nonzero">4.3.13. <code class="function">igraph_sparsemat_count_nonzero</code> —  Counts nonzero elements of a sparse matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_count_nonzerotol">4.3.14. <code class="function">igraph_sparsemat_count_nonzerotol</code> —  Counts nonzero elements of a sparse matrix, ignoring elements close to zero.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_rowsums">4.3.15. <code class="function">igraph_sparsemat_rowsums</code> —  Row-wise sums.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_colsums">4.3.16. <code class="function">igraph_sparsemat_colsums</code> —  Column-wise sums.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_nonzero_storage">4.3.17. <code class="function">igraph_sparsemat_nonzero_storage</code> —  Returns number of stored entries of a sparse matrix.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -13704,14 +13620,13 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_getelements_sorted"></a>4.3.7. <code class="function">igraph_sparsemat_getelements_sorted</code> —  Returns the sorted elements of a sparse matrix.</h4></div></div></div>
+<a name="igraph_sparsemat_get"></a>4.3.7. <code class="function">igraph_sparsemat_get</code> —  Return the value of a single element from a sparse matrix.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.5.4.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_sparsemat_getelements_sorted(const igraph_sparsemat_t *A,
-                                        igraph_vector_int_t *i,
-                                        igraph_vector_int_t *j,
-                                        igraph_vector_t *x);
+igraph_real_t igraph_sparsemat_get(
+    const igraph_sparsemat_t *A, igraph_integer_t row, igraph_integer_t col
+);
 </pre></div>
 <p>
 </p>
@@ -13719,9 +13634,77 @@ igraph_error_t igraph_sparsemat_getelements_sorted(const igraph_sparsemat_t *A,
 
 
 
-This function will sort a sparse matrix and return the elements in
-3 vectors. Two vectors will indicate where the elements are located,
-and one will give the elements.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>A</code></em>:</span></p></td>
+<td><p>
+  The input matrix, in triplet or column-compressed format.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>row</code></em>:</span></p></td>
+<td><p>
+  The row index
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>col</code></em>:</span></p></td>
+<td><p>
+  The column index
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The value of the cell with the given row and column indices in the
+        matrix; zero if the indices are out of bounds.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_sparsemat_getelements"></a>4.3.8. <code class="function">igraph_sparsemat_getelements</code> —  Returns all elements of a sparse matrix</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_sparsemat_getelements(const igraph_sparsemat_t *A,
+                                 igraph_vector_int_t *i,
+                                 igraph_vector_int_t *j,
+                                 igraph_vector_t *x);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function will return the elements of a sparse matrix in three vectors.
+Two vectors will indicate where the elements are located, and one will
+specify the elements themselves.
 
 </p>
 <p><b>Arguments: </b>
@@ -13790,8 +13773,100 @@ Time complexity: O(n), the number of stored elements in the sparse matrix.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_min"></a>4.3.8. <code class="function">igraph_sparsemat_min</code> —  Minimum of a sparse matrix.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.9.2"></a><p>
+<a name="igraph_sparsemat_getelements_sorted"></a>4.3.9. <code class="function">igraph_sparsemat_getelements_sorted</code> —  Returns all elements of a sparse matrix, sorted by row and column indices.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_sparsemat_getelements_sorted(const igraph_sparsemat_t *A,
+                                        igraph_vector_int_t *i,
+                                        igraph_vector_int_t *j,
+                                        igraph_vector_t *x);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function will sort a sparse matrix and return the elements in three
+vectors. Two vectors will indicate where the elements are located,
+and one will specify the elements themselves.
+
+</p>
+<p>
+Sorting is done based on the <span class="emphasis"><em>indices</em></span> of the elements, not their
+numeric values. The returned entries will be sorted by column indices;
+entries in the same column are then sorted by row indices.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>A</code></em>:</span></p></td>
+<td><p>
+  A sparse matrix in either triplet or compressed form.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>i</code></em>:</span></p></td>
+<td><p>
+  An initialized integer vector. This will store the rows of the
+         returned elements.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>j</code></em>:</span></p></td>
+<td><p>
+  An initialized integer vector. For a triplet matrix this will
+         store the columns of the returned elements. For a compressed
+         matrix, if the column index is <code class="constant">k</code>, then <code class="literal">j[k]</code>
+         is the index in <em class="parameter"><code>x</code></em> of the start of the <code class="constant">k-th</code> column, and
+         the last element of <code class="constant">j</code> is the total number of elements.
+         The total number of elements in the <code class="constant">k-th</code> column is
+         therefore <code class="literal">j[k+1] - j[k]</code>. For example, if there
+         is one element in the first column, and five in the second,
+         <code class="constant">j</code> will be set to <code class="literal">{0, 1, 6}</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>x</code></em>:</span></p></td>
+<td><p>
+  An initialized vector. The elements will be placed here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_sparsemat_min"></a>4.3.10. <code class="function">igraph_sparsemat_min</code> —  Minimum of a sparse matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_sparsemat_min(igraph_sparsemat_t *A);
@@ -13841,8 +13916,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_max"></a>4.3.9. <code class="function">igraph_sparsemat_max</code> —  Maximum of a sparse matrix.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.10.2"></a><p>
+<a name="igraph_sparsemat_max"></a>4.3.11. <code class="function">igraph_sparsemat_max</code> —  Maximum of a sparse matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_sparsemat_max(igraph_sparsemat_t *A);
@@ -13892,8 +13967,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_minmax"></a>4.3.10. <code class="function">igraph_sparsemat_minmax</code> —  Minimum and maximum of a sparse matrix.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.11.2"></a><p>
+<a name="igraph_sparsemat_minmax"></a>4.3.12. <code class="function">igraph_sparsemat_minmax</code> —  Minimum and maximum of a sparse matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sparsemat_minmax(igraph_sparsemat_t *A,
@@ -13957,8 +14032,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_count_nonzero"></a>4.3.11. <code class="function">igraph_sparsemat_count_nonzero</code> —  Counts nonzero elements of a sparse matrix.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.12.2"></a><p>
+<a name="igraph_sparsemat_count_nonzero"></a>4.3.13. <code class="function">igraph_sparsemat_count_nonzero</code> —  Counts nonzero elements of a sparse matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_sparsemat_count_nonzero(igraph_sparsemat_t *A);
@@ -14007,8 +14082,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_count_nonzerotol"></a>4.3.12. <code class="function">igraph_sparsemat_count_nonzerotol</code> —  Counts nonzero elements of a sparse matrix, ignoring elements close to zero.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.13.2"></a><p>
+<a name="igraph_sparsemat_count_nonzerotol"></a>4.3.14. <code class="function">igraph_sparsemat_count_nonzerotol</code> —  Counts nonzero elements of a sparse matrix, ignoring elements close to zero.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_sparsemat_count_nonzerotol(igraph_sparsemat_t *A,
@@ -14067,8 +14142,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_rowsums"></a>4.3.13. <code class="function">igraph_sparsemat_rowsums</code> —  Row-wise sums.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.14.2"></a><p>
+<a name="igraph_sparsemat_rowsums"></a>4.3.15. <code class="function">igraph_sparsemat_rowsums</code> —  Row-wise sums.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sparsemat_rowsums(const igraph_sparsemat_t *A,
@@ -14127,8 +14202,8 @@ Time complexity: O(nz), the number of non-zero elements.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_colsums"></a>4.3.14. <code class="function">igraph_sparsemat_colsums</code> —  Column-wise sums.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.15.2"></a><p>
+<a name="igraph_sparsemat_colsums"></a>4.3.16. <code class="function">igraph_sparsemat_colsums</code> —  Column-wise sums.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.17.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sparsemat_colsums(const igraph_sparsemat_t *A,
@@ -14189,8 +14264,8 @@ the number of columns.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_sparsemat_nonzero_storage"></a>4.3.15. <code class="function">igraph_sparsemat_nonzero_storage</code> —  Returns number of stored entries of a sparse matrix.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.5.4.16.2"></a><p>
+<a name="igraph_sparsemat_nonzero_storage"></a>4.3.17. <code class="function">igraph_sparsemat_nonzero_storage</code> —  Returns number of stored entries of a sparse matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.4.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_sparsemat_nonzero_storage(const igraph_sparsemat_t *A);
@@ -14261,6 +14336,7 @@ Time complexity: O(1).
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_add_rows">4.4.11. <code class="function">igraph_sparsemat_add_rows</code> —  Adds rows to a sparse matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_add_cols">4.4.12. <code class="function">igraph_sparsemat_add_cols</code> —  Adds columns to a sparse matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_resize">4.4.13. <code class="function">igraph_sparsemat_resize</code> —  Resizes a sparse matrix and clears all the elements.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_sparsemat_sort">4.4.14. <code class="function">igraph_sparsemat_sort</code> —  Sorts all elements of a sparse matrix by row and column indices.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -14671,9 +14747,9 @@ columns plus the number of non-zero elements in the matrix.
 <a class="indexterm" name="id-1.8.5.5.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_sparsemat_transpose(const igraph_sparsemat_t *A,
-                               igraph_sparsemat_t *res,
-                               igraph_bool_t store_values);
+igraph_error_t igraph_sparsemat_transpose(
+    const igraph_sparsemat_t *A, igraph_sparsemat_t *res
+);
 </pre></div>
 <p>
 </p>
@@ -14701,14 +14777,6 @@ igraph_error_t igraph_sparsemat_transpose(const igraph_sparsemat_t *A,
 <td><p>
   Pointer to an uninitialized sparse matrix, the result is
    stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>values</code></em>:</span></p></td>
-<td><p>
-  If this is non-zero, the matrix transpose is
-   calculated the normal way. If it is zero, then only the pattern
-   of the input matrix is stored in the result, the values are not.
 </p></td>
 </tr>
 </tbody>
@@ -15149,6 +15217,72 @@ Time complexity: O(nzmax), the maximum number of non-zero elements.
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_sparsemat_sort"></a>4.4.14. <code class="function">igraph_sparsemat_sort</code> —  Sorts all elements of a sparse matrix by row and column indices.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.5.5.15.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_sparsemat_sort(const igraph_sparsemat_t *A,
+                          igraph_sparsemat_t *sorted);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function will sort the elements of a sparse matrix such that iterating
+over the entries will return them sorted by column indices; elements in the
+same column are then sorted by row indices.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>A</code></em>:</span></p></td>
+<td><p>
+  A sparse matrix in either triplet or compressed form.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sorted</code></em>:</span></p></td>
+<td><p>
+  An uninitialized sparse matrix; the result will be returned
+       here. The result will be in triplet form if the input was in triplet
+       form, otherwise it will be in compressed form. Note that sorting is
+       more efficient when the matrix is already in compressed form.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO
+ 
+</p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -15170,7 +15304,8 @@ Time complexity: O(nzmax), the maximum number of non-zero elements.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sparsemat_iterator_init(
-    igraph_sparsemat_iterator_t *it, igraph_sparsemat_t *sparsemat);
+    igraph_sparsemat_iterator_t *it, const igraph_sparsemat_t *sparsemat
+);
 </pre></div>
 <p>
 </p>
@@ -22459,9 +22594,9 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>     * representation, then reconstruct the graph from the tree and check</em></span>
 <span class="emphasis"><em>     * whether the two are isomorphic (they should be) */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.10. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.12. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from an incidence list.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.5. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.7. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic">igraph_isomorphic</a></strong></span>(&amp;g, &amp;g2, &amp;iso);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 1;

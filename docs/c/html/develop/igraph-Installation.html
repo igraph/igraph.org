@@ -657,6 +657,20 @@ $ cmake .. \
 </pre>
 <p>
     </p>
+<p>
+      igraph also checks whether the endianness of <code class="literal">uint64_t</code>
+      matches the endianness of <code class="literal">double</code> on the platform
+      being compiled. This is needed to ensure that certain functions in igraph's
+      random number generator work properly. However, it is not possible to
+      execute this check when cross-compiling, so in this case igraph simply
+      assumes that the endianness matches (which is the case for the vast
+      majority of platforms anyway). The only case where you might run into
+      problems is when you cross-compile for Apple Silicon (<code class="literal">arm64</code>)
+      from an Intel-based Mac, in which case CMake might not realize that you
+      are cross-compiling and will try to execute the check anyway. You can
+      work around this by setting <code class="literal">IEEE754_DOUBLE_ENDIANNESS_MATCHES</code>
+      to <code class="literal">ON</code> explicitly before invoking CMake.
+    </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
