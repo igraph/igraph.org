@@ -62,7 +62,7 @@ function updateSideBarCollapse() {
     sidebarcontainer.style.display='none';
     sidebarcontainer.offsetHeight; // no need to store this anywhere, the reference is enough
     // Set the sidebar display on load to avoid showing it for few miliseconds when loading..
-    sidebarcontainer.style.display='flex';
+    // sidebarcontainer.style.display='flex';
     
 }
 
