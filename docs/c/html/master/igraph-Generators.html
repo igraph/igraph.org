@@ -3710,7 +3710,7 @@ int igraph_grg_game(igraph_t *graph, igraph_integer_t nodes,
 
 A geometric random graph is created by dropping points (i.e. vertices)
 randomly on the unit square and then connecting all those pairs
-which are less than <code class="constant">radius</code> apart in Euclidean distance.
+which are strictly less than <code class="constant">radius</code> apart in Euclidean distance.
 
 </p>
 <p>
@@ -6316,8 +6316,8 @@ number of vertices plus the number of edges in the graph.
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_asymmetric_preference_game(igraph_t *graph, igraph_integer_t nodes,
-                                      igraph_integer_t out_types,
-                                      igraph_integer_t in_types,
+                                      igraph_integer_t no_out_types,
+                                      igraph_integer_t no_in_types,
                                       const igraph_matrix_t *type_dist_matrix,
                                       const igraph_matrix_t *pref_matrix,
                                       igraph_vector_t *node_type_out_vec,
@@ -6362,13 +6362,13 @@ vertex.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>out_types</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>no_out_types</code></em>:</span></p></td>
 <td><p>
   The number of vertex out-types.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>in_types</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>no_in_types</code></em>:</span></p></td>
 <td><p>
   The number of vertex in-types.
 </p></td>
@@ -8044,6 +8044,12 @@ int igraph_simple_interconnected_islands_game(
 
 
 
+All islands are of the same size. Within an island, each edge is generated
+with the same probability. A fixed number of additional edges are then
+generated for each unordered pair of islands to connect them. Note that
+the islands themselves will <span class="emphasis"><em>not</em></span> contain multiple edges, but there might
+be multiple edges between the same pair of vertices between islands.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -8074,7 +8080,7 @@ int igraph_simple_interconnected_islands_game(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>islands_pin</code></em>:</span></p></td>
 <td><p>
-  The probability to create each possible edge into each island.
+  The probability to create each possible edge within islands.
 </p></td>
 </tr>
 <tr>
@@ -8099,8 +8105,7 @@ int igraph_simple_interconnected_islands_game(
 <td><p>
   Error code:
         <code class="constant">IGRAPH_EINVAL</code>: invalid parameter
-        <code class="constant">IGRAPH_ENOMEM</code>: there is not enough
-        memory for the operation.
+        <code class="constant">IGRAPH_ENOMEM</code>: there is not enough memory for the operation.
   </p></td>
 </tr></tbody>
 </table></div>

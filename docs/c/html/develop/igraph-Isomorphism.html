@@ -153,6 +153,7 @@
 <dt><span class="section"><a href="igraph-Isomorphism.html#lad-algorithm">4. The LAD algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for small graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-utility-functions">6. Utility functions</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-deprecated-functions">7. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -173,11 +174,11 @@ igraph, these functions are the second set. See <a class="link" href="igraph-Iso
 starters.</p>
 <p>Functions for the Bliss algorithm constitute the third set,
 see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.4. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.</p>
-<p>Finally, the isomorphism classes of all graphs with three and
-four vertices are precomputed and stored in igraph, so for these
-small graphs there is a very simple fast way to decide isomorphism.
-See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_34" title="5.1. igraph_isomorphic_34 — Graph isomorphism for 3-4 vertices"><code class="function">igraph_isomorphic_34()</code></a>.
-</p>
+<p>Finally, the isomorphism classes of all directed graphs with three and
+four vertices and all undirected graphs with 3-6 vertices are precomputed
+and stored in igraph, so for these small graphs there is a separate fast
+path in the code that does not use more complex, generic isomorphism
+algorithms.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_isomorphic"></a>1.1. <code class="function">igraph_isomorphic</code> —  Decides whether two graphs are isomorphic</h3></div></div></div>
@@ -227,8 +228,10 @@ If the two graphs does not have the same number of vertices
 
 </p></li>
 <li class="listitem"><p>
-Otherwise, if the graphs have three or four vertices then an O(1)
-   algorithm is used with precomputed data.
+Otherwise, if the <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a> function supports both
+   graphs (which is true for directed graphs with 3 and 4 vertices, and
+   undirected graphs with 3-6 vertices), an O(1) algorithm is used with
+   precomputed data.
 
 </p></li>
 <li class="listitem"><p>
@@ -298,8 +301,8 @@ something more sophisticated, e.g. you need the isomorphic mapping.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -601,7 +604,7 @@ igraph_error_t igraph_canonical_permutation(const igraph_t *graph, const igraph_
 This function computes the vertex permutation which transforms
 the graph into a canonical form, using the Bliss algorithm.
 Two graphs have the same canonical form if and only if they
-are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="4.2. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
+are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="4.3. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
 two canonical forms.
 
 </p>
@@ -1217,7 +1220,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 12345);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>1);
-    <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1) - 1);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
     <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
 
@@ -1338,7 +1341,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1) - 1);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
     <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
@@ -2847,7 +2850,7 @@ void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="str
         igraph_vector_int_list_t maps;
         igraph_integer_t nAutomorphisms;
 
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class.">igraph_isoclass_create</a></strong></span>(&amp;pattern, k, i, directed);
+        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class.">igraph_isoclass_create</a></strong></span>(&amp;pattern, k, i, directed);
         <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
 
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, graph, NULL, NULL, NULL, &amp;maps, <span class="emphasis"><em>/* induced = */</em></span> 1, 0);
@@ -2904,10 +2907,10 @@ void <span class="strong"><strong>test_motifs</strong></span>() {
 
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 30, 400, <span class="emphasis"><em>/* directed = */</em></span> 1, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_DIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_DIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_DIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_DIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -2921,10 +2924,10 @@ void <span class="strong"><strong>test_motifs_undirected</strong></span>() {
 
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 18, 100, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_UNDIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_UNDIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_UNDIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_UNDIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -2932,10 +2935,10 @@ void <span class="strong"><strong>test_motifs_undirected</strong></span>() {
     <span class="emphasis"><em>/* Use a smaller graph so that the test would not take too long. */</em></span>
     <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 9, 36, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(5, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(5, IGRAPH_UNDIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, count, IGRAPH_UNDIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(6, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(6, IGRAPH_UNDIRECTED, &amp;count);
     <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, count, IGRAPH_UNDIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
@@ -3101,85 +3104,15 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for small graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_subgraph">5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_create">5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_graph_count">5.5. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.1. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_subgraph">5.2. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_create">5.3. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_graph_count">5.4. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic_34"></a>5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</h3></div></div></div>
+<a name="igraph_isoclass"></a>5.1. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.6.2.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_isomorphic_34(const igraph_t *graph1, const igraph_t *graph2,
-                         igraph_bool_t *iso);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-This function uses precomputed indices to decide isomorphism
-problems for graphs with only 3 or 4 vertices. Multi-edges
-and self-loops are ignored by this function.
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
-<td><p>
-  The first input graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
-<td><p>
-  The second input graph. Must have the same
-  directedness as <em class="parameter"><code>graph1</code></em>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
-<td><p>
-  Pointer to a boolean, the result is stored here.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(1).
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass"></a>5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_isoclass(const igraph_t *graph, igraph_integer_t *isoclass);
@@ -3210,7 +3143,7 @@ isomorphism classes for directed graphs with three vertices is 16
 (between 0 and 15), for undirected graph it is only 4. For graphs
 with four vertices it is 218 (directed) and 11 (undirected).
 For 5 and 6 vertex undirected graphs, it is 34 and 156, respectively.
-These values can also be retrieved using <a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.5. igraph_graph_count — The number of unlabelled graphs on the given number of vertices."><code class="function">igraph_graph_count()</code></a>.
+These values can also be retrieved using <a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices."><code class="function">igraph_graph_count()</code></a>.
 For more information, see <a class="ulink" href="https://oeis.org/A000273" target="_top">https://oeis.org/A000273</a> and <a class="ulink" href="https://oeis.org/A000088" target="_top">https://oeis.org/A000088</a>.
 
 </p>
@@ -3272,8 +3205,8 @@ Multi-edges and self-loops are ignored by this function.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3290,8 +3223,8 @@ Time complexity: O(|E|), the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass_subgraph"></a>5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.4.2"></a><p>
+<a name="igraph_isoclass_subgraph"></a>5.2. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_isoclass_subgraph(const igraph_t *graph, const igraph_vector_int_t *vids,
@@ -3372,8 +3305,8 @@ Multi-edges and self-loops are ignored by this function.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3386,8 +3319,8 @@ and n is the number of vertices in <code class="constant">vids</code>.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass_create"></a>5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.5.2"></a><p>
+<a name="igraph_isoclass_create"></a>5.3. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_isoclass_create(igraph_t *graph, igraph_integer_t size,
@@ -3479,8 +3412,8 @@ undirected graphs are supported.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
 <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>.
   </p></td>
 </tr></tbody>
@@ -3494,8 +3427,8 @@ of edges in the graph to create.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_graph_count"></a>5.5. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.6.2"></a><p>
+<a name="igraph_graph_count"></a>5.4. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_graph_count(igraph_integer_t n, igraph_bool_t directed, igraph_integer_t *count);
@@ -3572,7 +3505,7 @@ error is raised.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them."><code class="function">igraph_motifs_randesu_callback()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them."><code class="function">igraph_motifs_randesu_callback()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3597,7 +3530,7 @@ Time complexity: O(1).
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_permute_vertices(const igraph_t *graph, igraph_t *res,
-                            const igraph_vector_int_t *permutation);
+                                       const igraph_vector_int_t *permutation);
 </pre></div>
 <p>
 </p>
@@ -3636,9 +3569,7 @@ the canonical form of a graph.
 <td><p><span class="term"><em class="parameter"><code>permutation</code></em>:</span></p></td>
 <td><p>
   The permutation to apply. Vertex 0 is mapped to
-   the first element of the vector, vertex 1 to the second, etc. Note that
-   it is not checked that the vector contains every
-   element only once.
+   the first element of the vector, vertex 1 to the second, etc.
 </p></td>
 </tr>
 </tbody>
@@ -3763,6 +3694,93 @@ vertex and edge colors.
 </table></div>
 <p>
 
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="isomorphism-deprecated-functions"></a>7. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">7.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices (deprecated alias).</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_isomorphic_34"></a>7.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.18.8.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_isomorphic_34(
+    const igraph_t *graph1, const igraph_t *graph2, igraph_bool_t *iso
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>
+instead.</p>
+</div>
+<p>
+If you really care about performance and you <span class="emphasis"><em>know</em></span> for sure that your
+input graphs are simple and have either 3 or 4 vertices for directed graphs,
+or 3-6 vertices for undirected graphs, you can compare their isomorphism
+classes obtained from <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a> directly instead of calling
+<a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>; this saves the cost of checking whether the graphs
+do not contain multiple edges or self-loops.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
+<td><p>
+  The first input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
+<td><p>
+  The second input graph. Must have the same
+  directedness as <em class="parameter"><code>graph1</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean, the result is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
  
 </p>
 </div>

@@ -467,12 +467,17 @@ igraph_error_t igraph_empty_attrs(igraph_t *graph, igraph_integer_t n, igraph_bo
 
 
 
-</p>
-<p>
 Use this instead of <a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges."><code class="function">igraph_empty()</code></a> if you wish to add some graph
 attributes right after initialization. This function is currently
 not very interesting for the ordinary user. Just supply 0 here or
 use <a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges."><code class="function">igraph_empty()</code></a>.
+
+</p>
+<p>
+This function does not set any vertex attributes. To create a graph which has
+vertex attributes, call this function specifying 0 vertices, then use
+<a class="link" href="igraph-Basic.html#igraph_add_vertices" title="3.3.3. igraph_add_vertices — Adds vertices to a graph."><code class="function">igraph_add_vertices()</code></a> to add vertices and their attributes.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -533,7 +538,8 @@ use <a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_
 <tr>
 <td><p><span class="term"><em class="parameter"><code>attr</code></em>:</span></p></td>
 <td><p>
-  The attributes.
+  The graph attributes. Supply <code class="constant">NULL</code> if not graph attributes
+       are to be set.
 </p></td>
 </tr>
 </tbody>
@@ -551,6 +557,24 @@ use <a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_
 <td><p>
   Error code:
         <code class="constant">IGRAPH_EINVAL</code>: invalid number of vertices.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges."><code class="function">igraph_empty()</code></a> to create an empty graph without attributes;
+<a class="link" href="igraph-Basic.html#igraph_add_vertices" title="3.3.3. igraph_add_vertices — Adds vertices to a graph."><code class="function">igraph_add_vertices()</code></a> and <a class="link" href="igraph-Basic.html#igraph_add_edges" title="3.3.2. igraph_add_edges — Adds edges to a graph object."><code class="function">igraph_add_edges()</code></a> to add vertices
+and edges, possibly with associated attributes.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3357,7 +3381,8 @@ int <span class="strong"><strong>main</strong></span>() {
 <a name="misc-helper-functions"></a>4. Miscellaneous helper functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Basic.html#igraph_expand_path_to_pairs">4.1. <code class="function">igraph_expand_path_to_pairs</code> —  Helper function to convert a sequence of vertex IDs describing a path into a "pairs" vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Basic.html#igraph_is_same_graph">4.2. <code class="function">igraph_is_same_graph</code> —  Are two graphs identical as labelled graphs?</a></span></dt>
+<dt><span class="section"><a href="igraph-Basic.html#igraph_invalidate_cache">4.2. <code class="function">igraph_invalidate_cache</code> —  Invalidates the internal cache of an igraph graph</a></span></dt>
+<dt><span class="section"><a href="igraph-Basic.html#igraph_is_same_graph">4.3. <code class="function">igraph_is_same_graph</code> —  Are two graphs identical as labelled graphs?</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -3420,8 +3445,59 @@ converting the path into a vector of vertex IDs that can be passed to
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_same_graph"></a>4.2. <code class="function">igraph_is_same_graph</code> —  Are two graphs identical as labelled graphs?</h3></div></div></div>
+<a name="igraph_invalidate_cache"></a>4.2. <code class="function">igraph_invalidate_cache</code> —  Invalidates the internal cache of an igraph graph</h3></div></div></div>
 <a class="indexterm" name="id-1.5.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_invalidate_cache(const igraph_t* graph);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+igraph graphs cache some basic properties about themselves in an internal
+data structure. This function invalidates the contents of the cache and
+forces a recalculation of the cached properties the next time they are
+needed.
+
+</p>
+<p>
+You should not need to call this function during normal usage; however, we
+might ask you to call this function explicitly if we suspect that you are
+running into a bug in igraph's cache handling. A tell-tale sign of an invalid
+cache entry is that the result of a cached igraph function (such as
+<a class="link" href="igraph-Structural.html#igraph_is_dag" title="22.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG)."><code class="function">igraph_is_dag()</code></a> or <a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph."><code class="function">igraph_is_simple()</code></a>) is different before and
+after a cache invalidation.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph whose cache is to be invalidated.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_is_same_graph"></a>4.3. <code class="function">igraph_is_same_graph</code> —  Are two graphs identical as labelled graphs?</h3></div></div></div>
+<a class="indexterm" name="id-1.5.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_same_graph(const igraph_t *graph1, const igraph_t *graph2, igraph_bool_t *res);

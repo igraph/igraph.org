@@ -271,7 +271,7 @@ int igraph_vs_all(igraph_vs_t *vs);
 <p>
 
 This selector includes all vertices of a given graph in
-increasing vertex id order.
+increasing vertex ID order.
 
 </p>
 <p>
@@ -714,7 +714,7 @@ This vertex selector selects a single vertex.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vid</code></em>:</span></p></td>
 <td><p>
-  The vertex id to be selected.
+  The vertex ID to be selected.
 </p></td>
 </tr>
 </tbody>
@@ -770,13 +770,15 @@ int igraph_vs_vector(igraph_vs_t *vs,
 
 
 
-This function makes it possible to handle a <span class="type">vector_t</span>
+This function makes it possible to handle an <span class="type">igraph_vector_t</span>
 temporarily as a vertex selector. The vertex selector should be
-thought of like a <span class="emphasis"><em>view</em></span> to the vector. If you make changes to
+thought of as a <span class="emphasis"><em>view</em></span> into the vector. If you make changes to
 the vector that also affects the vertex selector. Destroying the
-vertex selector does not destroy the vector. (Of course.) Do not
-destroy the vector before destroying the vertex selector, or you
-might get strange behavior.
+vertex selector does not destroy the vector. Do not destroy the
+vector before destroying the vertex selector, or you might get
+strange behavior. Since selectors are not tied to any specific
+graph, this function does not check whether the vertex IDs in
+the vector are valid.
 
 </p>
 <p><b>Arguments: </b>
@@ -948,16 +950,16 @@ int igraph_vs_vector_small(igraph_vs_t *vs, ...);
 
 
 
-This function can be used to create a vertex selector with a couple
-of vertices. Do not forget to include a <code class="literal">-1</code> after the
-last vertex id. The behavior of the function is undefined if you
+This function can be used to create a vertex selector with a few
+vertices. Do not forget to include a <code class="literal">-1</code> after the
+last vertex ID. The behavior of the function is undefined if you
 don't use a <code class="literal">-1</code> properly.
 
 </p>
 <p>
-Note that the vertex ids supplied will be parsed as
-<code class="literal">int</code>'s so you cannot supply arbitrarily large (too
-large for int) vertex ids here.
+Note that the vertex IDs supplied will be parsed as value of type
+<span class="type">int</span> so you cannot supply arbitrarily large (too
+large for <span class="type">int</span>) vertex IDs here.
 
 </p>
 <p><b>Arguments: </b>
@@ -979,7 +981,7 @@ large for int) vertex ids here.
 <td><p>
   Additional parameters, these will be the vertex ids to
        be included in the vertex selector. Supply a <code class="literal">-1</code>
-       after the last vertex id.
+       after the last vertex ID.
 </p></td>
 </tr>
 </tbody>
@@ -1035,12 +1037,14 @@ int igraph_vs_vector_copy(igraph_vs_t *vs,
 
 
 
-This function makes it possible to handle a <span class="type">vector_t</span>
+This function makes it possible to handle an <span class="type">igraph_vector_t</span>
 permanently as a vertex selector. The vertex selector creates a
 copy of the original vector, so the vector can safely be destroyed
 after creating the vertex selector. Changing the original vector
 will not affect the vertex selector. The vertex selector is
-responsible for deleting the copy made by itself.
+responsible for deleting the copy made by itself. Since selectors
+are not tied to any specific graph, this function does not check whether
+the vertex IDs in the vector are valid.
 
 </p>
 <p><b>Arguments: </b>
@@ -1116,8 +1120,8 @@ int igraph_vs_seq(igraph_vs_t *vs,
 
 
 
-Creates a vertex selector containing all vertices with vertex id
-equal to or bigger than <code class="constant">from</code> and equal to or smaller than <code class="constant">to</code>.
+Creates a vertex selector containing all vertices with vertex ID
+equal to or bigger than <em class="parameter"><code>from</code></em> and equal to or smaller than <em class="parameter"><code>to</code></em>.
 
 </p>
 <p><b>Arguments: </b>
@@ -1137,14 +1141,14 @@ equal to or bigger than <code class="constant">from</code> and equal to or small
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
 <td><p>
-  The first vertex id to be included in the vertex
+  The first vertex ID to be included in the vertex
        selector.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
-  The last vertex id to be included in the vertex
+  The last vertex ID to be included in the vertex
        selector.
 </p></td>
 </tr>
@@ -1272,6 +1276,7 @@ int igraph_vs_copy(igraph_vs_t* dest, const igraph_vs_t* src);
 <p>
 
 
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1358,7 +1363,7 @@ This function checks whether the vertex selector object was created
 by <a class="link" href="igraph-Iterators.html#igraph_vs_all" title="2.1. igraph_vs_all — Vertex set, all vertices of a graph."><code class="function">igraph_vs_all()</code></a> or <a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version)."><code class="function">igraph_vss_all()</code></a>. Note that the
 vertex selector might contain all vertices in a given graph but if
 it wasn't created by the two constructors mentioned here the return
-value will be FALSE.
+value will be <code class="constant">FALSE</code>.
 
 </p>
 <p><b>Arguments: </b>
@@ -1386,8 +1391,8 @@ value will be FALSE.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  TRUE (1) if the vertex selector contains all vertices and
-        FALSE (0) otherwise.
+  <code class="constant">TRUE</code> (1) if the vertex selector contains all vertices and
+        <code class="constant">FALSE</code> (0) otherwise.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1736,14 +1741,14 @@ The immediate version of <a class="link" href="igraph-Iterators.html#igraph_vs_s
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
 <td><p>
-  The first vertex id to be included in the vertex
+  The first vertex ID to be included in the vertex
        selector.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
-  The last vertex id to be included in the vertex
+  The last vertex ID to be included in the vertex
        selector.
 </p></td>
 </tr>
@@ -2260,11 +2265,11 @@ int igraph_es_all(igraph_es_t *es,
 <td><p>
   Constant giving the order in which the edges will be
        included in the selector. Possible values:
-       <code class="constant">IGRAPH_EDGEORDER_ID</code>, edge id order.
-       <code class="constant">IGRAPH_EDGEORDER_FROM</code>, vertex id order, the id of the
+       <code class="constant">IGRAPH_EDGEORDER_ID</code>, edge ID order.
+       <code class="constant">IGRAPH_EDGEORDER_FROM</code>, vertex ID order, the ID of the
           <span class="emphasis"><em>source</em></span> vertex counts for directed graphs. The order
           of the incident edges of a given vertex is arbitrary.
-       <code class="constant">IGRAPH_EDGEORDER_TO</code>, vertex id order, the id of the <span class="emphasis"><em>target</em></span> vertex counts for directed graphs. The order
+       <code class="constant">IGRAPH_EDGEORDER_TO</code>, vertex ID order, the ID of the <span class="emphasis"><em>target</em></span> vertex counts for directed graphs. The order
           of the incident edges of a given vertex is arbitrary.
        For undirected graph the latter two is the same.
 </p></td>
@@ -2340,7 +2345,7 @@ int igraph_es_incident(igraph_es_t *es,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vid</code></em>:</span></p></td>
 <td><p>
-  Vertex id, of which the incident edges will be
+  Vertex ID, of which the incident edges will be
        selected.
 </p></td>
 </tr>
@@ -2490,7 +2495,7 @@ int igraph_es_1(igraph_es_t *es, igraph_integer_t eid);
 <tr>
 <td><p><span class="term"><em class="parameter"><code>eid</code></em>:</span></p></td>
 <td><p>
-  Edge id of the edge to select.
+  Edge ID of the edge to select.
 </p></td>
 </tr>
 </tbody>
@@ -2546,13 +2551,11 @@ int igraph_es_vector(igraph_es_t *es,
 
 
 
-</p>
-<p>
-Creates an edge selector which serves as a view to a vector
-containing edge ids. Do not destroy the vector before destroying
-the view.
-
-Many views can be created to the same vector.
+Creates an edge selector which serves as a view into a vector
+containing edge IDs. Do not destroy the vector before destroying
+the edge selector. Since selectors are not tied to any specific
+graph, this function does not check whether the edge IDs in
+the vector are valid.
 
 </p>
 <p><b>Arguments: </b>
@@ -2572,7 +2575,7 @@ Many views can be created to the same vector.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
 <td><p>
-  Vector containing edge ids.
+  Vector containing edge IDs.
 </p></td>
 </tr>
 </tbody>
@@ -2628,8 +2631,6 @@ int igraph_es_fromto(igraph_es_t *es,
 
 
 
-</p>
-<p>
 This function is not implemented yet.
 
 </p>
@@ -2714,9 +2715,8 @@ int igraph_es_seq(igraph_es_t *es,
 
 
 
-All edge ids between <code class="literal">from</code> and <code class="literal">to</code> will be
-included in the edge selection. This includes <code class="literal">from</code> and
-excludes <code class="literal">to</code>.
+All edge ids between <em class="parameter"><code>from</code></em> and <em class="parameter"><code>to</code></em> (inclusive) will be
+included in the edge selection.
 
 </p>
 <p><b>Arguments: </b>
@@ -2736,13 +2736,13 @@ excludes <code class="literal">to</code>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
 <td><p>
-  The first edge id to be included.
+  The first edge ID to be included.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
-  The last edge id to be included.
+  The last edge ID to be included.
 </p></td>
 </tr>
 </tbody>
@@ -3080,7 +3080,7 @@ to create an iterator using this selector will fail.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
 <td><p>
-  Pointer to a vector of vertex id's along the path.
+  Pointer to a vector of vertex IDs along the path.
 </p></td>
 </tr>
 <tr>
@@ -3142,13 +3142,14 @@ int igraph_es_vector_copy(igraph_es_t *es, const igraph_vector_t *v);
 
 
 
-
-This function makes it possible to handle a <span class="type">vector_t</span>
+This function makes it possible to handle an <span class="type">igraph_vector_t</span>
 permanently as an edge selector. The edge selector creates a
 copy of the original vector, so the vector can safely be destroyed
 after creating the edge selector. Changing the original vector
 will not affect the edge selector. The edge selector is
-responsible for deleting the copy made by itself.
+responsible for deleting the copy made by itself. Since selectors
+are not tied to any specific graph, this function does not check
+whether the edge IDs in the vector are valid.
 
 </p>
 <p><b>Arguments: </b>
@@ -3366,7 +3367,7 @@ igraph_es_t igraph_ess_1(igraph_integer_t eid);
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>eid</code></em>:</span></p></td>
 <td><p>
-  The id of the edge.
+  The ID of the edge.
 </p></td>
 </tr></tbody>
 </table></div>
@@ -3420,8 +3421,6 @@ igraph_es_t igraph_ess_vector(const igraph_vector_t *v);
 
 
 
-</p>
-<p>
 This is the immediate version of the vector of edge ids edge
 selector.
 
@@ -3502,13 +3501,13 @@ igraph_es_t igraph_ess_seq(igraph_integer_t from, igraph_integer_t to);
 <tr>
 <td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
 <td><p>
-  The first edge id to include.
+  The first edge ID to include.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
-  The last edge id to include.
+  The last edge ID to include.
 </p></td>
 </tr>
 </tbody>
@@ -3686,8 +3685,6 @@ void igraph_es_destroy(igraph_es_t *es);
 
 
 
-</p>
-<p>
 Call this function on an edge selector when it is not needed any
 more. Do <span class="emphasis"><em>not</em></span> call this function on edge selectors created by
 immediate constructors, those don't need to be destroyed.

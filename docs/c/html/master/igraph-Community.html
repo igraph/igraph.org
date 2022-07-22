@@ -161,17 +161,17 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="common-functions-related-to-community-detection"></a>1. Common functions related to community structure</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Community.html#igraph_modularity">1.1. <code class="function">igraph_modularity</code> —  Calculate the modularity of a graph with respect to some clusters or vertex types.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_modularity_matrix">1.2. <code class="function">igraph_modularity_matrix</code> —  Calculate the modularity matrix</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_modularity">1.1. <code class="function">igraph_modularity</code> —  Calculates the modularity of a graph with respect to some clusters or vertex types.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_modularity_matrix">1.2. <code class="function">igraph_modularity_matrix</code> —  Calculates the modularity matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_optimal_modularity">1.3. <code class="function">igraph_community_optimal_modularity</code> — Calculate the community structure with the highest modularity value</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_to_membership">1.4. <code class="function">igraph_community_to_membership</code> —  Create membership vector from community structure dendrogram</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_reindex_membership">1.5. <code class="function">igraph_reindex_membership</code> —  Makes the IDs in a membership vector continuous</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_compare_communities">1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_compare_communities">1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_split_join_distance">1.7. <code class="function">igraph_split_join_distance</code> —  Calculates the split-join distance of two community structures</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_modularity"></a>1.1. <code class="function">igraph_modularity</code> —  Calculate the modularity of a graph with respect to some clusters or vertex types.</h3></div></div></div>
+<a name="igraph_modularity"></a>1.1. <code class="function">igraph_modularity</code> —  Calculates the modularity of a graph with respect to some clusters or vertex types.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -195,32 +195,33 @@ other compared to a random null model. It is defined as
 
 </p>
 <p>
-<code class="literal">Q = 1/(2m) sum_ij (A_ij - gamma * k_i * k_j / (2m)) * d(c_i,c_j)</code>,
+<code class="literal">Q = 1/(2m) sum_ij (A_ij - γ k_i k_j / (2m)) δ(c_i,c_j)</code>,
 
 </p>
 <p>
 where <code class="constant">m</code> is the number of edges, <code class="literal">A_ij</code> is the adjacency matrix,
 <code class="constant">k_i</code> is the degree of vertex <code class="constant">i</code>, <code class="constant">c_i</code> is the cluster that vertex <code class="constant">i</code> belongs to
-(or its vertex type), <code class="literal">d(i,j)=1</code> if <code class="literal">i=j</code> and 0 otherwise,
-and the sum goes over all <code class="literal">i, j</code> pairs of vertices.
+(or its vertex type), <code class="literal">δ(i,j)=1</code> if <code class="literal">i=j</code> and 0 otherwise,
+and the sum goes over all <code class="constant">i</code>, <code class="constant">j</code> pairs of vertices. Note that in this formula,
+the diagonal of the adjacency matrix contains twice the number of self-loops.
 
 </p>
 <p>
-The resolution parameter <code class="constant">gamma</code> allows weighting the random null model, which
+The resolution parameter <code class="constant">γ</code> allows weighting the random null model, which
 might be useful when finding partitions with a high modularity. Maximizing modularity
 with higher values of the resolution parameter typically results in more, smaller clusters
 when finding partitions with a high modularity. Lower values typically results in
 fewer, larger clusters. The original definition of modularity is retrieved
-when setting <code class="literal">gamma=1</code>.
+when setting <code class="literal">γ = 1</code>.
 
 </p>
 <p>
 Modularity can also be calculated on directed graphs. This only requires a relatively
-modest change
+modest change,
 
 </p>
 <p>
-<code class="literal">Q = 1/(m) sum_ij (A_ij - gamma * k^out_i * k^in_j / m) * d(c_i,c_j)</code>,
+<code class="literal">Q = 1/m sum_ij (A_ij - γ k^out_i k^in_j / m) δ(c_i,c_j)</code>,
 
 </p>
 <p>
@@ -255,7 +256,7 @@ J. (2008). Community Structure in Directed Networks. Physical Review Letters 100
 
 </p>
 <p>
-For the introduction of the resolution parameter, see Reichardt, J., and
+For the introduction of the resolution parameter <code class="constant">γ</code>, see Reichardt, J., and
 Bornholdt, S. (2006). Statistical mechanics of community detection. Physical
 Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.016110" target="_top">https://doi.org/10.1103/PhysRevE.74.016110</a>
 
@@ -292,7 +293,7 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>resolution</code></em>:</span></p></td>
 <td><p>
-  Resolution parameter. Must be greater than or equal to 0.
+  The resolutin parameter <code class="constant">γ</code>. Must not be negative.
                   Set it to 1 to use the classical definition of modularity.
 </p></td>
 </tr>
@@ -339,7 +340,7 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_modularity_matrix" title="1.2. igraph_modularity_matrix — Calculate the modularity matrix"><code class="function">igraph_modularity_matrix()</code></a>
+  <a class="link" href="igraph-Community.html#igraph_modularity_matrix" title="1.2. igraph_modularity_matrix — Calculates the modularity matrix."><code class="function">igraph_modularity_matrix()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -352,7 +353,7 @@ of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_modularity_matrix"></a>1.2. <code class="function">igraph_modularity_matrix</code> —  Calculate the modularity matrix</h3></div></div></div>
+<a name="igraph_modularity_matrix"></a>1.2. <code class="function">igraph_modularity_matrix</code> —  Calculates the modularity matrix.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -368,15 +369,15 @@ int igraph_modularity_matrix(const igraph_t *graph,
 
 
 
-This function returns the modularity matrix defined as
+This function returns the modularity matrix, which is defined as
 
 </p>
 <p>
-<code class="literal">B_ij = A_ij - gamma * k_i * k_j / (2m)</code>
+<code class="literal">B_ij = A_ij - γ k_i k_j / (2m)</code>
 
 </p>
 <p>
-for undirected graphs, where <code class="constant">A_ij</code> is the adjacency matrix, <code class="constant">gamma</code> is the
+for undirected graphs, where <code class="constant">A_ij</code> is the adjacency matrix, <code class="constant">γ</code> is the
 resolution parameter, <code class="constant">k_i</code> is the degree of vertex <code class="constant">i</code>, and <code class="constant">m</code> is the
 number of edges in the graph. When there are no edges, or the weights add up
 to zero, the result is undefined.
@@ -387,14 +388,18 @@ For directed graphs the modularity matrix is changed to
 
 </p>
 <p>
-<code class="literal">B_ij = A_ij - gamma * k^out_i * k^in_j / m</code>
+<code class="literal">B_ij = A_ij - γ k^out_i k^in_j / m</code>
+
+</p>
+<p>
 where <code class="literal">k^out_i</code> is the out-degree of node <code class="constant">i</code> and <code class="literal">k^in_j</code> is the
 in-degree of node <code class="constant">j</code>.
 
 </p>
 <p>
 Note that self-loops in undirected graphs are multiplied by 2 in this
-implementation. If weights are specified, the weighted counterparts are used.
+implementation. If weights are specified, the weighted counterparts of the adjacency
+matrix and degrees are used.
 
 </p>
 <p><b>Arguments: </b>
@@ -421,7 +426,7 @@ implementation. If weights are specified, the weighted counterparts are used.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>resolution</code></em>:</span></p></td>
 <td><p>
-  Resolution parameter. Must be greater than or equal to 0.
+  The resolution parameter <code class="constant">γ</code>. Must not be negative.
                   Default is 1. Lower values favor fewer, larger communities;
                   higher values favor more, smaller communities.
 </p></td>
@@ -437,8 +442,7 @@ implementation. If weights are specified, the weighted counterparts are used.
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
   For directed graphs: if the edges should be treated as
-                  undirected.
-                  For undirected graphs this is ignored.</p></td>
+                  undirected. For undirected graphs this is ignored.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -455,7 +459,7 @@ implementation. If weights are specified, the weighted counterparts are used.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculate the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a>
+  <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -566,7 +570,7 @@ with a couple of hundred vertices might be possible.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculate the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a>
+  <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a>
 for an algorithm that finds a local optimum in a greedy way.
   </p></td>
 </tr></tbody>
@@ -880,7 +884,7 @@ Time complexity: should be O(n) for n elements.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_compare_communities"></a>1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics</h3></div></div></div>
+<a name="igraph_compare_communities"></a>1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.2.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -903,36 +907,89 @@ or the adjusted Rand index of Hubert and Arabie (1985).
 
 </p>
 <p>
+Some of these measures are defined based on the entropy of a discrete
+random variable associated with a given clustering <code class="constant">C</code> of vertices.
+Let <code class="constant">p_i</code> be the probability that a randomly picked vertex would be part
+of cluster <code class="constant">i</code>. Then the entropy of the clustering is
+
+</p>
+<p>
+<code class="literal">H(C) = - \sum_i p_i log p_i</code>
+
+</p>
+<p>
+Similarly, we can define the joint entropy of two clusterings <code class="constant">C_1</code> and <code class="constant">C_2</code>
+based on the probability <code class="constant">p_ij</code> that a random vertex is part of cluster <code class="constant">i</code>
+in the first clustering and cluster <code class="constant">j</code> in the second one:
+
+</p>
+<p>
+<code class="literal">H(C_1, C_2) = - \sum_ii p_ij log p_ij</code>
+
+</p>
+<p>
+The mutual information of <code class="constant">C_1</code> and <code class="constant">C_2</code> is then
+<code class="literal">MI(C_1, C_2) = H(C_1) + H(C_2) - H(C_1, C_2) &gt;= 0 </code>.
+A large mutual information indicates a high overlap between the two clusterings.
+The normalized mutual information, as computed by igraph, is
+
+</p>
+<p>
+<code class="literal">NMI(C_1, C_2) = 2 MI(C_1, C_2) / (H(C_1) + H(C_2))</code>.
+
+</p>
+<p>
+It takes its value from the interval (0, 1], with 1 achieved when the two clusterings
+coincide.
+
+</p>
+<p>
+The variation of information is defined as
+<code class="literal">VI(C_1, C_2) = [H(C_1) - MI(C_1, C_2)] + [H(C_2) - MI(C_1, C_2)]</code>.
+Lower values of the variation of information indicate a smaller difference between
+the two clusterings, with <code class="literal">VI = 0</code> achieved precisely when they coincide.
+
+</p>
+<p>
+For an explanation of the split-join distance, see <a class="link" href="igraph-Community.html#igraph_split_join_distance" title="1.7. igraph_split_join_distance — Calculates the split-join distance of two community structures"><code class="function">igraph_split_join_distance()</code></a>.
+
+</p>
+<p>
 References:
 
 </p>
 <p>
-Meila M: Comparing clusterings by the variation of information.
+Meilă M: Comparing clusterings by the variation of information.
 In: Schölkopf B, Warmuth MK (eds.). Learning Theory and Kernel Machines:
 16th Annual Conference on Computational Learning Theory and 7th Kernel
 Workshop, COLT/Kernel 2003, Washington, DC, USA. Lecture Notes in Computer
 Science, vol. 2777, Springer, 2003. ISBN: 978-3-540-40720-1.
+<a class="ulink" href="https://doi.org/10.1007/978-3-540-45167-9_14" target="_top">https://doi.org/10.1007/978-3-540-45167-9_14</a>
 
 </p>
 <p>
 Danon L, Diaz-Guilera A, Duch J, Arenas A: Comparing community structure
 identification. J Stat Mech P09008, 2005.
+<a class="ulink" href="https://doi.org/10.1088/1742-5468/2005/09/P09008" target="_top">https://doi.org/10.1088/1742-5468/2005/09/P09008</a>
 
 </p>
 <p>
 van Dongen S: Performance criteria for graph clustering and Markov cluster
 experiments. Technical Report INS-R0012, National Research Institute for
 Mathematics and Computer Science in the Netherlands, Amsterdam, May 2000.
+<a class="ulink" href="https://ir.cwi.nl/pub/4461" target="_top">https://ir.cwi.nl/pub/4461</a>
 
 </p>
 <p>
 Rand WM: Objective criteria for the evaluation of clustering methods.
 J Am Stat Assoc 66(336):846-850, 1971.
+<a class="ulink" href="https://doi.org/10.2307/2284239" target="_top">https://doi.org/10.2307/2284239</a>
 
 </p>
 <p>
 Hubert L and Arabie P: Comparing partitions. Journal of Classification
 2:193-218, 1985.
+<a class="ulink" href="https://doi.org/10.1007/BF01908075" target="_top">https://doi.org/10.1007/BF01908075</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -990,6 +1047,22 @@ Hubert L and Arabie P: Comparing partitions. Journal of Classification
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_split_join_distance" title="1.7. igraph_split_join_distance — Calculates the split-join distance of two community structures"><code class="function">igraph_split_join_distance()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1105,9 +1178,23 @@ Mathematics and Computer Science in the Netherlands, Amsterdam, May 2000.
 </table></div>
 <p>
 
-\see <a class="link" href="igraph-Community.html#igraph_compare_communities" title="1.6. igraph_compare_communities — Compares community structures using various metrics"><code class="function">igraph_compare_communities()</code></a> with the <code class="constant">IGRAPH_COMMCMP_SPLIT_JOIN</code>
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_compare_communities" title="1.6. igraph_compare_communities — Compares community structures using various metrics."><code class="function">igraph_compare_communities()</code></a> with the <code class="constant">IGRAPH_COMMCMP_SPLIT_JOIN</code>
 method if you are not interested in the individual distances but only the sum
 of them.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 Time complexity: O(n log(n)).
  
@@ -3262,7 +3349,7 @@ resolutions. Higher values of the resolution parameter typically result in
 more, smaller communities. Lower values typically result in fewer, larger
 communities. The original definition of modularity is retrieved when setting
 <code class="literal">gamma=1</code>. Note that the returned modularity value is calculated using
-the indicated resolution parameter. See <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculate the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> for more details.
+the indicated resolution parameter. See <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> for more details.
 
 This function was contributed by Tom Gregorovic.
 

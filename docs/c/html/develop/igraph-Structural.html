@@ -847,8 +847,7 @@ weights, you are better off with <a class="link" href="igraph-Structural.html#ig
 <tr>
 <td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
-  The target vertices. It is not allowed to include a
-   vertex twice or more.
+  The target vertices.
 </p></td>
 </tr>
 <tr>
@@ -1321,8 +1320,7 @@ function gives only one of them.
 <td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
 <td><p>
 
-          <em class="parameter"><code>from</code></em> is invalid vertex ID, or the length of <em class="parameter"><code>to</code></em> is
-          not the same as the length of <em class="parameter"><code>res</code></em>.
+          <em class="parameter"><code>from</code></em> is invalid vertex ID
        
 </p></td>
 </tr>
@@ -1784,9 +1782,7 @@ function gives only one of them.
 <td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
 <td><p>
 
-          <em class="parameter"><code>from</code></em> is invalid vertex ID, or the length of <em class="parameter"><code>to</code></em> is
-          not the same as the length of <em class="parameter"><code>vertices</code></em> (if not NULL) or
-          the length of <em class="parameter"><code>edges</code></em> (if not NULL)
+          <em class="parameter"><code>from</code></em> is invalid vertex ID
        
 </p></td>
 </tr>
@@ -2327,8 +2323,7 @@ If there are no negative weights, you are better off with
 <td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
 <td><p>
 
-          <em class="parameter"><code>from</code></em> is invalid vertex ID, or the length of <em class="parameter"><code>to</code></em> is
-          not the same as the length of <em class="parameter"><code>vertices</code></em> or <em class="parameter"><code>edges</code></em>.
+          <em class="parameter"><code>from</code></em> is invalid vertex ID
         
 </p></td>
 </tr>
@@ -4470,9 +4465,9 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.14.5.23.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_graph_center(const igraph_t *graph, 
-                    igraph_vector_t *res,
-                    igraph_neimode_t mode);
+igraph_error_t igraph_graph_center(
+    const igraph_t *graph, igraph_vector_int_t *res, igraph_neimode_t mode
+);
 </pre></div>
 <p>
 </p>
@@ -4915,8 +4910,8 @@ representation that describes the path in terms of vertex IDs instead.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_widest_path">4.1. <code class="function">igraph_get_widest_path</code> —  Widest path from one vertex to another one.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_widest_paths">4.2. <code class="function">igraph_get_widest_paths</code> —  Widest paths from a single vertex.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_widest_paths_dijkstra">4.3. <code class="function">igraph_widest_paths_dijkstra</code> —  Widest path lengths between vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_widest_paths_floyd_warshall">4.4. <code class="function">igraph_widest_paths_floyd_warshall</code> —  Widest path lengths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_widest_path_widths_dijkstra">4.3. <code class="function">igraph_widest_path_widths_dijkstra</code> —  Widths of widest paths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_widest_path_widths_floyd_warshall">4.4. <code class="function">igraph_widest_path_widths_floyd_warshall</code> —  Widths of widest paths between vertices.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -5055,8 +5050,8 @@ more target vertices.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_widest_paths(const igraph_t *graph,
-                                       igraph_vector_ptr_t *vertices,
-                                       igraph_vector_ptr_t *edges,
+                                       igraph_vector_int_list_t *vertices,
+                                       igraph_vector_int_list_t *edges,
                                        igraph_integer_t from,
                                        igraph_vs_t to,
                                        const igraph_vector_t *weights,
@@ -5092,24 +5087,18 @@ the largest width between two vertices, this function gives only one of them.
 <td><p><span class="term"><em class="parameter"><code>vertices</code></em>:</span></p></td>
 <td><p>
   The result, the IDs of the vertices along the paths.
-       This is a pointer vector, each element points to a vector
-       object. These should be initialized before passing them to
-       the function, which will properly clear and/or resize them
-       and fill the IDs of the vertices along the paths from/to
-       the vertices. Supply a null pointer here if you don't need
-       these vectors.
+       This is a list of integer vectors where each element is an
+       <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> object. The list will be resized as needed.
+       Supply a null pointer here if you don't need these vectors.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
 <td><p>
   The result, the IDs of the edges along the paths.
-       This is a pointer vector, each element points to a vector
-       object. These should be initialized before passing them to
-       the function, which will properly clear and/or resize them
-       and fill the IDs of the vertices along the paths from/to
-       the vertices. Supply a null pointer here if you don't need
-       these vectors.
+       This is a list of integer vectors where each element is an
+       <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> object. The list will be resized as needed.
+       Supply a null pointer here if you don't need these vectors.
 </p></td>
 </tr>
 <tr>
@@ -5240,9 +5229,7 @@ the largest width between two vertices, this function gives only one of them.
 <td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code></span></p></td>
 <td><p>
 
-          <em class="parameter"><code>from</code></em> is invalid vertex ID, or the length of <em class="parameter"><code>to</code></em> is
-          not the same as the length of <em class="parameter"><code>vertices</code></em> (if not NULL) or
-          the length of <em class="parameter"><code>edges</code></em> (if not NULL)
+          <em class="parameter"><code>from</code></em> is invalid vertex ID
        
 </p></td>
 </tr>
@@ -5276,8 +5263,9 @@ vertices in the graph and |E| is the number of edges
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_widest_paths_dijkstra" title="4.3. igraph_widest_paths_dijkstra — Widest path lengths between vertices."><code class="function">igraph_widest_paths_dijkstra()</code></a> or <a class="link" href="igraph-Structural.html#igraph_widest_paths_floyd_warshall" title="4.4. igraph_widest_paths_floyd_warshall — Widest path lengths between vertices."><code class="function">igraph_widest_paths_floyd_warshall()</code></a>
-if you only need the path length but not the paths themselves.
+  <a class="link" href="igraph-Structural.html#igraph_widest_path_widths_dijkstra" title="4.3. igraph_widest_path_widths_dijkstra — Widths of widest paths between vertices."><code class="function">igraph_widest_path_widths_dijkstra()</code></a> or
+<a class="link" href="igraph-Structural.html#igraph_widest_path_widths_floyd_warshall" title="4.4. igraph_widest_path_widths_floyd_warshall — Widths of widest paths between vertices."><code class="function">igraph_widest_path_widths_floyd_warshall()</code></a> if you only need the
+widths of the paths but not the paths themselves.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5287,11 +5275,11 @@ if you only need the path length but not the paths themselves.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_widest_paths_dijkstra"></a>4.3. <code class="function">igraph_widest_paths_dijkstra</code> —  Widest path lengths between vertices.</h3></div></div></div>
+<a name="igraph_widest_path_widths_dijkstra"></a>4.3. <code class="function">igraph_widest_path_widths_dijkstra</code> —  Widths of widest paths between vertices.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.6.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_widest_paths_dijkstra(const igraph_t *graph,
+igraph_error_t igraph_widest_path_widths_dijkstra(const igraph_t *graph,
                                    igraph_matrix_t *res,
                                    const igraph_vs_t from,
                                    const igraph_vs_t to,
@@ -5399,7 +5387,7 @@ vertices in the graph, |E| the number of edges and s the number of sources.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_widest_paths_floyd_warshall" title="4.4. igraph_widest_paths_floyd_warshall — Widest path lengths between vertices."><code class="function">igraph_widest_paths_floyd_warshall()</code></a> for a variant that runs faster
+  <a class="link" href="igraph-Structural.html#igraph_widest_path_widths_floyd_warshall" title="4.4. igraph_widest_path_widths_floyd_warshall — Widths of widest paths between vertices."><code class="function">igraph_widest_path_widths_floyd_warshall()</code></a> for a variant that runs faster
 on dense graphs.
   </p></td>
 </tr></tbody>
@@ -5410,11 +5398,11 @@ on dense graphs.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_widest_paths_floyd_warshall"></a>4.4. <code class="function">igraph_widest_paths_floyd_warshall</code> —  Widest path lengths between vertices.</h3></div></div></div>
+<a name="igraph_widest_path_widths_floyd_warshall"></a>4.4. <code class="function">igraph_widest_path_widths_floyd_warshall</code> —  Widths of widest paths between vertices.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.6.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_widest_paths_floyd_warshall(const igraph_t *graph,
+igraph_error_t igraph_widest_path_widths_floyd_warshall(const igraph_t *graph,
                                    igraph_matrix_t *res,
                                    const igraph_vs_t from,
                                    const igraph_vs_t to,
@@ -5518,7 +5506,7 @@ Time complexity: O(|V|^3), where |V| is the number of vertices in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_widest_paths_dijkstra" title="4.3. igraph_widest_paths_dijkstra — Widest path lengths between vertices."><code class="function">igraph_widest_paths_dijkstra()</code></a> for a variant that runs faster
+  <a class="link" href="igraph-Structural.html#igraph_widest_path_widths_dijkstra" title="4.3. igraph_widest_path_widths_dijkstra — Widths of widest paths between vertices."><code class="function">igraph_widest_path_widths_dijkstra()</code></a> for a variant that runs faster
 on sparse graphs.
   </p></td>
 </tr></tbody>
@@ -7377,6 +7365,13 @@ definition. This behaviour changed in igraph 0.9; earlier versions assumed
 that the null graph is connected. See the following issue on Github for the
 argument that led us to change the definition:
 <a class="ulink" href="https://github.com/igraph/igraph/issues/1539" target="_top">https://github.com/igraph/igraph/issues/1539</a>
+
+</p>
+<p>
+The return value of this function is cached in the graph itself, separately
+for weak and strong connectivity. Calling the function multiple times with
+no modifications to the graph in between will return a cached value in O(1)
+time.
 
 </p>
 <p><b>Arguments: </b>
@@ -13342,7 +13337,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -13735,7 +13730,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -14128,7 +14123,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -14517,7 +14512,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -14909,7 +14904,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -15301,7 +15296,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -15648,7 +15643,7 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="4.5. igraph_vss_seq — An interval of vertices (immediate version).">igraph_vss_seq</a></strong></span>(1, 2), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
     <span class="strong"><strong>print_matrix</strong></span>(&amp;m, stdout);
 
     ret = <span class="strong"><strong>check_jaccard_all</strong></span>(&amp;g, &amp;m, IGRAPH_OUT, 1);
@@ -16430,6 +16425,13 @@ This test can be controlled using the <em class="parameter"><code>mode</code></e
 <p>
 
 By convention, the null graph (i.e. the graph with no vertices) is considered to be a forest.
+</p>
+<p>
+
+The <em class="parameter"><code>res</code></em> return value of this function is cached in the graph itself if
+<em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code> or if the graph is undirected. Calling the
+function multiple times with no modifications to the graph in between
+will return a cached value in O(1) time if the roots are not asked for.
 
 </p>
 <p><b>Arguments: </b>
@@ -18216,6 +18218,12 @@ An edge is a multiple edge if there is another
 edge with the same head and tail vertices in the graph.
 
 </p>
+<p>
+The return value of this function is cached in the graph itself; calling
+the function multiple times with no modifications to the graph in between
+will return a cached value in O(1) time.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -18278,7 +18286,7 @@ tail of the edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.21.5.11.1"></a><p class="title"><b>Example 13.35.  File <code class="code">examples/simple/igraph_has_multiple.c</code></b></p>
+<a name="id-1.14.21.5.12.1"></a><p class="title"><b>Example 13.35.  File <code class="code">examples/simple/igraph_has_multiple.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -18605,7 +18613,7 @@ number of vertex types.
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_assortativity" title="20.2. igraph_assortativity — Assortativity based on numeric properties of vertices."><code class="function">igraph_assortativity()</code></a> for computing the assortativity
 based on continuous vertex values instead of discrete categories.
-<a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculate the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> to compute generalized modularity.
+<a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> to compute generalized modularity.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19193,6 +19201,12 @@ igraph_error_t igraph_is_dag(const igraph_t* graph, igraph_bool_t *res);
 </p>
 <p>
 A directed acyclic graph (DAG) is a directed graph with no cycles.
+
+</p>
+<p>
+The return value of this function is cached in the graph itself; calling
+the function multiple times with no modifications to the graph in between
+will return a cached value in O(1) time.
 
 </p>
 <p><b>Arguments: </b>
@@ -21201,7 +21215,7 @@ Time complexity: O(n+m), linear in the number vertices and edges.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_density">26.1. <code class="function">igraph_density</code> —  Calculate the density of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_reciprocity">26.2. <code class="function">igraph_reciprocity</code> —  Calculates the reciprocity of a directed graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_diversity">26.3. <code class="function">igraph_diversity</code> — Structural diversity index of the vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_is_mutual">26.4. <code class="function">igraph_is_mutual</code> — Check whether the edges of a directed graph are mutual.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_is_mutual">26.4. <code class="function">igraph_is_mutual</code> —  Check whether some edges of a directed graph are mutual.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree">26.5. <code class="function">igraph_avg_nearest_neighbor_degree</code> — Average neighbor degree.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency">26.6. <code class="function">igraph_get_adjacency</code> —  Returns the adjacency matrix of a graph</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency_sparse">26.7. <code class="function">igraph_get_adjacency_sparse</code> —  Returns the adjacency matrix of a graph in a sparse matrix format.</a></span></dt>
@@ -21545,7 +21559,7 @@ Time complexity: O(|V|+|E|), linear.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_mutual"></a>26.4. <code class="function">igraph_is_mutual</code> — Check whether the edges of a directed graph are mutual.</h3></div></div></div>
+<a name="igraph_is_mutual"></a>26.4. <code class="function">igraph_is_mutual</code> —  Check whether some edges of a directed graph are mutual.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.28.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -21557,15 +21571,21 @@ igraph_error_t igraph_is_mutual(const igraph_t *graph, igraph_vector_bool_t *res
 
 
 
-An (A,B) edge is mutual if the graph contains the (B,A) edge, too.
+An (A,B) edge is mutual if the graph contains the (B,A) edge too.
+
 </p>
-<p>An undirected graph only has mutual edges, by definition.
+<p>
+An undirected graph only has mutual edges, by definition.
+
 </p>
-<p>Edge multiplicity is not considered here, e.g. if there are two
+<p>
+Edge multiplicity is not considered here, e.g. if there are two
 (A,B) edges and one (B,A) edge, then all three are considered to be
 mutual.
+
 </p>
-<p>Loops are always mutual.
+<p>
+Self-loops are always mutual.
 
 </p>
 <p><b>Arguments: </b>
@@ -21593,7 +21613,7 @@ mutual.
 <td><p><span class="term"><em class="parameter"><code>es</code></em>:</span></p></td>
 <td><p>
   The sequence of edges to check. Supply
-       <code class="literal">igraph_ess_all()</code> for all edges, see <a class="link" href="igraph-Iterators.html#igraph_ess_all" title="7.1. igraph_ess_all — Edge set, all edges (immediate version)"><code class="function">igraph_ess_all()</code></a>.
+       <a class="link" href="igraph-Iterators.html#igraph_ess_all" title="7.1. igraph_ess_all — Edge set, all edges (immediate version)"><code class="function">igraph_ess_all()</code></a> to check all edges.
 </p></td>
 </tr>
 </tbody>

@@ -354,7 +354,7 @@ Destructors</h3></div></div></div>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init">2.2.1. <code class="function">igraph_vector_init</code> —  Initializes a vector object (constructor).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_array">2.2.2. <code class="function">igraph_vector_init_array</code> —  Initializes a vector from an ordinary C array (constructor).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_copy">2.2.3. <code class="function">igraph_vector_init_copy</code> —  Initializes a vector from another vector object (constructor).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_seq">2.2.4. <code class="function">igraph_vector_init_seq</code> —  Initializes a vector with a sequence.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_range">2.2.4. <code class="function">igraph_vector_init_range</code> —  Initializes a vector with a range.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_destroy">2.2.5. <code class="function">igraph_vector_destroy</code> —  Destroys a vector object.</a></span></dt>
 </dl></div>
 <p><span class="type">igraph_vector_t</span> objects have to be initialized before using
@@ -364,7 +364,7 @@ convenience. <a class="link" href="igraph-Data-structures.html#igraph_vector_ini
 creates a vector of the given length, filled with zeros.
 <a class="link" href="igraph-Data-structures.html#igraph_vector_init_copy" title="2.2.3. igraph_vector_init_copy — Initializes a vector from another vector object (constructor)."><code class="function">igraph_vector_init_copy()</code></a> creates a new identical copy
 of an already existing and initialized vector. <a class="link" href="igraph-Data-structures.html#igraph_vector_init_array" title="2.2.2. igraph_vector_init_array — Initializes a vector from an ordinary C array (constructor)."><code class="function">igraph_vector_init_array()</code></a> creates a vector by copying a regular C array.
-<a class="link" href="igraph-Data-structures.html#igraph_vector_init_seq" title="2.2.4. igraph_vector_init_seq — Initializes a vector with a sequence."><code class="function">igraph_vector_init_seq()</code></a> creates a vector containing a regular
+<a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range."><code class="function">igraph_vector_init_range()</code></a> creates a vector containing a regular
 sequence with increment one.</p>
 <p><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t."><code class="function">igraph_vector_view()</code></a> is a special constructor, it allows you to
 handle a regular C array as a <span class="type">vector</span> without copying
@@ -592,12 +592,11 @@ n is the size of the vector.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_init_seq"></a>2.2.4. <code class="function">igraph_vector_init_seq</code> —  Initializes a vector with a sequence.</h4></div></div></div>
+<a name="igraph_vector_init_range"></a>2.2.4. <code class="function">igraph_vector_init_range</code> —  Initializes a vector with a range.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.3.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_init_seq(igraph_vector_t *v,
-                                      igraph_real_t from, igraph_real_t to);
+igraph_error_t igraph_vector_init_range(igraph_vector_t *v, igraph_real_t from, igraph_real_t to);
 </pre></div>
 <p>
 </p>
@@ -608,8 +607,10 @@ igraph_error_t igraph_vector_init_seq(igraph_vector_t *v,
 
 </p>
 <p>
-The vector will contain the numbers <em class="parameter"><code>from</code></em>,
-<em class="parameter"><code>from</code></em>+1, ..., <em class="parameter"><code>to</code></em>.
+The vector will contain the numbers <em class="parameter"><code>start</code></em>, <em class="parameter"><code>start</code></em>+1, ..., <em class="parameter"><code>end</code></em>-1. Note
+that the range is closed from the left and open from the right, according to
+C conventions.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -626,15 +627,15 @@ The vector will contain the numbers <em class="parameter"><code>from</code></em>
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>start</code></em>:</span></p></td>
 <td><p>
-  The lower limit in the sequence (inclusive).
+  The lower limit in the range (inclusive).
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>end</code></em>:</span></p></td>
 <td><p>
-  The upper limit in the sequence (inclusive).
+  The upper limit in the range (exclusive).
 </p></td>
 </tr>
 </tbody>
@@ -657,8 +658,7 @@ The vector will contain the numbers <em class="parameter"><code>from</code></em>
 </table></div>
 <p>
 
-Time complexity: O(n), the number
-of elements in the vector.
+Time complexity: O(n), the number of elements in the vector.
  
 </p>
 </div>
@@ -712,6 +712,7 @@ Time complexity: operating system dependent.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_null">2.3.1. <code class="function">igraph_vector_null</code> —  Sets each element in the vector to zero.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_fill">2.3.2. <code class="function">igraph_vector_fill</code> —  Fill a vector with a constant element</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_range">2.3.3. <code class="function">igraph_vector_range</code> —  Updates a vector to store a range.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -797,6 +798,78 @@ Sets each element of the vector to the supplied constant.
 
 
 Time complexity: O(n), the size of the vector.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_range"></a>2.3.3. <code class="function">igraph_vector_range</code> —  Updates a vector to store a range.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.4.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_range(igraph_vector_t *v, igraph_real_t from, igraph_real_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+Sets the elements of the vector to contain the numbers <em class="parameter"><code>start</code></em>, <em class="parameter"><code>start</code></em>+1,
+..., <em class="parameter"><code>end</code></em>-1. Note that the range is closed from the left and open from the
+right, according to C conventions.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The vector to update.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>start</code></em>:</span></p></td>
+<td><p>
+  The lower limit in the range (inclusive).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>end</code></em>:</span></p></td>
+<td><p>
+  The upper limit in the range (exclusive).
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: out of memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the number of elements in the vector.
  
 </p>
 </div>
@@ -4202,6 +4275,7 @@ It is assumed that the vector is sorted. If the specified element
 position of where it should be inserted (to keep the vector sorted)
 is returned. If the vector contains any NaN values, the returned
 value is undefined and <em class="parameter"><code>pos</code></em> may point to any position.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -4278,13 +4352,15 @@ igraph_bool_t igraph_vector_binsearch_slice(const igraph_vector_t *v,
 
 </p>
 <p>
-
 It is assumed that the indicated slice of the vector, from <em class="parameter"><code>start</code></em> to <em class="parameter"><code>end</code></em>,
 is sorted. If the specified element (<em class="parameter"><code>what</code></em>) is not in the slice of the
-vector, then the position of where it should be inserted (to keep the vector
-sorted) is returned. If the indicated slice contains any NaN values, the
+vector, then the position of where it should be inserted (to keep the <span class="emphasis"><em>slice</em></span>
+sorted) is returned. Note that this means that the returned index will point
+<span class="emphasis"><em>inside</em></span> the slice (including its endpoints), but will not evaluate values
+<span class="emphasis"><em>outside</em></span> the slice. If the indicated slice contains any NaN values, the
 returned value is undefined and <code class="constant">pos</code> may point to any position within
 the slice.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -6795,8 +6871,9 @@ expects <code class="constant">void</code>*
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_copy">2.18.1. <code class="function">igraph_vector_copy</code> —  Initializes a vector from another vector object (deprecated alias).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_e">2.18.2. <code class="function">igraph_vector_e</code> —  Access an element of a vector (deprecated alias).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_e_ptr">2.18.3. <code class="function">igraph_vector_e_ptr</code> —  Get the address of an element of a vector</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_copy">2.18.4. <code class="function">igraph_vector_ptr_copy</code> —  Initializes a pointer vector from another one (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_e">2.18.5. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_seq">2.18.4. <code class="function">igraph_vector_init_seq</code> —  Initializes a vector with a sequence, inclusive endpoints (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_copy">2.18.5. <code class="function">igraph_vector_ptr_copy</code> —  Initializes a pointer vector from another one (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_e">2.18.6. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector (deprecated alias).</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -6925,8 +7002,88 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_ptr_copy"></a>2.18.4. <code class="function">igraph_vector_ptr_copy</code> —  Initializes a pointer vector from another one (deprecated alias).</h4></div></div></div>
+<a name="igraph_vector_init_seq"></a>2.18.4. <code class="function">igraph_vector_init_seq</code> —  Initializes a vector with a sequence, inclusive endpoints (deprecated).</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.19.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_init_seq(igraph_vector_t *v, igraph_real_t from, igraph_real_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+The vector will contain the numbers <em class="parameter"><code>from</code></em>, <em class="parameter"><code>from</code></em>+1, ..., <em class="parameter"><code>to</code></em>. Note that
+both endpoints are <span class="emphasis"><em>inclusive,</em></span> contrary to typical usage of ranges in C.
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range."><code class="function">igraph_vector_init_range()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized vector object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  The lower limit in the sequence (inclusive).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  The upper limit in the sequence (inclusive).
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: out of memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the number
+of elements in the vector.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_ptr_copy"></a>2.18.5. <code class="function">igraph_vector_ptr_copy</code> —  Initializes a pointer vector from another one (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.19.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_ptr_copy(igraph_vector_ptr_t *to, const igraph_vector_ptr_t *from);
@@ -6950,8 +7107,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_ptr_e"></a>2.18.5. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector (deprecated alias).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.19.6.2"></a><p>
+<a name="igraph_vector_ptr_e"></a>2.18.6. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.19.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void *igraph_vector_ptr_e(const igraph_vector_ptr_t* v, igraph_integer_t pos);
@@ -11893,8 +12050,8 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
 
-    <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;p, 0, NROW - 1);
-    <span class="strong"><strong>igraph_vector_int_init_seq</strong></span>(&amp;q, 0, NCOL - 1);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;p, 0, NROW);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;q, 0, NCOL);
 
     <span class="emphasis"><em>/* Identity */</em></span>
 

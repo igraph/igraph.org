@@ -4574,7 +4574,7 @@ igraph_error_t igraph_grg_game(igraph_t *graph, igraph_integer_t nodes,
 
 A geometric random graph is created by dropping points (i.e. vertices)
 randomly on the unit square and then connecting all those pairs
-which are less than <code class="constant">radius</code> apart in Euclidean distance.
+which are strictly less than <code class="constant">radius</code> apart in Euclidean distance.
 
 </p>
 <p>
@@ -8040,6 +8040,13 @@ if <em class="parameter"><code>edges_per_step</code></em> is greater than one. Y
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>edges_per_step</code></em>:</span></p></td>
+<td><p>
+  Integer constant, the number of edges to add
+    in each time step.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
   Logical constant, whether to create a directed
@@ -8866,6 +8873,11 @@ igraph_error_t igraph_simple_interconnected_islands_game(
 
 
 
+All islands are of the same size. Within an island, each edge is generated
+with the same probability. A fixed number of additional edges are then
+generated for each unordered pair of islands to connect them. The generated
+graph is guaranteed to be simple.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -8896,13 +8908,15 @@ igraph_error_t igraph_simple_interconnected_islands_game(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>islands_pin</code></em>:</span></p></td>
 <td><p>
-  The probability to create each possible edge into each island.
+  The probability to create each possible edge within islands.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>n_inter</code></em>:</span></p></td>
 <td><p>
-  The number of edges to create between two islands.</p></td>
+  The number of edges to create between two islands. It may be
+       larger than <em class="parameter"><code>islands_size</code></em> squared, but in this case it is assumed
+       to be <em class="parameter"><code>islands_size</code></em> squared.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -8921,8 +8935,7 @@ igraph_error_t igraph_simple_interconnected_islands_game(
 <td><p>
   Error code:
         <code class="constant">IGRAPH_EINVAL</code>: invalid parameter
-        <code class="constant">IGRAPH_ENOMEM</code>: there is not enough
-        memory for the operation.
+        <code class="constant">IGRAPH_ENOMEM</code>: there is not enough memory for the operation.
   </p></td>
 </tr></tbody>
 </table></div>
