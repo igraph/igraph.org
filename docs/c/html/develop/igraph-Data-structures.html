@@ -2364,10 +2364,11 @@ Time complexity: O(n), where n is the number of elements in the vector.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_g">2.9.4. <code class="function">igraph_vector_all_g</code> —  Are all elements greater?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_le">2.9.5. <code class="function">igraph_vector_all_le</code> —  Are all elements less or equal?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_ge">2.9.6. <code class="function">igraph_vector_all_ge</code> —  Are all elements greater or equal?</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.7. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped">2.9.8. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.9. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped">2.9.10. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_zapsmall">2.9.7. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.8. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped">2.9.9. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.10. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped">2.9.11. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -2755,8 +2756,88 @@ Time complexity: O(n), the length of the vectors.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_lex_cmp"></a>2.9.7. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</h4></div></div></div>
+<a name="igraph_vector_zapsmall"></a>2.9.7. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_zapsmall(igraph_vector_t *v, igraph_real_t tol);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Vector elements which are smaller in magnitude than the given absolute
+tolerance will be replaced by exact zeros. The default tolerance
+corresponds to two-thirds of the representable digits of <span class="type">igraph_real_t</span>,
+i.e. <code class="literal">DBL_EPSILON^(2/3)</code> which is approximately <code class="literal">10^-10</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The vector to process, it will be changed in-place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
+<td><p>
+  Tolerance value. Numbers smaller than this in magnitude will
+           be replaced by zeros. Pass in zero to use the default tolerance.
+           Must not be negative.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_all_almost_e" title="2.9.2. igraph_vector_all_almost_e — Are all elements almost equal?"><code class="function">igraph_vector_all_almost_e()</code></a> and <a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance."><code class="function">igraph_almost_equals()</code></a> to
+perform comparisons with relative tolerances.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_lex_cmp"></a>2.9.8. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_lex_cmp(
@@ -2828,8 +2909,8 @@ This function is typically used together with <code class="constant">igraph_vect
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.8. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> for an untyped variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.9. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.9. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.10. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
     the last element.
   </p></td>
 </tr></tbody>
@@ -2841,7 +2922,7 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.10.8.12.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
+<a name="id-1.8.3.10.9.12.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -2894,8 +2975,8 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_lex_cmp_untyped"></a>2.9.8. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.9.2"></a><p>
+<a name="igraph_vector_lex_cmp_untyped"></a>2.9.9. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_lex_cmp_untyped(const void *lhs, const void *rhs);
@@ -2965,8 +3046,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.7. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> for a type-safe variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.10. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.8. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> for a type-safe variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.11. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> to compare vectors starting from
     the last element.
   </p></td>
 </tr></tbody>
@@ -2979,8 +3060,8 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_colex_cmp"></a>2.9.9. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.10.2"></a><p>
+<a name="igraph_vector_colex_cmp"></a>2.9.10. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_colex_cmp(
@@ -3055,8 +3136,8 @@ This function is typically used together with <code class="constant">igraph_vect
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.10. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> for an untyped variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.7. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.11. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.8. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
     the first element.
   </p></td>
 </tr></tbody>
@@ -3068,7 +3149,7 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.10.10.12.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
+<a name="id-1.8.3.10.11.12.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -3121,8 +3202,8 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_colex_cmp_untyped"></a>2.9.10. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.11.2"></a><p>
+<a name="igraph_vector_colex_cmp_untyped"></a>2.9.11. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_colex_cmp_untyped(const void *lhs, const void *rhs);
@@ -3196,7 +3277,7 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   igraph_vector_colex_cmp() for a type-safe variant of this
-    function, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.8. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> to compare vectors starting from
+    function, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.9. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> to compare vectors starting from
     the first element.
   </p></td>
 </tr></tbody>
@@ -5067,6 +5148,7 @@ vector.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_complex_create">2.14.4. <code class="function">igraph_vector_complex_create</code> —  Creates a complex vector from a real and imaginary part.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_complex_create_polar">2.14.5. <code class="function">igraph_vector_complex_create_polar</code> —  Creates a complex matrix from a magnitude and an angle.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_complex_all_almost_e">2.14.6. <code class="function">igraph_vector_complex_all_almost_e</code> —  Are all elements almost equal?</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_complex_zapsmall">2.14.7. <code class="function">igraph_vector_complex_zapsmall</code> —  Replaces small elements of a complex vector by exact zeros.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -5449,6 +5531,90 @@ Checks if the elements of two complex vectors are equal within a relative tolera
 <td><p>
   True if the two vectors are almost equal, false if there is at least
     one differing element or if the vectors are not of the same size.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_complex_zapsmall"></a>2.14.7. <code class="function">igraph_vector_complex_zapsmall</code> —  Replaces small elements of a complex vector by exact zeros.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.15.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_complex_zapsmall(igraph_vector_complex_t *v, igraph_real_t tol);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Similarly to <a class="link" href="igraph-Data-structures.html#igraph_vector_zapsmall" title="2.9.7. igraph_vector_zapsmall — Replaces small elements of a vector by exact zeros."><code class="function">igraph_vector_zapsmall()</code></a>, small elements will be replaced
+by zeros. The operation is performed separately on the real and imaginary
+parts of the numbers. This way, complex numbers with a large real part and
+tiny imaginary part will effectively be transformed to real numbers.
+The default tolerance
+corresponds to two-thirds of the representable digits of <span class="type">igraph_real_t</span>,
+i.e. <code class="literal">DBL_EPSILON^(2/3)</code> which is approximately <code class="literal">10^-10</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The vector to process, it will be changed in-place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
+<td><p>
+  Tolerance value. Real and imaginary parts smaller than this in
+           magnitude will be replaced by zeros. Pass in zero to use the default
+           tolerance. Must not be negative.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_complex_all_almost_e" title="2.14.6. igraph_vector_complex_all_almost_e — Are all elements almost equal?"><code class="function">igraph_vector_complex_all_almost_e()</code></a> and
+<a class="link" href="igraph-Nongraph.html#igraph_complex_almost_equals" title="7.3. igraph_complex_almost_equals — Compare two complex numbers with a tolerance."><code class="function">igraph_complex_almost_equals()</code></a> to perform comparisons with relative
+tolerances.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9360,6 +9526,7 @@ Time complexity: O(mn), the number of elements in the matrix.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_all_g">3.9.4. <code class="function">igraph_matrix_all_g</code> —  Are all elements greater?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_all_le">3.9.5. <code class="function">igraph_matrix_all_le</code> —  Are all elements less or equal?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_all_ge">3.9.6. <code class="function">igraph_matrix_all_ge</code> —  Are all elements greater or equal?</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_zapsmall">3.9.7. <code class="function">igraph_matrix_zapsmall</code> —  Replaces small elements of a matrix by exact zeros.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -9735,6 +9902,86 @@ igraph_matrix_all_ge(const igraph_matrix_t *lhs,
 <p>
 
 Time complexity: O(nm), the size of the matrices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_matrix_zapsmall"></a>3.9.7. <code class="function">igraph_matrix_zapsmall</code> —  Replaces small elements of a matrix by exact zeros.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.4.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_matrix_zapsmall(igraph_matrix_t *m, igraph_real_t tol);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Matrix elements which are smaller in magnitude than the given absolute
+tolerance will be replaced by exact zeros. The default tolerance
+corresponds to two-thirds of the representable digits of <span class="type">igraph_real_t</span>,
+i.e. <code class="literal">DBL_EPSILON^(2/3)</code> which is approximately <code class="literal">10^-10</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p>
+  The matrix to process, it will be changed in-place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
+<td><p>
+  Tolerance value. Numbers smaller than this in magnitude will
+           be replaced by zeros. Pass in zero to use the default tolerance.
+           Must not be negative.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_matrix_all_almost_e" title="3.9.2. igraph_matrix_all_almost_e — Are all elements almost equal?"><code class="function">igraph_matrix_all_almost_e()</code></a> and <a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance."><code class="function">igraph_almost_equals()</code></a> to
+perform comparisons with relative tolerances.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
  
 </p>
 </div>
@@ -11240,6 +11487,7 @@ resized matrix.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_complex_create">3.15.4. <code class="function">igraph_matrix_complex_create</code> —  Creates a complex matrix from a real and imaginary part.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_complex_create_polar">3.15.5. <code class="function">igraph_matrix_complex_create_polar</code> —  Creates a complex matrix from a magnitude and an angle.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_complex_all_almost_e">3.15.6. <code class="function">igraph_matrix_complex_all_almost_e</code> —  Are all elements almost equal?</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_complex_zapsmall">3.15.7. <code class="function">igraph_matrix_complex_zapsmall</code> —  Replaces small elements of a complex matrix by exact zeros.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -11632,6 +11880,90 @@ Checks if the elements of two complex matrices are equal within a relative toler
 <td><p>
   True if the two matrices are almost equal, false if there is at least
     one differing element or if the matrices are not of the same dimensions.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_matrix_complex_zapsmall"></a>3.15.7. <code class="function">igraph_matrix_complex_zapsmall</code> —  Replaces small elements of a complex matrix by exact zeros.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.4.16.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_matrix_complex_zapsmall(igraph_matrix_complex_t *m, igraph_real_t tol);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Similarly to <a class="link" href="igraph-Data-structures.html#igraph_matrix_zapsmall" title="3.9.7. igraph_matrix_zapsmall — Replaces small elements of a matrix by exact zeros."><code class="function">igraph_matrix_zapsmall()</code></a>, small elements will be replaced
+by zeros. The operation is performed separately on the real and imaginary
+parts of the numbers. This way, complex numbers with a large real part and
+tiny imaginary part will effectively be transformed to real numbers.
+The default tolerance
+corresponds to two-thirds of the representable digits of <span class="type">igraph_real_t</span>,
+i.e. <code class="literal">DBL_EPSILON^(2/3)</code> which is approximately <code class="literal">10^-10</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p>
+  The matrix to process, it will be changed in-place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
+<td><p>
+  Tolerance value. Real and imaginary parts smaller than this in
+           magnitude will be replaced by zeros. Pass in zero to use the default
+           tolerance. Must not be negative.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_matrix_complex_all_almost_e" title="3.15.6. igraph_matrix_complex_all_almost_e — Are all elements almost equal?"><code class="function">igraph_matrix_complex_all_almost_e()</code></a> and
+<a class="link" href="igraph-Nongraph.html#igraph_complex_almost_equals" title="7.3. igraph_complex_almost_equals — Compare two complex numbers with a tolerance."><code class="function">igraph_complex_almost_equals()</code></a> to perform comparisons with relative
+tolerances.
   </p></td>
 </tr></tbody>
 </table></div>
