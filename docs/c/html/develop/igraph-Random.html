@@ -147,7 +147,7 @@
 <div class="titlepage"><div><div><h1 class="title">
 <a name="igraph-Random"></a>Chapter 8. Random numbers</h1></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Random.html#about-random-numbers-in-igraph">1. About random numbers in igraph, use cases</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#about-random-numbers-in-igraph">1. About random numbers in igraph</a></span></dt>
 <dt><span class="section"><a href="igraph-Random.html#default-random-number-generator">2. The default random number generator</a></span></dt>
 <dt><span class="section"><a href="igraph-Random.html#creating-random-number-generators">3. Creating random number generators</a></span></dt>
 <dt><span class="section"><a href="igraph-Random.html#generating-random-numbers">4. Generating random numbers</a></span></dt>
@@ -156,13 +156,14 @@
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="about-random-numbers-in-igraph"></a>1. About random numbers in igraph, use cases</h2></div></div></div>
+<a name="about-random-numbers-in-igraph"></a>1. About random numbers in igraph</h2></div></div></div>
 <p>
-Some algorithms in igraph, e.g. the generation of random graphs,
-require random number generators (RNGs). Prior to version 0.6
-igraph did not have a sophisticated way to deal with random number
-generators at the C level, but this has changed. From version 0.6
-different and multiple random number generators are supported.
+Some algorithms in igraph, such as sampling from random graph models,
+require random number generators (RNGs). igraph includes a flexible
+RNG framework that allows hooking up arbitrary random number generators,
+and comes with several ready-to-use generators. This framework is used
+in igraph's high-level interfaces to integrate with the host language's
+own RNG.
 </p>
 </div>
 <div class="section">
@@ -178,7 +179,7 @@ different and multiple random number generators are supported.
 <a class="indexterm" name="id-1.9.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_rng_t *igraph_rng_default();
+igraph_rng_t *igraph_rng_default(void);
 </pre></div>
 <p>
 </p>
@@ -234,7 +235,7 @@ void igraph_rng_set_default(igraph_rng_t *rng);
 
 
 
-This function <span class="emphasis"><em>copies</em></span> the internal structure of the given <code class="constant">igraph_rng_t</code>
+This function <span class="emphasis"><em>copies</em></span> the internal structure of the given <span class="type">igraph_rng_t</span>
 object to igraph's internal default RNG structure. The structure itself
 contains two pointers only, one to the "methods" of the RNG and one to the
 memory buffer holding the internal state of the RNG. This means that if you
@@ -256,7 +257,7 @@ in here - the state is shared, but the entire structure is not.
 <td><p><span class="term"><em class="parameter"><code>rng</code></em>:</span></p></td>
 <td><p>
   The random number generator to use as default from now
-   on. Calling <a class="link" href="igraph-Random.html#igraph_rng_destroy" title="3.2. igraph_rng_destroy — Deallocate memory associated with a random number generator."><code class="function">igraph_rng_destroy()</code></a> on it, while it is still
+   on. Calling <a class="link" href="igraph-Random.html#igraph_rng_destroy" title="3.2. igraph_rng_destroy — Deallocates memory associated with a random number generator."><code class="function">igraph_rng_destroy()</code></a> on it, while it is still
    being used as the default will result in crashes and/or
    unpredictable results.</p></td>
 </tr></tbody>
@@ -273,16 +274,16 @@ Time complexity: O(1).
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="creating-random-number-generators"></a>3. Creating random number generators</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_init">3.1. <code class="function">igraph_rng_init</code> —  Initialize a random number generator.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_destroy">3.2. <code class="function">igraph_rng_destroy</code> —  Deallocate memory associated with a random number generator.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_seed">3.3. <code class="function">igraph_rng_seed</code> —  Set the seed of a random number generator.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_bits">3.4. <code class="function">igraph_rng_bits</code> —  Query the number of random bits that a random number generator can generate in a single round.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_max">3.5. <code class="function">igraph_rng_max</code> —  Query the maximum possible integer for a random number generator.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_name">3.6. <code class="function">igraph_rng_name</code> —  Query the type of a random number generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_init">3.1. <code class="function">igraph_rng_init</code> —  Initializes a random number generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_destroy">3.2. <code class="function">igraph_rng_destroy</code> —  Deallocates memory associated with a random number generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_seed">3.3. <code class="function">igraph_rng_seed</code> —  Seeds a random number generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_bits">3.4. <code class="function">igraph_rng_bits</code> —  The number of random bits that a random number generator can produces in a single round.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_max">3.5. <code class="function">igraph_rng_max</code> —  The maximum possible integer for a random number generator.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_name">3.6. <code class="function">igraph_rng_name</code> —  The type of a random number generator.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_init"></a>3.1. <code class="function">igraph_rng_init</code> —  Initialize a random number generator.</h3></div></div></div>
+<a name="igraph_rng_init"></a>3.1. <code class="function">igraph_rng_init</code> —  Initializes a random number generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -315,8 +316,9 @@ the given type, and sets its seed to the default.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>type</code></em>:</span></p></td>
 <td><p>
-  The type of the RNG, like <a class="link" href="igraph-Random.html#igraph_rngtype_mt19937" title="5.1. igraph_rngtype_mt19937 — The MT19937 random number generator."><code class="function">igraph_rngtype_mt19937</code></a> or
-<a class="link" href="igraph-Random.html#igraph_rngtype_glibc2" title="5.2. igraph_rngtype_glibc2 — The random number generator introduced in GNU libc 2."><code class="function">igraph_rngtype_glibc2</code></a>.
+  The type of the RNG, such as <a class="link" href="igraph-Random.html#igraph_rngtype_mt19937" title="5.1. igraph_rngtype_mt19937 — The MT19937 random number generator."><code class="function">igraph_rngtype_mt19937</code></a>,
+<a class="link" href="igraph-Random.html#igraph_rngtype_glibc2" title="5.2. igraph_rngtype_glibc2 — The random number generator introduced in GNU libc 2."><code class="function">igraph_rngtype_glibc2</code></a>, <a class="link" href="igraph-Random.html#igraph_rngtype_pcg32" title="5.3. igraph_rngtype_pcg32 — The PCG random number generator (32-bit version)."><code class="function">igraph_rngtype_pcg32</code></a> or
+<a class="link" href="igraph-Random.html#igraph_rngtype_pcg64" title="5.4. igraph_rngtype_pcg64 — The PCG random number generator (64-bit version)."><code class="function">igraph_rngtype_pcg64</code></a>.
 </p></td>
 </tr>
 </tbody>
@@ -342,7 +344,7 @@ the given type, and sets its seed to the default.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_destroy"></a>3.2. <code class="function">igraph_rng_destroy</code> —  Deallocate memory associated with a random number generator.</h3></div></div></div>
+<a name="igraph_rng_destroy"></a>3.2. <code class="function">igraph_rng_destroy</code> —  Deallocates memory associated with a random number generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -378,7 +380,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_seed"></a>3.3. <code class="function">igraph_rng_seed</code> —  Set the seed of a random number generator.</h3></div></div></div>
+<a name="igraph_rng_seed"></a>3.3. <code class="function">igraph_rng_seed</code> —  Seeds a random number generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -437,7 +439,7 @@ RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_bits"></a>3.4. <code class="function">igraph_rng_bits</code> —  Query the number of random bits that a random number generator can generate in a single round.</h3></div></div></div>
+<a name="igraph_rng_bits"></a>3.4. <code class="function">igraph_rng_bits</code> —  The number of random bits that a random number generator can produces in a single round.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -488,7 +490,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_max"></a>3.5. <code class="function">igraph_rng_max</code> —  Query the maximum possible integer for a random number generator.</h3></div></div></div>
+<a name="igraph_rng_max"></a>3.5. <code class="function">igraph_rng_max</code> —  The maximum possible integer for a random number generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -546,7 +548,7 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_name"></a>3.6. <code class="function">igraph_rng_name</code> —  Query the type of a random number generator.</h3></div></div></div>
+<a name="igraph_rng_name"></a>3.6. <code class="function">igraph_rng_name</code> —  The type of a random number generator.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.4.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -674,7 +676,7 @@ igraph_integer_t igraph_rng_get_integer(
 <p>
 
 Time complexity: O(log2(h-l) / bits) where bits is the value of
-<a class="link" href="igraph-Random.html#igraph_rng_bits" title="3.4. igraph_rng_bits — Query the number of random bits that a random number generator can generate in a single round."><code class="function">igraph_rng_bits</code></a>(rng).
+<a class="link" href="igraph-Random.html#igraph_rng_bits" title="3.4. igraph_rng_bits — The number of random bits that a random number generator can produces in a single round."><code class="function">igraph_rng_bits</code></a>(rng).
  
 </p>
 </div>
@@ -1274,7 +1276,7 @@ comparable in speed to the other generators. The original generator
 used a default seed of 4357 and choosing <code class="constant">s</code> equal to zero in
 <code class="constant">igraph_rng_mt19937_seed</code>() reproduces this. Later versions switched to
 5489 as the default seed, you can choose this explicitly via
-<a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator."><code class="function">igraph_rng_seed()</code></a> instead if you require it.
+<a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator."><code class="function">igraph_rng_seed()</code></a> instead if you require it.
 
 </p>
 <p>
@@ -1369,7 +1371,7 @@ This is an implementation of the PCG random number generator; see
 </p>
 <p>
 The generator was ported from the original source code published by the
-authors at <a class="ulink" href="https://github.com/imneme/pcg-c" target="_top">https://github.com/imneme/pcg-c</a> .
+authors at <a class="ulink" href="https://github.com/imneme/pcg-c" target="_top">https://github.com/imneme/pcg-c</a>.
  
 </p>
 </div>
@@ -1415,7 +1417,7 @@ bits in a single generation round.
 </p>
 <p>
 The generator was ported from the original source code published by the
-authors at <a class="ulink" href="https://github.com/imneme/pcg-c" target="_top">https://github.com/imneme/pcg-c</a> .
+authors at <a class="ulink" href="https://github.com/imneme/pcg-c" target="_top">https://github.com/imneme/pcg-c</a>.
  
 </p>
 </div>
@@ -1453,7 +1455,7 @@ queried with the <a class="link" href="igraph-Random.html#igraph_rng_default" ti
 <p>
 If reproducible results are needed, then the user should set the
 seed of the default random number generator explicitly, using the
-<a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator."><code class="function">igraph_rng_seed()</code></a> function on the default generator, <a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator."><code class="function">igraph_rng_default()</code></a>. When setting the seed to the same number,
+<a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator."><code class="function">igraph_rng_seed()</code></a> function on the default generator, <a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator."><code class="function">igraph_rng_default()</code></a>. When setting the seed to the same number,
 igraph generates exactly the same random graph (or series of random
 graphs).
 </p>
@@ -1473,7 +1475,7 @@ destroyed, so no memory is deallocated.
 <a name="random-using-multiple-generators"></a>6.4. Using multiple generators</h3></div></div></div>
 <p>
 igraph also provides functions to set up multiple random number
-generators, using the <a class="link" href="igraph-Random.html#igraph_rng_init" title="3.1. igraph_rng_init — Initialize a random number generator."><code class="function">igraph_rng_init()</code></a> function, and then
+generators, using the <a class="link" href="igraph-Random.html#igraph_rng_init" title="3.1. igraph_rng_init — Initializes a random number generator."><code class="function">igraph_rng_init()</code></a> function, and then
 generating random numbers from them, e.g. with <a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval."><code class="function">igraph_rng_get_integer()</code></a>
 and/or <a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.3. igraph_rng_get_unif — Samples real numbers from a given interval."><code class="function">igraph_rng_get_unif()</code></a> calls.
 </p>
@@ -1501,7 +1503,7 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Seed the default random number generator and create a random graph. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1122);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1122);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g1, IGRAPH_ERDOS_RENYI_GNP,
                             100, 3.0 / 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
@@ -1509,7 +1511,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* Seed the generator with the same seed again,</em></span>
 <span class="emphasis"><em>     * and create a graph with the same method. */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1122);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1122);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g2, IGRAPH_ERDOS_RENYI_GNP,
                             100, 3.0 / 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);

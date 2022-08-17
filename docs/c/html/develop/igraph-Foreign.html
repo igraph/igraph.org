@@ -411,7 +411,7 @@ these.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>names</code></em>:</span></p></td>
 <td><p>
-  Logical value, if TRUE the symbolic names of the
+  Logical value, if <code class="constant">true</code> the symbolic names of the
        vertices will be added to the graph as a vertex attribute
        called <span class="quote">“<span class="quote">name</span>”</span>.
 </p></td>
@@ -668,7 +668,7 @@ in <span class="command"><strong>igraph</strong></span> it is not an error to ha
 <tr>
 <td><p><span class="term"><em class="parameter"><code>names</code></em>:</span></p></td>
 <td><p>
-  Logical value, if TRUE the symbolic names of the
+  Logical value, if <code class="constant">true</code> the symbolic names of the
        vertices will be added to the graph as a vertex attribute
        called <span class="quote">“<span class="quote">name</span>”</span>.
 </p></td>
@@ -881,8 +881,8 @@ does not check for this condition.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>isolates</code></em>:</span></p></td>
 <td><p>
-  Logical, if TRUE isolated vertices are also written
-       to the file. If FALSE they will be omitted.
+  Logical, if <code class="constant">true</code> isolated vertices are also written
+       to the file. If <code class="constant">false</code> they will be omitted.
 </p></td>
 </tr>
 </tbody>
@@ -906,11 +906,9 @@ does not check for this condition.
 </table></div>
 <p>
 
-Time complexity: O(|E|), the
-number of edges if <em class="parameter"><code>isolates</code></em> is
-FALSE, O(|V|+|E|) otherwise. All
-file operations are expected to have time complexity
-O(1).
+Time complexity: O(|E|), the number of edges if <em class="parameter"><code>isolates</code></em> is <code class="constant">false</code>,
+O(|V|+|E|) otherwise. All file operations are expected to have
+time complexity O(1).
 
 </p>
 <p><b>See also: </b></p>
@@ -1448,51 +1446,63 @@ igraph will fall back to the <code class="constant">id</code> attribute of the <
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt;     <span class="emphasis"><em>/* unlink */</em></span>
+<span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt; <span class="emphasis"><em>/* unlink */</em></span>
 
 int <span class="strong"><strong>main</strong></span>() {
-    igraph_t g;
-    <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a>* oldhandler;
-    int result;
-    FILE *ifile, *ofile;
+    igraph_t graph;
+    <span class="strong"><strong>const</strong></span> char *infilename  = "test.graphml";
+    <span class="strong"><strong>const</strong></span> char *outfilename = "test2.graphml";
 
+    <span class="emphasis"><em>/* Set up attribute handling, so graph attributes can be imported</em></span>
+<span class="emphasis"><em>     * from the GraphML file. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
 
+    <span class="emphasis"><em>/* Problems in the GraphML file may cause igraph to print warnings.</em></span>
+<span class="emphasis"><em>     * If this is not desired, set a silent warning handler: */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
+
+    <span class="emphasis"><em>/* Read the contents of a GraphML file. */</em></span>
+
     <span class="emphasis"><em>/* GraphML */</em></span>
-    ifile = <span class="strong"><strong>fopen</strong></span>("test.graphml", "r");
-    <span class="strong"><strong>if</strong></span> (ifile == 0) {
-        <span class="strong"><strong>return</strong></span> 10;
+    FILE *infile = <span class="strong"><strong>fopen</strong></span>("test.graphml", "r");
+    <span class="strong"><strong>if</strong></span> (! infile) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Could not open input file '%s'.", infilename);
+        <span class="strong"><strong>exit</strong></span>(1);
     }
 
-    <span class="emphasis"><em>/* GraphML support is an optional feature so we disable the error handler</em></span>
-<span class="emphasis"><em>     * temporarily to handle the case when it is not implemented */</em></span>
-    oldhandler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_graphml" title="3.1. igraph_read_graph_graphml — Reads a graph from a GraphML file.">igraph_read_graph_graphml</a></strong></span>(&amp;g, ifile, 0))) {
-        <span class="emphasis"><em>/* maybe it is simply disabled at compile-time */</em></span>
-        <span class="strong"><strong>if</strong></span> (result == IGRAPH_UNIMPLEMENTED) {
-            <span class="strong"><strong>return</strong></span> 77;
-        }
-        <span class="strong"><strong>return</strong></span> 1;
+    <span class="emphasis"><em>/* GraphML support is an optional feature in igraph. If igraph was compiled</em></span>
+<span class="emphasis"><em>     * without GraphML support, igraph_read_graph_graphml() returns IGRAPH_UNIMPLEMENTED.</em></span>
+<span class="emphasis"><em>     * We temporarily disable the default error handler so we can test for this condition. */</em></span>
+    <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a> *oldhandler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> ret = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_graphml" title="3.1. igraph_read_graph_graphml — Reads a graph from a GraphML file.">igraph_read_graph_graphml</a></strong></span>(&amp;graph, infile, 0);
+    <span class="strong"><strong>if</strong></span> (ret == IGRAPH_UNIMPLEMENTED) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "igraph was compiled without GraphML support.");
+        <span class="strong"><strong>exit</strong></span>(77);
+    }
+    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_SUCCESS) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Unexpected error while reading GraphML.");
+        <span class="strong"><strong>exit</strong></span>(1);
     }
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(oldhandler);
 
-    <span class="strong"><strong>fclose</strong></span>(ifile);
 
-    <span class="emphasis"><em>/* Write it back */</em></span>
-    ofile = <span class="strong"><strong>fopen</strong></span>("test2.graphml", "w");
-    <span class="strong"><strong>if</strong></span> (ofile) {
-        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
-            <span class="strong"><strong>printf</strong></span>("Received unexpected return code: %d\n", result);
-            <span class="strong"><strong>return</strong></span> 1;
-        }
-        <span class="strong"><strong>fclose</strong></span>(ofile);
+    <span class="strong"><strong>fclose</strong></span>(infile);
+
+    <span class="emphasis"><em>/* Write it back into another file. */</em></span>
+
+    FILE *outfile = <span class="strong"><strong>fopen</strong></span>(outfilename, "w");
+    <span class="strong"><strong>if</strong></span> (outfile) {
+        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;graph, outfile, true);
+        <span class="strong"><strong>fclose</strong></span>(outfile);
 
         <span class="emphasis"><em>/* Clean up after ourselves */</em></span>
-        <span class="strong"><strong>unlink</strong></span>("test2.graphml");
+        <span class="strong"><strong>unlink</strong></span>(outfilename);
+    } <span class="strong"><strong>else</strong></span> {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Could not write output file '%s'.", outfilename);
     }
 
     <span class="emphasis"><em>/* Destroy the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1591,51 +1601,63 @@ O(1).
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt;     <span class="emphasis"><em>/* unlink */</em></span>
+<span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt; <span class="emphasis"><em>/* unlink */</em></span>
 
 int <span class="strong"><strong>main</strong></span>() {
-    igraph_t g;
-    <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a>* oldhandler;
-    int result;
-    FILE *ifile, *ofile;
+    igraph_t graph;
+    <span class="strong"><strong>const</strong></span> char *infilename  = "test.graphml";
+    <span class="strong"><strong>const</strong></span> char *outfilename = "test2.graphml";
 
+    <span class="emphasis"><em>/* Set up attribute handling, so graph attributes can be imported</em></span>
+<span class="emphasis"><em>     * from the GraphML file. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
 
+    <span class="emphasis"><em>/* Problems in the GraphML file may cause igraph to print warnings.</em></span>
+<span class="emphasis"><em>     * If this is not desired, set a silent warning handler: */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
+
+    <span class="emphasis"><em>/* Read the contents of a GraphML file. */</em></span>
+
     <span class="emphasis"><em>/* GraphML */</em></span>
-    ifile = <span class="strong"><strong>fopen</strong></span>("test.graphml", "r");
-    <span class="strong"><strong>if</strong></span> (ifile == 0) {
-        <span class="strong"><strong>return</strong></span> 10;
+    FILE *infile = <span class="strong"><strong>fopen</strong></span>("test.graphml", "r");
+    <span class="strong"><strong>if</strong></span> (! infile) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Could not open input file '%s'.", infilename);
+        <span class="strong"><strong>exit</strong></span>(1);
     }
 
-    <span class="emphasis"><em>/* GraphML support is an optional feature so we disable the error handler</em></span>
-<span class="emphasis"><em>     * temporarily to handle the case when it is not implemented */</em></span>
-    oldhandler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_graphml" title="3.1. igraph_read_graph_graphml — Reads a graph from a GraphML file.">igraph_read_graph_graphml</a></strong></span>(&amp;g, ifile, 0))) {
-        <span class="emphasis"><em>/* maybe it is simply disabled at compile-time */</em></span>
-        <span class="strong"><strong>if</strong></span> (result == IGRAPH_UNIMPLEMENTED) {
-            <span class="strong"><strong>return</strong></span> 77;
-        }
-        <span class="strong"><strong>return</strong></span> 1;
+    <span class="emphasis"><em>/* GraphML support is an optional feature in igraph. If igraph was compiled</em></span>
+<span class="emphasis"><em>     * without GraphML support, igraph_read_graph_graphml() returns IGRAPH_UNIMPLEMENTED.</em></span>
+<span class="emphasis"><em>     * We temporarily disable the default error handler so we can test for this condition. */</em></span>
+    <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a> *oldhandler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> ret = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_graphml" title="3.1. igraph_read_graph_graphml — Reads a graph from a GraphML file.">igraph_read_graph_graphml</a></strong></span>(&amp;graph, infile, 0);
+    <span class="strong"><strong>if</strong></span> (ret == IGRAPH_UNIMPLEMENTED) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "igraph was compiled without GraphML support.");
+        <span class="strong"><strong>exit</strong></span>(77);
+    }
+    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_SUCCESS) {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Unexpected error while reading GraphML.");
+        <span class="strong"><strong>exit</strong></span>(1);
     }
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(oldhandler);
 
-    <span class="strong"><strong>fclose</strong></span>(ifile);
 
-    <span class="emphasis"><em>/* Write it back */</em></span>
-    ofile = <span class="strong"><strong>fopen</strong></span>("test2.graphml", "w");
-    <span class="strong"><strong>if</strong></span> (ofile) {
-        <span class="strong"><strong>if</strong></span> ((result = <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, ofile, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1))) {
-            <span class="strong"><strong>printf</strong></span>("Received unexpected return code: %d\n", result);
-            <span class="strong"><strong>return</strong></span> 1;
-        }
-        <span class="strong"><strong>fclose</strong></span>(ofile);
+    <span class="strong"><strong>fclose</strong></span>(infile);
+
+    <span class="emphasis"><em>/* Write it back into another file. */</em></span>
+
+    FILE *outfile = <span class="strong"><strong>fopen</strong></span>(outfilename, "w");
+    <span class="strong"><strong>if</strong></span> (outfile) {
+        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;graph, outfile, true);
+        <span class="strong"><strong>fclose</strong></span>(outfile);
 
         <span class="emphasis"><em>/* Clean up after ourselves */</em></span>
-        <span class="strong"><strong>unlink</strong></span>("test2.graphml");
+        <span class="strong"><strong>unlink</strong></span>(outfilename);
+    } <span class="strong"><strong>else</strong></span> {
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Could not write output file '%s'.", outfilename);
     }
 
     <span class="emphasis"><em>/* Destroy the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2546,31 +2568,24 @@ int <span class="strong"><strong>main</strong></span>() {
                             "fullmatrix3.dl", "fullmatrix4.dl",
                             "edgelist1.dl", "edgelist2.dl", "edgelist3.dl",
                             "edgelist4.dl", "edgelist5.dl", "edgelist6.dl",
-                            "edgelist7.dl", "nodelist1.dl", "nodelist2.dl"
-                          };
-    int no_files = <span class="strong"><strong>sizeof</strong></span>(files) / <span class="strong"><strong>sizeof</strong></span>(<span class="strong"><strong>const</strong></span> char*);
-    int i, ret;
-    igraph_t g;
+                            "edgelist7.dl", "nodelist1.dl", "nodelist2.dl" };
+    igraph_t graph;
     FILE *infile;
 
     <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
 
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; no_files; i++) {
+    <span class="strong"><strong>for</strong></span> (size_t i = 0; i &lt; <span class="strong"><strong>sizeof</strong></span>(files) / <span class="strong"><strong>sizeof</strong></span>(files[0]); i++) {
         <span class="strong"><strong>printf</strong></span>("Doing %s\n", files[i]);
         infile = <span class="strong"><strong>fopen</strong></span>(files[i], "r");
         <span class="strong"><strong>if</strong></span> (!infile) {
             <span class="strong"><strong>printf</strong></span>("Cannot open file: %s\n", files[i]);
             <span class="strong"><strong>abort</strong></span>();
         }
-        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_dl" title="6.1. igraph_read_graph_dl — Read a file in the DL format of UCINET">igraph_read_graph_dl</a></strong></span>(&amp;g, infile, <span class="emphasis"><em>/*directed=*/</em></span> 1);
-        ret = <span class="strong"><strong>fclose</strong></span>(infile);
-        <span class="strong"><strong>if</strong></span> (ret) {
-            <span class="strong"><strong>printf</strong></span>("Cannot close file: %s\n", files[i]);
-            <span class="strong"><strong>abort</strong></span>();
-        }
-        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_dl" title="6.1. igraph_read_graph_dl — Read a file in the DL format of UCINET">igraph_read_graph_dl</a></strong></span>(&amp;graph, infile, IGRAPH_DIRECTED);
+        <span class="strong"><strong>fclose</strong></span>(infile);
+        <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;graph, stdout);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
     }
 
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>IGRAPH_FINALLY_STACK_SIZE</strong></span>() != 0) {
@@ -2797,6 +2812,7 @@ be done unless the locale has been changed away from the default.
 
 <span class="strong"><strong>#include</strong></span> &lt;locale.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
 
 int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>const</strong></span> char *filename = "weighted.gml";
@@ -2808,9 +2824,13 @@ int <span class="strong"><strong>main</strong></span>() {
 <span class="emphasis"><em>     * so the locale change may not be successful. */</em></span>
     <span class="strong"><strong>const</strong></span> char *locname = <span class="strong"><strong>setlocale</strong></span>(LC_ALL, "de_DE");
     <span class="strong"><strong>struct</strong></span> lconv *lc = <span class="strong"><strong>localeconv</strong></span>();
-    <span class="strong"><strong>fprintf</strong></span>(stderr, "setlocale() returned '%s', decimal point is '%s'\n",
-            locname ? locname : "NULL",
-            lc-&gt;decimal_point);
+    <span class="strong"><strong>if</strong></span> (! <span class="strong"><strong>strcmp</strong></span>(lc-&gt;decimal_point, ",")) {
+        <span class="emphasis"><em>/* If decimal point is not a comma, presumably because the requested</em></span>
+<span class="emphasis"><em>         * locale was not available, report locale information. */</em></span>
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "setlocale() returned '%s', decimal point is '%s'\n",
+                locname ? locname : "NULL",
+                lc-&gt;decimal_point);
+    }
 
     FILE *file = <span class="strong"><strong>fopen</strong></span>(filename, "r");
     <span class="strong"><strong>if</strong></span> (! file) {
