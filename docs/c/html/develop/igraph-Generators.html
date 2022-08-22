@@ -283,7 +283,6 @@ int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g;
     igraph_vector_int_t v1, v2;
-    int ret;
 
     <span class="emphasis"><em>/* simple use */</em></span>
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v1, 8);
@@ -320,23 +319,6 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong>return</strong></span> 3;
     }
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* error: IGRAPH_EINVEVECTOR */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;v1, 9);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v1)[8] = 0;
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;v1, 0, 0);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVEVECTOR) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="emphasis"><em>/* error: IGRAPH_EINVVID */</em></span>
-    <span class="strong"><strong>igraph_vector_int_resize</strong></span>(&amp;v1, 8);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v1)[7] = -1;
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;v1, 10, 1);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVVID) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v2);
 
@@ -3964,7 +3946,6 @@ edges.
 int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g;
-    int ret;
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_atlas" title="1.24. igraph_atlas — Create a small graph from the “Graph Atlas”.">igraph_atlas</a></strong></span>(&amp;g, 45);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
@@ -3980,17 +3961,6 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
     <span class="strong"><strong>printf</strong></span>("\n");
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_atlas" title="1.24. igraph_atlas — Create a small graph from the “Graph Atlas”.">igraph_atlas</a></strong></span>(&amp;g, -1);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_atlas" title="1.24. igraph_atlas — Create a small graph from the “Graph Atlas”.">igraph_atlas</a></strong></span>(&amp;g, 1253);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -4914,7 +4884,6 @@ int <span class="strong"><strong>main</strong></span>() {
     igraph_t g;
     igraph_vector_int_t v;
     igraph_vector_int_t v2, v3;
-    int ret;
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*power=*/</em></span> 1, 2, 0, 0, <span class="emphasis"><em>/*A=*/</em></span> 1, 1,
                          IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
@@ -4976,26 +4945,6 @@ int <span class="strong"><strong>main</strong></span>() {
     }
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* Error tests */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, -10, <span class="emphasis"><em>/*power=*/</em></span> 1, 1, 0, 0, <span class="emphasis"><em>/*A=*/</em></span> 1, 0,
-                               IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 9;
-    }
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*power=*/</em></span> 1, -2, 0, 0, <span class="emphasis"><em>/*A=*/</em></span> 1, 0,
-                               IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 10;
-    }
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v3, 9);
-    ret = <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*power=*/</em></span> 1, 0, &amp;v3, 0, <span class="emphasis"><em>/*A=*/</em></span> 1, 0,
-                               IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 11;
-    }
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v3);
 
     <span class="strong"><strong>return</strong></span> 0;
 }

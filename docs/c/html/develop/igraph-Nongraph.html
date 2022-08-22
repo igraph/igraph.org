@@ -467,47 +467,7 @@ running time is O(length).
     <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> retval;
 } sampling_test_t;
 
-<span class="emphasis"><em>/* Error tests. Don't be afraid to crash the library function.</em></span>
-<span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>error_test</strong></span>() {
-    igraph_vector_int_t V;
-    int i, n;
-    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> ret;
-    sampling_test_t *test;
-
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42); <span class="emphasis"><em>/* make tests deterministic */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, <span class="emphasis"><em>/*size*/</em></span> 0);
-
-    <span class="emphasis"><em>/* test parameters */</em></span>
-    <span class="emphasis"><em>/*----------low----high----length----retval----------*/</em></span>
-    <span class="emphasis"><em>/* lower limit is greater than upper limit */</em></span>
-    sampling_test_t lower_bigger = {300, 200, 10, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* sample size is greater than size of candidate pool */</em></span>
-    sampling_test_t sample_size_bigger = {200, 300, 500, IGRAPH_EINVAL};
-
-    sampling_test_t *all_checks[] = {<span class="emphasis"><em>/* 1 */</em></span> &amp;lower_bigger,
-                                     <span class="emphasis"><em>/* 2 */</em></span> &amp;sample_size_bigger};
-
-    <span class="emphasis"><em>/* failure is the mother of success */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    n = 2;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        test = all_checks[i];
-        ret = <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, test-&gt;low, test-&gt;high, test-&gt;length);
-        <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
-            <span class="strong"><strong>printf</strong></span>("Error test no. %d failed.\n", i + 1);
-            <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
-        }
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_abort" title="2.2. igraph_error_handler_abort — Abort program in case of error.">igraph_error_handler_abort</a>);
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
-
-    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
-}
-
-<span class="emphasis"><em>/* Get a few random samples and test their properties.</em></span>
-<span class="emphasis"><em> */</em></span>
+<span class="emphasis"><em>/* Get a few random samples and test their properties. */</em></span>
 int <span class="strong"><strong>random_sample_test</strong></span>() {
     <span class="strong"><strong>const</strong></span> igraph_integer_t min = -1000;
     <span class="strong"><strong>const</strong></span> igraph_integer_t max = 1000;
@@ -518,7 +478,7 @@ int <span class="strong"><strong>random_sample_test</strong></span>() {
     igraph_real_t sP;           <span class="emphasis"><em>/* population total sum */</em></span>
     igraph_real_t ss;           <span class="emphasis"><em>/* sample total sum */</em></span>
     igraph_vector_int_t V;
-    int i;
+    igraph_integer_t i;
 
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 57); <span class="emphasis"><em>/* make tests deterministic */</em></span>
 
@@ -537,12 +497,12 @@ int <span class="strong"><strong>random_sample_test</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, low, high, length);
     <span class="strong"><strong>if</strong></span> (length != <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V)) {
         <span class="strong"><strong>printf</strong></span>("Requested vector length and resulting length mismatch.\n");
-        <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
+        <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; length - 1; i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i] &gt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i + 1]) {
             <span class="strong"><strong>printf</strong></span>("Sample not in increasing order.\n");
-            <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
+            <span class="strong"><strong>return</strong></span> 1;
         }
     }
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
@@ -567,16 +527,15 @@ int <span class="strong"><strong>random_sample_test</strong></span>() {
     ss = <span class="strong"><strong>igraph_vector_int_sum</strong></span>(&amp;V);
     <span class="strong"><strong>if</strong></span> (ss &gt; sP) {
         <span class="strong"><strong>printf</strong></span>("Sum of sampled sequence exceeds sum of whole population.\n");
-        <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
+        <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
 
-    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
+    <span class="strong"><strong>return</strong></span> 0;
 }
 
 int <span class="strong"><strong>equal_test</strong></span>() {
     igraph_vector_int_t V;
-    int i;
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, 0);
 
@@ -600,7 +559,7 @@ int <span class="strong"><strong>equal_test</strong></span>() {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 11) {
         <span class="strong"><strong>return</strong></span> 5;
     }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 11; i++)
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; 11; i++)
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i] != i + 2) {
             <span class="strong"><strong>return</strong></span> 6;
         }
@@ -637,10 +596,6 @@ int <span class="strong"><strong>rare_test</strong></span>() {
 int <span class="strong"><strong>main</strong></span>() {
     int ret;
 
-    ret = <span class="strong"><strong>error_test</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
     ret = <span class="strong"><strong>random_sample_test</strong></span>();
     <span class="strong"><strong>if</strong></span> (ret) {
         <span class="strong"><strong>return</strong></span> 2;
@@ -968,10 +923,10 @@ latent vectors.
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="convex-hull-of-a-set-of-points-on-a-plane"></a>5. Convex hull of a set of points on a plane</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Nongraph.html#igraph_convex_hull">5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane</a></span></dt></dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Nongraph.html#igraph_convex_hull">5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_convex_hull"></a>5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane</h3></div></div></div>
+<a name="igraph_convex_hull"></a>5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane.</h3></div></div></div>
 <a class="indexterm" name="id-1.33.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1052,193 +1007,8 @@ Finding the convex hull.
 </table></div>
 <p>
 
-Time complexity: O(n log(n)) where n is the number of vertices
-
-</p>
-<div class="hideshow" onClick="toggle(this, event)">
-<div class="example">
-<a name="id-1.33.6.2.10.1"></a><p class="title"><b>Example 32.3.  File <code class="code">examples/simple/igraph_convex_hull.c</code></b></p>
-<div class="example-contents">
-<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-
-int <span class="strong"><strong>check_convex_hull</strong></span>(igraph_matrix_t* coords) {
-    igraph_vector_int_t result;
-    igraph_matrix_t resmat;
-    igraph_integer_t i;
-
-    <span class="emphasis"><em>/* Testing with index output mode */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;result, 1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_convex_hull" title="5.1. igraph_convex_hull — Determines the convex hull of a given set of points in the 2D plane">igraph_convex_hull</a></strong></span>(coords, &amp;result, 0)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;result); i++) {
-        <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " ", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(result)[i]);
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;result);
-
-    <span class="emphasis"><em>/* Testing with coordinate output mode */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;resmat, 0, 0);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_convex_hull" title="5.1. igraph_convex_hull — Determines the convex hull of a given set of points in the 2D plane">igraph_convex_hull</a></strong></span>(coords, 0, &amp;resmat)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;resmat); i++) {
-        <span class="strong"><strong>printf</strong></span>("%.3f %.3f ", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(resmat, i, 0), <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(resmat, i, 1));
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;resmat);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>test_simple</strong></span>() {
-    igraph_real_t coords_array[][2] = {
-        {3, 2}, {5, 1}, {4, 4}, {6, 4}, {4, 3},
-        {2, 5}, {1, 3}, {2, 4}, {6, 3}, {9, 2}
-    };
-    igraph_matrix_t coords;
-    int i, result;
-
-    <span class="strong"><strong>printf</strong></span>("test_simple\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 10, 2);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 20; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, i / 2, i % 2) = coords_array[i / 2][i % 2];
-    }
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong>return</strong></span> result;
-}
-
-int <span class="strong"><strong>test_collinear</strong></span>() {
-    igraph_real_t coords_array[][2] =
-    {{3, 2}, {5, 1}, {7, 0}, {9, -1}, {11, -2}};
-    igraph_matrix_t coords;
-    int i, result;
-
-    <span class="strong"><strong>printf</strong></span>("test_collinear\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 5, 2);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 10; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, i / 2, i % 2) = coords_array[i / 2][i % 2];
-    }
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong>return</strong></span> result;
-}
-
-int <span class="strong"><strong>test_degenerate</strong></span>() {
-    igraph_matrix_t coords;
-    int result;
-
-    <span class="strong"><strong>printf</strong></span>("test_degenerate\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 2, 2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 0, 0) = 3;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 0, 1) = 2;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 1, 0) = 5;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 1, 1) = 1;
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_resize" title="3.14.1. igraph_matrix_resize — Resizes a matrix.">igraph_matrix_resize</a></strong></span>(&amp;coords, 1, 2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 0, 0) = 3;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, 0, 1) = 2;
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_resize" title="3.14.1. igraph_matrix_resize — Resizes a matrix.">igraph_matrix_resize</a></strong></span>(&amp;coords, 0, 2);
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong>return</strong></span> result;
-}
-
-int <span class="strong"><strong>test_bug_805</strong></span>() {
-    igraph_real_t coords_array[][2] = {
-        {0, 0}, {1, 0}, {0.707, 0.707}, {0, 1}, {-0.707, 0.707}, {-1, 0},
-        {-0.707, -0.707}, {0, -1}, {0.707, -0.707}, {2, 0}, {1.414, 1.414}, {0, 2},
-        {-1.414, 1.414}, {-2, 0}, {-1.414, -1.414}, {0, -2}, {1.414, -1.414}, {3, 0},
-        {2.121, 2.121}, {0, 3}, {-2.121, 2.121}, {-3, 0}, {-2.121, -2.121}, {0, -3},
-        {2.121, -2.121}, {4, 0}, {2.828, 2.828}, {0, 4}, {-2.828, 2.828}, {-4, 0},
-        {-2.828, -2.828}, {0, -4}, {2.828, -2.828}
-    };
-    igraph_matrix_t coords;
-    int i, result;
-
-    <span class="strong"><strong>printf</strong></span>("test_bug_805\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 33, 2);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 66; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, i / 2, i % 2) = coords_array[i / 2][i % 2];
-    }
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong>return</strong></span> result;
-}
-
-int <span class="strong"><strong>test_bug_1115</strong></span>() {
-    igraph_real_t coords_array[][2] = {
-        {37, 52}, {49, 49}, {52, 64}, {20, 26}, {40, 30}, {21, 47}, {17, 63}, {31, 62},
-        {52, 33}, {51, 21}, {42, 41}, {31, 32}, {5, 25}, {12, 42}, {36, 16}, {52, 41},
-        {27, 23}, {17, 33}, {13, 13}, {57, 58}, {62, 42}, {42, 57}, {16, 57}, {8, 52},
-        {7, 38}, {27, 68}, {30, 48}, {43, 67}, {58, 48}, {58, 27}, {37, 69}, {38, 46},
-        {46, 10}, {61, 33}, {62, 63}, {63, 69}, {32, 22}, {45, 35}, {59, 15}, {5, 6},
-        {10, 17}, {21, 10}, {5, 64}, {30, 15}, {39, 10}, {32, 39}, {25, 32}, {25, 55},
-        {48, 28}, {56, 37}, {30, 40}
-    };
-    igraph_matrix_t coords;
-    int i, result;
-
-    <span class="strong"><strong>printf</strong></span>("test_bug_1115\n");
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 51, 2);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 102; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(coords, i / 2, i % 2) = coords_array[i / 2][i % 2];
-    }
-    result = <span class="strong"><strong>check_convex_hull</strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong>return</strong></span> result;
-}
-
-int <span class="strong"><strong>main</strong></span>() {
-    int result;
-
-    result = <span class="strong"><strong>test_simple</strong></span>();
-    <span class="strong"><strong>if</strong></span> (result != 0) {
-        <span class="strong"><strong>return</strong></span> result;
-    }
-
-    result = <span class="strong"><strong>test_collinear</strong></span>();
-    <span class="strong"><strong>if</strong></span> (result != 0) {
-        <span class="strong"><strong>return</strong></span> result;
-    }
-
-    result = <span class="strong"><strong>test_degenerate</strong></span>();
-    <span class="strong"><strong>if</strong></span> (result != 0) {
-        <span class="strong"><strong>return</strong></span> result;
-    }
-
-    result = <span class="strong"><strong>test_bug_805</strong></span>();
-    <span class="strong"><strong>if</strong></span> (result != 0) {
-        <span class="strong"><strong>return</strong></span> result;
-    }
-
-    result = <span class="strong"><strong>test_bug_1115</strong></span>();
-    <span class="strong"><strong>if</strong></span> (result != 0) {
-        <span class="strong"><strong>return</strong></span> result;
-    }
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-</pre>
-<p></p>
-</div>
-</div>
-<br class="example-break">
-</div>
-<p> 
+Time complexity: O(n log(n)) where n is the number of vertices.
+ 
 </p>
 </div>
 </div>
@@ -1469,7 +1239,7 @@ samples in the input vector (although it should be faster in practice).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.33.7.3.10.3"></a><p class="title"><b>Example 32.4.  File <code class="code">examples/simple/igraph_power_law_fit.c</code></b></p>
+<a name="id-1.33.7.3.10.3"></a><p class="title"><b>Example 32.3.  File <code class="code">examples/simple/igraph_power_law_fit.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 

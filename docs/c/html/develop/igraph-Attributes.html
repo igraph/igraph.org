@@ -580,6 +580,7 @@ interface is able to serialize them into strings. See also <a class="link" href=
 <dt><span class="section"><a href="igraph-Attributes.html#igraph_attribute_combination_remove">2.3. <code class="function">igraph_attribute_combination_remove</code> —  Remove a record from an attribute combination list.</a></span></dt>
 <dt><span class="section"><a href="igraph-Attributes.html#igraph_attribute_combination_destroy">2.4. <code class="function">igraph_attribute_combination_destroy</code> —  Destroy attribute combination list.</a></span></dt>
 <dt><span class="section"><a href="igraph-Attributes.html#igraph_attribute_combination_type_t">2.5. <code class="function">igraph_attribute_combination_type_t</code> — The possible types of attribute combinations.</a></span></dt>
+<dt><span class="section"><a href="igraph-Attributes.html#igraph_attribute_combination">2.6. <code class="function">igraph_attribute_combination</code> —  Initialize attribute combination list and add records.</a></span></dt>
 </dl></div>
 <p>Several graph operations may collapse multiple vertices or edges into
 a single one. Attribute combination lists are used to indicate to the attribute
@@ -694,7 +695,13 @@ igraph_error_t igraph_attribute_combination_add(igraph_attribute_combination_t *
 <td><p><span class="term"><em class="parameter"><code>func</code></em>:</span></p></td>
 <td><p>
   Function to be used if <em class="parameter"><code>type</code></em> is
-            <code class="constant">IGRAPH_ATTRIBUTE_COMBINE_FUNCTION</code>.
+            <code class="constant">IGRAPH_ATTRIBUTE_COMBINE_FUNCTION</code>. This function is called
+            by the concrete attribute handler attached to igraph, and its
+            calling signature depends completely on the attribute handler.
+            For instance, if you are using attributes from C and you have
+            attached the C attribute handler, you need to follow the
+            documentation of the <a class="link" href="igraph-Attributes.html#c-attribute-combination-functions" title="3.4. Custom attribute combination functions">C attribute handler</a>
+            for more details.
 </p></td>
 </tr>
 </tbody>
@@ -941,6 +948,130 @@ typedef enum {
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_attribute_combination"></a>2.6. <code class="function">igraph_attribute_combination</code> —  Initialize attribute combination list and add records.</h3></div></div></div>
+<a class="indexterm" name="id-1.13.6.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_attribute_combination(
+        igraph_attribute_combination_t *comb, ...);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>comb</code></em>:</span></p></td>
+<td><p>
+  The uninitialized attribute combination list.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  A list of 'name, type[, func]', where:
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em>:</span></p></td>
+<td><p>
+  The name of the attribute. If the name already exists
+            the attribute combination record will be replaced.
+            Use NULL to add a default combination record for all
+            atributes not in the list.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em>:</span></p></td>
+<td><p>
+  The type of the attribute combination. See <a class="link" href="igraph-Attributes.html#igraph_attribute_combination_type_t" title="2.5. igraph_attribute_combination_type_t — The possible types of attribute combinations."><code class="function">igraph_attribute_combination_type_t</code></a> for the options.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>func</code></em>:</span></p></td>
+<td><p>
+  Function to be used if <em class="parameter"><code>type</code></em> is
+            <code class="constant">IGRAPH_ATTRIBUTE_COMBINE_FUNCTION</code>.
+The list is closed by setting the name to <code class="constant">IGRAPH_NO_MORE_ATTRIBUTES</code>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n^2), where n is the number attribute
+                 combinations records to add.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.13.6.9.8.1"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/igraph_attribute_combination.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_t graph;
+
+    igraph_attribute_combination_t comb;
+
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 2, IGRAPH_DIRECTED,
+                 0,1, 0,1,
+                 -1);
+
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAB" title="3.2.16. SETEAB — Set a boolean edge attribute">SETEAB</a></strong></span>(&amp;graph, "type", 0, true);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAB" title="3.2.16. SETEAB — Set a boolean edge attribute">SETEAB</a></strong></span>(&amp;graph, "type", 1, false);
+
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
+                                 "weight", IGRAPH_ATTRIBUTE_COMBINE_SUM,
+                                 "type",   IGRAPH_ATTRIBUTE_COMBINE_FIRST,
+                                 "",       IGRAPH_ATTRIBUTE_COMBINE_IGNORE,
+                                 IGRAPH_NO_MORE_ATTRIBUTES);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loops=*/</em></span> true, &amp;comb);
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;graph, stdout, <span class="emphasis"><em>/*prefixattr=*/</em></span> true);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination_destroy" title="2.4. igraph_attribute_combination_destroy — Destroy attribute combination list.">igraph_attribute_combination_destroy</a></strong></span>(&amp;comb);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -949,6 +1080,7 @@ typedef enum {
 <dt><span class="section"><a href="igraph-Attributes.html#query-attributes">3.1. Query attributes</a></span></dt>
 <dt><span class="section"><a href="igraph-Attributes.html#set-attributes">3.2. Set attributes</a></span></dt>
 <dt><span class="section"><a href="igraph-Attributes.html#remove-attributes">3.3. Remove attributes</a></span></dt>
+<dt><span class="section"><a href="igraph-Attributes.html#c-attribute-combination-functions">3.4. Custom attribute combination functions</a></span></dt>
 </dl></div>
 <p>There is an experimental attribute handler that can be used
 from C code. In this section we show how this works. This attribute
@@ -982,65 +1114,17 @@ attribute handler. Code using these functions will not function when
 a different attribute handler is attached.</p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.7"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/cattributes.c</code></b></p>
+<a name="id-1.13.7.7"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/cattributes.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
-int <span class="strong"><strong>print_attributes</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *g);
-
-int <span class="strong"><strong>main</strong></span>() {
-
-    igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> y;
-
-    <span class="emphasis"><em>/* turn on attribute handling */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 3, IGRAPH_DIRECTED, 0,1, 1,2, -1);
-
-    <span class="emphasis"><em>/* Set graph attributes */</em></span>
-    <span class="emphasis"><em>/* numeric */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAN" title="3.2.2. SETGAN — Set a numeric graph attribute">SETGAN</a></strong></span>(&amp;g, "id", 10);
-    <span class="emphasis"><em>/* string */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAS" title="3.2.6. SETGAS — Set a string graph attribute">SETGAS</a></strong></span>(&amp;g, "name", "toy");
-    <span class="emphasis"><em>/* boolean */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAB" title="3.2.4. SETGAB — Set a boolean graph attribute">SETGAB</a></strong></span>(&amp;g, "is_regular", 0);
-
-    <span class="emphasis"><em>/* Set edge string attribute */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAS" title="3.2.18. SETEAS — Set a string edge attribute">SETEAS</a></strong></span>(&amp;g, "color", 1, "RED");
-
-    <span class="emphasis"><em>/* Set vertex attributes as vector */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;y, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;y, 1.23);
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVANV" title="3.2.20. SETVANV — Set a numeric vertex attribute for all vertices">SETVANV</a></strong></span>(&amp;g, "y", &amp;y);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;y);
-
-    <span class="emphasis"><em>/* Set single vertex numeric attribute */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAN" title="3.2.8. SETVAN — Set a numeric vertex attribute">SETVAN</a></strong></span>(&amp;g, "y", 0, -1);
-
-    <span class="emphasis"><em>/* Delete graph attribute */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#DELGA" title="3.3.2. DELGA — Remove a graph attribute.">DELGA</a></strong></span>(&amp;g, "is_regular");
-
-    <span class="emphasis"><em>/* Print the final result */</em></span>
-    <span class="strong"><strong>print_attributes</strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* Delete all remaining attributes */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#DELALL" title="3.3.11. DELALL — Remove all attributes.">DELALL</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* Destroy the graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>print_attributes</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *g) {
-
+<span class="emphasis"><em>/* Prints graph, vertex and edge attributes stored in a graph. */</em></span>
+void <span class="strong"><strong>print_attributes</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *g) {
     igraph_vector_int_t gtypes, vtypes, etypes;
     igraph_strvector_t gnames, vnames, enames;
-    igraph_integer_t i;
-
-    igraph_integer_t j;
+    igraph_integer_t i, j;
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;gtypes, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;vtypes, 0);
@@ -1049,10 +1133,12 @@ int <span class="strong"><strong>print_attributes</strong></span>(<span class="s
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="8.1. igraph_strvector_init — Initializes a string vector.">igraph_strvector_init</a></strong></span>(&amp;vnames, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_init" title="8.1. igraph_strvector_init — Initializes a string vector.">igraph_strvector_init</a></strong></span>(&amp;enames, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_cattribute_list" title="3.1.1. igraph_cattribute_list — List all attributes.">igraph_cattribute_list</a></strong></span>(g, &amp;gnames, &amp;gtypes, &amp;vnames, &amp;vtypes,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_cattribute_list" title="3.1.1. igraph_cattribute_list — List all attributes.">igraph_cattribute_list</a></strong></span>(g,
+                           &amp;gnames, &amp;gtypes,
+                           &amp;vnames, &amp;vtypes,
                            &amp;enames, &amp;etypes);
 
-    <span class="emphasis"><em>/* Graph attributes */</em></span>
+    <span class="emphasis"><em>/* graph attributes */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;gnames); i++) {
         <span class="strong"><strong>printf</strong></span>("%s=", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#STR" title="8.4. STR — Indexing string vectors.">STR</a></strong></span>(gnames, i));
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(gtypes)[i] == IGRAPH_ATTRIBUTE_NUMERIC) {
@@ -1064,6 +1150,7 @@ int <span class="strong"><strong>print_attributes</strong></span>(<span class="s
     }
     <span class="strong"><strong>printf</strong></span>("\n");
 
+    <span class="emphasis"><em>/* vertex attributes */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(g); i++) {
         <span class="strong"><strong>printf</strong></span>("Vertex %" IGRAPH_PRId ": ", i);
         <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;vnames); j++) {
@@ -1078,6 +1165,7 @@ int <span class="strong"><strong>print_attributes</strong></span>(<span class="s
         <span class="strong"><strong>printf</strong></span>("\n");
     }
 
+    <span class="emphasis"><em>/* edge attributes */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(g); i++) {
         <span class="strong"><strong>printf</strong></span>("Edge %" IGRAPH_PRId " (%" IGRAPH_PRId "-%" IGRAPH_PRId "): ", i, <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(g, i), <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(g, i));
         <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;enames); j++) {
@@ -1098,6 +1186,48 @@ int <span class="strong"><strong>print_attributes</strong></span>(<span class="s
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;etypes);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;vtypes);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;gtypes);
+}
+
+int <span class="strong"><strong>main</strong></span>() {
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> y;
+
+    <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 3, IGRAPH_DIRECTED, 0,1, 1,2, -1);
+
+    <span class="emphasis"><em>/* Set graph attributes. */</em></span>
+    <span class="emphasis"><em>/* numeric */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAN" title="3.2.2. SETGAN — Set a numeric graph attribute">SETGAN</a></strong></span>(&amp;graph, "id", 10);
+    <span class="emphasis"><em>/* string */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAS" title="3.2.6. SETGAS — Set a string graph attribute">SETGAS</a></strong></span>(&amp;graph, "name", "toy");
+    <span class="emphasis"><em>/* boolean */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAB" title="3.2.4. SETGAB — Set a boolean graph attribute">SETGAB</a></strong></span>(&amp;graph, "is_regular", false);
+
+    <span class="emphasis"><em>/* Set edge string attribute. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAS" title="3.2.18. SETEAS — Set a string edge attribute">SETEAS</a></strong></span>(&amp;graph, "color", 1, "RED");
+
+    <span class="emphasis"><em>/* Set vertex attributes as vector. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;y, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;y, 1.23);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVANV" title="3.2.20. SETVANV — Set a numeric vertex attribute for all vertices">SETVANV</a></strong></span>(&amp;graph, "y", &amp;y);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;y);
+
+    <span class="emphasis"><em>/* Set single vertex numeric attribute. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAN" title="3.2.8. SETVAN — Set a numeric vertex attribute">SETVAN</a></strong></span>(&amp;graph, "y", 0, -1);
+
+    <span class="emphasis"><em>/* Delete graph attribute. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#DELGA" title="3.3.2. DELGA — Remove a graph attribute.">DELGA</a></strong></span>(&amp;graph, "is_regular");
+
+    <span class="emphasis"><em>/* Print the final result. */</em></span>
+    <span class="strong"><strong>print_attributes</strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* Delete all remaining attributes. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#DELALL" title="3.3.11. DELALL — Remove all attributes.">DELALL</a></strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* Destroy the graph. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1109,7 +1239,7 @@ int <span class="strong"><strong>print_attributes</strong></span>(<span class="s
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.8"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/cattributes2.c</code></b></p>
+<a name="id-1.13.7.8"></a><p class="title"><b>Example 12.3.  File <code class="code">examples/simple/cattributes2.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1119,15 +1249,15 @@ int <span class="strong"><strong>main</strong></span>() {
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> y;
     <a class="link" href="igraph-Error.html#igraph_warning_handler_t" title="4.1. igraph_warning_handler_t — The type of igraph warning handler functions.">igraph_warning_handler_t</a>* oldwarnhandler;
 
-    <span class="emphasis"><em>/* turn on attribute handling */</em></span>
+    <span class="emphasis"><em>/* Turn on attribute handling. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
 
-    <span class="emphasis"><em>/* Create a graph, add some attributes and save it as a GraphML file */</em></span>
+    <span class="emphasis"><em>/* Create a graph, add some attributes and save it as a GraphML file. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.20. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "Petersen");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAS" title="3.2.6. SETGAS — Set a string graph attribute">SETGAS</a></strong></span>(&amp;g, "name", "Petersen's graph");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAN" title="3.2.2. SETGAN — Set a numeric graph attribute">SETGAN</a></strong></span>(&amp;g, "vertices", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAN" title="3.2.2. SETGAN — Set a numeric graph attribute">SETGAN</a></strong></span>(&amp;g, "edges", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAB" title="3.2.4. SETGAB — Set a boolean graph attribute">SETGAB</a></strong></span>(&amp;g, "famous", 1);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETGAB" title="3.2.4. SETGAB — Set a boolean graph attribute">SETGAB</a></strong></span>(&amp;g, "famous", true);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;y, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) + 1);
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVANV" title="3.2.20. SETVANV — Set a numeric vertex attribute for all vertices">SETVANV</a></strong></span>(&amp;g, "id", &amp;y);
@@ -1136,7 +1266,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAS" title="3.2.12. SETVAS — Set a string vertex attribute">SETVAS</a></strong></span>(&amp;g, "name", 0, "foo");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAS" title="3.2.12. SETVAS — Set a string vertex attribute">SETVAS</a></strong></span>(&amp;g, "name", 1, "foobar");
 
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAB" title="3.2.10. SETVAB — Set a boolean vertex attribute">SETVAB</a></strong></span>(&amp;g, "is_first", 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVAB" title="3.2.10. SETVAB — Set a boolean vertex attribute">SETVAB</a></strong></span>(&amp;g, "is_first", 0, true);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;y, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) + 1);
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEANV" title="3.2.26. SETEANV — Set a numeric edge attribute for all edges">SETEANV</a></strong></span>(&amp;g, "id", &amp;y);
@@ -1145,17 +1275,17 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAS" title="3.2.18. SETEAS — Set a string edge attribute">SETEAS</a></strong></span>(&amp;g, "name", 0, "FOO");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAS" title="3.2.18. SETEAS — Set a string edge attribute">SETEAS</a></strong></span>(&amp;g, "name", 1, "FOOBAR");
 
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAB" title="3.2.16. SETEAB — Set a boolean edge attribute">SETEAB</a></strong></span>(&amp;g, "is_first", 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETEAB" title="3.2.16. SETEAB — Set a boolean edge attribute">SETEAB</a></strong></span>(&amp;g, "is_first", 0, true);
 
     <span class="emphasis"><em>/* Turn off the warning handler temporarily because the GML writer will</em></span>
 <span class="emphasis"><em>     * print warnings about boolean attributes being converted to numbers, and</em></span>
-<span class="emphasis"><em>     * we don't care about these */</em></span>
+<span class="emphasis"><em>     * we don't care about these. */</em></span>
     oldwarnhandler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_gml" title="4.2. igraph_write_graph_gml — Write the graph to a stream in GML format.">igraph_write_graph_gml</a></strong></span>(&amp;g, stdout, IGRAPH_WRITE_GML_DEFAULT_SW, 0, "");
     <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(oldwarnhandler);
 
-    <span class="emphasis"><em>/* Back to business */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, stdout, <span class="emphasis"><em>/*prefixattr=*/</em></span> 1);
+    <span class="emphasis"><em>/* Back to business. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_graphml" title="3.2. igraph_write_graph_graphml — Writes the graph to a file in GraphML format.">igraph_write_graph_graphml</a></strong></span>(&amp;g, stdout, <span class="emphasis"><em>/*prefixattr=*/</em></span> true);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -1169,11 +1299,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.9"></a><p class="title"><b>Example 12.3.  File <code class="code">examples/simple/cattributes3.c</code></b></p>
+<a name="id-1.13.7.9"></a><p class="title"><b>Example 12.4.  File <code class="code">examples/simple/cattributes3.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>mf</strong></span>(<span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *input, igraph_real_t *output) {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>mf</strong></span>(<span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *input, igraph_real_t *output) {
     *output = 0.0;
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1190,7 +1320,7 @@ int <span class="strong"><strong>mf</strong></span>(<span class="strong"><strong
     igraph_attribute_combination_t comb;
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "weight", weight_attr,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_IGNORE,
                                  IGRAPH_NO_MORE_ATTRIBUTES);
@@ -1225,7 +1355,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ****************************************************** */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, &amp;g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "weight", IGRAPH_ATTRIBUTE_COMBINE_FUNCTION, mf,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_IGNORE,
                                  IGRAPH_NO_MORE_ATTRIBUTES);
@@ -1234,7 +1364,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ****************************************************** */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, &amp;g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_MEAN,
                                  IGRAPH_NO_MORE_ATTRIBUTES);
     <span class="strong"><strong>simplify_write_destroy</strong></span>(&amp;g2, &amp;comb);
@@ -1253,7 +1383,7 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.7.10"></a><p class="title"><b>Example 12.4.  File <code class="code">examples/simple/cattributes4.c</code></b></p>
+<a name="id-1.13.7.10"></a><p class="title"><b>Example 12.5.  File <code class="code">examples/simple/cattributes4.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1285,7 +1415,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ****************************************************** */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, &amp;g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "weight", IGRAPH_ATTRIBUTE_COMBINE_SUM,
                                  "color",  IGRAPH_ATTRIBUTE_COMBINE_FIRST,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_IGNORE,
@@ -1295,7 +1425,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ****************************************************** */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, &amp;g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_LAST,
                                  IGRAPH_NO_MORE_ATTRIBUTES);
     <span class="strong"><strong>simplify_write_destroy</strong></span>(&amp;g2, &amp;comb);
@@ -1303,7 +1433,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* ****************************************************** */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(&amp;g2, &amp;g);
-    <span class="strong"><strong>igraph_attribute_combination</strong></span>(&amp;comb,
+    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records.">igraph_attribute_combination</a></strong></span>(&amp;comb,
                                  "",       IGRAPH_ATTRIBUTE_COMBINE_IGNORE,
                                  "color",  IGRAPH_ATTRIBUTE_COMBINE_CONCAT,
                                  IGRAPH_NO_MORE_ATTRIBUTES);
@@ -6337,6 +6467,41 @@ Calls <a class="link" href="igraph-Attributes.html#igraph_cattribute_remove_all"
 
 </p>
 </div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="c-attribute-combination-functions"></a>3.4. Custom attribute combination functions</h3></div></div></div>
+<p>
+The C attribute handler supports combining the attributes of multiple
+vertices of edges into a single attribute during a vertex or edge contraction
+operation via a user-defined function. This is achieved by setting the
+type of the attribute combination to <code class="constant">IGRAPH_ATTRIBUTE_COMBINE_FUNCTION</code>
+and passing in a pointer to the custom combination function when specifying
+attribute combinations in <a class="link" href="igraph-Attributes.html#igraph_attribute_combination" title="2.6. igraph_attribute_combination — Initialize attribute combination list and add records."><code class="function">igraph_attribute_combination()</code></a> or
+<a class="link" href="igraph-Attributes.html#igraph_attribute_combination_add" title="2.2. igraph_attribute_combination_add — Add combination record to attribute combination list."><code class="function">igraph_attribute_combination_add()</code></a> . For the C attribute handler, the
+signature of the function depends on the type of the underlying attribute.
+For numeric attributes, use:
+</p>
+<div class="informalexample"><pre class="programlisting"> igraph_error_t function(const igraph_vector_t *input, igraph_real_t *output); </pre></div>
+<p>
+where <em class="parameter"><code>input</code></em> will receive a vector containing the value of the attribute
+for all the vertices or edges being combined, and <em class="parameter"><code>output</code></em> must be filled
+by the function to the combined value. Similarly, for Boolean attributes, the
+function takes a boolean vector in <em class="parameter"><code>input</code></em> and must return the combined Boolean
+value in <em class="parameter"><code>output</code></em>:
+</p>
+<div class="informalexample"><pre class="programlisting"> igraph_error_t function(const igraph_vector_bool_t *input, igraph_bool_t *output); </pre></div>
+<p>
+For string attributes, the signature is slightly different:
+</p>
+<div class="informalexample"><pre class="programlisting"> igraph_error_t function(const igraph_strvector_t *input, char **output); </pre></div>
+<p>
+In case of strings, all strings in the input vector are <span class="emphasis"><em>owned</em></span> by igraph
+and must not be modified or freed in the combination handler. The string
+returned to the caller in <em class="parameter"><code>output</code></em> remains owned by the caller; igraph will
+make a copy it and store the copy in the appropriate part of the data
+structure holding the vertex or edge attributes.
+</p>
 </div>
 </div>
 </div>

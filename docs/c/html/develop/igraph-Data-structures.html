@@ -1754,7 +1754,6 @@ References:
 int <span class="strong"><strong>main</strong></span>() {
     igraph_real_t d;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> u, v;
-    int ret;
     igraph_integer_t i, k, n;
 
     <span class="emphasis"><em>/********************************</em></span>
@@ -1825,10 +1824,10 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* empty sequence */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, 0);
-    ret = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method">igraph_vector_shuffle</a></strong></span>(&amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method">igraph_vector_shuffle</a></strong></span>(&amp;v);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
 
-    <span class="strong"><strong>return</strong></span> ret == 0 ? 0 : 6;
+    <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
 <p></p>
@@ -12267,7 +12266,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>permute</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
+void <span class="strong"><strong>permute</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
             <span class="strong"><strong>const</strong></span> igraph_vector_int_t *p,
             <span class="strong"><strong>const</strong></span> igraph_vector_int_t *q,
             igraph_matrix_t *res) {
@@ -12285,11 +12284,9 @@ int <span class="strong"><strong>permute</strong></span>(<span class="strong"><s
             <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*res, i, j) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*M, ii, jj);
         }
     }
-
-    <span class="strong"><strong>return</strong></span> 0;
 }
 
-int <span class="strong"><strong>permute_rows</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
+void <span class="strong"><strong>permute_rows</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
                  <span class="strong"><strong>const</strong></span> igraph_vector_int_t *p,
                  igraph_matrix_t *res) {
 
@@ -12305,11 +12302,9 @@ int <span class="strong"><strong>permute_rows</strong></span>(<span class="stron
             <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*res, i, j) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*M, ii, j);
         }
     }
-
-    <span class="strong"><strong>return</strong></span> 0;
 }
 
-int <span class="strong"><strong>permute_cols</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
+void <span class="strong"><strong>permute_cols</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *M,
                  <span class="strong"><strong>const</strong></span> igraph_vector_int_t *q,
                  igraph_matrix_t *res) {
 
@@ -12325,11 +12320,9 @@ int <span class="strong"><strong>permute_cols</strong></span>(<span class="stron
             <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*res, i, j) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*M, i, jj);
         }
     }
-
-    <span class="strong"><strong>return</strong></span> 0;
 }
 
-<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>random_permutation</strong></span>(igraph_vector_int_t *vec) {
+void <span class="strong"><strong>random_permutation</strong></span>(igraph_vector_int_t *vec) {
     <span class="emphasis"><em>/* We just do size(vec) * 2 swaps */</em></span>
     igraph_integer_t one, two, i, n = <span class="strong"><strong>igraph_vector_int_size</strong></span>(vec);
     igraph_integer_t tmp;
@@ -12340,7 +12333,6 @@ int <span class="strong"><strong>permute_cols</strong></span>(<span class="stron
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec)[one] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec)[two];
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec)[two] = tmp;
     }
-    <span class="strong"><strong>return</strong></span> 0;
 }
 
 igraph_bool_t <span class="strong"><strong>check_same</strong></span>(<span class="strong"><strong>const</strong></span> igraph_sparsemat_t *A,

@@ -11778,8 +11778,6 @@ Time complexity: O(n), the length of the score vector.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
 
-<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>ALMOST_EQUALS</strong></span>(a, b) (<span class="strong"><strong>fabs</strong></span>((a)-(b)) &lt; 1e-8)
-
 int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t g;
@@ -11790,19 +11788,20 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* in-star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_IN, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g,
+                                 <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_IN, IGRAPH_NO_LOOPS,
-                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                 <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                 <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "in-star, degree: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                       IGRAPH_UNDIRECTED, &amp;cent,
-                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                      <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                      <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "in-star, betweenness: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 2;
@@ -11816,19 +11815,19 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* out-star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_OUT, IGRAPH_NO_LOOPS,
-                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                 <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                 <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "out-star, degree: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 11;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                       IGRAPH_UNDIRECTED, &amp;cent,
-                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                      <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                      <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "out-star, betweenness: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 12;
@@ -11842,30 +11841,30 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* undirected star */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_ALL, IGRAPH_NO_LOOPS,
-                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                 <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                 &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                 <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, degree: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 21;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                       IGRAPH_UNDIRECTED, &amp;cent,
-                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                      <span class="emphasis"><em>/*normalized=*/</em></span> 1);
+                                      <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                      <span class="emphasis"><em>/*normalized=*/</em></span> true);
     <span class="strong"><strong>if</strong></span> (cent != 1.0) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, betweenness: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 22;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                     IGRAPH_ALL, &amp;cent,
-                                    <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-                                    <span class="emphasis"><em>/*normalization=*/</em></span> 1);
+                                    <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                                    <span class="emphasis"><em>/*normalized=*/</em></span> true);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>ALMOST_EQUALS</strong></span>(cent, 1.0)) {
+    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, closeness: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 23;
     }
@@ -11879,28 +11878,32 @@ int <span class="strong"><strong>main</strong></span>() {
                  0, 1, -1);
 
     <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options">igraph_arpack_options_init</a></strong></span>(&amp;arpack_options);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
-            <span class="emphasis"><em>/*value=*/</em></span> 0,
-            <span class="emphasis"><em>/*directed=*/</em></span> 1,
-            <span class="emphasis"><em>/*scale=*/</em></span> 1,
-            &amp;arpack_options, &amp;cent,
-            <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-            <span class="emphasis"><em>/*normalization=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(
+                &amp;g,
+                <span class="emphasis"><em>/*vector=*/</em></span> NULL,
+                <span class="emphasis"><em>/*value=*/</em></span> NULL,
+                IGRAPH_DIRECTED,
+                <span class="emphasis"><em>/*scale=*/</em></span> true,
+                &amp;arpack_options, &amp;cent,
+                <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                <span class="emphasis"><em>/*normalized=*/</em></span> true);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>ALMOST_EQUALS</strong></span>(cent, 1.0)) {
+    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "dyad, eigenvector centrality: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 24;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(&amp;g, <span class="emphasis"><em>/*vector=*/</em></span> 0,
-            <span class="emphasis"><em>/*value=*/</em></span> 0,
-            <span class="emphasis"><em>/*directed=*/</em></span> 1,
-            <span class="emphasis"><em>/*scale=*/</em></span> 0,
-            &amp;arpack_options, &amp;cent,
-            <span class="emphasis"><em>/*theoretical_max=*/</em></span> 0,
-            <span class="emphasis"><em>/*normalization=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(
+                &amp;g,
+                <span class="emphasis"><em>/*vector=*/</em></span> NULL,
+                <span class="emphasis"><em>/*value=*/</em></span> NULL,
+                IGRAPH_DIRECTED,
+                <span class="emphasis"><em>/*scale=*/</em></span> false,
+                &amp;arpack_options, &amp;cent,
+                <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
+                <span class="emphasis"><em>/*normalized=*/</em></span> true);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>ALMOST_EQUALS</strong></span>(cent, 1.0)) {
+    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "dyad, eigenvector centrality, not scaled: %g\n", cent);
         <span class="strong"><strong>return</strong></span> 25;
     }
@@ -16801,7 +16804,7 @@ sequence of n-2 integers, each between 0 and n-1 (inclusive).
 <dt><span class="section"><a href="igraph-Structural.html#igraph_transitivity_undirected">16.1. <code class="function">igraph_transitivity_undirected</code> —  Calculates the transitivity (clustering coefficient) of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_transitivity_local_undirected">16.2. <code class="function">igraph_transitivity_local_undirected</code> —  Calculates the local transitivity (clustering coefficient) of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_transitivity_avglocal_undirected">16.3. <code class="function">igraph_transitivity_avglocal_undirected</code> —  Average local transitivity (clustering coefficient).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_transitivity_barrat">16.4. <code class="function">igraph_transitivity_barrat</code> — Weighted transitivity, as defined by A. Barrat.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_transitivity_barrat">16.4. <code class="function">igraph_transitivity_barrat</code> —  Weighted transitivity, as defined by A. Barrat.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -17236,7 +17239,7 @@ graph and d is the average degree.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_transitivity_barrat"></a>16.4. <code class="function">igraph_transitivity_barrat</code> — Weighted transitivity, as defined by A. Barrat.</h3></div></div></div>
+<a name="igraph_transitivity_barrat"></a>16.4. <code class="function">igraph_transitivity_barrat</code> —  Weighted transitivity, as defined by A. Barrat.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.18.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -17257,10 +17260,10 @@ given vertex <code class="constant">i</code>, from all triangles in which it par
 consider the weight of the edges incident on <code class="constant">i</code>. The transitivity
 is the sum of these weights divided by twice the strength of the
 vertex (see <a class="link" href="igraph-Structural.html#igraph_strength" title="10.11. igraph_strength — Strength of the vertices, also called weighted vertex degree."><code class="function">igraph_strength()</code></a>) and the degree of the vertex
-minus one. See   Alain Barrat, Marc Barthelemy, Romualdo
+minus one. See equation (5) in Alain Barrat, Marc Barthelemy, Romualdo
 Pastor-Satorras, Alessandro Vespignani: The architecture of complex
 weighted networks, Proc. Natl. Acad. Sci. USA 101, 3747 (2004) at
-<a class="ulink" href="http://arxiv.org/abs/cond-mat/0311416" target="_top">http://arxiv.org/abs/cond-mat/0311416</a> for the exact formula.
+<a class="ulink" href="https://doi.org/10.1073/pnas.0400087101" target="_top">https://doi.org/10.1073/pnas.0400087101</a> for the exact formula.
 
 </p>
 <p><b>Arguments: </b>
@@ -20426,78 +20429,7 @@ int <span class="strong"><strong>test_weighted_graph_generated</strong></span>()
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-<span class="emphasis"><em>// This test addresses issue #1110, where an incorrect</em></span>
-<span class="emphasis"><em>// types vector (i.e. that doesn't correspond to a bipartite</em></span>
-<span class="emphasis"><em>// labelling of the graph) would cause a possible infinite loop.</em></span>
-int <span class="strong"><strong>test_incorrect_types</strong></span>() {
-    igraph_t g;
-    igraph_vector_bool_t types;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
-
-    igraph_integer_t matching_size;
-    igraph_real_t weighted_size;
-
-    igraph_vector_int_t matching;
-
-    <a class="link" href="igraph-Error.html#igraph_error_type_t" title="3.2. igraph_error_type_t — Error code type.">igraph_error_type_t</a> err;
-
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_UNDIRECTED,
-                 0, 1, 0, 2, 0, 3,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, 4);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[0] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[1] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[3] = 1;
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;matching, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;weights, 1.0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-
-    <span class="emphasis"><em>// Test incorrect types</em></span>
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="emphasis"><em>// Test correct types</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="emphasis"><em>// Test incorrect types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-
-    <span class="emphasis"><em>// Test correct types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 6;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;matching);
-
-    <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
 int <span class="strong"><strong>main</strong></span>() {
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
-
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_graph_from_leda_tutorial</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 1;
     }
@@ -20508,10 +20440,6 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_weighted_graph_generated</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_incorrect_types</strong></span>()) {
-        <span class="strong"><strong>return</strong></span> 4;
     }
 
     <span class="strong"><strong>if</strong></span> (!IGRAPH_FINALLY_STACK_EMPTY) {
@@ -20782,78 +20710,7 @@ int <span class="strong"><strong>test_weighted_graph_generated</strong></span>()
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-<span class="emphasis"><em>// This test addresses issue #1110, where an incorrect</em></span>
-<span class="emphasis"><em>// types vector (i.e. that doesn't correspond to a bipartite</em></span>
-<span class="emphasis"><em>// labelling of the graph) would cause a possible infinite loop.</em></span>
-int <span class="strong"><strong>test_incorrect_types</strong></span>() {
-    igraph_t g;
-    igraph_vector_bool_t types;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
-
-    igraph_integer_t matching_size;
-    igraph_real_t weighted_size;
-
-    igraph_vector_int_t matching;
-
-    <a class="link" href="igraph-Error.html#igraph_error_type_t" title="3.2. igraph_error_type_t — Error code type.">igraph_error_type_t</a> err;
-
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_UNDIRECTED,
-                 0, 1, 0, 2, 0, 3,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, 4);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[0] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[1] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[3] = 1;
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;matching, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;weights, 1.0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-
-    <span class="emphasis"><em>// Test incorrect types</em></span>
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="emphasis"><em>// Test correct types</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="emphasis"><em>// Test incorrect types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-
-    <span class="emphasis"><em>// Test correct types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 6;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;matching);
-
-    <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
 int <span class="strong"><strong>main</strong></span>() {
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
-
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_graph_from_leda_tutorial</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 1;
     }
@@ -20864,10 +20721,6 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_weighted_graph_generated</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_incorrect_types</strong></span>()) {
-        <span class="strong"><strong>return</strong></span> 4;
     }
 
     <span class="strong"><strong>if</strong></span> (!IGRAPH_FINALLY_STACK_EMPTY) {
@@ -21192,78 +21045,7 @@ int <span class="strong"><strong>test_weighted_graph_generated</strong></span>()
     <span class="strong"><strong>return</strong></span> 0;
 }
 
-<span class="emphasis"><em>// This test addresses issue #1110, where an incorrect</em></span>
-<span class="emphasis"><em>// types vector (i.e. that doesn't correspond to a bipartite</em></span>
-<span class="emphasis"><em>// labelling of the graph) would cause a possible infinite loop.</em></span>
-int <span class="strong"><strong>test_incorrect_types</strong></span>() {
-    igraph_t g;
-    igraph_vector_bool_t types;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
-
-    igraph_integer_t matching_size;
-    igraph_real_t weighted_size;
-
-    igraph_vector_int_t matching;
-
-    <a class="link" href="igraph-Error.html#igraph_error_type_t" title="3.2. igraph_error_type_t — Error code type.">igraph_error_type_t</a> err;
-
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_UNDIRECTED,
-                 0, 1, 0, 2, 0, 3,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, 4);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[0] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[1] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[3] = 1;
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;matching, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element">igraph_vector_fill</a></strong></span>(&amp;weights, 1.0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-
-    <span class="emphasis"><em>// Test incorrect types</em></span>
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="emphasis"><em>// Test correct types</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, NULL, &amp;matching, NULL, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="emphasis"><em>// Test incorrect types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 0;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-
-    <span class="emphasis"><em>// Test correct types for weighted graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[2] = 1;
-    err = <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_maximum_bipartite_matching" title="24.3. igraph_maximum_bipartite_matching — Calculates a maximum matching in a bipartite graph.">igraph_maximum_bipartite_matching</a></strong></span>(&amp;g, &amp;types, &amp;matching_size, &amp;weighted_size, &amp;matching, &amp;weights, 0);
-    <span class="strong"><strong>if</strong></span> (err == IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 6;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;matching);
-
-    <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
 int <span class="strong"><strong>main</strong></span>() {
-    <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
-
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_graph_from_leda_tutorial</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 1;
     }
@@ -21274,10 +21056,6 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_weighted_graph_generated</strong></span>()) {
         <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>test_incorrect_types</strong></span>()) {
-        <span class="strong"><strong>return</strong></span> 4;
     }
 
     <span class="strong"><strong>if</strong></span> (!IGRAPH_FINALLY_STACK_EMPTY) {
@@ -21865,17 +21643,25 @@ don't appear in the graph.
 <p>
 The weighted version computes a weighted average of the neighbor degrees as
 
+</p>
+<p>
 <code class="literal">k_nn_u = 1/s_u sum_v w_uv k_v</code>,
 
+</p>
+<p>
 where <code class="literal">s_u = sum_v w_uv</code> is the sum of the incident edge weights
 of vertex <code class="constant">u</code>, i.e. its strength.
 The sum runs over the neighbors <code class="constant">v</code> of vertex <code class="constant">u</code>
 as indicated by <em class="parameter"><code>mode</code></em>. <code class="literal">w_uv</code> denotes the weighted adjacency matrix
 and <code class="literal">k_v</code> is the neighbors' degree, specified by <em class="parameter"><code>neighbor_degree_mode</code></em>.
+This is equation (6) in the reference below.
 
 </p>
 <p>
 Reference:
+
+</p>
+<p>
 A. Barrat, M. Barthélemy, R. Pastor-Satorras, and A. Vespignani,
 The architecture of complex weighted networks,
 Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
@@ -21975,7 +21761,7 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.28.6.11.1"></a><p class="title"><b>Example 13.45.  File <code class="code">examples/simple/igraph_knn.c</code></b></p>
+<a name="id-1.14.28.6.14.1"></a><p class="title"><b>Example 13.45.  File <code class="code">examples/simple/igraph_knn.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 

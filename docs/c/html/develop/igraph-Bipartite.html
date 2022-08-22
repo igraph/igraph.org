@@ -277,12 +277,10 @@ edges.
 int <span class="strong"><strong>main</strong></span>() {
 
     igraph_integer_t edges2[] = {0, 1, 1, 2, 3, 4, 5, 6, 6, 5, 1, 4, 1, 6, 0, 3 };
-    igraph_integer_t edges3[] = {0, 1, 1, 2, 3, 4, 5, 6, 6, 5, 2, 4, 1, 6, 0, 3 };
     igraph_t g;
     igraph_vector_bool_t types;
     igraph_vector_int_t edges;
     igraph_integer_t i;
-    int ret;
 
     <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;edges, edges2, <span class="strong"><strong>sizeof</strong></span>(edges2) / <span class="strong"><strong>sizeof</strong></span>(edges2[0]));
     <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, <span class="strong"><strong>igraph_vector_int_max</strong></span>(&amp;edges) + 1);
@@ -294,20 +292,6 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="emphasis"><em>/* Error handling */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-
-    <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;edges, edges3, <span class="strong"><strong>sizeof</strong></span>(edges3) / <span class="strong"><strong>sizeof</strong></span>(edges3[0]));
-    <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, <span class="strong"><strong>igraph_vector_int_max</strong></span>(&amp;edges) + 1);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_bool_size</strong></span>(&amp;types); i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(types)[i] = i % 2;
-    }
-    ret = <span class="strong"><strong><a class="link" href="igraph-Bipartite.html#igraph_create_bipartite" title="2.1. igraph_create_bipartite — Create a bipartite graph.">igraph_create_bipartite</a></strong></span>(&amp;g, &amp;types, &amp;edges, <span class="emphasis"><em>/*directed=*/</em></span> 1);
-    <span class="strong"><strong>if</strong></span> (ret != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
