@@ -47,7 +47,7 @@
       gtag('config', 'UA-1392972-5');
     </script>
 
-    <link rel="top" title="igraph 0.9.9 documentation" href="../../index.html" /> <link rel="up" title="Gallery" href="../../gallery.html" /> <link rel="next" title="Complement" href="../complement/complement.html" /> <link rel="prev" title="Bridges" href="../bridges/bridges.html" /> <link rel="stylesheet" href="../../_static/basic.css" type="text/css" /> <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
+    <link rel="top" title="igraph 0.9.11 documentation" href="../../index.html" /> <link rel="up" title="Gallery" href="../../gallery.html" /> <link rel="next" title="Complement" href="../complement/complement.html" /> <link rel="prev" title="Bridges" href="../bridges/bridges.html" /> <link rel="stylesheet" href="../../_static/basic.css" type="text/css" /> <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
   </head>
 
   <body class="python">
@@ -63,7 +63,7 @@
         <li class="nav-item"><a class="nav-link" href="/python">python-igraph</a></li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-            0.9.9
+            0.9.11
           </a>
           <div class="dropdown-menu" id="doc-version-switcher">
             <a class="dropdown-item" href="#">Please wait...</a>
@@ -153,9 +153,9 @@
  -->
         
   <section id="generating-cluster-graphs">
-<span id="tutorials-cluster-graph"></span><h1>Generating Cluster Graphs<a class="headerlink" href="#generating-cluster-graphs" title="Permalink to this headline">¶</a></h1>
+<span id="tutorials-cluster-graph"></span><h1>Generating Cluster Graphs<a class="headerlink" href="#generating-cluster-graphs" title="Permalink to this heading">¶</a></h1>
 <p>This example shows how to find the communities in a graph, then contract each community into a single node using <a class="reference external" href="https://igraph.org/python/doc/api/igraph.clustering.VertexClustering.html#cluster_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_graph()</span></code></a>. For this tutorial, we’ll use the <em>Donald Knuth’s Les Miserables Network</em>, which shows the coapperances of characters in the novel <em>Les Miserables</em>. The network can be obtained <a class="reference external" href="http://www-personal.umich.edu/~mejn/netdata/">here</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># Load the graph</span>
@@ -163,7 +163,7 @@
 </pre></div>
 </div>
 <p>First, let’s visualise the original communities, using <a class="reference external" href="https://igraph.org/python/doc/api/igraph.Graph.html#community_edge_betweenness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">community_edge_betweenness()</span></code></a> to separate out vertices into clusters. (For a more focused tutorial on just visualising communities, check out <a class="reference internal" href="../visualize_communities/visualize_communities.html#tutorials-visualize-communities"><span class="std std-ref">Communities</span></a>).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate communities</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate communities</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">community_edge_betweenness</span><span class="p">()</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">as_clustering</span><span class="p">()</span> <span class="c1"># Convert into a VertexClustering for plotting</span>
 
@@ -198,7 +198,7 @@
 </pre></div>
 </div>
 <p>Now let’s try and contract the information down, using only a single vertex to represent each community. We start by defining attribute values for each of the nodes in the original graph.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assign x, y, and sizes for each node</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assign x, y, and sizes for each node</span>
 <span class="n">layout</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">layout_kamada_kawai</span><span class="p">()</span>
 <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">layout</span><span class="p">))</span>
 <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -206,7 +206,7 @@
 </pre></div>
 </div>
 <p>This is so we can define how each of these attributes get combined together when we call <a class="reference external" href="https://igraph.org/python/doc/api/igraph.clustering.VertexClustering.html#cluster_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_graph()</span></code></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate cluster graph</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate cluster graph</span>
 <span class="n">cluster_graph</span> <span class="o">=</span> <span class="n">communities</span><span class="o">.</span><span class="n">cluster_graph</span><span class="p">(</span>
     <span class="n">combine_vertices</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
@@ -226,7 +226,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">mean</span></code>, <code class="docutils literal notranslate"><span class="pre">first</span></code>, and <code class="docutils literal notranslate"><span class="pre">sum</span></code> are all built-in collapsing functions, along with <code class="docutils literal notranslate"><span class="pre">prod</span></code>, <code class="docutils literal notranslate"><span class="pre">median</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, <code class="docutils literal notranslate"><span class="pre">last</span></code>, <code class="docutils literal notranslate"><span class="pre">random</span></code>. You can also define your own custom collapsing functions, which take in a list and return a single element representing the combined attribute value. For more details on <em>igraph</em> contraction, see <a class="reference external" href="https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html#contract_vertices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">contract_vertices()</span></code></a></p>
 </div>
 <p>Finally we plot out the graph using our calculated attributes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the cluster graph</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the cluster graph</span>
 <span class="n">palette2</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">GradientPalette</span><span class="p">(</span><span class="s2">&quot;gainsboro&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">)</span>
 <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">palette2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ig</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">cluster_graph</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">clamp</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 
@@ -267,7 +267,7 @@
 <p>The two figures are shown side by side here:</p>
 <p><a class="reference internal" href="../../_images/communities.png"><img alt="pic1" src="../../_images/communities.png" style="width: 45%;" /></a> <a class="reference internal" href="../../_images/cluster_graph.png"><img alt="pic2" src="../../_images/cluster_graph.png" style="width: 45%;" /></a></p>
 <p>… and the final output of the communities we printed out are displayed below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Community</span> <span class="mi">0</span><span class="p">:</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Community</span> <span class="mi">0</span><span class="p">:</span>
     <span class="n">Myriel</span>
     <span class="n">Napoleon</span>
     <span class="n">MlleBaptistine</span>
