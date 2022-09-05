@@ -320,7 +320,7 @@ standard error and returns with the error code.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="error-codes"></a>3.  Error codes</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Error.html#igraph_error_t">3.1. <code class="function">igraph_error_t</code> —  Type alias because igraph_error_t used to be an integer, and was used</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_t">3.1. <code class="function">igraph_error_t</code> —  Return type for functions returning an error code.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_error_type_t">3.2. <code class="function">igraph_error_type_t</code> —  Error code type.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_strerror">3.3. <code class="function">igraph_strerror</code> —  Textual description of an error.</a></span></dt>
 </dl></div>
@@ -332,16 +332,16 @@ cannot run into any error, these may return other types, or
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_error_t"></a>3.1. <code class="function">igraph_error_t</code> —  Type alias because igraph_error_t used to be an integer, and was used</h3></div></div></div>
+<a name="igraph_error_t"></a>3.1. <code class="function">igraph_error_t</code> —  Return type for functions returning an error code.</h3></div></div></div>
 <a class="indexterm" name="id-1.6.4.3.2"></a><pre class="programlisting">
 typedef igraph_error_type_t igraph_error_t;
 </pre>
 <p>
 
-         slightly differenly than igraph_error_type_t.
 
 This type is used as the return type of igraph functions that return an
-error code.
+error code. It is a type alias because <span class="type">igraph_error_t</span> used to be
+an <code class="constant">int</code>, and was used slightly differenly than <span class="type">igraph_error_type_t</span>.
  
 </p>
 </div>
@@ -840,8 +840,8 @@ description for an <span class="command"><strong>igraph</strong></span> error co
 <dt><span class="section"><a href="igraph-Error.html#igraph_set_warning_handler">4.2. <code class="function">igraph_set_warning_handler</code> —  Installs a warning handler.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#IGRAPH_WARNING">4.3. <code class="function">IGRAPH_WARNING</code> —  Triggers a warning.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#IGRAPH_WARNINGF">4.4. <code class="function">IGRAPH_WARNINGF</code> —  Triggers a warning, with printf-like syntax.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_warning">4.5. <code class="function">igraph_warning</code> —  Triggers a warning.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_warningf">4.6. <code class="function">igraph_warningf</code> —  Triggers a warning, printf-like version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warning">4.5. <code class="function">igraph_warning</code> —  Reports a warning.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warningf">4.6. <code class="function">igraph_warningf</code> —  Reports a warning, printf-like version.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_warning_handler_ignore">4.7. <code class="function">igraph_warning_handler_ignore</code> —  Ignores all warnings.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#igraph_warning_handler_print">4.8. <code class="function">igraph_warning_handler_print</code> —  Prints all warnings to the standard error.</a></span></dt>
 </dl></div>
@@ -861,8 +861,8 @@ two predefined simple warning handlers,
 </p>
 <p>
 To trigger a warning, <span class="command"><strong>igraph</strong></span> functions typically use the
-<a class="link" href="igraph-Error.html#IGRAPH_WARNING" title="4.3. IGRAPH_WARNING — Triggers a warning."><code class="function">IGRAPH_WARNING()</code></a> macro, the <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Triggers a warning."><code class="function">igraph_warning()</code></a> function,
-or if more flexibility is needed, <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Triggers a warning, printf-like version."><code class="function">igraph_warningf()</code></a>.
+<a class="link" href="igraph-Error.html#IGRAPH_WARNING" title="4.3. IGRAPH_WARNING — Triggers a warning."><code class="function">IGRAPH_WARNING()</code></a> macro, the <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a> function,
+or if more flexibility is needed, <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Reports a warning, printf-like version."><code class="function">igraph_warningf()</code></a>.
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -944,7 +944,7 @@ Install the supplied warning handler function.
 
 
 This is the usual way of triggering a warning from an igraph
-function. It calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Triggers a warning."><code class="function">igraph_warning()</code></a>.
+function. It calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -979,7 +979,7 @@ function. It calls <a class="link" href="igraph-Error.html#igraph_warning" title
 
 <span class="command"><strong>igraph</strong></span> functions can use this macro when they notice a warning and
 want to pass on extra information to the user about what went wrong.
-It calls <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Triggers a warning, printf-like version."><code class="function">igraph_warningf()</code></a> with the proper parameters and no
+It calls <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Reports a warning, printf-like version."><code class="function">igraph_warningf()</code></a> with the proper parameters and no
 error code.
 </p>
 <p><b>Arguments: </b>
@@ -1012,7 +1012,7 @@ error code.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_warning"></a>4.5. <code class="function">igraph_warning</code> —  Triggers a warning.</h3></div></div></div>
+<a name="igraph_warning"></a>4.5. <code class="function">igraph_warning</code> —  Reports a warning.</h3></div></div></div>
 <a class="indexterm" name="id-1.6.5.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1026,6 +1026,7 @@ error code.
 
 Call this function if you want to trigger a warning from within
 a function that uses <span class="command"><strong>igraph</strong></span>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1084,7 +1085,7 @@ a function that uses <span class="command"><strong>igraph</strong></span>.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_warningf"></a>4.6. <code class="function">igraph_warningf</code> —  Triggers a warning, printf-like version.</h3></div></div></div>
+<a name="igraph_warningf"></a>4.6. <code class="function">igraph_warningf</code> —  Reports a warning, printf-like version.</h3></div></div></div>
 <a class="indexterm" name="id-1.6.5.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1097,9 +1098,10 @@ IGRAPH_EXPORT void igraph_warningf(const char *reason, const char *file, int lin
 
 
 
-This function is similar to <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Triggers a warning."><code class="function">igraph_warning()</code></a>, but
+This function is similar to <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>, but
 uses a printf-like syntax. It substitutes the additional arguments
-into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Triggers a warning."><code class="function">igraph_warning()</code></a>.
+into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1368,23 +1370,23 @@ default error handler (which is currently <a class="link" href="igraph-Error.htm
 <div class="titlepage"><div><div><h3 class="title">
 <a name="error-handling-internals"></a>5.2.  Error handling internals</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ERROR">5.2.1. <code class="function">IGRAPH_ERROR</code> —  Trigger an error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ERROR">5.2.1. <code class="function">IGRAPH_ERROR</code> —  Triggers an error.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#IGRAPH_ERRORF">5.2.2. <code class="function">IGRAPH_ERRORF</code> —  Triggers an error, with printf-like syntax.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_error">5.2.3. <code class="function">igraph_error</code> —  Triggers an error.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_errorf">5.2.4. <code class="function">igraph_errorf</code> —  Triggers an error, printf-like version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error">5.2.3. <code class="function">igraph_error</code> —  Reports an error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_errorf">5.2.4. <code class="function">igraph_errorf</code> —  Reports an error, printf-like version.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#IGRAPH_CHECK">5.2.5. <code class="function">IGRAPH_CHECK</code> —  Checks the return value of a function call.</a></span></dt>
 <dt><span class="section"><a href="igraph-Error.html#IGRAPH_CHECK_CALLBACK">5.2.6. <code class="function">IGRAPH_CHECK_CALLBACK</code> —  Checks the return value of a callback.</a></span></dt>
 </dl></div>
 <p>
 If an error happens, the functions in the library call the
-<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR()</code></a> macro with a textual description of the error and an
-<span class="command"><strong>igraph</strong></span> error code. This macro calls (through the <a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Triggers an error."><code class="function">igraph_error()</code></a> function) the installed error handler. Another useful
+<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> macro with a textual description of the error and an
+<span class="command"><strong>igraph</strong></span> error code. This macro calls (through the <a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> function) the installed error handler. Another useful
 macro is <a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call."><code class="function">IGRAPH_CHECK()</code></a>. This checks the return value of its
-argument, which is normally a function call, and calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR()</code></a> if it is not <code class="constant">IGRAPH_SUCCESS</code>.
+argument, which is normally a function call, and calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> if it is not <code class="constant">IGRAPH_SUCCESS</code>.
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="IGRAPH_ERROR"></a>5.2.1. <code class="function">IGRAPH_ERROR</code> —  Trigger an error.</h4></div></div></div>
+<a name="IGRAPH_ERROR"></a>5.2.1. <code class="function">IGRAPH_ERROR</code> —  Triggers an error.</h4></div></div></div>
 <a class="indexterm" name="id-1.6.6.3.3.2"></a><p>
 </p>
 <pre class="programlisting">
@@ -1397,11 +1399,11 @@ argument, which is normally a function call, and calls <a class="link" href="igr
 
 <span class="command"><strong>igraph</strong></span> functions usually use this macro when they notice an error.
 It calls
-<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Triggers an error."><code class="function">igraph_error()</code></a> with the proper parameters and if that returns
+<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> with the proper parameters and if that returns
 the macro returns the "calling" function as well, with the error
 code. If for some (suspicious) reason you want to call the error
 handler without returning from the current function, call
-<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Triggers an error."><code class="function">igraph_error()</code></a> directly.
+<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> directly.
 
 </p>
 <p><b>Arguments: </b>
@@ -1450,11 +1452,11 @@ handler without returning from the current function, call
 
 <span class="command"><strong>igraph</strong></span> functions can use this macro when they notice an error and
 want to pass on extra information to the user about what went wrong.
-It calls <a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Triggers an error, printf-like version."><code class="function">igraph_errorf()</code></a> with the proper parameters and if that
+It calls <a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Reports an error, printf-like version."><code class="function">igraph_errorf()</code></a> with the proper parameters and if that
 returns the macro returns the "calling" function as well, with the
 error code. If for some (suspicious) reason you want to call the
 error handler without returning from the current function, call
-<a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Triggers an error, printf-like version."><code class="function">igraph_errorf()</code></a> directly.
+<a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Reports an error, printf-like version."><code class="function">igraph_errorf()</code></a> directly.
 
 </p>
 <p><b>Arguments: </b>
@@ -1498,7 +1500,7 @@ error handler without returning from the current function, call
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_error"></a>5.2.3. <code class="function">igraph_error</code> —  Triggers an error.</h4></div></div></div>
+<a name="igraph_error"></a>5.2.3. <code class="function">igraph_error</code> —  Reports an error.</h4></div></div></div>
 <a class="indexterm" name="id-1.6.6.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1512,7 +1514,7 @@ error handler without returning from the current function, call
 
 
 <span class="command"><strong>igraph</strong></span> functions usually call this function (most often via the
-<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR</code></a> macro) if they notice an error.
+<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR</code></a> macro) if they notice an error.
 It calls the currently installed error handler function with the
 supplied arguments.
 
@@ -1589,7 +1591,7 @@ supplied arguments.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_errorf"></a>5.2.4. <code class="function">igraph_errorf</code> —  Triggers an error, printf-like version.</h4></div></div></div>
+<a name="igraph_errorf"></a>5.2.4. <code class="function">igraph_errorf</code> —  Reports an error, printf-like version.</h4></div></div></div>
 <a class="indexterm" name="id-1.6.6.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -1698,7 +1700,7 @@ be evaluated only once.</p></td>
 
 
 Executes the expression and checks its value. If this is not
-<code class="constant">IGRAPH_SUCCESS</code>, it calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR</code></a> with
+<code class="constant">IGRAPH_SUCCESS</code>, it calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR</code></a> with
 the value as the error code. Here is an example usage:
 </p>
 <div class="informalexample"><pre class="programlisting"> IGRAPH_CHECK(vector_push_back(&amp;v, 100)); </pre></div>
@@ -1925,7 +1927,7 @@ proper error handling</h3></div></div></div>
 <p>
 There are some simple rules to keep in order to have functions
 behaving well in erroneous situations. First, check the arguments
-of the functions and call <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR()</code></a> if they are invalid. Second,
+of the functions and call <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> if they are invalid. Second,
 call <a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation."><code class="function">IGRAPH_FINALLY</code></a> on each dynamically allocated object and call
 <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects."><code class="function">IGRAPH_FINALLY_CLEAN()</code></a> with the proper argument before returning. Third, use
 <a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call."><code class="function">IGRAPH_CHECK</code></a> on all <span class="command"><strong>igraph</strong></span> function calls which can generate errors.
@@ -2056,7 +2058,7 @@ function. It calls <a class="link" href="igraph-Error.html#igraph_fatal" title="
 </p>
 <p>
 Use this macro only in situations where the error cannot be handled.
-The normal way to handle errors is <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Trigger an error."><code class="function">IGRAPH_ERROR()</code></a>.
+The normal way to handle errors is <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a>.
 
 </p>
 <p><b>Arguments: </b>

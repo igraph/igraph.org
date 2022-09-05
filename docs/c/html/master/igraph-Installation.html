@@ -152,6 +152,17 @@
 <dt><span class="section"><a href="igraph-Installation.html#igraph-Installation-building-the-documentation">3. Building the documentation</a></span></dt>
 <dt><span class="section"><a href="igraph-Installation.html#igraph-Installation-notes-for-package-maintainers">4. Notes for package maintainers</a></span></dt>
 </dl></div>
+<p>
+  This chapter describes building igraph from source code and installing it.
+  The source archive of the latest stable release is always available
+  <a class="ulink" href="https://igraph.org/c/#downloads" target="_top">from the igraph website</a>.
+  igraph is also included in many Linux distributions, as well as several package
+  managers such as <a class="ulink" href="https://vcpkg.io/" target="_top">vcpkg</a> (convenient on Windows),
+  <a class="ulink" href="https://www.macports.org/" target="_top">MacPorts</a> (macOS) and
+  <a class="ulink" href="https://brew.sh/" target="_top">Homebrew</a> (macOS), which provide an easier
+  means of installation. If you decide to use them, please consult their documentation
+  on how to install packages.
+</p>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="igraph-Installation-prerequisites"></a>1. Prerequisites</h2></div></div></div>
@@ -160,7 +171,7 @@
   </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>
-        <a class="ulink" href="https://cmake.org" target="_top">CMake</a> 3.16 or later
+        <a class="ulink" href="https://cmake.org" target="_top">CMake</a> 3.18 or later
       </p></li>
 <li class="listitem"><p>
         C and C++ compilers
@@ -194,14 +205,10 @@
         <a class="ulink" href="https://www.caam.rice.edu/software/ARPACK/" target="_top">ARPACK</a>
       </p></li>
 <li class="listitem"><p>
-        CXSparse from
-        <a class="ulink" href="https://people.engr.tamu.edu/davis/suitesparse.html" target="_top">SuiteSparse</a>
-      </p></li>
-<li class="listitem"><p>
         A library providing a
         <a class="ulink" href="https://www.netlib.org/blas/" target="_top">BLAS</a> API
         (available by default on macOS;
-        <a class="ulink" href="https://openblas.net" target="_top">OpenBLAS</a> is one
+        <a class="ulink" href="https://www.openblas.net" target="_top">OpenBLAS</a> is one
         option on other systems)
       </p></li>
 <li class="listitem"><p>
@@ -437,9 +444,8 @@ cmake --build . --target check --config Release
 pacman -S \
   mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake \
   mingw-w64-x86_64-gmp mingw-w64-x86_64-libxml2 \
-  mingw-w64-x86_64-openblas mingw-w64-x86_64-suitesparse mingw-w64-x86_64-arpack mingw-w64-x86_64-glpk \
-  diffutils \
-  git bison flex
+  mingw-w64-x86_64-openblas mingw-w64-x86_64-suitesparse mingw-w64-x86_64-arpack \
+  mingw-w64-x86_64-glpk diffutils git bison flex
 </pre>
 <p>
         In order to build igraph, follow the <span class="strong"><strong>General
@@ -594,8 +600,8 @@ $ cmake --build . --target html
       each of the <code class="literal">IGRAPH_USE_INTERNAL_XXX</code> option
       described above. Additionally, set <code class="literal">BLA_VENDOR</code> to
       use the BLAS and LAPACK implementations of your choice. This should
-      be the same BLAS and LAPACK library that igraph's other dependencies,
-      such as ARPACK and CXSparse are linked against.
+      be the same BLAS and LAPACK library that igraph's other dependencies
+      (e.g., ARPACK) are linked against.
     </p>
 <p>
       For example, to force igraph to use external versions of all
@@ -609,7 +615,6 @@ $ cmake .. \
     -DIGRAPH_USE_INTERNAL_LAPACK=OFF \
     -DIGRAPH_USE_INTERNAL_ARPACK=OFF \
     -DIGRAPH_USE_INTERNAL_GLPK=OFF \
-    -DIGRAPH_USE_INTERNAL_CXSPARSE=OFF \
     -DIGRAPH_USE_INTERNAL_GMP=OFF \
     -DBLA_VENDOR=OpenBLAS \
     -DIGRAPH_GRAPHML_SUPPORT=ON
@@ -641,9 +646,13 @@ $ cmake .. \
       makes use of f2c, which compiles and runs the <code class="literal">arithchk</code>
       program at build time to detect the floating point characteristics of the
       current system. It writes the results into the <code class="literal">arith.h</code>
-      header. Since running this program is not possible when cross-compiling,
-      igraph's build system allows specifying a pre-generated version of this
-      header file through the <code class="literal">F2C_EXTERNAL_ARITH_HEADER</code>
+      header. However, running this program is not possible when cross-compiling
+      without providing a userspace emulator that can run executables of the
+      target platform on the host system. Therefore, when cross-compiling, you
+      either need to provide such an emulator with the
+      <code class="literal">CMAKE_CROSSCOMPILING_EMULATOR</code> option, or you need to
+      specify a pre-generated version of the <code class="literal">arith.h</code> header
+      file through the <code class="literal">F2C_EXTERNAL_ARITH_HEADER</code>
       CMake option. An example version of this header follows for the
       x86_64 and arm64 target architecures on macOS. Warning: Do not use this
       version of <code class="literal">arith.h</code> on other systems or architectures.
@@ -663,13 +672,36 @@ $ cmake .. \
 </pre>
 <p>
     </p>
+<p>
+      igraph also checks whether the endianness of <code class="literal">uint64_t</code>
+      matches the endianness of <code class="literal">double</code> on the platform
+      being compiled. This is needed to ensure that certain functions in igraph's
+      random number generator work properly. However, it is not possible to
+      execute this check when cross-compiling without an emulator, so in this
+      case igraph simply assumes that the endianness matches (which is the case
+      for the vast majority of platforms anyway). The only case where you might
+      run into problems is when you cross-compile for Apple Silicon
+      (<code class="literal">arm64</code>) from an Intel-based Mac, in which case CMake
+      might not realize that you are cross-compiling and will try to execute
+      the check anyway. You can work around this by setting
+      <code class="literal">IEEE754_DOUBLE_ENDIANNESS_MATCHES</code> to <code class="literal">ON</code>
+      explicitly before invoking CMake.
+    </p>
+<p>
+      Providing an emulator in <code class="literal">CMAKE_CROSSCOMPILING_EMULATOR</code>
+      has the added benefit that you can run the compiled unit tests on the
+      host platform. We have experimented with cross-compiling to 64-bit ARM
+      CPUs (<code class="literal">aarch64</code>) on 64-bit Intel CPUs (<code class="literal">amd64</code>),
+      and we can confirm that using <code class="literal">qemu-aarch64</code> works as a
+      cross-compiling emulator in this setup.
+    </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph-Installation-additional-notes"></a>4.4. Additional notes</h3></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>
-          As of igraph 0.9, there is no tangible benefit to using an
+          As of igraph 0.10, there is no tangible benefit to using an
           external GMP, as igraph does not yet use GMP in any
           performance-critical way. The bundled Mini-GMP is sufficient.
         </p></li>

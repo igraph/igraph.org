@@ -199,10 +199,10 @@ in the literature. If you are looking to count induced subgraphs, see
 <a class="indexterm" name="id-1.26.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_graphlets(const igraph_t *graph,
+igraph_error_t igraph_graphlets(const igraph_t *graph,
                      const igraph_vector_t *weights,
-                     igraph_vector_ptr_t *cliques,
-                     igraph_vector_t *Mu, int niter);
+                     igraph_vector_int_list_t *cliques,
+                     igraph_vector_t *Mu, igraph_integer_t niter);
 </pre></div>
 <p>
 </p>
@@ -238,9 +238,9 @@ according to decreasing weights.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cliques</code></em>:</span></p></td>
 <td><p>
-  An initialized vector of pointers.
-       The graphlet basis is stored here. Each element of the pointer
-       vector will be a vector of vertex ids.
+  An initialized list of integer vectors. The graphlet basis is
+       stored here. Each element of the list is an integer vector of
+       vertex IDs, encoding a single basis subgraph.
 </p></td>
 </tr>
 <tr>
@@ -287,9 +287,9 @@ See also: <a class="link" href="igraph-Graphlets.html#igraph_graphlets_candidate
 <a class="indexterm" name="id-1.26.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_graphlets_candidate_basis(const igraph_t *graph,
+igraph_error_t igraph_graphlets_candidate_basis(const igraph_t *graph,
                                      const igraph_vector_t *weights,
-                                     igraph_vector_ptr_t *cliques,
+                                     igraph_vector_int_list_t *cliques,
                                      igraph_vector_t *thresholds);
 </pre></div>
 <p>
@@ -323,10 +323,9 @@ int igraph_graphlets_candidate_basis(const igraph_t *graph,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cliques</code></em>:</span></p></td>
 <td><p>
-  An initialized vector of pointers.
-       The graphlet basis is stored here. Each element of the pointer
-       vector will be a vector of vertex ids. Each elements must be
-       destroyed using <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a> and <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>.
+  An initialized list of integer vectors. The graphlet basis is
+       stored here. Each element of the list is an integer vector of
+       vertex IDs, encoding a single basis subgraph.
 </p></td>
 </tr>
 <tr>
@@ -366,11 +365,11 @@ See also: <a class="link" href="igraph-Graphlets.html#igraph_graphlets" title="2
 <a class="indexterm" name="id-1.26.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_graphlets_project(const igraph_t *graph,
+igraph_error_t igraph_graphlets_project(const igraph_t *graph,
                              const igraph_vector_t *weights,
-                             const igraph_vector_ptr_t *cliques,
+                             const igraph_vector_int_list_t *cliques,
                              igraph_vector_t *Mu, igraph_bool_t startMu,
-                             int niter);
+                             igraph_integer_t niter);
 </pre></div>
 <p>
 </p>
@@ -380,7 +379,7 @@ int igraph_graphlets_project(const igraph_t *graph,
 
 Note that the graph projected does not have to be the same that
 was used to calculate the graphlet basis, but it is assumed that
-it has the same number of vertices, and the vertex ids of the two
+it has the same number of vertices, and the vertex IDs of the two
 graphs match.
 </p>
 <p><b>Arguments: </b>
@@ -407,8 +406,9 @@ graphs match.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cliques</code></em>:</span></p></td>
 <td><p>
-  The graphlet basis, a pointer vector, in which each
-       element is a vector of vertex ids.
+  An initialized list of integer vectors. The graphlet basis is
+       stored here. Each element of the list is an integer vector of
+       vertex IDs, encoding a single basis subgraph.
 </p></td>
 </tr>
 <tr>

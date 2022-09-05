@@ -151,40 +151,41 @@
 <dt><span class="section"><a href="igraph-Isomorphism.html#bliss-algorithm">2. The BLISS algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#vf2-algorithm">3. The VF2 algorithm</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#lad-algorithm">4. The LAD algorithm</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for graphs with 3 or 4 vertices</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#functions-for-graphs-with-3-or-4-vertices">5. Functions for small graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-utility-functions">6. Utility functions</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#isomorphism-deprecated-functions">7. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="isomorphism-simple-interface"></a>1. The simple interface</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic">1.1. <code class="function">igraph_isomorphic</code> —  Decides whether two graphs are isomorphic</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic">1.1. <code class="function">igraph_isomorphic</code> —  Are two graphs isomorphic?</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic">1.2. <code class="function">igraph_subisomorphic</code> —  Decide subgraph isomorphism.</a></span></dt>
 </dl></div>
 <p>igraph provides four set of functions to deal with graph
 isomorphism problems.</p>
-<p>The <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a> and <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic" title="1.2. igraph_subisomorphic — Decide subgraph isomorphism."><code class="function">igraph_subisomorphic()</code></a>
+<p>The <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a> and <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic" title="1.2. igraph_subisomorphic — Decide subgraph isomorphism."><code class="function">igraph_subisomorphic()</code></a>
 functions make up the first set (in addition with the <a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices."><code class="function">igraph_permute_vertices()</code></a> function). These functions choose the
 algorithm which is best for the supplied input graph. (The choice is
 not very sophisticated though, see their documentation for
 details.)</p>
 <p>The VF2 graph (and subgraph) isomorphism algorithm is implemented in
-igraph, these functions are the second set. See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2"><code class="function">igraph_isomorphic_vf2()</code></a> and <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a> for
+igraph, these functions are the second set. See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2."><code class="function">igraph_isomorphic_vf2()</code></a> and <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a> for
 starters.</p>
 <p>Functions for the Bliss algorithm constitute the third set,
 see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.4. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.</p>
-<p>Finally, the isomorphism classes of all graphs with three and
-four vertices are precomputed and stored in igraph, so for these
-small graphs there is a very simple fast way to decide isomorphism.
-See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_34" title="5.1. igraph_isomorphic_34 — Graph isomorphism for 3-4 vertices"><code class="function">igraph_isomorphic_34()</code></a>.
-</p>
+<p>Finally, the isomorphism classes of all directed graphs with three and
+four vertices and all undirected graphs with 3-6 vertices are precomputed
+and stored in igraph, so for these small graphs there is a separate fast
+path in the code that does not use more complex, generic isomorphism
+algorithms.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic"></a>1.1. <code class="function">igraph_isomorphic</code> —  Decides whether two graphs are isomorphic</h3></div></div></div>
+<a name="igraph_isomorphic"></a>1.1. <code class="function">igraph_isomorphic</code> —  Are two graphs isomorphic?</h3></div></div></div>
 <a class="indexterm" name="id-1.18.2.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isomorphic(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_isomorphic(const igraph_t *graph1, const igraph_t *graph2,
                       igraph_bool_t *iso);
 </pre></div>
 <p>
@@ -193,8 +194,6 @@ int igraph_isomorphic(const igraph_t *graph1, const igraph_t *graph2,
 
 
 
-</p>
-<p>
 In simple terms, two graphs are isomorphic if they become indistinguishable
 from each other once their vertex labels are removed (rendering the vertices
 within each graph indistiguishable). More precisely, two graphs are isomorphic
@@ -223,12 +222,14 @@ If one of the graphs has multi-edges then an error is triggered.
 </p></li>
 <li class="listitem"><p>
 If the two graphs does not have the same number of vertices
-   and edges it returns with <code class="constant">FALSE</code>.
+   and edges it returns with <code class="constant">false</code>.
 
 </p></li>
 <li class="listitem"><p>
-Otherwise, if the graphs have three or four vertices then an O(1)
-   algorithm is used with precomputed data.
+Otherwise, if the <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a> function supports both
+   graphs (which is true for directed graphs with 3 and 4 vertices, and
+   undirected graphs with 3-6 vertices), an O(1) algorithm is used with
+   precomputed data.
 
 </p></li>
 <li class="listitem"><p>
@@ -266,8 +267,8 @@ something more sophisticated, e.g. you need the isomorphic mapping.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
 <td><p>
-  Pointer to a logical variable, will be set to TRUE (1)
-       if the two graphs are isomorphic, and FALSE (0) otherwise.
+  Pointer to a logical variable, will be set to <code class="constant">true</code>
+       if the two graphs are isomorphic, and <code class="constant">false</code> otherwise.
 </p></td>
 </tr>
 </tbody>
@@ -298,8 +299,8 @@ something more sophisticated, e.g. you need the isomorphic mapping.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -315,7 +316,7 @@ Time complexity: exponential.
 <a class="indexterm" name="id-1.18.2.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_subisomorphic(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_subisomorphic(const igraph_t *graph1, const igraph_t *graph2,
                          igraph_bool_t *iso);
 </pre></div>
 <p>
@@ -573,7 +574,7 @@ algorithm.
 <td><p>
   The size of the automorphism group of the graph,
    given as a string. It should be deallocated via
-   <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> if not needed any more.</p></td>
+   <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> if not needed any more.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -589,8 +590,8 @@ for details about the algorithm and these parameters.
 <a class="indexterm" name="id-1.18.3.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_canonical_permutation(const igraph_t *graph, const igraph_vector_int_t *colors,
-                                 igraph_vector_t *labeling, igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
+igraph_error_t igraph_canonical_permutation(const igraph_t *graph, const igraph_vector_int_t *colors,
+                                 igraph_vector_int_t *labeling, igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
 </pre></div>
 <p>
 </p>
@@ -601,7 +602,7 @@ int igraph_canonical_permutation(const igraph_t *graph, const igraph_vector_int_
 This function computes the vertex permutation which transforms
 the graph into a canonical form, using the Bliss algorithm.
 Two graphs have the same canonical form if and only if they
-are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="3.2.14. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
+are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
 two canonical forms.
 
 </p>
@@ -679,7 +680,7 @@ two canonical forms.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  igraph_is_same_graph()
+  <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -695,10 +696,10 @@ Time complexity: exponential, in practice it is fast for many graphs.
 <a class="indexterm" name="id-1.18.3.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isomorphic_bliss(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_isomorphic_bliss(const igraph_t *graph1, const igraph_t *graph2,
                             const igraph_vector_int_t *colors1, const igraph_vector_int_t *colors2,
-                            igraph_bool_t *iso, igraph_vector_t *map12,
-                            igraph_vector_t *map21, igraph_bliss_sh_t sh,
+                            igraph_bool_t *iso, igraph_vector_int_t *map12,
+                            igraph_vector_int_t *map21, igraph_bliss_sh_t sh,
                             igraph_bliss_info_t *info1, igraph_bliss_info_t *info2);
 </pre></div>
 <p>
@@ -830,7 +831,7 @@ Time complexity: exponential, but in practice it is quite fast.
 <a class="indexterm" name="id-1.18.3.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_automorphisms(const igraph_t *graph, const igraph_vector_int_t *colors,
+igraph_error_t igraph_automorphisms(const igraph_t *graph, const igraph_vector_int_t *colors,
                          igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
 </pre></div>
 <p>
@@ -910,8 +911,8 @@ Time complexity: exponential, in practice it is fast for many graphs.
 <a class="indexterm" name="id-1.18.3.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_automorphism_group(
-    const igraph_t *graph, const igraph_vector_int_t *colors, igraph_vector_ptr_t *generators,
+igraph_error_t igraph_automorphism_group(
+    const igraph_t *graph, const igraph_vector_int_t *colors, igraph_vector_int_list_t *generators,
     igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
 </pre></div>
 <p>
@@ -952,7 +953,7 @@ using zero-based indexing.
 <td><p><span class="term"><em class="parameter"><code>generators</code></em>:</span></p></td>
 <td><p>
   Must be an initialized pointer vector. It will
-   contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> objects
+   contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> objects
    representing generators of the automorphism group.
 </p></td>
 </tr>
@@ -998,16 +999,17 @@ Time complexity: exponential, in practice it is fast for many graphs.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="vf2-algorithm"></a>3. The VF2 algorithm</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_vf2">3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2">3.2. <code class="function">igraph_count_isomorphisms_vf2</code> — Number of isomorphisms via VF2</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_vf2">3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2">3.2. <code class="function">igraph_count_isomorphisms_vf2</code> —  Number of isomorphisms via VF2.</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2">3.3. <code class="function">igraph_get_isomorphisms_vf2</code> —  Collect all isomorphic mappings of two graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isohandler_t">3.4. <code class="function">igraph_isohandler_t</code> — Callback type, called when an isomorphism was found</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isocompat_t">3.5. <code class="function">igraph_isocompat_t</code> — Callback type, called to check whether two vertices or edges are compatible</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2">3.6. <code class="function">igraph_isomorphic_function_vf2</code> — The generic VF2 interface</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback">3.4. <code class="function">igraph_get_isomorphisms_vf2_callback</code> — The generic VF2 interface</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isohandler_t">3.5. <code class="function">igraph_isohandler_t</code> — Callback type, called when an isomorphism was found</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isocompat_t">3.6. <code class="function">igraph_isocompat_t</code> — Callback type, called to check whether two vertices or edges are compatible</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic_vf2">3.7. <code class="function">igraph_subisomorphic_vf2</code> — Decide subgraph isomorphism using VF2</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2">3.8. <code class="function">igraph_count_subisomorphisms_vf2</code> — Number of subgraph isomorphisms using VF2</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2">3.9. <code class="function">igraph_get_subisomorphisms_vf2</code> —  Return all subgraph isomorphic mappings.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic_function_vf2">3.10. <code class="function">igraph_subisomorphic_function_vf2</code> — Generic VF2 function for subgraph isomorphism problems</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2_callback">3.10. <code class="function">igraph_get_subisomorphisms_vf2_callback</code> —  Generic VF2 function for subgraph isomorphism problems.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#vf2-algorithm-deprecated">3.11. Deprecated aliases</a></span></dt>
 </dl></div>
 <p>
 The VF2 algorithm can search for a subgraph in a larger graph, or check if two
@@ -1027,17 +1029,17 @@ of the user to pass in valid input.
 </p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic_vf2"></a>3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2</h3></div></div></div>
+<a name="igraph_isomorphic_vf2"></a>3.1. <code class="function">igraph_isomorphic_vf2</code> —  Isomorphism via VF2.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_isomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
                           const igraph_vector_int_t *vertex_color1,
                           const igraph_vector_int_t *vertex_color2,
                           const igraph_vector_int_t *edge_color1,
                           const igraph_vector_int_t *edge_color2,
-                          igraph_bool_t *iso, igraph_vector_t *map12,
-                          igraph_vector_t *map21,
+                          igraph_bool_t *iso, igraph_vector_int_t *map12,
+                          igraph_vector_int_t *map21,
                           igraph_isocompat_t *node_compat_fn,
                           igraph_isocompat_t *edge_compat_fn,
                           void *arg);
@@ -1050,7 +1052,7 @@ int igraph_isomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
 
 </p>
 <p>
-This function performs the VF2 algorithm via calling <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a>.
+This function performs the VF2 algorithm via calling <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>.
 
 </p>
 <p> Note that this function cannot be used for
@@ -1138,14 +1140,14 @@ for that.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -1186,7 +1188,7 @@ for that.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2"><code class="function">igraph_count_isomorphisms_vf2()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2."><code class="function">igraph_count_isomorphisms_vf2()</code></a>,
 <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2" title="3.3. igraph_get_isomorphisms_vf2 — Collect all isomorphic mappings of two graphs."><code class="function">igraph_get_isomorphisms_vf2()</code></a>,
   </p></td>
 </tr></tbody>
@@ -1200,30 +1202,7 @@ Time complexity: exponential, what did you expect?
 <div class="example">
 <a name="id-1.18.4.5.12.1"></a><p class="title"><b>Example 17.1.  File <code class="code">examples/simple/igraph_isomorphic_vf2.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2009-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
-
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
@@ -1231,37 +1210,36 @@ int <span class="strong"><strong>main</strong></span>() {
 
     igraph_t ring1, ring2;
     igraph_vector_int_t color1, color2;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> perm;
+    igraph_vector_int_t perm;
     igraph_bool_t iso;
     igraph_integer_t count;
-    long int i;
+    igraph_integer_t i;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 12345);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 12345);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_seq" title="2.2.3. igraph_vector_init_seq — Initializes a vector with a sequence.">igraph_vector_init_seq</a></strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1) - 1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method">igraph_vector_shuffle</a></strong></span>(&amp;perm);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>1);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
 
     <span class="emphasis"><em>/* Without colors */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic">igraph_isomorphic</a></strong></span>(&amp;ring1, &amp;ring2, &amp;iso);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?">igraph_isomorphic</a></strong></span>(&amp;ring1, &amp;ring2, &amp;iso);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Without color failed.\n");
         <span class="strong"><strong>return</strong></span> 1;
     }
 
     <span class="emphasis"><em>/* Without colors, number of isomorphisms */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, 0, 0, &amp;count, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, 0, 0, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 200) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count without colors failed, expected %li, got %li.\n",
-                (long int) 200, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count without colors failed, expected 200, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 2;
     }
 
     <span class="emphasis"><em>/* Everything has the same colors */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Single color failed.\n");
         <span class="strong"><strong>return</strong></span> 3;
@@ -1269,23 +1247,21 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="emphasis"><em>/* Two colors, just counting */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i += 2) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[(long int)<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[i]] = 1;
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[i]] = 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 100) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected %li, got %li.\n",
-                (long int) 100, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected 100, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 4;
     }
 
     <span class="emphasis"><em>/* Separate colors for each vertex */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[(long int)<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[i]] = i;
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[i]] = i;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 1) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate colors failed, expected %li, got %li.\n",
-                (long int) 1, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate colors failed, expected 1, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 5;
     }
 
@@ -1293,7 +1269,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
     <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Negative test failed.\n");
         <span class="strong"><strong>return</strong></span> 6;
@@ -1305,8 +1281,8 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[1] = 1;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[((long int)<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[1] + 1) % <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2)] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[1] + 1) % <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2)] = 1;
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Second negative test failed.\n");
         <span class="strong"><strong>return</strong></span> 7;
@@ -1315,25 +1291,24 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
 
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
     <span class="emphasis"><em>/* SUBGRAPH ISOMORPHISM                                             */</em></span>
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
 
     <span class="emphasis"><em>/* One color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0,
                                      &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 42) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one color failed, expected %li, got %li.\n",
-                (long int) 42, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one color failed, expected 42, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 31;
     }
 
@@ -1349,31 +1324,30 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0,
                                      &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 21) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected %li, got %li.\n",
-                (long int) 21, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected 21, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 32;
     }
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
 
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
     <span class="emphasis"><em>/* EDGE COLORING, GRAPH ISOMORPHISM                                 */</em></span>
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_seq" title="2.2.3. igraph_vector_init_seq — Initializes a vector with a sequence.">igraph_vector_init_seq</a></strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1) - 1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method">igraph_vector_shuffle</a></strong></span>(&amp;perm);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;perm);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
 
     <span class="emphasis"><em>/* Everything has the same color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Single edge-color failed.\n");
         <span class="strong"><strong>return</strong></span> 41;
@@ -1384,10 +1358,9 @@ int <span class="strong"><strong>main</strong></span>() {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = 0;
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i + 1] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 100) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected %li, got %li.\n",
-                (long int) 100, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected 100, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 42;
     }
 
@@ -1395,10 +1368,9 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i++) {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = i;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 1) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate edge colors failed, expected %li, got %li.\n",
-                (long int) 1, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate edge colors failed, expected 1, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 43;
     }
 
@@ -1406,7 +1378,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
     <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Negative edge test failed.\n");
         <span class="strong"><strong>return</strong></span> 44;
@@ -1419,7 +1391,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[1] = 1;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[0] = 1;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[2] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Second negative edge test failed.\n");
         <span class="strong"><strong>return</strong></span> 45;
@@ -1428,24 +1400,23 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
 
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
     <span class="emphasis"><em>/* EDGE COLORED SUBGRAPH ISOMORPHISM                                */</em></span>
     <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.8. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
 
     <span class="emphasis"><em>/* One color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="3.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2,
                                      &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 42) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one edge color failed, expected %li, got %li.\n",
-                (long int) 42, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one edge color failed, expected 42, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 51;
     }
 
@@ -1461,16 +1432,15 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2,
                                      &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 22) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected %li, got %li.\n",
-                (long int) 22, (long int) count);
+        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected 22, got %" IGRAPH_PRId ".\n", count);
         <span class="strong"><strong>return</strong></span> 52;
     }
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1485,11 +1455,11 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_count_isomorphisms_vf2"></a>3.2. <code class="function">igraph_count_isomorphisms_vf2</code> — Number of isomorphisms via VF2</h3></div></div></div>
+<a name="igraph_count_isomorphisms_vf2"></a>3.2. <code class="function">igraph_count_isomorphisms_vf2</code> —  Number of isomorphisms via VF2.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.4.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_count_isomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_count_isomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
                                   const igraph_vector_int_t *vertex_color1,
                                   const igraph_vector_int_t *vertex_color2,
                                   const igraph_vector_int_t *edge_color1,
@@ -1506,7 +1476,7 @@ int igraph_count_isomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2
 
 
 This function counts the number of isomorphic mappings between two
-graphs. It uses the generic <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a>
+graphs. It uses the generic <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>
 function.
 </p>
 <p><b>Arguments: </b>
@@ -1571,14 +1541,14 @@ function.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -1618,13 +1588,13 @@ Time complexity: exponential.
 <a class="indexterm" name="id-1.18.4.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_get_isomorphisms_vf2(const igraph_t *graph1,
+igraph_error_t igraph_get_isomorphisms_vf2(const igraph_t *graph1,
                                 const igraph_t *graph2,
                                 const igraph_vector_int_t *vertex_color1,
                                 const igraph_vector_int_t *vertex_color2,
                                 const igraph_vector_int_t *edge_color1,
                                 const igraph_vector_int_t *edge_color2,
-                                igraph_vector_ptr_t *maps,
+                                igraph_vector_int_list_t *maps,
                                 igraph_isocompat_t *node_compat_fn,
                                 igraph_isocompat_t *edge_compat_fn,
                                 void *arg);
@@ -1636,7 +1606,7 @@ int igraph_get_isomorphisms_vf2(const igraph_t *graph1,
 
 
 This function finds all the isomorphic mappings between two simple
-graphs. It uses the <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a>
+graphs. It uses the <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>
 function. Call the function with the same graph as <em class="parameter"><code>graph1</code></em> and <em class="parameter"><code>graph2</code></em> to get automorphisms.
 </p>
 <p><b>Arguments: </b>
@@ -1695,26 +1665,23 @@ function. Call the function with the same graph as <em class="parameter"><code>g
 <tr>
 <td><p><span class="term"><em class="parameter"><code>maps</code></em>:</span></p></td>
 <td><p>
-  Pointer vector. On return it is empty if the input graphs
-  are not isomorphic. Otherwise it contains pointers to
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> objects, each vector is an
-  isomorphic mapping of <em class="parameter"><code>graph2</code></em> to <em class="parameter"><code>graph1</code></em>. Please note that
-  you need to 1) Destroy the vectors via <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a>, 2) free them via
-  <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> and then 3) call <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector."><code class="function">igraph_vector_ptr_destroy()</code></a> on the pointer vector to deallocate all
-  memory when <em class="parameter"><code>maps</code></em> is no longer needed.
+  Pointer to a list of integer vectors. On return it is empty if
+  the input graphs are not isomorphic. Otherwise it contains pointers to
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> objects, each vector is an
+  isomorphic mapping of <em class="parameter"><code>graph2</code></em> to <em class="parameter"><code>graph1</code></em>.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -1750,15 +1717,170 @@ Time complexity: exponential.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isohandler_t"></a>3.4. <code class="function">igraph_isohandler_t</code> — Callback type, called when an isomorphism was found</h3></div></div></div>
-<a class="indexterm" name="id-1.18.4.8.2"></a><pre class="programlisting">
-typedef igraph_bool_t igraph_isohandler_t(const igraph_vector_t *map12,
-        const igraph_vector_t *map21, void *arg);
+<a name="igraph_get_isomorphisms_vf2_callback"></a>3.4. <code class="function">igraph_get_isomorphisms_vf2_callback</code> — The generic VF2 interface</h3></div></div></div>
+<a class="indexterm" name="id-1.18.4.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_get_isomorphisms_vf2_callback(
+    const igraph_t *graph1, const igraph_t *graph2,
+    const igraph_vector_int_t *vertex_color1, const igraph_vector_int_t *vertex_color2,
+    const igraph_vector_int_t *edge_color1, const igraph_vector_int_t *edge_color2,
+    igraph_vector_int_t *map12, igraph_vector_int_t *map21,
+    igraph_isohandler_t *isohandler_fn, igraph_isocompat_t *node_compat_fn,
+    igraph_isocompat_t *edge_compat_fn, void *arg
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This function is an implementation of the VF2 isomorphism algorithm,
+see P. Foggia, C. Sansone, M. Vento, An Improved algorithm for
+matching large graphs, Proc. of the 3rd IAPR-TC-15 International
+Workshop on Graph-based Representations, Italy, 2001.</p>
+<p>For using it you need to define a callback function of type
+<a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.5. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>. This function will be called whenever VF2
+finds an isomorphism between the two graphs. The mapping between
+the two graphs will be also provided to this function. If the
+callback returns <code class="constant">IGRAPH_SUCCESS</code>, then the search is continued,
+otherwise it stops. <code class="constant">IGRAPH_STOP</code> as a return value can be used to
+indicate normal premature termination; any other return value will be
+treated as an igraph error code, making the caller function return the
+same error code as well. The callback function must not destroy the
+mapping vectors that are passed to it.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
+<td><p>
+  The first input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
+<td><p>
+  The second input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_color1</code></em>:</span></p></td>
+<td><p>
+  An optional color vector for the first graph. If
+  color vectors are given for both graphs, then the isomorphism is
+  calculated on the colored graphs; i.e. two vertices can match
+  only if their color also matches. Supply a null pointer here if
+  your graphs are not colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_color2</code></em>:</span></p></td>
+<td><p>
+  An optional color vector for the second graph. See
+  the previous argument for explanation.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_color1</code></em>:</span></p></td>
+<td><p>
+  An optional edge color vector for the first
+  graph. The matching edges in the two graphs must have matching
+  colors as well. Supply a null pointer here if your graphs are not
+  edge-colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_color2</code></em>:</span></p></td>
+<td><p>
+  The edge color vector for the second graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>map12</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector or <code class="constant">NULL</code>. If not <code class="constant">NULL</code> and the supplied graphs are isomorphic then the permutation
+  taking <em class="parameter"><code>graph1</code></em> to <em class="parameter"><code>graph</code></em> is stored here. If not <code class="constant">NULL</code> and the
+  graphs are not isomorphic then a zero-length vector is returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>map21</code></em>:</span></p></td>
+<td><p>
+  This is the same as <em class="parameter"><code>map12</code></em>, but for the permutation
+  taking <em class="parameter"><code>graph2</code></em> to <em class="parameter"><code>graph1</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>isohandler_fn</code></em>:</span></p></td>
+<td><p>
+  The callback function to be called if an
+  isomorphism is found. See also <a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.5. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
+<td><p>
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  determine whether two nodes are compatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
+<td><p>
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  determine whether two edges are compatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  Extra argument to supply to functions <em class="parameter"><code>isohandler_fn</code></em>, <em class="parameter"><code>node_compat_fn</code></em> and <em class="parameter"><code>edge_compat_fn</code></em>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: exponential.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_isohandler_t"></a>3.5. <code class="function">igraph_isohandler_t</code> — Callback type, called when an isomorphism was found</h3></div></div></div>
+<a class="indexterm" name="id-1.18.4.9.2"></a><pre class="programlisting">
+typedef igraph_error_t igraph_isohandler_t(const igraph_vector_int_t *map12,
+        const igraph_vector_int_t *map21, void *arg);
 </pre>
 <p>
 
 
-See the details at the documentation of <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a>.
+See the details at the documentation of <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1784,7 +1906,7 @@ See the details at the documentation of <a class="link" href="igraph-Isomorphism
 <tr>
 <td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
 <td><p>
-  This extra argument was passed to <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a> when it was called.
+  This extra argument was passed to <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a> when it was called.
 </p></td>
 </tr>
 </tbody>
@@ -1800,7 +1922,10 @@ See the details at the documentation of <a class="link" href="igraph-Isomorphism
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Boolean, whether to continue with the isomorphism search.
+  <code class="constant">IGRAPH_SUCCESS</code> to continue the search, <code class="constant">IGRAPH_STOP</code> to
+  terminate the search. Any other return value is interpreted as an
+  igraph error code, which will then abort the search and return the
+  same error code from the caller function.
  
   </p></td>
 </tr></tbody>
@@ -1810,8 +1935,8 @@ See the details at the documentation of <a class="link" href="igraph-Isomorphism
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isocompat_t"></a>3.5. <code class="function">igraph_isocompat_t</code> — Callback type, called to check whether two vertices or edges are compatible</h3></div></div></div>
-<a class="indexterm" name="id-1.18.4.9.2"></a><pre class="programlisting">
+<a name="igraph_isocompat_t"></a>3.6. <code class="function">igraph_isocompat_t</code> — Callback type, called to check whether two vertices or edges are compatible</h3></div></div></div>
+<a class="indexterm" name="id-1.18.4.10.2"></a><pre class="programlisting">
 typedef igraph_bool_t igraph_isocompat_t(const igraph_t *graph1,
         const igraph_t *graph2,
         const igraph_integer_t g1_num,
@@ -1897,172 +2022,17 @@ logical value, giving whether the two vertices match.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic_function_vf2"></a>3.6. <code class="function">igraph_isomorphic_function_vf2</code> — The generic VF2 interface</h3></div></div></div>
-<a class="indexterm" name="id-1.18.4.10.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-int igraph_isomorphic_function_vf2(const igraph_t *graph1, const igraph_t *graph2,
-                                   const igraph_vector_int_t *vertex_color1,
-                                   const igraph_vector_int_t *vertex_color2,
-                                   const igraph_vector_int_t *edge_color1,
-                                   const igraph_vector_int_t *edge_color2,
-                                   igraph_vector_t *map12,
-                                   igraph_vector_t *map21,
-                                   igraph_isohandler_t *isohandler_fn,
-                                   igraph_isocompat_t *node_compat_fn,
-                                   igraph_isocompat_t *edge_compat_fn,
-                                   void *arg);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-</p>
-<p>
-This function is an implementation of the VF2 isomorphism algorithm,
-see P. Foggia, C. Sansone, M. Vento, An Improved algorithm for
-matching large graphs, Proc. of the 3rd IAPR-TC-15 International
-Workshop on Graph-based Representations, Italy, 2001.</p>
-<p>For using it you need to define a callback function of type
-<a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.4. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>. This function will be called whenever VF2
-finds an isomorphism between the two graphs. The mapping between
-the two graphs will be also provided to this function. If the
-callback returns a nonzero value then the search is continued,
-otherwise it stops. The callback function must not destroy the
-mapping vectors that are passed to it.
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
-<td><p>
-  The first input graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
-<td><p>
-  The second input graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>vertex_color1</code></em>:</span></p></td>
-<td><p>
-  An optional color vector for the first graph. If
-  color vectors are given for both graphs, then the isomorphism is
-  calculated on the colored graphs; i.e. two vertices can match
-  only if their color also matches. Supply a null pointer here if
-  your graphs are not colored.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>vertex_color2</code></em>:</span></p></td>
-<td><p>
-  An optional color vector for the second graph. See
-  the previous argument for explanation.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>edge_color1</code></em>:</span></p></td>
-<td><p>
-  An optional edge color vector for the first
-  graph. The matching edges in the two graphs must have matching
-  colors as well. Supply a null pointer here if your graphs are not
-  edge-colored.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>edge_color2</code></em>:</span></p></td>
-<td><p>
-  The edge color vector for the second graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>map12</code></em>:</span></p></td>
-<td><p>
-  Pointer to an initialized vector or <code class="constant">NULL</code>. If not <code class="constant">NULL</code> and the supplied graphs are isomorphic then the permutation
-  taking <em class="parameter"><code>graph1</code></em> to <em class="parameter"><code>graph</code></em> is stored here. If not <code class="constant">NULL</code> and the
-  graphs are not isomorphic then a zero-length vector is returned.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>map21</code></em>:</span></p></td>
-<td><p>
-  This is the same as <em class="parameter"><code>map12</code></em>, but for the permutation
-  taking <em class="parameter"><code>graph2</code></em> to <em class="parameter"><code>graph1</code></em>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>isohandler_fn</code></em>:</span></p></td>
-<td><p>
-  The callback function to be called if an
-  isomorphism is found. See also <a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.4. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
-<td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
-  determine whether two nodes are compatible.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
-<td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
-  determine whether two edges are compatible.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
-<td><p>
-  Extra argument to supply to functions <em class="parameter"><code>isohandler_fn</code></em>, <em class="parameter"><code>node_compat_fn</code></em> and <em class="parameter"><code>edge_compat_fn</code></em>.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: exponential.
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_subisomorphic_vf2"></a>3.7. <code class="function">igraph_subisomorphic_vf2</code> — Decide subgraph isomorphism using VF2</h3></div></div></div>
 <a class="indexterm" name="id-1.18.4.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_subisomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_subisomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
                              const igraph_vector_int_t *vertex_color1,
                              const igraph_vector_int_t *vertex_color2,
                              const igraph_vector_int_t *edge_color1,
                              const igraph_vector_int_t *edge_color2,
-                             igraph_bool_t *iso, igraph_vector_t *map12,
-                             igraph_vector_t *map21,
+                             igraph_bool_t *iso, igraph_vector_int_t *map12,
+                             igraph_vector_int_t *map21,
                              igraph_isocompat_t *node_compat_fn,
                              igraph_isocompat_t *edge_compat_fn,
                              void *arg);
@@ -2073,7 +2043,7 @@ int igraph_subisomorphic_vf2(const igraph_t *graph1, const igraph_t *graph2,
 
 
 
-Decides whether a subgraph of <em class="parameter"><code>graph1</code></em> is isomorphic to <em class="parameter"><code>graph2</code></em>. It uses <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_function_vf2" title="3.10. igraph_subisomorphic_function_vf2 — Generic VF2 function for subgraph isomorphism problems"><code class="function">igraph_subisomorphic_function_vf2()</code></a>.
+Decides whether a subgraph of <em class="parameter"><code>graph1</code></em> is isomorphic to <em class="parameter"><code>graph2</code></em>. It uses <a class="link" href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2_callback" title="3.10. igraph_get_subisomorphisms_vf2_callback — Generic VF2 function for subgraph isomorphism problems."><code class="function">igraph_get_subisomorphisms_vf2_callback()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2155,14 +2125,14 @@ Decides whether a subgraph of <em class="parameter"><code>graph1</code></em> is 
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -2202,7 +2172,7 @@ Time complexity: exponential.
 <a class="indexterm" name="id-1.18.4.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_count_subisomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
+igraph_error_t igraph_count_subisomorphisms_vf2(const igraph_t *graph1, const igraph_t *graph2,
                                      const igraph_vector_int_t *vertex_color1,
                                      const igraph_vector_int_t *vertex_color2,
                                      const igraph_vector_int_t *edge_color1,
@@ -2219,7 +2189,7 @@ int igraph_count_subisomorphisms_vf2(const igraph_t *graph1, const igraph_t *gra
 
 
 Count the number of isomorphisms between subgraphs of <em class="parameter"><code>graph1</code></em> and
-<em class="parameter"><code>graph2</code></em>. This function uses <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_function_vf2" title="3.10. igraph_subisomorphic_function_vf2 — Generic VF2 function for subgraph isomorphism problems"><code class="function">igraph_subisomorphic_function_vf2()</code></a>.
+<em class="parameter"><code>graph2</code></em>. This function uses <a class="link" href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2_callback" title="3.10. igraph_get_subisomorphisms_vf2_callback — Generic VF2 function for subgraph isomorphism problems."><code class="function">igraph_get_subisomorphisms_vf2_callback()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2286,14 +2256,14 @@ Count the number of isomorphisms between subgraphs of <em class="parameter"><cod
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -2333,13 +2303,13 @@ Time complexity: exponential.
 <a class="indexterm" name="id-1.18.4.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_get_subisomorphisms_vf2(const igraph_t *graph1,
+igraph_error_t igraph_get_subisomorphisms_vf2(const igraph_t *graph1,
                                    const igraph_t *graph2,
                                    const igraph_vector_int_t *vertex_color1,
                                    const igraph_vector_int_t *vertex_color2,
                                    const igraph_vector_int_t *edge_color1,
                                    const igraph_vector_int_t *edge_color2,
-                                   igraph_vector_ptr_t *maps,
+                                   igraph_vector_int_list_t *maps,
                                    igraph_isocompat_t *node_compat_fn,
                                    igraph_isocompat_t *edge_compat_fn,
                                    void *arg);
@@ -2351,7 +2321,7 @@ int igraph_get_subisomorphisms_vf2(const igraph_t *graph1,
 
 
 This function collects all isomorphic mappings of <em class="parameter"><code>graph2</code></em> to a
-subgraph of <em class="parameter"><code>graph1</code></em>. It uses the <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_function_vf2" title="3.10. igraph_subisomorphic_function_vf2 — Generic VF2 function for subgraph isomorphism problems"><code class="function">igraph_subisomorphic_function_vf2()</code></a> function. The graphs should be simple.
+subgraph of <em class="parameter"><code>graph1</code></em>. It uses the <a class="link" href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2_callback" title="3.10. igraph_get_subisomorphisms_vf2_callback — Generic VF2 function for subgraph isomorphism problems."><code class="function">igraph_get_subisomorphisms_vf2_callback()</code></a> function. The graphs should be simple.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2411,25 +2381,22 @@ subgraph of <em class="parameter"><code>graph1</code></em>. It uses the <a class
 <tr>
 <td><p><span class="term"><em class="parameter"><code>maps</code></em>:</span></p></td>
 <td><p>
-  Pointer vector. On return it contains pointers to
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> objects, each vector is an
-  isomorphic mapping of <em class="parameter"><code>graph2</code></em> to a subgraph of <em class="parameter"><code>graph1</code></em>. Please note that
-  you need to 1) Destroy the vectors via <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_destroy()</code></a>, 2) free them via
-  <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> and then 3) call <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector."><code class="function">igraph_vector_ptr_destroy()</code></a> on the pointer vector to deallocate all
-  memory when <em class="parameter"><code>maps</code></em> is no longer needed.
+  Pointer to a list of integer vectors. On return it contains
+  pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> objects, each vector is an isomorphic
+  mapping of <em class="parameter"><code>graph2</code></em> to a subgraph of <em class="parameter"><code>graph1</code></em>.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -2465,22 +2432,18 @@ Time complexity: exponential.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_subisomorphic_function_vf2"></a>3.10. <code class="function">igraph_subisomorphic_function_vf2</code> — Generic VF2 function for subgraph isomorphism problems</h3></div></div></div>
+<a name="igraph_get_subisomorphisms_vf2_callback"></a>3.10. <code class="function">igraph_get_subisomorphisms_vf2_callback</code> —  Generic VF2 function for subgraph isomorphism problems.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.4.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_subisomorphic_function_vf2(const igraph_t *graph1,
-                                      const igraph_t *graph2,
-                                      const igraph_vector_int_t *vertex_color1,
-                                      const igraph_vector_int_t *vertex_color2,
-                                      const igraph_vector_int_t *edge_color1,
-                                      const igraph_vector_int_t *edge_color2,
-                                      igraph_vector_t *map12,
-                                      igraph_vector_t *map21,
-                                      igraph_isohandler_t *isohandler_fn,
-                                      igraph_isocompat_t *node_compat_fn,
-                                      igraph_isocompat_t *edge_compat_fn,
-                                      void *arg);
+igraph_error_t igraph_get_subisomorphisms_vf2_callback(
+    const igraph_t *graph1, const igraph_t *graph2,
+    const igraph_vector_int_t *vertex_color1, const igraph_vector_int_t *vertex_color2,
+    const igraph_vector_int_t *edge_color1, const igraph_vector_int_t *edge_color2,
+    igraph_vector_int_t *map12, igraph_vector_int_t *map21,
+    igraph_isohandler_t *isohandler_fn, igraph_isocompat_t *node_compat_fn,
+    igraph_isocompat_t *edge_compat_fn, void *arg
+);
 </pre></div>
 <p>
 </p>
@@ -2488,7 +2451,7 @@ int igraph_subisomorphic_function_vf2(const igraph_t *graph1,
 
 
 
-This function is the pair of <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2" title="3.6. igraph_isomorphic_function_vf2 — The generic VF2 interface"><code class="function">igraph_isomorphic_function_vf2()</code></a>,
+This function is the pair of <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>,
 for subgraph isomorphism problems. It searches for subgraphs of <em class="parameter"><code>graph1</code></em> which are isomorphic to <em class="parameter"><code>graph2</code></em>. When it founds an
 isomorphic mapping it calls the supplied callback <em class="parameter"><code>isohandler_fn</code></em>.
 The mapping (and its inverse) and the additional <em class="parameter"><code>arg</code></em> argument
@@ -2567,23 +2530,24 @@ are supplied to the callback.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>isohandler_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.4. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>. This will be called whenever a subgraph
-  isomorphism is found. If the function returns with a non-zero value
-  then the search is continued, otherwise it stops and the function
-  returns.
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isohandler_t" title="3.5. igraph_isohandler_t — Callback type, called when an isomorphism was found"><code class="function">igraph_isohandler_t</code></a>. This will be called whenever a subgraph
+  isomorphism is found. If the function returns <code class="constant">IGRAPH_SUCCESS</code>,
+  then the search is continued. If the function returns <code class="constant">IGRAPH_STOP</code>,
+  the search is terminated normally. Any other value is treated as an
+  igraph error code.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>node_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two nodes are compatible.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_compat_fn</code></em>:</span></p></td>
 <td><p>
-  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.5. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
+  A pointer to a function of type <a class="link" href="igraph-Isomorphism.html#igraph_isocompat_t" title="3.6. igraph_isocompat_t — Callback type, called to check whether two vertices or edges are compatible"><code class="function">igraph_isocompat_t</code></a>. This function will be called by the algorithm to
   determine whether two edges are compatible.
 </p></td>
 </tr>
@@ -2616,6 +2580,76 @@ Time complexity: exponential.
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="vf2-algorithm-deprecated"></a>3.11. Deprecated aliases</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_function_vf2">3.11.1. <code class="function">igraph_isomorphic_function_vf2</code> —  The generic VF2 interface (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic_function_vf2">3.11.2. <code class="function">igraph_subisomorphic_function_vf2</code> —  Generic VF2 function for subgraph isomorphism problems (deprecated alias).</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_isomorphic_function_vf2"></a>3.11.1. <code class="function">igraph_isomorphic_function_vf2</code> —  The generic VF2 interface (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.18.4.15.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_isomorphic_function_vf2(
+    const igraph_t *graph1, const igraph_t *graph2,
+    const igraph_vector_int_t *vertex_color1, const igraph_vector_int_t *vertex_color2,
+    const igraph_vector_int_t *edge_color1, const igraph_vector_int_t *edge_color2,
+    igraph_vector_int_t *map12, igraph_vector_int_t *map21,
+    igraph_isohandler_t *isohandler_fn, igraph_isocompat_t *node_compat_fn,
+    igraph_isocompat_t *edge_compat_fn, void *arg
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Isomorphism.html#igraph_get_isomorphisms_vf2_callback" title="3.4. igraph_get_isomorphisms_vf2_callback — The generic VF2 interface"><code class="function">igraph_get_isomorphisms_vf2_callback()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_subisomorphic_function_vf2"></a>3.11.2. <code class="function">igraph_subisomorphic_function_vf2</code> —  Generic VF2 function for subgraph isomorphism problems (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.18.4.15.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_subisomorphic_function_vf2(
+    const igraph_t *graph1, const igraph_t *graph2,
+    const igraph_vector_int_t *vertex_color1, const igraph_vector_int_t *vertex_color2,
+    const igraph_vector_int_t *edge_color1, const igraph_vector_int_t *edge_color2,
+    igraph_vector_int_t *map12, igraph_vector_int_t *map21,
+    igraph_isohandler_t *isohandler_fn, igraph_isocompat_t *node_compat_fn,
+    igraph_isocompat_t *edge_compat_fn, void *arg
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Isomorphism.html#igraph_get_subisomorphisms_vf2_callback" title="3.10. igraph_get_subisomorphisms_vf2_callback — Generic VF2 function for subgraph isomorphism problems."><code class="function">igraph_get_subisomorphisms_vf2_callback()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -2644,11 +2678,11 @@ LAD works with both directed and undirected graphs. Graphs with multi-edges are 
 <a class="indexterm" name="id-1.18.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_subisomorphic_lad(const igraph_t *pattern, const igraph_t *target,
-                             const igraph_vector_ptr_t *domains,
-                             igraph_bool_t *iso, igraph_vector_t *map,
-                             igraph_vector_ptr_t *maps,
-                             igraph_bool_t induced, int time_limit);
+igraph_error_t igraph_subisomorphic_lad(const igraph_t *pattern, const igraph_t *target,
+                             const igraph_vector_int_list_t *domains,
+                             igraph_bool_t *iso, igraph_vector_int_t *map,
+                             igraph_vector_int_list_t *maps,
+                             igraph_bool_t induced, igraph_integer_t time_limit);
 </pre></div>
 <p>
 </p>
@@ -2692,9 +2726,9 @@ Isomorphism. Artificial Intelligence, 174(12-13):850-864, 2010.
 <td><p><span class="term"><em class="parameter"><code>domains</code></em>:</span></p></td>
 <td><p>
   A pointer vector, or a null pointer. If a pointer
-   vector, then it must contain pointers to <code class="constant">igraph_vector_t</code>
+   vector, then it must contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
    objects and the length of the vector must match the number of
-   vertices in the <em class="parameter"><code>pattern</code></em> graph. For each vertex, the ids of
+   vertices in the <em class="parameter"><code>pattern</code></em> graph. For each vertex, the IDs of
    the compatible vertices in the target graph are listed.
 </p></td>
 </tr>
@@ -2702,8 +2736,8 @@ Isomorphism. Artificial Intelligence, 174(12-13):850-864, 2010.
 <td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
 <td><p>
   Pointer to a boolean, or a null pointer. If not a null
-   pointer, then the boolean is set to TRUE (1) if a subgraph
-   isomorphism is found, and to FALSE (0) otherwise.
+   pointer, then the boolean is set to <code class="constant">true</code> if a subgraph
+   isomorphism is found, and to <code class="constant">false</code> otherwise.
 </p></td>
 </tr>
 <tr>
@@ -2712,15 +2746,15 @@ Isomorphism. Artificial Intelligence, 174(12-13):850-864, 2010.
   Pointer to a vector or a null pointer. If not a null
    pointer and a subgraph isomorphism is found, the matching
    vertices from the target graph are listed here, for each vertex
-   (in vertex id order) from the pattern graph.
+   (in vertex ID order) from the pattern graph.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>maps</code></em>:</span></p></td>
 <td><p>
-  Pointer vector or a null pointer. If not a null
-   pointer, then all subgraph isomorphisms are stored in the
-   pointer vector, in <code class="constant">igraph_vector_t</code> objects.
+  Pointer to a list of integer vectors or a null pointer. If not
+   a null pointer, then all subgraph isomorphisms are stored in the
+   vector list, in <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> objects.
 </p></td>
 </tr>
 <tr>
@@ -2780,30 +2814,18 @@ Time complexity: exponential.
 <div class="example">
 <a name="id-1.18.5.5.11.1"></a><p class="title"><b>Example 17.2.  File <code class="code">examples/simple/igraph_subisomorphic_lad.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>   IGraph library.</em></span>
-<span class="emphasis"><em>   Copyright (C) 2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
-<span class="emphasis"><em>   334 Harvard street, Cambridge, MA 02139 USA</em></span>
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>   (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>   02110-1301 USA</em></span>
-
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+void <span class="strong"><strong>print_maps</strong></span>(igraph_vector_int_t *map, igraph_vector_int_list_t *maps) {
+    igraph_integer_t n, i;
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(map);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(maps);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(maps, i);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
+    }
+    <span class="strong"><strong>igraph_vector_int_list_clear</strong></span>(maps);
+}
 
 <span class="emphasis"><em>/* This test counts motifs using LAD and compares the results with</em></span>
 <span class="emphasis"><em> * the RANDESU motif finder */</em></span>
@@ -2811,11 +2833,11 @@ void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="str
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> randesu_counts, lad_counts;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cut_prob;
     igraph_bool_t equal;
-    int i, n;
+    igraph_integer_t i, n;
     igraph_integer_t vcount;
     igraph_real_t expected_count;
 
-    vcount = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(graph);
+    vcount = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(graph);
 
     n = class_count;
 
@@ -2823,22 +2845,21 @@ void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="str
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
         igraph_t pattern;
-        igraph_vector_ptr_t maps;
+        igraph_vector_int_list_t maps;
         igraph_integer_t nAutomorphisms;
 
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class.">igraph_isoclass_create</a></strong></span>(&amp;pattern, k, i, directed);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;maps, 0);
+        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class.">igraph_isoclass_create</a></strong></span>(&amp;pattern, k, i, directed);
+        <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
 
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, graph, NULL, NULL, NULL, &amp;maps, <span class="emphasis"><em>/* induced = */</em></span> 1, 0);
+        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, graph, NULL, NULL, NULL, &amp;maps, <span class="emphasis"><em>/* induced = */</em></span> true, 0);
 
         <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;pattern, &amp;pattern, NULL, NULL, NULL, NULL, &amp;nAutomorphisms, NULL, NULL, NULL);
 
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(lad_counts)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;maps) / nAutomorphisms;
+        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(lad_counts)[i] = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;maps) / nAutomorphisms;
 
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR" title="2.16.16. IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR — Sets the item destructor for this pointer vector (macro version).">IGRAPH_VECTOR_PTR_SET_ITEM_DESTRUCTOR</a></strong></span>(&amp;maps, <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a>);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector.">igraph_vector_ptr_destroy_all</a></strong></span>(&amp;maps);
+        <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;maps);
 
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
     }
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;cut_prob, k);
@@ -2878,66 +2899,74 @@ void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="str
 
 void <span class="strong"><strong>test_motifs</strong></span>() {
     igraph_t graph;
+    igraph_integer_t count;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
 
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 30, 400, <span class="emphasis"><em>/* directed = */</em></span> 1, <span class="emphasis"><em>/* loops = */</em></span> 0);
+    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 30, 400, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, 16, <span class="emphasis"><em>/* directed= */</em></span> 1); <span class="emphasis"><em>/* there are 16 size-3 directed graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, 218, <span class="emphasis"><em>/* directed= */</em></span> 1); <span class="emphasis"><em>/* there are 218 size-4 directed graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_DIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_DIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_DIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 }
 
 void <span class="strong"><strong>test_motifs_undirected</strong></span>() {
     igraph_t graph;
+    igraph_integer_t count;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 137);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 137);
 
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 18, 100, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
+    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 18, 100, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, 4,   <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 4   size-3 undirected graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, 11,  <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 11  size-4 undirected graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_UNDIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_UNDIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="emphasis"><em>/* Use a smaller graph so that the test would not take too long. */</em></span>
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 9, 36, <span class="emphasis"><em>/* directed = */</em></span> 0, <span class="emphasis"><em>/* loops = */</em></span> 0);
+    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 9, 36, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, 34,  <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 34  size-5 undirected graphs */</em></span>
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, 156, <span class="emphasis"><em>/* directed= */</em></span> 0);  <span class="emphasis"><em>/* there are 156 size-6 undirected graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(5, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, count, IGRAPH_UNDIRECTED);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(6, IGRAPH_UNDIRECTED, &amp;count);
+    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, count, IGRAPH_UNDIRECTED);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 }
 
 
 int <span class="strong"><strong>main</strong></span>() {
     igraph_t target, pattern;
     igraph_bool_t iso;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> map;
-    igraph_vector_ptr_t maps;
-    int i, n, result;
+    igraph_vector_int_t map;
+    igraph_vector_int_list_t maps;
+    igraph_integer_t i;
     int domainsvec[] = { 0, 2, 8, -1,
                          4, 5, 6, 7, -1,
                          1, 3, 5, 6, 7, 8, -1,
                          0, 2, 8, -1,
                          1, 3, 7, 8, -1, -2
                        };
-    igraph_vector_ptr_t domains;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = 0;
+    igraph_vector_int_list_t domains;
+    igraph_vector_int_t v;
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;target, 9, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4, 0, 6,
-                 1, 0, 1, 4, 1, 2,
-                 2, 1, 2, 3,
-                 3, 2, 3, 4, 3, 5, 3, 7, 3, 8,
-                 4, 0, 4, 1, 4, 3, 4, 5, 4, 6,
-                 5, 6, 5, 4, 5, 3, 5, 8,
-                 6, 0, 6, 4, 6, 5,
-                 7, 3, 7, 8,
-                 8, 5, 8, 3, 8, 7,
+                 1, 4, 1, 2,
+                 2, 3,
+                 3, 4, 3, 5, 3, 7, 3, 8,
+                 4, 5, 4, 6,
+                 5, 6, 5, 8,
+                 7, 8,
                  -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;target, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loops=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;pattern, 5, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4,
@@ -2946,96 +2975,66 @@ int <span class="strong"><strong>main</strong></span>() {
                  3, 2, 3, 4,
                  4, 3, 4, 1, 4, 0,
                  -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;pattern, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loops=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;pattern, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loops=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;map, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;maps, 0);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> 0, &amp;iso, &amp;map,
-                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> 0, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map,
+                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;map);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;maps);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(maps)[i];
-        <span class="strong"><strong>igraph_vector_print</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
-    }
+    <span class="strong"><strong>print_maps</strong></span>(&amp;map, &amp;maps);
 
     <span class="strong"><strong>printf</strong></span>("---------\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> 0, &amp;iso, &amp;map,
-                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> 1, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map,
+                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> true, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 2;
     }
-    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;map);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;maps);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(maps)[i];
-        <span class="strong"><strong>igraph_vector_print</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
-    }
+    <span class="strong"><strong>print_maps</strong></span>(&amp;map, &amp;maps);
 
     <span class="strong"><strong>printf</strong></span>("---------\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;domains, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;domains, 0);
     i = 0;
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
     <span class="strong"><strong>while</strong></span> (1) {
         <span class="strong"><strong>if</strong></span> (domainsvec[i] == -2) {
             <span class="strong"><strong>break</strong></span>;
         } <span class="strong"><strong>else</strong></span> <span class="strong"><strong>if</strong></span> (domainsvec[i] == -1) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_push_back" title="2.16.8. igraph_vector_ptr_push_back — Appends an element to the back of a pointer vector.">igraph_vector_ptr_push_back</a></strong></span>(&amp;domains, v);
-            v = 0;
+            <span class="strong"><strong>igraph_vector_int_list_push_back_copy</strong></span>(&amp;domains, &amp;v);
+            <span class="strong"><strong>igraph_vector_int_clear</strong></span>(&amp;v);
         } <span class="strong"><strong>else</strong></span> {
-            <span class="strong"><strong>if</strong></span> (!v) {
-                v = (<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *) <span class="strong"><strong>malloc</strong></span>(<span class="strong"><strong>sizeof</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a>));
-                <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(v, 0);
-            }
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_push_back" title="2.13.5. igraph_vector_push_back — Appends one element to a vector.">igraph_vector_push_back</a></strong></span>(v, domainsvec[i]);
+            <span class="strong"><strong>igraph_vector_int_push_back</strong></span>(&amp;v, domainsvec[i]);
         }
         i++;
     }
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, &amp;domains, &amp;iso, &amp;map, &amp;maps,
-                             <span class="emphasis"><em>/*induced=*/</em></span> 0, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+                             <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 3;
     }
-    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;map);
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;maps);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(maps)[i];
-        <span class="strong"><strong>igraph_vector_print</strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
-        <span class="strong"><strong><a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions.">igraph_free</a></strong></span>(v);
-    }
+    <span class="strong"><strong>print_maps</strong></span>(&amp;map, &amp;maps);
 
-    n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;domains);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(domains)[i];
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(v);
-        <span class="strong"><strong>free</strong></span>(v);
-    }
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;domains);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;map);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;maps);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;domains);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;map);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;maps);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
 
     <span class="strong"><strong>printf</strong></span>("---------\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;map, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.16.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;maps, 0);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map, 0);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;target, 9, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4, 0, 6,
@@ -3048,37 +3047,26 @@ int <span class="strong"><strong>main</strong></span>() {
                  7, 3, 7, 8,
                  8, 5, 8, 3, 8, 7,
                  -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;target, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loops=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;pattern, 0, IGRAPH_DIRECTED, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    result = <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> 0,
-                                      &amp;iso, &amp;map, &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> 0,
-                                      <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_abort" title="2.2. igraph_error_handler_abort — Abort program in case of error.">igraph_error_handler_abort</a>);
-    <span class="strong"><strong>if</strong></span> (result != IGRAPH_EINVAL) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;target, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loops=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;pattern, 0, IGRAPH_UNDIRECTED, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> 0, &amp;iso, &amp;map, &amp;maps,
-                             <span class="emphasis"><em>/*induced=*/</em></span> 0, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map, &amp;maps,
+                             <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 5;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;map) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map) != 0) {
         <span class="strong"><strong>return</strong></span> 6;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.16.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;maps) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;maps) != 0) {
         <span class="strong"><strong>return</strong></span> 7;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;map);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;maps);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;map);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;maps);
 
     <span class="strong"><strong>test_motifs</strong></span>();
     <span class="strong"><strong>test_motifs_undirected</strong></span>();
@@ -3097,89 +3085,20 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for graphs with 3 or 4 vertices</h2></div></div></div>
+<a name="functions-for-graphs-with-3-or-4-vertices"></a>5. Functions for small graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_subgraph">5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_create">5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass">5.1. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_subgraph">5.2. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isoclass_create">5.3. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_graph_count">5.4. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic_34"></a>5.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices</h3></div></div></div>
+<a name="igraph_isoclass"></a>5.1. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isomorphic_34(const igraph_t *graph1, const igraph_t *graph2,
-                         igraph_bool_t *iso);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-This function uses precomputed indices to decide isomorphism
-problems for graphs with only 3 or 4 vertices. Multi-edges
-and self-loops are ignored by this function.
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
-<td><p>
-  The first input graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
-<td><p>
-  The second input graph. Must have the same
-  directedness as <em class="parameter"><code>graph1</code></em>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
-<td><p>
-  Pointer to a boolean, the result is stored here.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(1).
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass"></a>5.2. <code class="function">igraph_isoclass</code> —  Determine the isomorphism class of small graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.3.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-int igraph_isoclass(const igraph_t *graph, igraph_integer_t *isoclass);
+igraph_error_t igraph_isoclass(const igraph_t *graph, igraph_integer_t *isoclass);
 </pre></div>
 <p>
 </p>
@@ -3207,6 +3126,7 @@ isomorphism classes for directed graphs with three vertices is 16
 (between 0 and 15), for undirected graph it is only 4. For graphs
 with four vertices it is 218 (directed) and 11 (undirected).
 For 5 and 6 vertex undirected graphs, it is 34 and 156, respectively.
+These values can also be retrieved using <a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices."><code class="function">igraph_graph_count()</code></a>.
 For more information, see <a class="ulink" href="https://oeis.org/A000273" target="_top">https://oeis.org/A000273</a> and <a class="ulink" href="https://oeis.org/A000088" target="_top">https://oeis.org/A000088</a>.
 
 </p>
@@ -3268,8 +3188,8 @@ Multi-edges and self-loops are ignored by this function.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3286,11 +3206,11 @@ Time complexity: O(|E|), the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass_subgraph"></a>5.3. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.4.2"></a><p>
+<a name="igraph_isoclass_subgraph"></a>5.2. <code class="function">igraph_isoclass_subgraph</code> —  The isomorphism class of a subgraph of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isoclass_subgraph(const igraph_t *graph, const igraph_vector_t *vids,
+igraph_error_t igraph_isoclass_subgraph(const igraph_t *graph, const igraph_vector_int_t *vids,
                              igraph_integer_t *isoclass);
 </pre></div>
 <p>
@@ -3329,8 +3249,8 @@ Multi-edges and self-loops are ignored by this function.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
 <td><p>
-  A vector containing the vertex ids to be considered as
-       a subgraph. Each vertex id should be included at most once.
+  A vector containing the vertex IDs to be considered as
+       a subgraph. Each vertex ID should be included at most once.
 </p></td>
 </tr>
 <tr>
@@ -3368,8 +3288,8 @@ Multi-edges and self-loops are ignored by this function.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.4. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class."><code class="function">igraph_isoclass_create()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3382,11 +3302,11 @@ and n is the number of vertices in <code class="constant">vids</code>.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isoclass_create"></a>5.4. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.6.5.2"></a><p>
+<a name="igraph_isoclass_create"></a>5.3. <code class="function">igraph_isoclass_create</code> —  Creates a graph from the given isomorphism class.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_isoclass_create(igraph_t *graph, igraph_integer_t size,
+igraph_error_t igraph_isoclass_create(igraph_t *graph, igraph_integer_t size,
                            igraph_integer_t number, igraph_bool_t directed);
 </pre></div>
 <p>
@@ -3475,9 +3395,9 @@ undirected graphs are supported.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.2. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.3. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
-<a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Decides whether two graphs are isomorphic"><code class="function">igraph_isomorphic()</code></a>.
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isoclass_subgraph" title="5.2. igraph_isoclass_subgraph — The isomorphism class of a subgraph of a graph."><code class="function">igraph_isoclass_subgraph()</code></a>,
+<a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3485,6 +3405,96 @@ undirected graphs are supported.
 
 Time complexity: O(|V|+|E|), the number of vertices plus the number
 of edges in the graph to create.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_graph_count"></a>5.4. <code class="function">igraph_graph_count</code> —  The number of unlabelled graphs on the given number of vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.6.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_graph_count(igraph_integer_t n, igraph_bool_t directed, igraph_integer_t *count);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Gives the number of unlabelled <span class="emphasis"><em>simple</em></span> graphs on the specified number of vertices.
+The "isoclass" of a graph of this size is at most one less than this value.
+
+</p>
+<p>
+This function is meant to be used in conjunction with isoclass and motif finder
+functions. It will only work for small <em class="parameter"><code>n</code></em> values for which the result is
+represetable in an <span class="type">igraph_integer_t</span>. For larger <em class="parameter"><code>n</code></em> values, an overflow
+error is raised.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p>
+  The number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to consider directed graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>count</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer, the result will be stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu_callback" title="4.4. igraph_motifs_randesu_callback — Finds motifs in a graph and calls a function for each of them."><code class="function">igraph_motifs_randesu_callback()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
  
 </p>
 </div>
@@ -3502,8 +3512,8 @@ of edges in the graph to create.
 <a class="indexterm" name="id-1.18.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_permute_vertices(const igraph_t *graph, igraph_t *res,
-                            const igraph_vector_t *permutation);
+igraph_error_t igraph_permute_vertices(const igraph_t *graph, igraph_t *res,
+                                       const igraph_vector_int_t *permutation);
 </pre></div>
 <p>
 </p>
@@ -3575,7 +3585,7 @@ vertices and edges.
 <a class="indexterm" name="id-1.18.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_simplify_and_colorize(
+igraph_error_t igraph_simplify_and_colorize(
     const igraph_t *graph, igraph_t *res,
     igraph_vector_int_t *vertex_color, igraph_vector_int_t *edge_color);
 </pre></div>
@@ -3661,12 +3671,99 @@ vertex and edge colors.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2"><code class="function">igraph_isomorphic_vf2()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a>
+  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2."><code class="function">igraph_isomorphic_vf2()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="isomorphism-deprecated-functions"></a>7. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_34">7.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices (deprecated alias).</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_isomorphic_34"></a>7.1. <code class="function">igraph_isomorphic_34</code> — Graph isomorphism for 3-4 vertices (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.18.8.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_isomorphic_34(
+    const igraph_t *graph1, const igraph_t *graph2, igraph_bool_t *iso
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a>
+instead.</p>
+</div>
+<p>
+If you really care about performance and you <span class="emphasis"><em>know</em></span> for sure that your
+input graphs are simple and have either 3 or 4 vertices for directed graphs,
+or 3-6 vertices for undirected graphs, you can compare their isomorphism
+classes obtained from <a class="link" href="igraph-Isomorphism.html#igraph_isoclass" title="5.1. igraph_isoclass — Determine the isomorphism class of small graphs."><code class="function">igraph_isoclass()</code></a> directly instead of calling
+<a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?"><code class="function">igraph_isomorphic()</code></a>; this saves the cost of checking whether the graphs
+do not contain multiple edges or self-loops.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph1</code></em>:</span></p></td>
+<td><p>
+  The first input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph2</code></em>:</span></p></td>
+<td><p>
+  The second input graph. Must have the same
+  directedness as <em class="parameter"><code>graph1</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>iso</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean, the result is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
  
 </p>
 </div>

@@ -139,7 +139,7 @@
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-SCG.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Embedding.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
@@ -174,11 +174,11 @@ et al. (Eds.): ICML 2006 Ws, Lecture Notes in Computer Science
 </p>
 <p>
 igraph contains functions for fitting HRG models to a given network
-(<a class="link" href="igraph-HRG.html#igraph_hrg_fit" title="3.1. igraph_hrg_fit — Fit a hierarchical random graph model to a network"><code class="function">igraph_hrg_fit</code></a>), for generating networks from a given HRG
-ensemble (<a class="link" href="igraph-HRG.html#igraph_hrg_game" title="4.2. igraph_hrg_game — Generate a hierarchical random graph"><code class="function">igraph_hrg_game</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_sample" title="4.1. igraph_hrg_sample — Sample from a hierarchical random graph model"><code class="function">igraph_hrg_sample</code></a>), converting
+(<a class="link" href="igraph-HRG.html#igraph_hrg_fit" title="3.1. igraph_hrg_fit — Fit a hierarchical random graph model to a network."><code class="function">igraph_hrg_fit</code></a>), for generating networks from a given HRG
+ensemble (<a class="link" href="igraph-HRG.html#igraph_hrg_game" title="4.2. igraph_hrg_game — Generate a hierarchical random graph."><code class="function">igraph_hrg_game</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_sample" title="4.1. igraph_hrg_sample — Sample from a hierarchical random graph model."><code class="function">igraph_hrg_sample</code></a>), converting
 an igraph graph to a HRG and back (<a class="link" href="igraph-HRG.html#igraph_hrg_create" title="5.2. igraph_hrg_create — Create a HRG from an igraph graph."><code class="function">igraph_hrg_create</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_dendrogram" title="5.1. igraph_hrg_dendrogram — Create a dendrogram from a hierarchical random graph."><code class="function">igraph_hrg_dendrogram</code></a>), for calculating a consensus tree from a
 set of sampled HRGs (<a class="link" href="igraph-HRG.html#igraph_hrg_consensus" title="3.2. igraph_hrg_consensus — Calculate a consensus tree for a HRG."><code class="function">igraph_hrg_consensus</code></a>) and for predicting
-missing edges in a network based on its HRG models (<a class="link" href="igraph-HRG.html#igraph_hrg_predict" title="6.1. igraph_hrg_predict — Predict missing edges in a graph, based on HRG models"><code class="function">igraph_hrg_predict</code></a>).
+missing edges in a network based on its HRG models (<a class="link" href="igraph-HRG.html#igraph_hrg_predict" title="6.1. igraph_hrg_predict — Predict missing edges in a graph, based on HRG models."><code class="function">igraph_hrg_predict</code></a>).
 </p>
 <p>The igraph HRG implementation is heavily based on the code
 published by Aaron Clauset, at his website,
@@ -190,10 +190,10 @@ published by Aaron Clauset, at his website,
 <a name="representing-hrgs"></a>2. Representing HRGs</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_t">2.1. <code class="function">igraph_hrg_t</code> — Data structure to store a hierarchical random graph</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_init">2.2. <code class="function">igraph_hrg_init</code> — Allocate memory for a HRG.</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_destroy">2.3. <code class="function">igraph_hrg_destroy</code> — Deallocate memory for an HRG.</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_size">2.4. <code class="function">igraph_hrg_size</code> — Returns the size of the HRG, the number of leaf nodes.</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_resize">2.5. <code class="function">igraph_hrg_resize</code> — Resize a HRG.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_init">2.2. <code class="function">igraph_hrg_init</code> —  Allocate memory for a HRG.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_destroy">2.3. <code class="function">igraph_hrg_destroy</code> —  Deallocate memory for an HRG.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_size">2.4. <code class="function">igraph_hrg_size</code> —  Returns the size of the HRG, the number of leaf nodes.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_resize">2.5. <code class="function">igraph_hrg_resize</code> —  Resize a HRG.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -202,7 +202,11 @@ published by Aaron Clauset, at his website,
 </p>
 <pre class="programlisting">
 typedef struct igraph_hrg_t {
-    igraph_vector_t left, right, prob, edges, vertices;
+    igraph_vector_int_t left;
+    igraph_vector_int_t right;
+    igraph_vector_t prob;
+    igraph_vector_int_t vertices;
+    igraph_vector_int_t edges;
 } igraph_hrg_t;
 </pre>
 <p>
@@ -277,11 +281,11 @@ It has the following members:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_init"></a>2.2. <code class="function">igraph_hrg_init</code> — Allocate memory for a HRG.</h3></div></div></div>
+<a name="igraph_hrg_init"></a>2.2. <code class="function">igraph_hrg_init</code> —  Allocate memory for a HRG.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_init(igraph_hrg_t *hrg, int n);
+igraph_error_t igraph_hrg_init(igraph_hrg_t *hrg, igraph_integer_t n);
 </pre></div>
 <p>
 </p>
@@ -291,6 +295,7 @@ int igraph_hrg_init(igraph_hrg_t *hrg, int n);
 
 This function must be called before passing an <a class="link" href="igraph-HRG.html#igraph_hrg_t" title="2.1. igraph_hrg_t — Data structure to store a hierarchical random graph"><code class="function">igraph_hrg_t</code></a> to
 an igraph function.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -338,7 +343,7 @@ Time complexity: O(n), the number of vertices in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_destroy"></a>2.3. <code class="function">igraph_hrg_destroy</code> — Deallocate memory for an HRG.</h3></div></div></div>
+<a name="igraph_hrg_destroy"></a>2.3. <code class="function">igraph_hrg_destroy</code> —  Deallocate memory for an HRG.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -351,6 +356,7 @@ void igraph_hrg_destroy(igraph_hrg_t *hrg);
 
 
 The HRG data structure can be reinitialized again with an <a class="link" href="igraph-HRG.html#igraph_hrg_destroy" title="2.3. igraph_hrg_destroy — Deallocate memory for an HRG."><code class="function">igraph_hrg_destroy</code></a> call.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -374,11 +380,11 @@ Time complexity: operating system dependent.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_size"></a>2.4. <code class="function">igraph_hrg_size</code> — Returns the size of the HRG, the number of leaf nodes.</h3></div></div></div>
+<a name="igraph_hrg_size"></a>2.4. <code class="function">igraph_hrg_size</code> —  Returns the size of the HRG, the number of leaf nodes.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_size(const igraph_hrg_t *hrg);
+igraph_integer_t igraph_hrg_size(const igraph_hrg_t *hrg);
 </pre></div>
 <p>
 </p>
@@ -424,11 +430,11 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_resize"></a>2.5. <code class="function">igraph_hrg_resize</code> — Resize a HRG.</h3></div></div></div>
+<a name="igraph_hrg_resize"></a>2.5. <code class="function">igraph_hrg_resize</code> —  Resize a HRG.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_resize(igraph_hrg_t *hrg, int newsize);
+igraph_error_t igraph_hrg_resize(igraph_hrg_t *hrg, igraph_integer_t newsize);
 </pre></div>
 <p>
 </p>
@@ -486,19 +492,19 @@ Time complexity: O(n), n is the new size.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="fitting-hrgs"></a>3. Fitting HRGs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_fit">3.1. <code class="function">igraph_hrg_fit</code> — Fit a hierarchical random graph model to a network</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_consensus">3.2. <code class="function">igraph_hrg_consensus</code> — Calculate a consensus tree for a HRG.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_fit">3.1. <code class="function">igraph_hrg_fit</code> —  Fit a hierarchical random graph model to a network.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_consensus">3.2. <code class="function">igraph_hrg_consensus</code> —  Calculate a consensus tree for a HRG.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_fit"></a>3.1. <code class="function">igraph_hrg_fit</code> — Fit a hierarchical random graph model to a network</h3></div></div></div>
+<a name="igraph_hrg_fit"></a>3.1. <code class="function">igraph_hrg_fit</code> —  Fit a hierarchical random graph model to a network.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_fit(const igraph_t *graph,
+igraph_error_t igraph_hrg_fit(const igraph_t *graph,
                    igraph_hrg_t *hrg,
                    igraph_bool_t start,
-                   int steps);
+                   igraph_integer_t steps);
 </pre></div>
 <p>
 </p>
@@ -535,7 +541,7 @@ int igraph_hrg_fit(const igraph_t *graph,
 <td><p><span class="term"><em class="parameter"><code>start</code></em>:</span></p></td>
 <td><p>
   Logical, whether to start the fitting from the given
-  HRG.
+  HRG model.
 </p></td>
 </tr>
 <tr>
@@ -571,16 +577,16 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_consensus"></a>3.2. <code class="function">igraph_hrg_consensus</code> — Calculate a consensus tree for a HRG.</h3></div></div></div>
+<a name="igraph_hrg_consensus"></a>3.2. <code class="function">igraph_hrg_consensus</code> —  Calculate a consensus tree for a HRG.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_consensus(const igraph_t *graph,
-                         igraph_vector_t *parents,
+igraph_error_t igraph_hrg_consensus(const igraph_t *graph,
+                         igraph_vector_int_t *parents,
                          igraph_vector_t *weights,
                          igraph_hrg_t *hrg,
                          igraph_bool_t start,
-                         int num_samples);
+                         igraph_integer_t num_samples);
 </pre></div>
 <p>
 </p>
@@ -612,8 +618,8 @@ The calculation can be started from the given HRG (<code class="constant">hrg</c
   An initialized vector, the results are stored
   here. For each vertex, the id of its parent vertex is stored, or
   -1, if the vertex is the root vertex in the tree. The first n
-  vertex ids (from 0) refer to the original vertices of the graph,
-  the other ids refer to vertex groups.
+  vertex IDs (from 0) refer to the original vertices of the graph,
+  the other IDs refer to vertex groups.
 </p></td>
 </tr>
 <tr>
@@ -674,21 +680,16 @@ Time complexity: TODO.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="hrg-sampling"></a>4. HRG sampling</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_sample">4.1. <code class="function">igraph_hrg_sample</code> — Sample from a hierarchical random graph model</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_game">4.2. <code class="function">igraph_hrg_game</code> — Generate a hierarchical random graph</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_sample">4.1. <code class="function">igraph_hrg_sample</code> —  Sample from a hierarchical random graph model.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_game">4.2. <code class="function">igraph_hrg_game</code> —  Generate a hierarchical random graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_sample"></a>4.1. <code class="function">igraph_hrg_sample</code> — Sample from a hierarchical random graph model</h3></div></div></div>
+<a name="igraph_hrg_sample"></a>4.1. <code class="function">igraph_hrg_sample</code> —  Sample from a hierarchical random graph model.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_sample(const igraph_t *input_graph,
-                      igraph_t *sample,
-                      igraph_vector_ptr_t *samples,
-                      igraph_integer_t no_samples,
-                      igraph_hrg_t *hrg,
-                      igraph_bool_t start);
+igraph_error_t igraph_hrg_sample(const igraph_hrg_t *hrg, igraph_t *sample);
 </pre></div>
 <p>
 </p>
@@ -696,11 +697,8 @@ int igraph_hrg_sample(const igraph_t *input_graph,
 
 
 
-Sample from a hierarchical random graph ensemble. The ensemble can
-be given as a graph (<code class="constant">input_graph</code>), or as a HRG object (<code class="constant">hrg</code>).
-If a graph is given, then first an MCMC optimization is performed
-to find the optimal fitting model; then the MCMC is used to sample
-the graph(s).
+This function draws a single sample from a hierarchical random graph model.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -711,51 +709,15 @@ the graph(s).
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>input_graph</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>hrg</code></em>:</span></p></td>
 <td><p>
-  An igraph graph, or a null pointer. If not a
-  null pointer, then a HRG is first fitted to the graph, possibly
-  starting from the given HRG, if the <code class="constant">start</code> argument is true. If
-  is is a null pointer, then the given HRG is used as a starting
-  point, to  find the optimum of the Markov chain, before the
-  sampling.
+  A HRG model to sample from
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>sample</code></em>:</span></p></td>
 <td><p>
-  Pointer to an uninitialized graph, or a null
-  pointer. If only one sample is requested, and it is not a null
-  pointer, then the sample is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>samples</code></em>:</span></p></td>
-<td><p>
-  An initialized vector of pointers. If more than one
-  samples are requested, then they are stored here. Note that to
-  free this data structure, you need to call <a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on
-  each graph first, then <a class="link" href="igraph-Memory.html#igraph_free" title="2. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on all pointers, and finally
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.16.3. igraph_vector_ptr_destroy — Destroys a pointer vector."><code class="function">igraph_vector_ptr_destroy</code></a>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>no_samples</code></em>:</span></p></td>
-<td><p>
-  The number of samples to generate.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>hrg</code></em>:</span></p></td>
-<td><p>
-  A HRG. It is modified during the sampling.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>start</code></em>:</span></p></td>
-<td><p>
-  Logical, whether to start the MCMC from the given
-  HRG.
+  Pointer to an uninitialized graph; the sample is stored here.
 </p></td>
 </tr>
 </tbody>
@@ -783,11 +745,11 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_game"></a>4.2. <code class="function">igraph_hrg_game</code> — Generate a hierarchical random graph</h3></div></div></div>
+<a name="igraph_hrg_game"></a>4.2. <code class="function">igraph_hrg_game</code> —  Generate a hierarchical random graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_game(igraph_t *graph,
+igraph_error_t igraph_hrg_game(igraph_t *graph,
                     const igraph_hrg_t *hrg);
 </pre></div>
 <p>
@@ -796,8 +758,9 @@ int igraph_hrg_game(igraph_t *graph,
 
 
 
-This function is a simple shortcut to <a class="link" href="igraph-HRG.html#igraph_hrg_sample" title="4.1. igraph_hrg_sample — Sample from a hierarchical random graph model"><code class="function">igraph_hrg_sample</code></a>.
-It creates a single graph, from the given HRG.
+This function is a simple shortcut to <a class="link" href="igraph-HRG.html#igraph_hrg_sample" title="4.1. igraph_hrg_sample — Sample from a hierarchical random graph model."><code class="function">igraph_hrg_sample</code></a>.
+It creates a single graph from the given HRG.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -817,8 +780,7 @@ It creates a single graph, from the given HRG.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>hrg</code></em>:</span></p></td>
 <td><p>
-  The hierarchical random graph model to sample from. It
-  is modified during the MCMC process.
+  The hierarchical random graph model to sample from.
 </p></td>
 </tr>
 </tbody>
@@ -849,17 +811,18 @@ Time complexity: TODO.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="conversion-to-and-from-igraph-graphs"></a>5. Conversion to and from igraph graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_dendrogram">5.1. <code class="function">igraph_hrg_dendrogram</code> — Create a dendrogram from a hierarchical random graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_create">5.2. <code class="function">igraph_hrg_create</code> — Create a HRG from an igraph graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_dendrogram">5.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_create">5.2. <code class="function">igraph_hrg_create</code> —  Create a HRG from an igraph graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_dendrogram"></a>5.1. <code class="function">igraph_hrg_dendrogram</code> — Create a dendrogram from a hierarchical random graph.</h3></div></div></div>
+<a name="igraph_hrg_dendrogram"></a>5.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_dendrogram(igraph_t *graph,
-                          const igraph_hrg_t *hrg);
+igraph_error_t igraph_hrg_dendrogram(
+    igraph_t *graph, const igraph_hrg_t *hrg
+);
 </pre></div>
 <p>
 </p>
@@ -869,6 +832,7 @@ int igraph_hrg_dendrogram(igraph_t *graph,
 
 Creates the igraph graph equivalent of an <a class="link" href="igraph-HRG.html#igraph_hrg_t" title="2.1. igraph_hrg_t — Data structure to store a hierarchical random graph"><code class="function">igraph_hrg_t</code></a> data
 structure.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -916,11 +880,11 @@ Time complexity: O(n), the number of vertices in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_create"></a>5.2. <code class="function">igraph_hrg_create</code> — Create a HRG from an igraph graph.</h3></div></div></div>
+<a name="igraph_hrg_create"></a>5.2. <code class="function">igraph_hrg_create</code> —  Create a HRG from an igraph graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_create(igraph_hrg_t *hrg,
+igraph_error_t igraph_hrg_create(igraph_hrg_t *hrg,
                       const igraph_t *graph,
                       const igraph_vector_t *prob);
 </pre></div>
@@ -958,8 +922,7 @@ int igraph_hrg_create(igraph_hrg_t *hrg,
 <td><p><span class="term"><em class="parameter"><code>prob</code></em>:</span></p></td>
 <td><p>
   The vector of probabilities, this is used to label the
-   internal nodes of the hierarchical random graph. The values
-   corresponding to the leaves are ignored.
+   internal nodes of the hierarchical random graph.
 </p></td>
 </tr>
 </tbody>
@@ -989,20 +952,20 @@ Time complexity: O(n), the number of vertices in the tree.
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="predicting-missing-edges"></a>6. Predicting missing edges</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_predict">6.1. <code class="function">igraph_hrg_predict</code> — Predict missing edges in a graph, based on HRG models</a></span></dt></dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_predict">6.1. <code class="function">igraph_hrg_predict</code> —  Predict missing edges in a graph, based on HRG models.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_predict"></a>6.1. <code class="function">igraph_hrg_predict</code> — Predict missing edges in a graph, based on HRG models</h3></div></div></div>
+<a name="igraph_hrg_predict"></a>6.1. <code class="function">igraph_hrg_predict</code> —  Predict missing edges in a graph, based on HRG models.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_hrg_predict(const igraph_t *graph,
-                       igraph_vector_t *edges,
+igraph_error_t igraph_hrg_predict(const igraph_t *graph,
+                       igraph_vector_int_t *edges,
                        igraph_vector_t *prob,
                        igraph_hrg_t *hrg,
                        igraph_bool_t start,
-                       int num_samples,
-                       int num_bins);
+                       igraph_integer_t num_samples,
+                       igraph_integer_t num_bins);
 </pre></div>
 <p>
 </p>
@@ -1012,6 +975,7 @@ int igraph_hrg_predict(const igraph_t *graph,
 
 Samples HRG models for a network, and estimated the probability
 that an edge was falsely observed as non-existent in the network.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1095,7 +1059,7 @@ Time complexity: TODO.
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
 <td align="left"><a accesskey="p" href="igraph-Graphlets.html"><b>← Chapter 25. Graphlets</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-SCG.html"><b>Chapter 27. Spectral coarse graining →</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Embedding.html"><b>Chapter 27. Embedding of graphs →</b></a></td>
 </tr></table>
 
 

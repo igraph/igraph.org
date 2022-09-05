@@ -165,11 +165,11 @@
 <a class="indexterm" name="id-1.11.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_deterministic_optimal_imitation(const igraph_t *graph,
+igraph_error_t igraph_deterministic_optimal_imitation(const igraph_t *graph,
         igraph_integer_t vid,
         igraph_optimal_t optimality,
         const igraph_vector_t *quantities,
-        igraph_vector_t *strategies,
+        igraph_vector_int_t *strategies,
         igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -180,7 +180,7 @@ int igraph_deterministic_optimal_imitation(const igraph_t *graph,
 
 
 A simple deterministic imitation strategy where a vertex revises its
-strategy to that which yields a local optimal. Here "local" is with
+strategy to that which yields a local optimum. Here "local" is with
 respect to the immediate neighbours of the vertex. The vertex retains its
 current strategy where this strategy yields a locally optimal quantity.
 The quantity in this case could be a measure such as fitness.
@@ -362,28 +362,7 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
 <div class="example">
 <a name="id-1.11.2.2.8.2"></a><p class="title"><b>Example 10.1.  File <code class="code">examples/simple/igraph_deterministic_optimal_imitation.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>  Test suite for deterministic optimal imitation.</em></span>
-<span class="emphasis"><em>  Copyright (C) 2011 Minh Van Nguyen </em></span>&lt;nguyenminh2@gmail.com&gt;
-
-<span class="emphasis"><em>  This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>  it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>  the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>  (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>  This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>  but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>  GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>  You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>  along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>  Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>  02110-1301 USA</em></span>
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="emphasis"><em>/* test parameters structure */</em></span>
@@ -392,104 +371,30 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
     igraph_integer_t vertex;
     igraph_optimal_t optimality;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *quantities;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *strategies;
+    igraph_vector_int_t *strategies;
     igraph_neimode_t mode;
-    int retval;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> retval;
 } strategy_test_t;
-
-<span class="emphasis"><em>/* Error tests. That is, we expect error codes to be returned from such tests.</em></span>
-<span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>error_tests</strong></span>() {
-    igraph_t g, h;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat;
-    int i, n, ret;
-    strategy_test_t *test;
-
-    <span class="emphasis"><em>/* nonempty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 1, 1, 2, 2, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;h, 0, 0);         <span class="emphasis"><em>/* empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;quant, 1);  <span class="emphasis"><em>/* quantities vector */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;strat, 2);  <span class="emphasis"><em>/* strategies vector */</em></span>
-
-    {
-        <span class="emphasis"><em>/* test parameters */</em></span>
-        <span class="emphasis"><em>/*--graph--vertex--optimality--quantities--strategies--mode--retval--*/</em></span>
-        <span class="emphasis"><em>/* null pointer for graph */</em></span>
-        strategy_test_t null_graph = { NULL, 0, 0, NULL, NULL, IGRAPH_ALL,
-                                       IGRAPH_EINVAL
-                                     };
-        <span class="emphasis"><em>/* null pointer for quantities vector */</em></span>
-        strategy_test_t null_quant = { &amp;g, 0, 0, NULL, NULL, IGRAPH_ALL,
-                                       IGRAPH_EINVAL
-                                     };
-        <span class="emphasis"><em>/* null pointer for strategies vector */</em></span>
-        strategy_test_t null_strat = { &amp;g, 0, 0, &amp;quant, NULL, IGRAPH_ALL,
-                                       IGRAPH_EINVAL
-                                     };
-        <span class="emphasis"><em>/* empty graph */</em></span>
-        strategy_test_t empty_graph = {&amp;h, 0, 0, &amp;quant, &amp;strat, IGRAPH_ALL,
-                                       IGRAPH_EINVAL
-                                      };
-        <span class="emphasis"><em>/* length of quantities vector different from number of vertices */</em></span>
-        strategy_test_t qdiff_length = {&amp;g, 0, 0, &amp;quant, &amp;strat, IGRAPH_ALL,
-                                        IGRAPH_EINVAL
-                                       };
-        <span class="emphasis"><em>/* length of strategies vector different from number of vertices */</em></span>
-        strategy_test_t sdiff_length = {&amp;g, 0, 0, &amp;quant, &amp;strat, IGRAPH_ALL,
-                                        IGRAPH_EINVAL
-                                       };
-        strategy_test_t *all_checks[] = {<span class="emphasis"><em>/* 1 */</em></span> &amp;null_graph,
-                                                 <span class="emphasis"><em>/* 2 */</em></span> &amp;null_quant,
-                                                 <span class="emphasis"><em>/* 3 */</em></span> &amp;null_strat,
-                                                 <span class="emphasis"><em>/* 4 */</em></span> &amp;empty_graph,
-                                                 <span class="emphasis"><em>/* 5 */</em></span> &amp;qdiff_length,
-                                                 <span class="emphasis"><em>/* 6 */</em></span> &amp;sdiff_length
-                                        };
-        n = 6;
-        <span class="emphasis"><em>/* Run the error tests. We expect an error to be raised for each test. */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-        i = 0;
-        <span class="strong"><strong>while</strong></span> (i &lt; n) {
-            test = all_checks[i];
-            ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(test-&gt;graph,
-                    test-&gt;vertex,
-                    test-&gt;optimality,
-                    test-&gt;quantities,
-                    test-&gt;strategies,
-                    test-&gt;mode);
-            <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
-                <span class="strong"><strong>printf</strong></span>("Error test no. %d failed.\n", (int)(i + 1));
-                <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
-            }
-            i++;
-        }
-    }
-    <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;h);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-
-    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
-}
 
 <span class="emphasis"><em>/* Updating the strategy of an isolated vertex. In this case, the strategies</em></span>
 <span class="emphasis"><em> * vector should not change at all.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>isolated_vertex_test</strong></span>() {
     igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat, v;
-    int i, ret;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t strat, v;
+    igraph_integer_t i;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
 
     <span class="emphasis"><em>/* graph with one isolated vertex */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 1, 1, 2, 2, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_vertices" title="3.3.3. igraph_add_vertices — Adds vertices to a graph.">igraph_add_vertices</a></strong></span>(&amp;g, 1, 0);  <span class="emphasis"><em>/* new vertex 3 is isolated */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_vertices" title="4.3.3. igraph_add_vertices — Adds vertices to a graph.">igraph_add_vertices</a></strong></span>(&amp;g, 1, 0);  <span class="emphasis"><em>/* new vertex 3 is isolated */</em></span>
     <span class="emphasis"><em>/* quantities vector: all vertices have the same fitness */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, 4, 0.25, 0.25, 0.25, 0.25);
     <span class="emphasis"><em>/* strategies vector: 0 means aggressive strategy; 1 means passive */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, 4, 1., 0., 1., 0.);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, 4, 1, 0, 1, 0);
     <span class="emphasis"><em>/* make a copy of the original strategies vector for comparison later on */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;v, &amp;strat);
+    <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;v, &amp;strat);
     <span class="emphasis"><em>/* Now update strategy of vertex 3. Since this vertex is isolated, no */</em></span>
     <span class="emphasis"><em>/* strategy update would take place. The resulting strategies vector */</em></span>
     <span class="emphasis"><em>/* would be the same as it was originally. */</em></span>
@@ -503,17 +408,17 @@ int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
         <span class="strong"><strong>printf</strong></span>("Isolated vertex test failed.\n");
         <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
     }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;strat); i++) {
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;strat); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[i]) {
             <span class="strong"><strong>printf</strong></span>("Isolated vertex test failed.\n");
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
     }
     <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
@@ -527,21 +432,20 @@ int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
 <span class="emphasis"><em> * result vector, we reset the strategies vector to its default state and</em></span>
 <span class="emphasis"><em> * repeat the game with another vertex.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>petersen_game_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>petersen_game_test</strong></span>() {
     igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> known_max_v, known_min_v, quant, strat, stratcopy;
-    int i, nvert;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t known_max_v, known_min_v, strat, stratcopy;
+    igraph_integer_t i, nvert;
 
     <span class="emphasis"><em>/* the Petersen graph */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n=*/</em></span> 0, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4, 0, 5, 1, 2, 1, 6, 2, 3, 2, 7, 3, 4, 3, 8, 4, 9,
                  5, 7, 5, 8, 6, 8, 6, 9, 7, 9, -1);
-    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="emphasis"><em>/* Strategies vector, one strategy for each vertex. Thus vec[i] is the */</em></span>
     <span class="emphasis"><em>/* strategy of vertex i. The strategy space is: {0, 1, 2, 3}. */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, nvert,
-                            1., 1., 2., 2., 0.,
-                            0., 0., 1., 2., 3.);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, nvert, 1, 1, 2, 2, 0, 0, 0, 1, 2, 3);
     <span class="emphasis"><em>/* Quantities vector, one quantity per vertex. Thus vec[i] is the */</em></span>
     <span class="emphasis"><em>/* quantity for vertex i. */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, nvert,
@@ -551,61 +455,53 @@ int <span class="strong"><strong>petersen_game_test</strong></span>() {
     <span class="emphasis"><em>/* game i where we revise the strategy of vertex i, the strategy */</em></span>
     <span class="emphasis"><em>/* vec[i] would be adopted by i. */</em></span>
     <span class="emphasis"><em>/*maximum deterministic imitation*/</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known_max_v, nvert,
-                            1., 1., 1., 2., 2.,
-                            0., 1., 0., 2., 0.);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known_max_v, nvert, 1, 1, 1, 2, 2, 0, 1, 0, 2, 0);
     <span class="emphasis"><em>/*minimum deterministic imitation*/</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known_min_v, nvert,
-                            1., 1., 1., 2., 1.,
-                            1., 0., 1., 0., 1.);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known_min_v, nvert, 1, 1, 1, 2, 1, 1, 0, 1, 0, 1);
     <span class="emphasis"><em>/* play game and compare resulting updated strategies */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; nvert; i++) {
         <span class="emphasis"><em>/* maximum deterministic imitation */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcopy, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
         <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
-                <span class="emphasis"><em>/*vertex*/</em></span> (igraph_integer_t)i,
+                <span class="emphasis"><em>/*vertex*/</em></span> i,
                 <span class="emphasis"><em>/*optimality*/</em></span> IGRAPH_MAXIMUM,
                 <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
                 <span class="emphasis"><em>/*strategies*/</em></span> &amp;stratcopy,
                 <span class="emphasis"><em>/*neighbours*/</em></span> IGRAPH_ALL);
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcopy)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(known_max_v)[i]) {
-            <span class="strong"><strong>printf</strong></span>("Maximum deterministic imitation failed for vertex %d.\n", i);
+            <span class="strong"><strong>printf</strong></span>("Maximum deterministic imitation failed for vertex %" IGRAPH_PRId ".\n", i);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcopy);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcopy);
         <span class="emphasis"><em>/* minimum deterministic imitation */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcopy, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
         <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
-                <span class="emphasis"><em>/*vertex*/</em></span> (igraph_integer_t)i,
+                <span class="emphasis"><em>/*vertex*/</em></span> i,
                 <span class="emphasis"><em>/*optimality*/</em></span> IGRAPH_MINIMUM,
                 <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
                 <span class="emphasis"><em>/*strategies*/</em></span> &amp;stratcopy,
                 <span class="emphasis"><em>/*neighbours*/</em></span> IGRAPH_ALL);
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcopy)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(known_min_v)[i]) {
-            <span class="strong"><strong>printf</strong></span>("Minimum deterministic imitation failed for vertex %d.\n", i);
+            <span class="strong"><strong>printf</strong></span>("Minimum deterministic imitation failed for vertex %" IGRAPH_PRId ".\n", i);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcopy);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcopy);
     }
     <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known_max_v);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known_min_v);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known_max_v);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known_min_v);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
 
 int <span class="strong"><strong>main</strong></span>() {
-    int ret;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 648);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 648);
 
-    ret = <span class="strong"><strong>error_tests</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> ret;
-    }
     ret = <span class="strong"><strong>isolated_vertex_test</strong></span>();
     <span class="strong"><strong>if</strong></span> (ret) {
         <span class="strong"><strong>return</strong></span> ret;
@@ -632,10 +528,10 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.11.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_moran_process(const igraph_t *graph,
+igraph_error_t igraph_moran_process(const igraph_t *graph,
                          const igraph_vector_t *weights,
                          igraph_vector_t *quantities,
-                         igraph_vector_t *strategies,
+                         igraph_vector_int_t *strategies,
                          igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -842,11 +738,11 @@ References:
 <a class="indexterm" name="id-1.11.2.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_roulette_wheel_imitation(const igraph_t *graph,
+igraph_error_t igraph_roulette_wheel_imitation(const igraph_t *graph,
                                     igraph_integer_t vid,
                                     igraph_bool_t islocal,
                                     const igraph_vector_t *quantities,
-                                    igraph_vector_t *strategies,
+                                    igraph_vector_int_t *strategies,
                                     igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -1046,28 +942,7 @@ Reference:
 <div class="example">
 <a name="id-1.11.2.4.9.2"></a><p class="title"><b>Example 10.2.  File <code class="code">examples/simple/igraph_roulette_wheel_imitation.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>  Test suite for stochastic imitation via roulette wheel selection.</em></span>
-<span class="emphasis"><em>  Copyright (C) 2011 Minh Van Nguyen </em></span>&lt;nguyenminh2@gmail.com&gt;
-
-<span class="emphasis"><em>  This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>  it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>  the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>  (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>  This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>  but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>  GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>  You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>  along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>  Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>  02110-1301 USA</em></span>
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_INTEGER</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
@@ -1078,112 +953,43 @@ Reference:
     igraph_integer_t vertex;
     igraph_bool_t islocal;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *quantities;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *strategies;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *known_strats;
+    igraph_vector_int_t *strategies;
+    igraph_vector_int_t *known_strats;
     igraph_neimode_t mode;
-    int retval;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> retval;
 } strategy_test_t;
-
-<span class="emphasis"><em>/* Error tests. That is, we expect error codes to be returned from such tests.</em></span>
-<span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>error_tests</strong></span>() {
-    igraph_t g, gzero, h;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, quantzero, strat, stratzero;
-    int i, n, nvert, ret;
-    strategy_test_t *test;
-
-    <span class="emphasis"><em>/* nonempty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*nvert=*/</em></span> 0, IGRAPH_UNDIRECTED, 0, 1, 1, 2, 2, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;h, 0, 0);         <span class="emphasis"><em>/* empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;quant, 1);  <span class="emphasis"><em>/* quantities vector */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;strat, 2);  <span class="emphasis"><em>/* strategies vector */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;gzero, <span class="emphasis"><em>/*nvert=*/</em></span> 0, IGRAPH_UNDIRECTED,
-                 0, 3, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 4, 3, 4, -1);
-    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;gzero);
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;stratzero, nvert, 1.0, 0.0, 1.0, 2.0, 0.0, 3.0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;quantzero, nvert);  <span class="emphasis"><em>/* vector of zeros */</em></span>
-
-    <span class="emphasis"><em>/* test parameters */</em></span>
-    <span class="emphasis"><em>/*graph--vert--islocal--quantities--strategies--known_strats--mode--retval*/</em></span>
-    <span class="emphasis"><em>/* null pointer for graph */</em></span>
-    strategy_test_t null_graph = {NULL, 0, 1, NULL, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* null pointer for quantities vector */</em></span>
-    strategy_test_t null_quant = {&amp;g, 0, 1, NULL, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* null pointer for strategies vector */</em></span>
-    strategy_test_t null_strat = {&amp;g, 0, 1, &amp;quant, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* empty graph */</em></span>
-    strategy_test_t empty_graph = {&amp;h, 0, 1, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* length of quantities vector different from number of vertices */</em></span>
-    strategy_test_t qdiff_length = {&amp;g, 0, 1, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* length of strategies vector different from number of vertices */</em></span>
-    strategy_test_t sdiff_length = {&amp;g, 0, 1, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* quantities vector contains all zeros */</em></span>
-    strategy_test_t zero_quant = {&amp;gzero, 4, 1, &amp;quantzero, &amp;stratzero, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    strategy_test_t *all_checks[] = {<span class="emphasis"><em>/* 1 */</em></span> &amp;null_graph,
-                                             <span class="emphasis"><em>/* 2 */</em></span> &amp;null_quant,
-                                             <span class="emphasis"><em>/* 3 */</em></span> &amp;null_strat,
-                                             <span class="emphasis"><em>/* 4 */</em></span> &amp;empty_graph,
-                                             <span class="emphasis"><em>/* 5 */</em></span> &amp;qdiff_length,
-                                             <span class="emphasis"><em>/* 6 */</em></span> &amp;sdiff_length,
-                                             <span class="emphasis"><em>/* 7 */</em></span> &amp;zero_quant
-                                    };
-
-    <span class="emphasis"><em>/* Run the error tests. We expect error to be raised for each test. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    n = 7;
-    i = 0;
-    <span class="strong"><strong>while</strong></span> (i &lt; n) {
-        test = all_checks[i];
-        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex,
-                                              test-&gt;islocal, test-&gt;quantities,
-                                              test-&gt;strategies, test-&gt;mode);
-        <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
-            <span class="strong"><strong>printf</strong></span>("Error test no. %d failed.\n", (int)(i + 1));
-            <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
-        }
-        i++;
-    }
-    <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;gzero);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;h);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quantzero);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratzero);
-
-    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
-}
 
 <span class="emphasis"><em>/* A game on a graph with 5 vertices and 7 edges. Use roulette wheel selection</em></span>
 <span class="emphasis"><em> * to update strategies. This example also illustrates how a choice of</em></span>
 <span class="emphasis"><em> * perspective (whether local or global) could affect the range of</em></span>
 <span class="emphasis"><em> * possible strategies a vertex could adopt.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>roulette_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>roulette_test</strong></span>() {
     igraph_t g;
     igraph_bool_t success;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *known, quant, strat, stratcopy;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> known0, known1, known2, known3, known4, known5;
-    int i, k, n, nvert, ret;;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t *known, strat, stratcopy;
+    igraph_vector_int_t known0, known1, known2, known3, known4, known5;
+    igraph_integer_t i, k, n, nvert;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
     strategy_test_t *test;
 
     <span class="emphasis"><em>/* the game network */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*nvert=*/</em></span> 0, IGRAPH_UNDIRECTED,
                  0, 3, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 4, 3, 4, -1);
-    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="emphasis"><em>/* strategies vector; the strategy space is {0, 1, 2, 3} */</em></span>
     <span class="emphasis"><em>/* V[i] is strategy of vertex i */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, nvert, 1.0, 0.0, 1.0, 2.0, 0.0, 3.0);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, nvert, 1, 0, 1, 2, 0, 3);
     <span class="emphasis"><em>/* quantities vector; V[i] is quantity of vertex i */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, nvert, 0.56, 0.13, 0.26, 0.73, 0.67, 0.82);
     <span class="emphasis"><em>/* possible strategies each vertex can adopt */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known0, <span class="emphasis"><em>/*n=*/</em></span> 3, 0.0, 1.0, 2.0);       <span class="emphasis"><em>/* local */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known1, <span class="emphasis"><em>/*n=*/</em></span> 3, 0.0, 1.0, 3.0);       <span class="emphasis"><em>/* local */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known2, <span class="emphasis"><em>/*n=*/</em></span> 3, 0.0, 1.0, 2.0);       <span class="emphasis"><em>/* local */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known3, <span class="emphasis"><em>/*n=*/</em></span> 3, 0.0, 1.0, 2.0);       <span class="emphasis"><em>/* local */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known4, <span class="emphasis"><em>/*n=*/</em></span> 3, 0.0, 1.0, 2.0);       <span class="emphasis"><em>/* local */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known5, <span class="emphasis"><em>/*n=*/</em></span> 4, 0.0, 1.0, 2.0, 3.0);  <span class="emphasis"><em>/* global */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known0, <span class="emphasis"><em>/*n=*/</em></span> 3, 0, 1, 2);       <span class="emphasis"><em>/* local */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known1, <span class="emphasis"><em>/*n=*/</em></span> 3, 0, 1, 3);       <span class="emphasis"><em>/* local */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known2, <span class="emphasis"><em>/*n=*/</em></span> 3, 0, 1, 2);       <span class="emphasis"><em>/* local */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known3, <span class="emphasis"><em>/*n=*/</em></span> 3, 0, 1, 2);       <span class="emphasis"><em>/* local */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known4, <span class="emphasis"><em>/*n=*/</em></span> 3, 0, 1, 2);       <span class="emphasis"><em>/* local */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known5, <span class="emphasis"><em>/*n=*/</em></span> 4, 0, 1, 2, 3);    <span class="emphasis"><em>/* global */</em></span>
 
     <span class="emphasis"><em>/* test parameters */</em></span>
     <span class="emphasis"><em>/*graph--vert--islocal--quantities--strategies--known_strats--mode-retval*/</em></span>
@@ -1206,12 +1012,12 @@ int <span class="strong"><strong>roulette_test</strong></span>() {
     i = 0;
     <span class="strong"><strong>while</strong></span> (i &lt; n) {
         test = all_checks[i];
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcopy, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
         ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex,
                                               test-&gt;islocal, test-&gt;quantities,
                                               &amp;stratcopy, test-&gt;mode);
         <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
-            <span class="strong"><strong>printf</strong></span>("Test no. %d failed.\n", i + 1);
+            <span class="strong"><strong>printf</strong></span>("Test no. %" IGRAPH_PRId " failed.\n", i + 1);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
         <span class="emphasis"><em>/* If the revised strategy s matches one of the candidate strategies, */</em></span>
@@ -1219,30 +1025,29 @@ int <span class="strong"><strong>roulette_test</strong></span>() {
         <span class="emphasis"><em>/* failure. Default to failure. */</em></span>
         success = 0;
         known = test-&gt;known_strats;
-        <span class="strong"><strong>for</strong></span> (k = 0; k &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(known); k++) {
+        <span class="strong"><strong>for</strong></span> (k = 0; k &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(known); k++) {
             <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*known)[k] == <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcopy)[test-&gt;vertex]) {
                 success = 1;
                 <span class="strong"><strong>break</strong></span>;
             }
         }
         <span class="strong"><strong>if</strong></span> (!success) {
-            <span class="strong"><strong>printf</strong></span>("Roulette wheel imitation failed for vertex %d.\n",
-                   (int)test-&gt;vertex);
+            <span class="strong"><strong>printf</strong></span>("Roulette wheel imitation failed for vertex %" IGRAPH_PRId ".\n", test-&gt;vertex);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcopy);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcopy);
         i++;
     }
     <span class="emphasis"><em>/* game finished; pack up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known3);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known4);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known5);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known0);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known1);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known2);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known3);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known4);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known5);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
@@ -1250,26 +1055,27 @@ int <span class="strong"><strong>roulette_test</strong></span>() {
 <span class="emphasis"><em>/* It is possible for a vertex to retain its current strategy. This can</em></span>
 <span class="emphasis"><em> * happen both in the local and global perspectives.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>retain_strategy_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>retain_strategy_test</strong></span>() {
     igraph_t g;
     igraph_integer_t max, min, v;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat, stratcp;
-    int i, ntry, nvert;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t strat, stratcp;
+    igraph_integer_t i, ntry, nvert;
 
     <span class="emphasis"><em>/* the game network */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*nvert=*/</em></span> 0, IGRAPH_UNDIRECTED,
                  0, 3, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 4, 3, 4, -1);
-    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="emphasis"><em>/* strategies vector; the strategy space is {0, 1, 2, 3} */</em></span>
     <span class="emphasis"><em>/* V[i] is strategy of vertex i */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, nvert, 1.0, 0.0, 1.0, 2.0, 0.0, 3.0);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, nvert, 1, 0, 1, 2, 0, 3);
     <span class="emphasis"><em>/* quantities vector; V[i] is quantity of vertex i */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, nvert, 0.56, 0.13, 0.26, 0.73, 0.67, 0.82);
 
     <span class="emphasis"><em>/* random vertex */</em></span>
     min = 0;
     max = 5;
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42); <span class="emphasis"><em>/* make tests deterministic */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42); <span class="emphasis"><em>/* make tests deterministic */</em></span>
     v = <span class="strong"><strong>R_INTEGER</strong></span>(min, max);  <span class="emphasis"><em>/* min &lt;= v &lt;= max */</em></span>
     <span class="emphasis"><em>/* Ensure that it is possible for v to retain its current strategy. We */</em></span>
     <span class="emphasis"><em>/* will try to do this at most ntry times. As there are at most 6 vertices */</em></span>
@@ -1278,14 +1084,14 @@ int <span class="strong"><strong>retain_strategy_test</strong></span>() {
     <span class="emphasis"><em>/* With local perspective. */</em></span>
     i = 0;
     ntry = 100;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;stratcp, 0);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;stratcp, 0);
     <span class="strong"><strong>do</strong></span> {
         i++;
         <span class="strong"><strong>if</strong></span> (i &gt; ntry) {
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;    <span class="emphasis"><em>/* ideally this should never happen */</em></span>
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcp);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcp, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcp);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcp, &amp;strat);
         <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 1, &amp;quant, &amp;stratcp,
                                         IGRAPH_ALL);
     } <span class="strong"><strong>while</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcp)[v] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[v]);
@@ -1298,29 +1104,25 @@ int <span class="strong"><strong>retain_strategy_test</strong></span>() {
         <span class="strong"><strong>if</strong></span> (i &gt; ntry) {
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;    <span class="emphasis"><em>/* ideally this should never happen */</em></span>
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcp);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcp, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcp);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcp, &amp;strat);
         <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 0, &amp;quant, &amp;stratcp,
                                         IGRAPH_ALL);
     } <span class="strong"><strong>while</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcp)[v] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[v]);
     <span class="emphasis"><em>/* nothing further to do, but housekeeping */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcp);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcp);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
 
 int <span class="strong"><strong>main</strong></span>() {
-    int ret;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 3241);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 3241);
 
-    ret = <span class="strong"><strong>error_tests</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
-    }
     ret = <span class="strong"><strong>roulette_test</strong></span>();
     <span class="strong"><strong>if</strong></span> (ret) {
         <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
@@ -1347,11 +1149,11 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.11.2.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_stochastic_imitation(const igraph_t *graph,
+igraph_error_t igraph_stochastic_imitation(const igraph_t *graph,
                                 igraph_integer_t vid,
                                 igraph_imitate_algorithm_t algo,
                                 const igraph_vector_t *quantities,
-                                igraph_vector_t *strategies,
+                                igraph_vector_int_t *strategies,
                                 igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -1557,28 +1359,7 @@ usually be O(1).
 <div class="example">
 <a name="id-1.11.2.5.8.1"></a><p class="title"><b>Example 10.3.  File <code class="code">examples/simple/igraph_stochastic_imitation.c</code></b></p>
 <div class="example-contents">
-<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
-<span class="emphasis"><em>/*</em></span>
-<span class="emphasis"><em>  Test suite for stochastic imitation via uniform selection.</em></span>
-<span class="emphasis"><em>  Copyright (C) 2011 Minh Van Nguyen </em></span>&lt;nguyenminh2@gmail.com&gt;
-
-<span class="emphasis"><em>  This program is free software; you can redistribute it and/or modify</em></span>
-<span class="emphasis"><em>  it under the terms of the GNU General Public License as published by</em></span>
-<span class="emphasis"><em>  the Free Software Foundation; either version 2 of the License, or</em></span>
-<span class="emphasis"><em>  (at your option) any later version.</em></span>
-
-<span class="emphasis"><em>  This program is distributed in the hope that it will be useful,</em></span>
-<span class="emphasis"><em>  but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
-<span class="emphasis"><em>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
-<span class="emphasis"><em>  GNU General Public License for more details.</em></span>
-
-<span class="emphasis"><em>  You should have received a copy of the GNU General Public License</em></span>
-<span class="emphasis"><em>  along with this program; if not, write to the Free Software</em></span>
-<span class="emphasis"><em>  Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
-<span class="emphasis"><em>  02110-1301 USA</em></span>
-<span class="emphasis"><em>*/</em></span>
-
-<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
 <span class="emphasis"><em>/* test parameters structure */</em></span>
@@ -1587,90 +1368,31 @@ usually be O(1).
     igraph_integer_t vertex;
     igraph_imitate_algorithm_t algo;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *quantities;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *strategies;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *known_strats;
+    igraph_vector_int_t *strategies;
+    igraph_vector_int_t *known_strats;
     igraph_neimode_t mode;
-    int retval;
+    igraph_integer_t retval;
 } strategy_test_t;
-
-<span class="emphasis"><em>/* Error tests. That is, we expect error codes to be returned from such tests.</em></span>
-<span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>error_tests</strong></span>() {
-    igraph_t g, h;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat;
-    int i, n, ret;
-    strategy_test_t *test;
-
-    <span class="emphasis"><em>/* nonempty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n vertices*/</em></span> 0, IGRAPH_UNDIRECTED, 0, 1, 1, 2, 2, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="3.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;h, 0, 0);         <span class="emphasis"><em>/* empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;quant, 1);  <span class="emphasis"><em>/* quantities vector */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;strat, 2);  <span class="emphasis"><em>/* strategies vector */</em></span>
-
-    <span class="emphasis"><em>/* test parameters */</em></span>
-    <span class="emphasis"><em>/*graph--vertex--algo--quantities--strategies--known_strats--mode--retval*/</em></span>
-    <span class="emphasis"><em>/* null pointer for graph */</em></span>
-    strategy_test_t null_graph = {NULL, 0, IGRAPH_IMITATE_BLIND, NULL, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* null pointer for quantities vector */</em></span>
-    strategy_test_t null_quant = {&amp;g, 0, IGRAPH_IMITATE_BLIND, NULL, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* null pointer for strategies vector */</em></span>
-    strategy_test_t null_strat = {&amp;g, 0, IGRAPH_IMITATE_BLIND, &amp;quant, NULL, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* empty graph */</em></span>
-    strategy_test_t empty_graph = {&amp;h, 0, IGRAPH_IMITATE_BLIND, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* length of quantities vector different from number of vertices */</em></span>
-    strategy_test_t qdiff_length = {&amp;g, 0, IGRAPH_IMITATE_BLIND, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    <span class="emphasis"><em>/* length of strategies vector different from number of vertices */</em></span>
-    strategy_test_t sdiff_length = {&amp;g, 0, IGRAPH_IMITATE_BLIND, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    strategy_test_t unknown_algo = {&amp;g, 0, -1, &amp;quant, &amp;strat, NULL, IGRAPH_ALL, IGRAPH_EINVAL};
-    strategy_test_t *all_checks[] = {<span class="emphasis"><em>/* 1 */</em></span> &amp;null_graph,
-                                             <span class="emphasis"><em>/* 2 */</em></span> &amp;null_quant,
-                                             <span class="emphasis"><em>/* 3 */</em></span> &amp;null_strat,
-                                             <span class="emphasis"><em>/* 4 */</em></span> &amp;empty_graph,
-                                             <span class="emphasis"><em>/* 5 */</em></span> &amp;qdiff_length,
-                                             <span class="emphasis"><em>/* 6 */</em></span> &amp;sdiff_length,
-                                             <span class="emphasis"><em>/* 7 */</em></span> &amp;unknown_algo
-                                    };
-    <span class="emphasis"><em>/* Run the error tests. We expect error to be raised for each test. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors.">igraph_error_handler_ignore</a>);
-    n = 7;
-    i = 0;
-    <span class="strong"><strong>while</strong></span> (i &lt; n) {
-        test = all_checks[i];
-        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="1.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex, test-&gt;algo,
-                                          test-&gt;quantities, test-&gt;strategies,
-                                          test-&gt;mode);
-        <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
-            <span class="strong"><strong>printf</strong></span>("Error test no. %d failed.\n", (int)(i + 1));
-            <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
-        }
-        i++;
-    }
-    <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;h);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-
-    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
-}
 
 <span class="emphasis"><em>/* Updating the strategy of an isolated vertex. In this case, the strategies</em></span>
 <span class="emphasis"><em> * vector should not change at all.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>isolated_vertex_test</strong></span>() {
     igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat, v;
-    int i, ret;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t strat, v;
+    igraph_integer_t i;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
 
     <span class="emphasis"><em>/* graph with one isolated vertex */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n vertices*/</em></span> 0, IGRAPH_UNDIRECTED, 0, 1, 1, 2, 2, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_vertices" title="3.3.3. igraph_add_vertices — Adds vertices to a graph.">igraph_add_vertices</a></strong></span>(&amp;g, 1, 0);  <span class="emphasis"><em>/* new vertex 3 is isolated */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_vertices" title="4.3.3. igraph_add_vertices — Adds vertices to a graph.">igraph_add_vertices</a></strong></span>(&amp;g, 1, 0);  <span class="emphasis"><em>/* new vertex 3 is isolated */</em></span>
     <span class="emphasis"><em>/* quantities vector: all vertices have the same fitness */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, 4, 0.25, 0.25, 0.25, 0.25);
     <span class="emphasis"><em>/* strategies vector: 0 means aggressive strategy; 1 means passive */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, 4, 1.0, 0.0, 1.0, 0.0);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, 4, 1, 0, 1, 0);
     <span class="emphasis"><em>/* make a copy of the original strategies vector for comparison later on */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;v, &amp;strat);
+    <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;v, &amp;strat);
     <span class="emphasis"><em>/* Now update strategy of vertex 3. Since this vertex is isolated, no */</em></span>
     <span class="emphasis"><em>/* strategy update would take place. The resulting strategies vector */</em></span>
     <span class="emphasis"><em>/* would be the same as it was originally. */</em></span>
@@ -1684,17 +1406,17 @@ int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
         <span class="strong"><strong>printf</strong></span>("Isolated vertex test failed.\n");
         <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
     }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;strat); i++) {
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;strat); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[i]) {
             <span class="strong"><strong>printf</strong></span>("Isolated vertex test failed.\n");
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
     }
     <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
@@ -1704,34 +1426,35 @@ int <span class="strong"><strong>isolated_vertex_test</strong></span>() {
 <span class="emphasis"><em> * default strategies vector. Some vertices are chosen for strategy revision,</em></span>
 <span class="emphasis"><em> * each one via a different stochastic imitation rule.</em></span>
 <span class="emphasis"><em> */</em></span>
-int <span class="strong"><strong>petersen_game_test</strong></span>() {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>petersen_game_test</strong></span>() {
     igraph_t g;
     igraph_bool_t success;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant, strat, stratcopy, *knownstrats;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> known0, known2, known4;
-    int i, k, n, nvert, ret;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> quant;
+    igraph_vector_int_t strat, stratcopy, *knownstrats;
+    igraph_vector_int_t known0, known2, known4;
+    igraph_integer_t i, k, n;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
+    int nvert;
     strategy_test_t *test;
 
     <span class="emphasis"><em>/* the Petersen graph */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n vertices*/</em></span> 0, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4, 0, 5, 1, 2, 1, 6, 2, 3, 2, 7, 3, 4, 3, 8, 4, 9,
                  5, 7, 5, 8, 6, 8, 6, 9, 7, 9, -1);
-    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="3.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    nvert = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="emphasis"><em>/* Strategies vector, one strategy for each vertex. Thus vec[i] is the */</em></span>
     <span class="emphasis"><em>/* strategy of vertex i. The strategy space is: {0, 1, 2, 3}. */</em></span>
     <span class="emphasis"><em>/* Each strategy should be an integer. */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;strat, nvert,
-                            1.0, 1.0, 2.0, 2.0, 0.0,
-                            0.0, 0.0, 1.0, 2.0, 3.0);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;strat, nvert, 1, 1, 2, 2, 0, 0, 0, 1, 2, 3);
     <span class="emphasis"><em>/* Quantities vector, one quantity per vertex. Thus vec[i] is the */</em></span>
     <span class="emphasis"><em>/* quantity for vertex i. */</em></span>
     <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;quant, nvert,
                             0.3, 1.1, 0.5, 1.0, 0.9,
                             0.8, 0.4, 0.1, 0.7, 0.7);
     <span class="emphasis"><em>/* parameter settings and known results */</em></span>
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known0, 2, 0.0, 1.0);
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known2, 2, 1.0, 2.0);
-    <span class="strong"><strong>igraph_vector_init_real</strong></span>(&amp;known4, 2, 0.0, 2.0);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known0, 2, 0, 1);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known2, 2, 1, 2);
+    <span class="strong"><strong>igraph_vector_int_init_int</strong></span>(&amp;known4, 2, 0, 2);
     <span class="emphasis"><em>/*graph--vertex--algo--quantities--strategies--known_strats--mode--retval*/</em></span>
     strategy_test_t blind0 = {&amp;g, 0, IGRAPH_IMITATE_BLIND, &amp;quant, NULL, &amp;known0, IGRAPH_ALL, IGRAPH_SUCCESS};
     strategy_test_t augmented4 = {&amp;g, 4, IGRAPH_IMITATE_AUGMENTED, &amp;quant, NULL, &amp;known4, IGRAPH_ALL, IGRAPH_SUCCESS};
@@ -1745,53 +1468,47 @@ int <span class="strong"><strong>petersen_game_test</strong></span>() {
     i = 0;
     <span class="strong"><strong>while</strong></span> (i &lt; n) {
         test = all_checks[i];
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_copy" title="2.2.4. igraph_vector_copy — Initializes a vector from another vector object (constructor).">igraph_vector_copy</a></strong></span>(&amp;stratcopy, &amp;strat);
+        <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
         ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="1.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex, test-&gt;algo,
                                           test-&gt;quantities, &amp;stratcopy,
                                           test-&gt;mode);
         <span class="strong"><strong>if</strong></span> (ret) {
-            <span class="strong"><strong>printf</strong></span>("Stochastic imitation failed for vertex %d.\n",
-                   (int)test-&gt;vertex);
+            <span class="strong"><strong>printf</strong></span>("Stochastic imitation failed for vertex %" IGRAPH_PRId ".\n", test-&gt;vertex);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
         <span class="emphasis"><em>/* If the updated strategy for the vertex matches one of the known */</em></span>
         <span class="emphasis"><em>/* strategies, then success. Default to failure. */</em></span>
         success = 0;
         knownstrats = test-&gt;known_strats;
-        <span class="strong"><strong>for</strong></span> (k = 0; k &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(knownstrats); k++) {
+        <span class="strong"><strong>for</strong></span> (k = 0; k &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(knownstrats); k++) {
             <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*knownstrats)[k] == <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcopy)[test-&gt;vertex]) {
                 success = 1;
                 <span class="strong"><strong>break</strong></span>;
             }
         }
         <span class="strong"><strong>if</strong></span> (!success) {
-            <span class="strong"><strong>printf</strong></span>("Stochastic imitation failed for vertex %d.\n",
-                   (int)test-&gt;vertex);
+            <span class="strong"><strong>printf</strong></span>("Stochastic imitation failed for vertex %" IGRAPH_PRId ".\n", test-&gt;vertex);
             <span class="strong"><strong>return</strong></span> IGRAPH_FAILURE;
         }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;stratcopy);
+        <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcopy);
         i++;
     }
     <span class="emphasis"><em>/* clean up */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="3.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;known4);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known0);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known2);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;known4);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;quant);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;strat);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;strat);
 
     <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS;
 }
 
 int <span class="strong"><strong>main</strong></span>() {
-    int ret;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> ret;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Set the seed of a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 547612);
+    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 547612);
 
-    ret = <span class="strong"><strong>error_tests</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> ret;
-    }
     ret = <span class="strong"><strong>isolated_vertex_test</strong></span>();
     <span class="strong"><strong>if</strong></span> (ret) {
         <span class="strong"><strong>return</strong></span> ret;
@@ -1827,7 +1544,7 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.11.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-int igraph_sir(const igraph_t *graph, igraph_real_t beta,
+igraph_error_t igraph_sir(const igraph_t *graph, igraph_real_t beta,
                igraph_real_t gamma, igraph_integer_t no_sim,
                igraph_vector_ptr_t *result);
 </pre></div>
@@ -1841,7 +1558,7 @@ The SIR model is a simple model from epidemiology. The individuals
 of the population might be in three states: susceptible, infected
 and recovered. Recovered people are assumed to be immune to the
 disease. Susceptibles become infected with a rate that depends on
-their number of infected neigbors. Infected people become recovered
+their number of infected neighbors. Infected people become recovered
 with a constant rate. See these parameters below.
 
 </p>
@@ -1897,7 +1614,7 @@ is stopped when no infected individuals are left.
        in a list of <a class="link" href="igraph-Spatial-Games.html#igraph_sir_t" title="2.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> objects. To deallocate
        memory, the user needs to call <a class="link" href="igraph-Spatial-Games.html#igraph_sir_destroy" title="2.3. igraph_sir_destroy — Deallocates memory associated with a SIR simulation run."><code class="function">igraph_sir_destroy</code></a> on
        each element, before destroying the pointer vector itself
-       using <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.16.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>.
+       using <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.17.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>.
 </p></td>
 </tr>
 </tbody>

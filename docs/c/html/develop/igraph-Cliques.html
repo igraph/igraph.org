@@ -318,7 +318,7 @@ void <span class="strong"><strong>canonicalize_list</strong></span>(igraph_vecto
     igraph_vector_int_list_t *list;
 };
 
-<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Type alias because igraph_error_t used to be an integer, and was used">igraph_error_t</a> <span class="strong"><strong>handler</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *clique, void *arg) {
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>handler</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *clique, void *arg) {
     <span class="strong"><strong>struct</strong></span> userdata *ud;
     igraph_bool_t cont;
 
@@ -968,8 +968,8 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, NODES);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g, IGRAPH_ERDOS_RENYI_GNM, NODES, NODES,
-                            <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
+                            IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; NO_CLIQUES; i++) {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
@@ -979,11 +979,11 @@ int <span class="strong"><strong>main</strong></span>() {
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
+        <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> NULL, <span class="emphasis"><em>/*edge_map2=*/</em></span> NULL);
         <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loop=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
@@ -1213,8 +1213,8 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, NODES);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g, IGRAPH_ERDOS_RENYI_GNM, NODES, NODES,
-                            <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*loops=*/</em></span> 0);
+                            IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;cli, CLIQUE_SIZE, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; NO_CLIQUES; i++) {
         <span class="emphasis"><em>/* Permute vertices of g */</em></span>
@@ -1224,11 +1224,11 @@ int <span class="strong"><strong>main</strong></span>() {
         g = g2;
 
         <span class="emphasis"><em>/* Add a clique */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> 0, <span class="emphasis"><em>/*edge_map2=*/</em></span> 0);
+        <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_union" title="1.3. igraph_union — Calculates the union of two graphs.">igraph_union</a></strong></span>(&amp;g2, &amp;g, &amp;cli, <span class="emphasis"><em>/*edge_map1=*/</em></span> NULL, <span class="emphasis"><em>/*edge_map2=*/</em></span> NULL);
         <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
         g = g2;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> 1, <span class="emphasis"><em>/*loop=*/</em></span> 0, <span class="emphasis"><em>/*edge_comb=*/</em></span> 0);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loop=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cli);
