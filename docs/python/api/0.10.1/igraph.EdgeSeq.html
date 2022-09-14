@@ -124,9 +124,389 @@
   <div class="bs-docs-section">
 
     
+<nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
 
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          <a href="https://igraph.org/python" class="projecthome">"igraph"</a> <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="search-results-container" style="display: none;">
+        
+        <div id="search-buttons">
+          <span class="label label-default" id="search-docstrings-button">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+              search in docstrings
+            </input>
+          </label>
+          </span>
+          
+        </div>
+        
+        <noscript>
+            <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+        </noscript>
+
+        <div class="hint" id="search-help-box">
+          <p class="rst-last">
+      
+            Search bar offers the following options:
+            <ul>   
+                <li>
+                  <strong>Term presence.</strong> The below example searches for documents that 
+                    must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                </li> 
+
+                <li>
+                  <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                </li> 
+
+                <li>
+                  <strong>Search in specific fields.</strong> The following search matches all objects 
+                  in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+
+                  <p>
+                    Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                    Last two fields are only applicable if "search in docstrings" is enabled.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>Fuzzy matches.</strong> The following search matches all documents 
+                  that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                </li>
+            </ul>
+
+          </p>
+        </div>
+
+        <div id="search-status"> </div>
+
+        <div class="warning" id="search-warn-box" style="display: none;">
+          <p class="rst-last"><span id="search-warn"></span></p>
+        </div>
+
+        <table id="search-results">
+          <!-- Filled dynamically by JS -->
+        </table>
+        
+        <div style="margin-top: 8px;">
+          <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</nav>
+    
+    <div class="container-fluid">
+
+      <!-- Side navigation -->
+      
+
+      <div id="main" class="nosidebar">
+        
+
+        
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">igraph</a></code><wbr></wbr>.<code><a href="igraph.EdgeSeq.html" class="internal-link" title="igraph.EdgeSeq">EdgeSeq</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p><code><span class="py-keyword">class</span> <span class="py-defname">EdgeSeq</span>(_EdgeSeq):</code></p>
+          <p><a href="classIndex.html#igraph.EdgeSeq">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p>Class representing a sequence of edges in the graph.</p>
+<p>This class is most easily accessed by the <tt class="rst-docutils literal">es</tt> field of the <code><a href="igraph.Graph.html" class="internal-link" title="igraph.Graph">Graph</a></code> object, which returns an ordered sequence of all edges in the graph. The edge sequence can be refined by invoking the <code><a href="#select" class="internal-link" title="igraph.EdgeSeq.select">EdgeSeq.select()</a></code> method. <code><a href="#select" class="internal-link" title="igraph.EdgeSeq.select">EdgeSeq.select()</a></code> can also be accessed by simply calling the <code><a href="igraph.EdgeSeq.html" class="internal-link" title="igraph.EdgeSeq">EdgeSeq</a></code> object.</p>
+<p>An alternative way to create an edge sequence referring to a given graph is to use the constructor directly:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g = Graph.Full(3)
+<span class="py-prompt">&gt;&gt;&gt; </span>es = EdgeSeq(g)
+<span class="py-prompt">&gt;&gt;&gt; </span>restricted_es = EdgeSeq(g, [0, 1])</pre><p>The individual edges can be accessed by indexing the edge sequence object. It can be used as an iterable as well, or even in a list comprehension:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g=Graph.Full(3)
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">for</span> e <span class="py-keyword">in</span> g.es:
+<span class="py-more">... </span>  <span class="py-builtin">print</span>(e.tuple)
+<span class="py-more">...</span>
+<span class="py-output">(0, 1)</span>
+<span class="py-output">(0, 2)</span>
+<span class="py-output">(1, 2)</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>[<span class="py-builtin">max</span>(e.tuple) <span class="py-keyword">for</span> e <span class="py-keyword">in</span> g.es]
+<span class="py-output">[1, 2, 2]</span>
+</pre><p>The edge sequence can also be used as a dictionary where the keys are the attribute names. The values corresponding to the keys are the values of the given attribute of every edge in the graph:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g=Graph.Full(3)
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">for</span> idx, e <span class="py-keyword">in</span> <span class="py-builtin">enumerate</span>(g.es):
+<span class="py-more">... </span>  e[<span class="py-string">"weight"</span>] = idx*(idx+1)
+<span class="py-more">...</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"weight"</span>]
+<span class="py-output">[0, 2, 6]</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"weight"</span>] = <span class="py-builtin">range</span>(3)
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"weight"</span>]
+<span class="py-output">[0, 1, 2]</span>
+</pre><p>If you specify a sequence that is shorter than the number of edges in the EdgeSeq, the sequence is reused:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g = Graph.Tree(7, 2)
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"color"</span>] = [<span class="py-string">"red"</span>, <span class="py-string">"green"</span>]
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"color"</span>]
+<span class="py-output">['red', 'green', 'red', 'green', 'red', 'green']</span>
+</pre><p>You can even pass a single string or integer, it will be considered as a sequence of length 1:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"color"</span>] = <span class="py-string">"red"</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"color"</span>]
+<span class="py-output">['red', 'red', 'red', 'red', 'red', 'red']</span>
+</pre><p>Some methods of the edge sequences are simply proxy methods to the corresponding methods in the <code><a href="igraph.Graph.html" class="internal-link" title="igraph.Graph">Graph</a></code> object. One such example is <tt class="rst-docutils literal">EdgeSeq.is_multiple()</tt>:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g=Graph(3, [(0,1), (1,0), (1,2)])
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.is_multiple()
+<span class="py-output">[False, True, False]</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.is_multiple() == g.is_multiple()
+<span class="py-output">True</span>
+</pre></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id242">
+  
+  
+  <tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#__call__" class="internal-link" title="igraph.EdgeSeq.__call__">__call__</a></code></td>
+    <td>Shorthand notation to select()</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#attributes" class="internal-link" title="igraph.EdgeSeq.attributes">attributes</a></code></td>
+    <td>Returns the list of all the edge attributes in the graph associated to this edge sequence.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#find" class="internal-link" title="igraph.EdgeSeq.find">find</a></code></td>
+    <td>Returns the first edge of the edge sequence that matches some criteria.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#select" class="internal-link" title="igraph.EdgeSeq.select">select</a></code></td>
+    <td>Selects a subset of the edge sequence based on some criteria</td>
+  </tr>
+</table>
+          
+            <p class="inheritedFrom">
+              Inherited from <code><a href="igraph._igraph.EdgeSeq.html" class="internal-link" title="igraph._igraph.EdgeSeq">EdgeSeq</a></code>:
+            </p>
+            <table class="children sortable" id="id243">
+  
+  
+  <tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="igraph._igraph.EdgeSeq.html#attribute_names" class="internal-link" title="igraph._igraph.EdgeSeq.attribute_names">attribute<wbr></wbr>_names</a></code></td>
+    <td>Returns the attribute name list of the graph's edges</td>
+  </tr><tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="igraph._igraph.EdgeSeq.html#get_attribute_values" class="internal-link" title="igraph._igraph.EdgeSeq.get_attribute_values">get<wbr></wbr>_attribute<wbr></wbr>_values</a></code></td>
+    <td>Returns the value of a given edge attribute for all edges.</td>
+  </tr><tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="igraph._igraph.EdgeSeq.html#is_all" class="internal-link" title="igraph._igraph.EdgeSeq.is_all">is<wbr></wbr>_all</a></code></td>
+    <td>Returns whether the edge sequence contains all the edges exactly once, in the order of their edge IDs.</td>
+  </tr><tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="igraph._igraph.EdgeSeq.html#set_attribute_values" class="internal-link" title="igraph._igraph.EdgeSeq.set_attribute_values">set<wbr></wbr>_attribute<wbr></wbr>_values</a></code></td>
+    <td>Sets the value of a given edge attribute for all vertices</td>
+  </tr>
+</table>
+            
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basemethod">
+  
+  
+  <a name="igraph.EdgeSeq.__call__">
+    
+  </a>
+  <a name="__call__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__call__</span>(self, *args, **kwds):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Shorthand notation to select()</p>
+<p>This method simply passes all its arguments to <code><a href="#select" class="internal-link" title="igraph.EdgeSeq.select">EdgeSeq.select()</a></code>.</p>
 </div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="igraph.EdgeSeq.attributes">
+    
+  </a>
+  <a name="attributes">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">attributes</span>(self):
+    
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Returns the list of all the edge attributes in the graph associated to this edge sequence.</p>
+</div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="igraph.EdgeSeq.find">
+    
+  </a>
+  <a name="find">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">find</span>(self, *args, **kwds):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="igraph._igraph.EdgeSeq.html#find" class="internal-link">igraph._igraph.EdgeSeq.find</a></code></div>
+    <div><p>Returns the first edge of the edge sequence that matches some criteria.</p>
+<p>The selection criteria are equal to the ones allowed by <code><a href="igraph.VertexSeq.html#select" class="internal-link" title="igraph.VertexSeq.select">VertexSeq.select</a></code>. See <code><a href="igraph.VertexSeq.html#select" class="internal-link" title="igraph.VertexSeq.select">VertexSeq.select</a></code> for more details.</p>
+<p>For instance, to find the first edge with weight larger than 5 in graph <tt class="rst-docutils literal">g</tt>:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.find(weight_gt=5)           <span class="py-comment">#doctest:+SKIP</span></pre></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="igraph.EdgeSeq.select">
+    
+  </a>
+  <a name="select">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">select</span>(self, *args, **kwds):
+    
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="igraph._igraph.EdgeSeq.html#select" class="internal-link">igraph._igraph.EdgeSeq.select</a></code></div>
+    <div><p>Selects a subset of the edge sequence based on some criteria</p>
+<p>The selection criteria can be specified by the positional and the keyword arguments. Positional arguments are always processed before keyword arguments.</p>
+<ul class="rst-simple">
+<li>If the first positional argument is <tt class="rst-docutils literal">None</tt>, an empty sequence is returned.</li>
+<li>If the first positional argument is a callable object, the object will be called for every edge in the sequence. If it returns <tt class="rst-docutils literal">True</tt>, the edge will be included, otherwise it will be excluded.</li>
+<li>If the first positional argument is an iterable, it must return integers and they will be considered as indices of the current edge set (NOT the whole edge set of the graph -- the difference matters when one filters an edge set that has already been filtered by a previous invocation of <code><a href="#select" class="internal-link" title="igraph.EdgeSeq.select">EdgeSeq.select()</a></code>. In this case, the indices do not refer directly to the edges of the graph but to the elements of the filtered edge sequence.</li>
+<li>If the first positional argument is an integer, all remaining arguments are expected to be integers. They are considered as indices of the current edge set again.</li>
+</ul>
+<p>Keyword arguments can be used to filter the edges based on their attributes and properties. The name of the keyword specifies the name of the attribute and the filtering operator, they should be concatenated by an underscore (<tt class="rst-docutils literal">_</tt>) character. Attribute names can also contain underscores, but operator names don't, so the operator is always the largest trailing substring of the keyword name that does not contain an underscore. Possible operators are:</p>
+<ul class="rst-simple">
+<li><tt class="rst-docutils literal">eq</tt>: equal to</li>
+<li><tt class="rst-docutils literal">ne</tt>: not equal to</li>
+<li><tt class="rst-docutils literal">lt</tt>: less than</li>
+<li><tt class="rst-docutils literal">gt</tt>: greater than</li>
+<li><tt class="rst-docutils literal">le</tt>: less than or equal to</li>
+<li><tt class="rst-docutils literal">ge</tt>: greater than or equal to</li>
+<li><tt class="rst-docutils literal">in</tt>: checks if the value of an attribute is in a given list</li>
+<li><tt class="rst-docutils literal">notin</tt>: checks if the value of an attribute is not in a given list</li>
+</ul>
+<p>For instance, if you want to filter edges with a numeric <tt class="rst-docutils literal">weight</tt> property larger than 50, you have to write:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.select(weight_gt=50)            <span class="py-comment">#doctest: +SKIP</span></pre><p>Similarly, to filter edges whose <tt class="rst-docutils literal">type</tt> is in a list of predefined types:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>list_of_types = [<span class="py-string">"inhibitory"</span>, <span class="py-string">"excitatory"</span>]
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.select(type_in=list_of_types)   <span class="py-comment">#doctest: +SKIP</span></pre><p>If the operator is omitted, it defaults to <tt class="rst-docutils literal">eq</tt>. For instance, the following selector selects edges whose <tt class="rst-docutils literal">type</tt> property is <tt class="rst-docutils literal">intracluster</tt>:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es.select(<span class="py-builtin">type</span>=<span class="py-string">"intracluster"</span>)     <span class="py-comment">#doctest: +SKIP</span></pre><p>In the case of an unknown operator, it is assumed that the recognized operator is part of the attribute name and the actual operator is <tt class="rst-docutils literal">eq</tt>.</p>
+<p>Keyword arguments are treated specially if they start with an underscore (<tt class="rst-docutils literal">_</tt>). These are not real attributes but refer to specific properties of the edges, e.g., their centrality.  The rules are as follows:</p>
+<ol class="rst-simple">
+<li><tt class="rst-docutils literal">_source</tt> or {_from} means the source vertex of an edge. For undirected graphs, only the <tt class="rst-docutils literal">eq</tt> operator is supported and it is treated as {_incident} (since undirected graphs have no notion of edge directionality).</li>
+<li><tt class="rst-docutils literal">_target</tt> or {_to} means the target vertex of an edge. For undirected graphs, only the <tt class="rst-docutils literal">eq</tt> operator is supported and it is treated as {_incident} (since undirected graphs have no notion of edge directionality).</li>
+<li><tt class="rst-docutils literal">_within</tt> ignores the operator and checks whether both endpoints of the edge lie within a specified set.</li>
+<li><tt class="rst-docutils literal">_between</tt> ignores the operator and checks whether <em>one</em> endpoint of the edge lies within a specified set and the <em>other</em> endpoint lies within another specified set. The two sets must be given as a tuple.</li>
+<li><tt class="rst-docutils literal">_incident</tt> ignores the operator and checks whether the edge is incident on a specific vertex or a set of vertices.</li>
+<li>Otherwise, the rest of the name is interpreted as a method of the <code><a href="igraph.Graph.html" class="internal-link" title="igraph.Graph">Graph</a></code> object. This method is called with the edge sequence as its first argument (all others left at default values) and edges are filtered according to the value returned by the method.</li>
+</ol>
+<p>For instance, if you want to exclude edges with a betweenness centrality less than 2:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g = Graph.Famous(<span class="py-string">"zachary"</span>)
+<span class="py-prompt">&gt;&gt;&gt; </span>excl = g.es.select(_edge_betweenness_ge = 2)</pre><p>To select edges originating from vertices 2 and 4:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>edges = g.es.select(_source_in = [2, 4])</pre><p>To select edges lying entirely within the subgraph spanned by vertices 2, 3, 4 and 7:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>edges = g.es.select(_within = [2, 3, 4, 7])</pre><p>To select edges with one endpoint in the vertex set containing vertices 2, 3, 4 and 7 and the other endpoint in the vertex set containing vertices 8 and 9:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>edges = g.es.select(_between = ([2, 3, 4, 7], [8, 9]))</pre><p>For properties that take a long time to be computed (e.g., betweenness centrality for large graphs), it is advised to calculate the values in advance and store it in a graph attribute. The same applies when you are selecting based on the same property more than once in the same <tt class="rst-docutils literal">select()</tt> call to avoid calculating it twice unnecessarily. For instance, the following would calculate betweenness centralities twice:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>edges = g.es.select(_edge_betweenness_gt=10,       <span class="py-comment"># doctest:+SKIP</span>
+<span class="py-more">... </span>                    _edge_betweenness_lt=30)</pre><p>It is advised to use this instead:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>g.es[<span class="py-string">"bs"</span>] = g.edge_betweenness()
+<span class="py-prompt">&gt;&gt;&gt; </span>edges = g.es.select(bs_gt=10, bs_lt=30)</pre><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td colspan="2">the new, filtered edge sequence</td></tr></table></div>
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
 
+    
 
 
   </div>

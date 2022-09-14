@@ -27,6 +27,13 @@ vmenu: true
 '''
 
 
+def safeint(x):
+    try:
+        return int(x)
+    except Exception:
+        return x
+
+
 if __name__ == '__main__':
 
     pa = argparse.ArgumentParser()
@@ -42,12 +49,13 @@ if __name__ == '__main__':
             continue
 
         print('Processing version: '+version)
+        version_parts = tuple(safeint(x) for x in version.split("."))
 
         if version in ['0.8.1', '0.9.0']:
             # These versions used Epydoc to generate the documentation
             docgenerator = 'epydoc'
             header = header_epydoc
-        elif version in ['develop']:
+        elif version in ['master', 'develop'] or version_parts >= (0, 10):
             # These versions used PyDoctor to generate the documentation and the
             # generated files are already pre-processed for Jekyll
             docgenerator = 'pydoctor_preprocessed'

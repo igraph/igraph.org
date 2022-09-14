@@ -124,9 +124,200 @@
   <div class="bs-docs-section">
 
     
+<nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
 
-</div>
 
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          <a href="https://igraph.org/python" class="projecthome">"igraph"</a> <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="search-results-container" style="display: none;">
+        
+        <div id="search-buttons">
+          <span class="label label-default" id="search-docstrings-button">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+              search in docstrings
+            </input>
+          </label>
+          </span>
+          
+        </div>
+        
+        <noscript>
+            <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+        </noscript>
+
+        <div class="hint" id="search-help-box">
+          <p class="rst-last">
+      
+            Search bar offers the following options:
+            <ul>   
+                <li>
+                  <strong>Term presence.</strong> The below example searches for documents that 
+                    must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                </li> 
+
+                <li>
+                  <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                </li> 
+
+                <li>
+                  <strong>Search in specific fields.</strong> The following search matches all objects 
+                  in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+
+                  <p>
+                    Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                    Last two fields are only applicable if "search in docstrings" is enabled.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>Fuzzy matches.</strong> The following search matches all documents 
+                  that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                </li>
+            </ul>
+
+          </p>
+        </div>
+
+        <div id="search-status"> </div>
+
+        <div class="warning" id="search-warn-box" style="display: none;">
+          <p class="rst-last"><span id="search-warn"></span></p>
+        </div>
+
+        <table id="search-results">
+          <!-- Filled dynamically by JS -->
+        </table>
+        
+        <div style="margin-top: 8px;">
+          <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</nav>
+    
+    <div class="container-fluid">
+
+      <!-- Side navigation -->
+      
+
+      <div id="main" class="nosidebar">
+        
+
+        
+
+        <div class="page-header">
+          <h1 class="module"><code><code><a href="index.html" class="internal-link">igraph</a></code><wbr></wbr>.<code><a href="igraph.drawing.html" class="internal-link" title="igraph.drawing">drawing</a></code><wbr></wbr>.<code><a href="igraph.drawing.metamagic.html" class="internal-link" title="igraph.drawing.metamagic">metamagic</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          module documentation
+        </div>
+
+        <div class="extrasDocstring">
+          
+          <p></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p>Auxiliary classes for the default graph drawer in igraph.</p>
+<p>This module contains heavy metaclass magic. If you don't understand the logic behind these classes, probably you don't need them either.</p>
+<p>igraph's default graph drawer uses various data sources to determine the visual appearance of vertices and edges. These data sources are the following (in order of precedence):</p>
+<ul class="rst-simple">
+<li>The keyword arguments passed to the <code><a href="igraph.drawing.html#plot" class="internal-link" title="igraph.drawing.plot">igraph.plot()</a></code> function (or to <code><a href="igraph.Graph.html#__plot__" class="internal-link" title="igraph.Graph.__plot__">igraph.Graph.__plot__()</a></code> as a matter of fact, since <code><a href="igraph.drawing.html#plot" class="internal-link" title="igraph.drawing.plot">igraph.plot()</a></code> just passes these attributes on). For instance, a keyword argument named <tt class="rst-docutils literal">vertex_label</tt> can be used to set the labels of vertices.</li>
+<li>The attributes of the vertices/edges being drawn. For instance, a vertex that has a <tt class="rst-docutils literal">label</tt> attribute will use that label when drawn by the default graph drawer.</li>
+<li>The global configuration of igraph. For instance, if the global <code><a href="igraph.configuration.Configuration.html" class="internal-link" title="igraph.configuration.Configuration">igraph.config.Configuration</a></code> instance has a key called <tt class="rst-docutils literal">plotting.vertex_color</tt>, that will be used as a default color for the vertices.</li>
+<li>If all else fails, there is a built-in default; for instance, the default vertex color is <tt class="rst-docutils literal">"red"</tt>. This is hard-wired in the source code.</li>
+</ul>
+<p>The logic above can be useful in other graph drawers as well, not only in the default one, therefore it is refactored into the classes found in this module. Different graph drawers may inspect different vertex or edge attributes, hence the classes that collect the attributes from the various data sources are generated in run-time using a metaclass called <code><a href="igraph.drawing.metamagic.AttributeCollectorMeta.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorMeta">AttributeCollectorMeta</a></code>. You don't have to use <code><a href="igraph.drawing.metamagic.AttributeCollectorMeta.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorMeta">AttributeCollectorMeta</a></code> directly, just implement a subclass of <code><a href="igraph.drawing.metamagic.AttributeCollectorBase.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorBase">AttributeCollectorBase</a></code> and it will ensure that the appropriate metaclass is used. With <code><a href="igraph.drawing.metamagic.AttributeCollectorBase.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorBase">AttributeCollectorBase</a></code>, you can use a simple declarative syntax to specify which attributes you are interested in. For example:</p>
+<pre class="rst-literal-block">
+    class VisualEdgeBuilder(AttributeCollectorBase):
+        arrow_size = 1.0
+        arrow_width = 1.0
+        color = ("black", palette.get)
+        width = 1.0
+
+    for edge in VisualEdgeBuilder(graph.es):
+        print edge.color
+</pre>
+<p>The above class is a visual edge builder -- a class that gives the visual attributes of the edges of a graph that is specified at construction time. It specifies that the attributes we are interested in are <tt class="rst-docutils literal">arrow_size</tt>, <tt class="rst-docutils literal">arrow_width</tt>, <tt class="rst-docutils literal">color</tt> and <tt class="rst-docutils literal">width</tt>; the default values are also given. For <tt class="rst-docutils literal">color</tt>, we also specify that a method called {palette.get} should be called on every attribute value to translate color names to RGB values. For the other three attributes, <tt class="rst-docutils literal">float</tt> will implicitly be called on all attribute values, this is inferred from the type of the default value itself.</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">See Also</td></tr><tr><td colspan="2">AttributeCollectorMeta, AttributeCollectorBase</td></tr></table></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id164">
+  
+  
+  <tr class="class">
+    
+    <td>Class</td>
+    <td><code><a href="igraph.drawing.metamagic.AttributeCollectorBase.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorBase"><wbr></wbr>Attribute<wbr></wbr>Collector<wbr></wbr>Base</a></code></td>
+    <td>Base class for attribute collector subclasses. Classes that inherit this class may use a declarative syntax to specify which vertex or edge attributes they intend to collect. See <code><a href="igraph.drawing.metamagic.AttributeCollectorMeta.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorMeta">AttributeCollectorMeta</a></code>...</td>
+  </tr><tr class="class">
+    
+    <td>Class</td>
+    <td><code><a href="igraph.drawing.metamagic.AttributeCollectorMeta.html" class="internal-link" title="igraph.drawing.metamagic.AttributeCollectorMeta"><wbr></wbr>Attribute<wbr></wbr>Collector<wbr></wbr>Meta</a></code></td>
+    <td>Metaclass for attribute collector classes</td>
+  </tr><tr class="class">
+    
+    <td>Class</td>
+    <td><code><a href="igraph.drawing.metamagic.AttributeSpecification.html" class="internal-link" title="igraph.drawing.metamagic.AttributeSpecification"><wbr></wbr>Attribute<wbr></wbr>Specification</a></code></td>
+    <td>Class that describes how the value of a given attribute should be retrieved.</td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          
+        </div>
+      
+      </div>
+    </div>
+
+    
 
 
   </div>
