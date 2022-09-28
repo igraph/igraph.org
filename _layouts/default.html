@@ -55,19 +55,21 @@
 
       {% if langname != null and langname != 'igraph' %}
       <ul class="navbar-nav mr-auto">
-        {% if layout.vmenu != null or page.vmenu != null %}
+        {% if langname == 'python-igraph' %}
+        <li class="nav-item"><a class="nav-link" href="/{{ lang }}/versions/latest">{{ langname }}</a></li>
+        {% else %}
         <li class="nav-item"><a class="nav-link" href="/{{ lang }}">{{ langname }}</a></li>
+        {% endif %}
+        {% if layout.vmenu != null or page.vmenu != null %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-            {{ page.langversion }}
+            {{ page.langversion | langversion }}
           </a>
           <div class="dropdown-menu" id="doc-version-switcher">
             <a class="dropdown-item" href="#">Please wait...</a>
           </div>
           {%- assign needs_doc_version_switcher = true %}
         </li>
-        {% else %}
-        <li class="nav-item"><a class="nav-link" href="/{{ lang }}">{{ langname }} {{ langversion }}</a></li>
         {% endif %}
       </ul>
       {% endif %}

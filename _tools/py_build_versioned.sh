@@ -26,6 +26,8 @@ for i in "${!PYVERSIONS[@]}"; do
 
   echo "Building version: $version (C version: $c_version)"
 
+  # Sometimes stray hotfixes leave the repo in a slightly dirty state
+  git reset --hard HEAD
   git checkout $version
   if [ "${version}" = "master" -o "${version}" = "develop" ]; then
     # 'master' and 'develop' are "moving targets", we need to pull
@@ -59,8 +61,6 @@ for i in "${!PYVERSIONS[@]}"; do
   .venv/bin/python setup.py install
   .venv/bin/pip install -U pydoctor
 
-  echo "Build API docs"
-
   # Old docs use epydoc, which is python2 only. So fix that
   if [ -f scripts/epydoc-patched ]; then
     sed -i 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
@@ -70,10 +70,13 @@ for i in "${!PYVERSIONS[@]}"; do
   # Clear old docs
   rm -rf doc/api doc/html
 
-  # Build docs
+  # https://github.com/igraph/python-igraph/issues/573
+  sed -i 's|../../api/latest/index|api/index|' doc/source/index.rst
+
+  echo "Build API docs"
   scripts/mkdoc.sh
 
-  # Restore initial file, to ensure a clean tree for future git checkout
+  # For old versions, restore initial file, to ensure a clean tree for future git checkout
   if [ -f scripts/epydoc-patched ]; then
     git checkout HEAD scripts/mkdoc.sh
     git checkout HEAD scripts/epydoc-patched
@@ -88,14 +91,16 @@ for i in "${!PYVERSIONS[@]}"; do
   rm -rf doc/api_versions/${version} doc/tutorial/${version}
   if [ -d doc/html ]; then
     # python-igraph 0.10 and later
-    mkdir -p doc/api_versions/${version}
-    mkdir -p doc/tutorial/${version}
-    cp -r doc/html/api/* doc/api_versions/${version}
-    rm -rf doc/html/api
-    cp -r doc/html/* doc/tutorial/${version}
+    #mkdir -p doc/api_versions/${version}
+    #mkdir -p doc/tutorial/${version}
+    #cp -r doc/html/api/* doc/api_versions/${version}
+    #rm -rf doc/html/api
+    mkdir -p doc/versions/${version}
+    cp -r doc/html/* doc/versions/${version}/
   else
     # python-igraph 0.9.9 and earlier
     cd doc
+    # Build non-API manual (we call it "tutorial" for some reason)
     ../.venv/bin/python -m sphinx.cmd.build source tutorial/${version}
     cd ..
     mkdir -p doc/api_versions/${version}
