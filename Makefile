@@ -12,10 +12,8 @@ PYVERSION?=0.10.1
 CVERSIONS   ?= '0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.10.0 0.10.1 master develop'
 RVERSIONS   ?= '1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0 1.3.1 1.3.2 1.3.3 1.3.4 1.3.5'
 # FIXME
-#PYVERSIONS  ?= '0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.9.11 0.10.0 0.10.1 master develop'
-#PYCVERSIONS ?= '0.9.4 0.9.4 0.9.4 0.9.6  0.9.8  0.9.9 0.10.0 0.10.1 master develop'
-PYVERSIONS ?= '0.9.9 0.10.1 master'
-PYCVERSIONS ?= '0.9.9 0.10.1 master'
+PYVERSIONS  ?= '0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.9.11 0.10.0 0.10.1 master develop'
+PYCVERSIONS ?= '0.9.4 0.9.4 0.9.4 0.9.6  0.9.8  0.9.9 0.10.0 0.10.1 master develop'
 
 # FIXME: this is broken now
 # optional variable so we can update the C docs without making a release
