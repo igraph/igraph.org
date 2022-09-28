@@ -28,7 +28,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
     "python/doc/api" => "../api/latest",
     "python/doc/tutorial" => "../tutorial/latest",
     "python/tutorial/latest" => latest_version_in(File.join(site.source, "python", "tutorial")),
-    "python/versions/latest" => latest_version_in(File.join(site.source, "python", "versions")),
+    "python/versions/latest" => latest_version_in(File.join(site.source, "python", "versions"))
   }
   Dir.chdir(site.dest) do
     links.each_pair { |key, value|
