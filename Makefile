@@ -5,12 +5,12 @@ all: jekyll
 
 # Default doc version
 CVERSION?=0.10.1
-RVERSION?=1.3.4
+RVERSION?=1.3.5
 PYVERSION?=0.10.1
 
 # Available versions
 CVERSIONS   ?= '0.9.0 0.9.4 0.9.5 0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.10.0 0.10.1 master develop'
-RVERSIONS   ?= '1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0 1.3.1 1.3.2 1.3.3 1.3.4'
+RVERSIONS   ?= '1.2.3 1.2.4 1.2.5 1.2.6 1.2.7 1.3.0 1.3.1 1.3.2 1.3.3 1.3.4 1.3.5'
 PYVERSIONS  ?= '0.9.6 0.9.7 0.9.8 0.9.9 0.9.10 0.9.11 0.10.0 0.10.1 master develop'
 PYCVERSIONS ?= '0.9.4 0.9.4 0.9.4 0.9.6  0.9.8  0.9.9 0.10.0 0.10.1 master develop'
 
@@ -111,12 +111,7 @@ python: core python/stamp
 
 python/stamp: $(PY)/stamp
 	export ARCHFLAGS="$(PY_ARCHFLAGS)" && _tools/py_build_versioned.sh $(PY) $(PYVERSIONS) $(PYCVERSIONS)
-	rm -rf python/api python/tutorial
-	mkdir -p python/api python/tutorial
-	cp -r $(PY)/doc/api_versions/* python/api/
-	cp -r $(PY)/doc/tutorial/* python/tutorial/
-	_tools/py_postprocess_html_api.py python/api $(PYVERSION)
-	_tools/py_postprocess_html_tutorial.py python/tutorial $(PYVERSION)
+	_tools/py_postprocess_html.py $(PY) $(PYVERSIONS)
 	touch $@
 
 $(PY)/stamp:
@@ -143,7 +138,7 @@ $(PY)/stamp:
 
 HTML= index.html news.html code-of-conduct.html \
       _layouts/default.html _layouts/r-manual.html _layouts/c-manual.html \
-      c/index.html r/index.html python/index.html
+      c/index.html r/index.html
 
 CSS= css/affix.css css/manual.css css/other.css fonts/fonts.css
 
