@@ -24,6 +24,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
     "r/html/latest" => latest_version_in(File.join(site.source, "r", "html")),
     "r/pdf/latest" => latest_version_in(File.join(site.source, "r", "pdf")),
     "r/doc" => "html/latest",
+    "python" => "python/versions/latest",
     "python/api/latest" => latest_version_in(File.join(site.source, "python", "api")),
     "python/doc/api" => "../api/latest",
     "python/doc/tutorial" => "../tutorial/latest",
