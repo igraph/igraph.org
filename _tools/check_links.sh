@@ -18,11 +18,7 @@ linkchecker \
     --ignore-url=py-modindex.html \
 	-o html \
     http://localhost:4000 \
-	>linkchecker.html
+	>_tools/linkchecker.html
 
-if [ $? = 0 ]; then
-  echo "Link checker report ready in linkchecker.html"
-else
-  echo "Link checker failed; check the report in linkchecker.html"
-fi
+echo "Link checker report ready in _tools/linkchecker.html"
 
