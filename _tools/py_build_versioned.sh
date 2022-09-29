@@ -63,15 +63,15 @@ for i in "${!PYVERSIONS[@]}"; do
 
   # Old docs use epydoc, which is python2 only. So fix that
   if [ -f scripts/epydoc-patched ]; then
-    sed -i 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
-    sed -i 's|/usr/bin/env python|/usr/bin/env python2|' scripts/epydoc-patched
+    sed -i'' -e 's/python -m epydoc/python2 -m epydoc/' scripts/mkdoc.sh
+    sed -i'' -e 's|/usr/bin/env python|/usr/bin/env python2|' scripts/epydoc-patched
   fi
 
   # Clear old docs
   rm -rf doc/api doc/html
 
   # https://github.com/igraph/python-igraph/issues/573
-  sed -i 's|../../api/latest/index|api/index|' doc/source/index.rst
+  sed -i'' -e 's|../../api/latest/index|api/index|' doc/source/index.rst
 
   echo "Build API docs"
   scripts/mkdoc.sh
