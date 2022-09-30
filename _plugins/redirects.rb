@@ -33,6 +33,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
     # python/versions/X/tutorial.html from version 0.10 onwards so we need to
     # look there
     "python/tutorial/latest" => File.join(
+      "..", "versions",
       latest_version_in(File.join(site.source, "python", "versions")),
       "tutorial.html"
     )
