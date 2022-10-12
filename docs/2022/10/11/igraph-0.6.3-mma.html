@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
 
-    <title>C/igraph 0.8.5</title>
+    <title>IGraph/M 0.6.3</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -160,29 +160,38 @@
     <div class="col-md-8">
       <div class="bs-docs-section">
         <div class="post-header">
-          <h1>C/igraph 0.8.5</h1>
-	      <div class="post-time"><time class="text-muted">Dec 7th, 2020</time></div>
+          <h1>IGraph/M 0.6.3</h1>
+	      <div class="post-time"><time class="text-muted">Oct 11th, 2022</time></div>
         </div>
 
-        <p><a href="https://igraph.org/c/">C/igraph</a> 0.8.5, the fifth bugfix release of the 0.8 series, has arrived.</p>
+        <p>A new maintenance release of <a href="http://szhorvat.net/mathematica/IGraphM">IGraph/M</a> is now available. This is a bugfix release recommended for all users. As usual, the simplest way to upgrade is to evaluate the following, and then restart Mathematica:</p>
 
-<p>The sources can be obtained from <a href="https://github.com/igraph/igraph/releases/tag/0.8.5">the GitHub releases page</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Get["https://raw.githubusercontent.com/szhorvat/IGraphM/master/IGInstaller.m"]
+</code></pre></div></div>
 
-<p>This release includes bug fixes only. The changelog is below.</p>
+<h4 id="igraphm-063">IGraph/M 0.6.3</h4>
 
-<h3 id="changed">Changed</h3>
+<p>Changed:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">igraph_write_graph_pajek()</code>: the function now always uses the platform-native line endings (CRLF on Windows, LF on Unix and macOS). Earlier versions tried to enforce Windows line endings, but this was error-prone, and since all recent versions of Pajek support both line endings, enforcing Windows line endings is not necessary any more.</li>
+  <li>When an invalid vertex is passed to IGraph/M functions, now the message shown is <code class="language-plaintext highlighter-rouge">IGraphM::invv</code> instead of <code class="language-plaintext highlighter-rouge">VertexIndex::inv</code>.</li>
 </ul>
 
-<h3 id="fixed">Fixed</h3>
+<p>Fixed:</p>
 
 <ul>
-  <li>Fixed several compilation issues with MINGW32/64, thanks to <a href="https://github.com/jannick0/">@jannick0</a></li>
-  <li><code class="language-plaintext highlighter-rouge">igraph_layout_davidson_harel()</code> was not interruptible; now it is.</li>
-  <li>Added a missing memory cleanup call in <code class="language-plaintext highlighter-rouge">igraph_i_cattribute_combine_vertices()</code>.</li>
-  <li>Fixed a few memory leaks in test cases.</li>
+  <li>In rare cases, vertex names that were lists of other vertex names in the same graph were misinterpreted. This affected only Mathematica 12.0 and later.</li>
+  <li><code class="language-plaintext highlighter-rouge">IGCommunitiesLeadingEigenvector</code> is less likely to fail to converge now.</li>
+  <li><code class="language-plaintext highlighter-rouge">IGCommunitiesLeadingEigenvector</code> now respects random seeds set in Mathematica. These affect only the random starting vector it uses internally, which can very rarely cause non-deterministic output.</li>
+  <li><code class="language-plaintext highlighter-rouge">IGBarabasiAlbertGame</code> no longer accepts negative or zero exponents, as these were not handled correctly.</li>
+  <li><code class="language-plaintext highlighter-rouge">IGBridges</code> is no longer prone to stack overflow when given very large graphs.</li>
+</ul>
+
+<p>Other:</p>
+
+<ul>
+  <li>Performance improvements for <code class="language-plaintext highlighter-rouge">IGGraphEditor</code>.</li>
+  <li>Documentation improvements.</li>
 </ul>
 
 
