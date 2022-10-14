@@ -157,7 +157,7 @@
 <a name="two-d-layout-generators"></a>1. 2D layout generators</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random">1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniform randomly on a plane.</a></span></dt>
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_circle">1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle, in the order of vertex IDs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_circle">1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle in arbitrary order.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_star">1.3. <code class="function">igraph_layout_star</code> —  Generates a star-like layout.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid">1.4. <code class="function">igraph_layout_grid</code> —  Places the vertices on a regular grid on the plane.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_graphopt">1.5. <code class="function">igraph_layout_graphopt</code> —  Optimizes vertex layout via the graphopt algorithm.</a></span></dt>
@@ -240,7 +240,7 @@ number of vertices.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_circle"></a>1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle, in the order of vertex IDs.</h3></div></div></div>
+<a name="igraph_layout_circle"></a>1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle in arbitrary order.</h3></div></div></div>
 <a class="indexterm" name="id-1.21.2.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -281,8 +281,8 @@ igraph_error_t igraph_layout_circle(const igraph_t *graph, igraph_matrix_t *res,
 <td><p>
   The order of the vertices on the circle. The vertices
        not included here, will be placed at (0,0). Supply
-       <a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version)."><code class="function">igraph_vss_all()</code></a> here for all vertices, in the order of
-       their vertex IDs.
+       <a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version)."><code class="function">igraph_vss_all()</code></a> here to place vertices in the
+       order of their vertex IDs.
 </p></td>
 </tr>
 </tbody>
@@ -304,8 +304,7 @@ igraph_error_t igraph_layout_circle(const igraph_t *graph, igraph_matrix_t *res,
 </table></div>
 <p>
 
-Time complexity: O(|V|), the
-number of vertices.
+Time complexity: O(|V|), the number of vertices.
  
 </p>
 </div>
@@ -394,7 +393,7 @@ Time complexity: O(|V|), linear in the number of vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Layout.html#igraph_layout_circle" title="1.2. igraph_layout_circle — Places the vertices uniformly on a circle, in the order of vertex IDs."><code class="function">igraph_layout_circle()</code></a> and other layout generators.
+  <a class="link" href="igraph-Layout.html#igraph_layout_circle" title="1.2. igraph_layout_circle — Places the vertices uniformly on a circle in arbitrary order."><code class="function">igraph_layout_circle()</code></a> and other layout generators.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2290,7 +2289,7 @@ Added in version 0.2.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     FILE *f;
@@ -2716,7 +2715,14 @@ igraph_error_t igraph_layout_umap(const igraph_t *graph,
 
 
 
-UMAP is a mostly used to embed high-dimensional vectors in a low-dimensional space
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>UMAP is mostly used to embed high-dimensional vectors in a low-dimensional space
 (most commonly by far, 2D). The algorithm is probabilistic and introduces
 nonlinearities, unlike e.g. PCA and similar to T-distributed Stochastic Neighbor
 Embedding (t-SNE). Nonlinearity helps "cluster" very similar vectors together without
@@ -2739,11 +2745,12 @@ between the high-dimensional vectors, often Pearson correlation:
 </p>
 <p>
 
-<code class="literal">corr(v1, v2) = v1 x v2 / [ sqrt(v1 x v1) * sqrt(v2 x v2) ]</code>
+<code class="literal">corr(v1, v2) = v1 . v2 / [ sqrt(v1 . v1) * sqrt(v2 . v2) ]</code>,
 
 </p>
 <p>
 
+where <code class="literal">.</code> denotes the dot product.
 In this case, the associated distance is usually defined as:
 
 </p>
@@ -2777,7 +2784,7 @@ the steps are:
 <p>
 
 1. Compute a sparse similarity graph (either exact or approximate) from your vectors,
-   weighted or unweighted. If unsure, compute a knn.
+   weighted or unweighted. If unsure, compute a k-nearest neighbors graph.
 
 </p>
 <p>
@@ -2842,8 +2849,8 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <td><p>
   Pointer to a vector of edge lengths. Similarity graphs for
   UMAP are often originally meant in terms of similarity weights (e.g. correlation between
-  high-dimensional vectors) and converted into distances by crude dist := 1 - corr. That is
-  fine here too. If this argument is a NULL pointer (NULL), all lengths are assumed equal.
+  high-dimensional vectors) and converted into distances by crude <code class="literal">dist = 1 - corr</code>.
+  That is fine here too. If this argument <code class="constant">NULL</code>, all lengths are assumed to be the same.
 </p></td>
 </tr>
 <tr>
@@ -2859,7 +2866,7 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <td><p>
   Number of iterations of the main stochastic gradient descent loop on the
   cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
-  (less than 50k edges), 50 epochs are used for larger graphs.
+  (less than 50000 edges), 50 epochs are used for larger graphs.
 </p></td>
 </tr>
 <tr>
@@ -2889,15 +2896,8 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 </tr></tbody>
 </table></div>
 <p>
-
+ 
 </p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p></p>
 </div>
 </div>
 <div class="section">
@@ -2996,9 +2996,12 @@ igraph_error_t igraph_layout_sphere(const igraph_t *graph, igraph_matrix_t *res)
 </p>
 <p>
 The algorithm was described in the following paper:
+
+</p>
+<p>
 Distributing many points on a sphere by E.B. Saff and
 A.B.J. Kuijlaars, <span class="emphasis"><em> Mathematical Intelligencer </em></span> 19.1 (1997)
-5--11.
+5--11. <a class="ulink" href="https://doi.org/10.1007/BF03024331" target="_top">https://doi.org/10.1007/BF03024331</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -3466,7 +3469,14 @@ igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
 
 
 
-This is the 3D version of the UMAP algorithm
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This is the 3D version of the UMAP algorithm
 (see <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection for Dimension Reduction."><code class="function">igraph_layout_umap()</code></a> for the 2D version).
 
 </p>
@@ -3502,8 +3512,8 @@ This is the 3D version of the UMAP algorithm
 <td><p>
   Pointer to a vector of edge lengths. Similarity graphs for
   UMAP are often originally meant in terms of similarity weights (e.g. correlation between
-  high-dimensional vectors) and converted into distances by crude dist := 1 - corr. That is
-  fine here too. If this argument is a NULL pointer (NULL), all lengths are assumed equal.
+  high-dimensional vectors) and converted into distances by crude <code class="literal">dist = 1 - corr</code>.
+  That is fine here too. If this argument is <code class="constant">NULL</code>, all lengths are assumed to be the same.
 </p></td>
 </tr>
 <tr>
@@ -3519,7 +3529,7 @@ This is the 3D version of the UMAP algorithm
 <td><p>
   Number of iterations of the main stochastic gradient descent loop on the
   cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
-  (less than 50k edges), 50 epochs are used for larger graphs.
+  (less than 50000 edges), 50 epochs are used for larger graphs.
 </p></td>
 </tr>
 <tr>
@@ -3549,15 +3559,8 @@ This is the 3D version of the UMAP algorithm
 </tr></tbody>
 </table></div>
 <p>
-
+ 
 </p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p></p>
 </div>
 </div>
 <div class="section">
@@ -3581,7 +3584,14 @@ igraph_error_t igraph_layout_merge_dla(
 
 
 
-First each layout is covered by a circle. Then the layout of the
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>First each layout is covered by a circle. Then the layout of the
 largest graph is placed at the origin. Then the other layouts are
 placed by the DLA algorithm, larger ones first and smaller ones
 last.
@@ -3634,7 +3644,7 @@ last.
 </table></div>
 <p>
 
-Added in version 0.2. This function is experimental.
+Added in version 0.2.
 
 </p>
 <p>

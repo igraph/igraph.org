@@ -437,7 +437,7 @@ Time complexity: O(|V|) for a graph with
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;assert.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     igraph_vector_int_t edges;
 
@@ -683,7 +683,7 @@ graph with |V| vertices and
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g1, g2;
     igraph_vector_int_t v1, v2;
@@ -787,6 +787,7 @@ Time complexity: operating system specific.
 <dt><span class="section"><a href="igraph-Basic.html#igraph_neighbors">4.2.12. <code class="function">igraph_neighbors</code> —  Adjacent vertices to a vertex.</a></span></dt>
 <dt><span class="section"><a href="igraph-Basic.html#igraph_incident">4.2.13. <code class="function">igraph_incident</code> —  Gives the incident edges of a vertex.</a></span></dt>
 <dt><span class="section"><a href="igraph-Basic.html#igraph_degree">4.2.14. <code class="function">igraph_degree</code> —  The degree of some vertices in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Basic.html#igraph_degree_1">4.2.15. <code class="function">igraph_degree_1</code> —  The degree of of a single vertex in the graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -947,7 +948,7 @@ Time complexity: O(1)
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
 
@@ -1039,13 +1040,13 @@ edge will be placed here.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. The current implementation always returns with
-success.
-
+  Error code.
   </p></td>
 </tr></tbody>
 </table></div>
-<p></p>
+<p>
+
+</p>
 <p><b>See also: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -1387,7 +1388,7 @@ and the other endpoint is needed. No error checking is done:
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_eid(const igraph_t *graph, igraph_integer_t *eid,
-                   igraph_integer_t pfrom, igraph_integer_t pto,
+                   igraph_integer_t from, igraph_integer_t to,
                    igraph_bool_t directed, igraph_bool_t error);
 </pre></div>
 <p>
@@ -1396,7 +1397,7 @@ igraph_error_t igraph_get_eid(const igraph_t *graph, igraph_integer_t *eid,
 
 
 
-For undirected graphs <code class="constant">pfrom</code> and <code class="constant">pto</code> are exchangeable.
+For undirected graphs <code class="constant">from</code> and <code class="constant">to</code> are exchangeable.
 
 </p>
 <p><b>Arguments: </b>
@@ -1420,13 +1421,13 @@ For undirected graphs <code class="constant">pfrom</code> and <code class="const
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pfrom</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
 <td><p>
   The starting point of the edge.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pto</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
 <td><p>
   The end point of the edge.
 </p></td>
@@ -1443,7 +1444,7 @@ For undirected graphs <code class="constant">pfrom</code> and <code class="const
 <td><p>
   Logical scalar, whether to report an error if the edge
        was not found. If it is false, then -1 will be assigned to <em class="parameter"><code>eid</code></em>.
-       Note that invalid vertex IDs in input arguments (<em class="parameter"><code>pfrom</code></em> or <em class="parameter"><code>pto</code></em>)
+       Note that invalid vertex IDs in input arguments (<em class="parameter"><code>from</code></em> or <em class="parameter"><code>to</code></em>)
        always return an error code.
 </p></td>
 </tr>
@@ -1483,9 +1484,9 @@ For undirected graphs <code class="constant">pfrom</code> and <code class="const
 <p>
 
 Time complexity: O(log (d)), where d is smaller of the out-degree
-of <code class="constant">pfrom</code> and in-degree of <code class="constant">pto</code> if <em class="parameter"><code>directed</code></em> is true. If <em class="parameter"><code>directed</code></em>
+of <code class="constant">from</code> and in-degree of <code class="constant">to</code> if <em class="parameter"><code>directed</code></em> is true. If <em class="parameter"><code>directed</code></em>
 is false, then it is O(log(d)+log(d2)), where d is the same as before and
-d2 is the minimum of the out-degree of <code class="constant">pto</code> and the in-degree of <code class="constant">pfrom</code>.
+d2 is the minimum of the out-degree of <code class="constant">to</code> and the in-degree of <code class="constant">from</code>.
 
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
@@ -1494,7 +1495,7 @@ d2 is the minimum of the out-degree of <code class="constant">pto</code> and the
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_integer_t eid;
     igraph_vector_int_t hist;
@@ -1507,7 +1508,7 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;hist, 9);
 
     <span class="strong"><strong>for</strong></span> (i = 1; i &lt; 10; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, 0, i, IGRAPH_DIRECTED, <span class="emphasis"><em>/*error=*/</em></span> 1);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, 0, i, IGRAPH_DIRECTED, <span class="emphasis"><em>/*error=*/</em></span> true);
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[ eid ] = 1;
     }
 
@@ -1523,16 +1524,15 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;hist, 9);
 
     <span class="strong"><strong>for</strong></span> (i = 1; i &lt; 10; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, 0, i, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*error=*/</em></span> 1);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, 0, i, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*error=*/</em></span> true);
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[ eid ] += 1;
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, i, 0, IGRAPH_DIRECTED, <span class="emphasis"><em>/*error=*/</em></span> 1);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_get_eid" title="4.2.9. igraph_get_eid — Get the edge ID from the end points of an edge.">igraph_get_eid</a></strong></span>(&amp;g, &amp;eid, i, 0, IGRAPH_DIRECTED, <span class="emphasis"><em>/*error=*/</em></span> true);
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(hist)[ eid ] += 1;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;hist);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;hist);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1686,7 +1686,7 @@ void <span class="strong"><strong>print_vector_int</strong></span>(igraph_vector
     <span class="strong"><strong>fprintf</strong></span>(f, "\n");
 }
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_integer_t nodes = 100;
     igraph_integer_t edges = 1000;
@@ -1730,7 +1730,7 @@ int <span class="strong"><strong>main</strong></span>() {
             }
         }
 
-        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.18. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0, <span class="emphasis"><em>/*from=*/</em></span> 0, <span class="emphasis"><em>/*to=*/</em></span> 0, &amp;path, NULL,
+        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.21. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> 0, <span class="emphasis"><em>/*from=*/</em></span> 0, <span class="emphasis"><em>/*to=*/</em></span> 0, &amp;path, NULL,
                         IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*unconn=*/</em></span> 1);
         <span class="strong"><strong>igraph_vector_int_update</strong></span>(&amp;pairs, &amp;path);
         <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_expand_path_to_pairs" title='5.3. igraph_expand_path_to_pairs — Helper function to convert a sequence of vertex IDs describing a path into a "pairs" vector.'>igraph_expand_path_to_pairs</a></strong></span>(&amp;pairs);
@@ -1964,7 +1964,7 @@ of adjacent vertices to the queried vertex.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     igraph_vector_int_t v;
@@ -2188,7 +2188,8 @@ d is their (average) degree.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_strength" title="10.11. igraph_strength — Strength of the vertices, also called weighted vertex degree."><code class="function">igraph_strength()</code></a> for the version that takes into account
-edge weights.
+edge weights; <a class="link" href="igraph-Basic.html#igraph_degree_1" title="4.2.15. igraph_degree_1 — The degree of of a single vertex in the graph."><code class="function">igraph_degree_1()</code></a> to efficiently compute the
+degree of a single vertex.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2207,7 +2208,7 @@ igraph_bool_t <span class="strong"><strong>handshaking_lemma</strong></span>(igr
     <span class="strong"><strong>return</strong></span> <span class="strong"><strong>igraph_vector_int_sum</strong></span>(v) == 2 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(g);
 }
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     igraph_vector_int_t v;
@@ -2335,6 +2336,109 @@ int <span class="strong"><strong>main</strong></span>() {
 <br class="example-break">
 </div>
 <p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_degree_1"></a>4.2.15. <code class="function">igraph_degree_1</code> —  The degree of of a single vertex in the graph.</h4></div></div></div>
+<a class="indexterm" name="id-1.5.5.6.16.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_degree_1(const igraph_t *graph, igraph_integer_t *deg,
+                               igraph_integer_t vid, igraph_neimode_t mode, igraph_bool_t loops);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+This function calculates the in-, out- or total degree of a single vertex.
+For a single vertex, it is more efficient than calling <a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>deg</code></em>:</span></p></td>
+<td><p>
+  Pointer to the integer where the computed degree will be stored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vid</code></em>:</span></p></td>
+<td><p>
+  The vertex for which the degree will be calculated.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Defines the type of the degree for directed graphs. Valid modes are:
+       <code class="constant">IGRAPH_OUT</code>, out-degree;
+       <code class="constant">IGRAPH_IN</code>, in-degree;
+       <code class="constant">IGRAPH_ALL</code>, total degree (sum of the in- and out-degree).
+       This parameter is ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Boolean, gives whether the self-loops should be
+       counted.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a> to compute the degree of several vertices at once.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1) if <em class="parameter"><code>loops</code></em> is <code class="constant">true</code>, and
+O(d) otherwise, where d is the degree.
+ 
 </p>
 </div>
 </div>
@@ -2528,7 +2632,7 @@ Time complexity: O(|V|+|E|) where |V| is the number of vertices and
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;assert.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     igraph_vector_int_t edges;
 
@@ -2641,7 +2745,7 @@ extended graph.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;assert.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     igraph_vector_int_t edges;
 
@@ -2753,7 +2857,7 @@ and edges in the <span class="emphasis"><em>original</em></span> graph, respecti
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     igraph_es_t es;
@@ -2856,7 +2960,7 @@ edges in the original graph.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
 
     <span class="emphasis"><em>/* without edges */</em></span>
@@ -2988,7 +3092,7 @@ edges in the original graph.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
 
     <span class="emphasis"><em>/* without edges */</em></span>

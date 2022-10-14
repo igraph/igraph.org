@@ -1206,7 +1206,7 @@ Time complexity: exponential, what did you expect?
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t ring1, ring2;
     igraph_vector_int_t color1, color2;
@@ -1222,27 +1222,13 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
 
-    <span class="emphasis"><em>/* Without colors */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?">igraph_isomorphic</a></strong></span>(&amp;ring1, &amp;ring2, &amp;iso);
-    <span class="strong"><strong>if</strong></span> (!iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Without color failed.\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="emphasis"><em>/* Without colors, number of isomorphisms */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, 0, 0, &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 200) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count without colors failed, expected 200, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-
     <span class="emphasis"><em>/* Everything has the same colors */</em></span>
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Single color failed.\n");
-        <span class="strong"><strong>return</strong></span> 3;
+        <span class="strong"><strong>return</strong></span> 1;
     }
 
     <span class="emphasis"><em>/* Two colors, just counting */</em></span>
@@ -1252,67 +1238,19 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 100) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected 100, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 4;
+        <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="emphasis"><em>/* Separate colors for each vertex */</em></span>
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[i]] = i;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 1) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate colors failed, expected 1, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-
-    <span class="emphasis"><em>/* Try a negative result */</em></span>
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Negative test failed.\n");
-        <span class="strong"><strong>return</strong></span> 6;
-    }
-
-    <span class="emphasis"><em>/* Another negative, same color distribution, different topology */</em></span>
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[1] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(perm)[1] + 1) % <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2)] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0, &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Second negative test failed.\n");
-        <span class="strong"><strong>return</strong></span> 7;
-    }
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
 
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="emphasis"><em>/* SUBGRAPH ISOMORPHISM                                             */</em></span>
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
+    <span class="emphasis"><em>/* Two colors, count subisomorphisms */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
 
-    <span class="emphasis"><em>/* One color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, &amp;color1, &amp;color2, 0, 0,
-                                     &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 42) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one color failed, expected 42, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 31;
-    }
-
-    <span class="emphasis"><em>/* Two colors */</em></span>
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i += 2) {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = 0;
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i + 1] = 1;
@@ -1325,115 +1263,7 @@ int <span class="strong"><strong>main</strong></span>() {
                                      &amp;count, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (count != 21) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two colors failed, expected 21, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 32;
-    }
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="emphasis"><em>/* EDGE COLORING, GRAPH ISOMORPHISM                                 */</em></span>
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
-
-    <span class="emphasis"><em>/* Everything has the same color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (!iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Single edge-color failed.\n");
-        <span class="strong"><strong>return</strong></span> 41;
-    }
-
-    <span class="emphasis"><em>/* Two colors, just counting */</em></span>
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i += 2) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = 0;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i + 1] = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = 1;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 100) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected 100, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 42;
-    }
-
-    <span class="emphasis"><em>/* Separate colors for each edge */</em></span>
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i] = i;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_isomorphisms_vf2" title="3.2. igraph_count_isomorphisms_vf2 — Number of isomorphisms via VF2.">igraph_count_isomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 1) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with separate edge colors failed, expected 1, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 43;
-    }
-
-    <span class="emphasis"><em>/* Try a negative result */</em></span>
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Negative edge test failed.\n");
-        <span class="strong"><strong>return</strong></span> 44;
-    }
-
-    <span class="emphasis"><em>/* Another negative, same color distribution, different topology */</em></span>
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color1, 0);
-    <span class="strong"><strong>igraph_vector_int_fill</strong></span>(&amp;color2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[1] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[0] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[2] = 1;
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2, &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (iso) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Second negative edge test failed.\n");
-        <span class="strong"><strong>return</strong></span> 45;
-    }
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color2);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring2);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="emphasis"><em>/* EDGE COLORED SUBGRAPH ISOMORPHISM                                */</em></span>
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
-
-    <span class="emphasis"><em>/* One color */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring1));
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;ring2));
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2,
-                                     &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 42) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with one edge color failed, expected 42, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 51;
-    }
-
-    <span class="emphasis"><em>/* Two colors */</em></span>
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1) - 1; i += 2) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i]   = 0;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color1)[i + 1] = 1;
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color2) - 1; i += 2) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i]   = 0;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(color2)[i + 1] = 1;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;ring1, &amp;ring2, 0, 0, &amp;color1, &amp;color2,
-                                     &amp;count, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (count != 22) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "Count with two edge colors failed, expected 22, got %" IGRAPH_PRId ".\n", count);
-        <span class="strong"><strong>return</strong></span> 52;
+        <span class="strong"><strong>return</strong></span> 3;
     }
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;color1);
@@ -2827,123 +2657,7 @@ void <span class="strong"><strong>print_maps</strong></span>(igraph_vector_int_t
     <span class="strong"><strong>igraph_vector_int_list_clear</strong></span>(maps);
 }
 
-<span class="emphasis"><em>/* This test counts motifs using LAD and compares the results with</em></span>
-<span class="emphasis"><em> * the RANDESU motif finder */</em></span>
-void <span class="strong"><strong>test_k_motifs</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, <span class="strong"><strong>const</strong></span> int k, <span class="strong"><strong>const</strong></span> int class_count, igraph_bool_t directed) {
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> randesu_counts, lad_counts;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> cut_prob;
-    igraph_bool_t equal;
-    igraph_integer_t i, n;
-    igraph_integer_t vcount;
-    igraph_real_t expected_count;
-
-    vcount = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(graph);
-
-    n = class_count;
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;lad_counts, n);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        igraph_t pattern;
-        igraph_vector_int_list_t maps;
-        igraph_integer_t nAutomorphisms;
-
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isoclass_create" title="5.3. igraph_isoclass_create — Creates a graph from the given isomorphism class.">igraph_isoclass_create</a></strong></span>(&amp;pattern, k, i, directed);
-        <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
-
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, graph, NULL, NULL, NULL, &amp;maps, <span class="emphasis"><em>/* induced = */</em></span> true, 0);
-
-        <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_count_subisomorphisms_vf2" title="3.8. igraph_count_subisomorphisms_vf2 — Number of subgraph isomorphisms using VF2">igraph_count_subisomorphisms_vf2</a></strong></span>(&amp;pattern, &amp;pattern, NULL, NULL, NULL, NULL, &amp;nAutomorphisms, NULL, NULL, NULL);
-
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(lad_counts)[i] = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;maps) / nAutomorphisms;
-
-        <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;maps);
-
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;cut_prob, k);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;randesu_counts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph.">igraph_motifs_randesu</a></strong></span>(graph, &amp;randesu_counts, k, &amp;cut_prob);
-
-    equal = 1 <span class="emphasis"><em>/* true */</em></span>;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_is_nan</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(randesu_counts)[i])) {
-            <span class="strong"><strong>continue</strong></span>;
-        }
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(randesu_counts)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(lad_counts)[i]) {
-            equal = 0;
-            <span class="strong"><strong>break</strong></span>;
-        }
-    }
-
-    <span class="strong"><strong>if</strong></span> (! equal) {
-        <span class="strong"><strong>printf</strong></span>("LAD %s %d-motif count does not agree with RANDESU.\n", directed ? "directed" : "undirected", k);
-    }
-
-    expected_count = 1;
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; k; i++) {
-        expected_count *= (vcount - i);
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; k; i++) {
-        expected_count /= (i + 1);
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_sum" title="2.11.4. igraph_vector_sum — Calculates the sum of the elements in the vector.">igraph_vector_sum</a></strong></span>(&amp;lad_counts) != expected_count) {
-        <span class="strong"><strong>printf</strong></span>("Total %d-vertex %s subgraph count is incorrect.\n", k, directed ? "directed" : "undirected");
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;randesu_counts);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;lad_counts);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;cut_prob);
-}
-
-void <span class="strong"><strong>test_motifs</strong></span>() {
-    igraph_t graph;
-    igraph_integer_t count;
-
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
-
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 30, 400, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_DIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_DIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_DIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_DIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-}
-
-void <span class="strong"><strong>test_motifs_undirected</strong></span>() {
-    igraph_t graph;
-    igraph_integer_t count;
-
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 137);
-
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 18, 100, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(3, IGRAPH_UNDIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 3, count, IGRAPH_UNDIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(4, IGRAPH_UNDIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 4, count, IGRAPH_UNDIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-
-    <span class="emphasis"><em>/* Use a smaller graph so that the test would not take too long. */</em></span>
-    <span class="strong"><strong>igraph_erdos_renyi_game_gnm</strong></span>(&amp;graph, 9, 36, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(5, IGRAPH_UNDIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 5, count, IGRAPH_UNDIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_graph_count" title="5.4. igraph_graph_count — The number of unlabelled graphs on the given number of vertices.">igraph_graph_count</a></strong></span>(6, IGRAPH_UNDIRECTED, &amp;count);
-    <span class="strong"><strong>test_k_motifs</strong></span>(&amp;graph, 6, count, IGRAPH_UNDIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-}
-
-
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t target, pattern;
     igraph_bool_t iso;
     igraph_vector_int_t map;
@@ -2970,12 +2684,10 @@ int <span class="strong"><strong>main</strong></span>() {
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;pattern, 5, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4,
-                 1, 0, 1, 4, 1, 2,
-                 2, 1, 2, 3,
-                 3, 2, 3, 4,
-                 4, 3, 4, 1, 4, 0,
+                 1, 4, 1, 2,
+                 2, 3,
+                 3, 4,
                  -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;pattern, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loops=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map, 0);
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
@@ -3031,45 +2743,6 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
 
-    <span class="strong"><strong>printf</strong></span>("---------\n");
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;target, 9, IGRAPH_UNDIRECTED,
-                 0, 1, 0, 4, 0, 6,
-                 1, 0, 1, 4, 1, 2,
-                 2, 1, 2, 3,
-                 3, 2, 3, 4, 3, 5, 3, 7, 3, 8,
-                 4, 0, 4, 1, 4, 3, 4, 5, 4, 6,
-                 5, 6, 5, 4, 5, 3, 5, 8,
-                 6, 0, 6, 4, 6, 5,
-                 7, 3, 7, 8,
-                 8, 5, 8, 3, 8, 7,
-                 -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;target, <span class="emphasis"><em>/*multiple=*/</em></span> true, <span class="emphasis"><em>/*loops=*/</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;pattern, 0, IGRAPH_UNDIRECTED, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map, &amp;maps,
-                             <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
-    <span class="strong"><strong>if</strong></span> (!iso) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map) != 0) {
-        <span class="strong"><strong>return</strong></span> 6;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;maps) != 0) {
-        <span class="strong"><strong>return</strong></span> 7;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;pattern);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;target);
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;map);
-    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;maps);
-
-    <span class="strong"><strong>test_motifs</strong></span>();
-    <span class="strong"><strong>test_motifs_undirected</strong></span>();
 
     <span class="strong"><strong>return</strong></span> 0;
 }

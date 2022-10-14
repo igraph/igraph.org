@@ -231,7 +231,7 @@ Time complexity: O(n) where n is the length of the vectors.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_t m;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> x, y, z;
     igraph_real_t xz, xx;
@@ -441,7 +441,7 @@ Time complexity: O(nk) if the matrix is of size n x k
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_t m;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> x, y, z;
     igraph_real_t xz, xx;
@@ -594,7 +594,7 @@ size k × m.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_t a, b, c;
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;a, 2, 2);
@@ -1042,7 +1042,7 @@ void <span class="strong"><strong>igraph_print_warning</strong></span>(<span cla
     <span class="strong"><strong>printf</strong></span>("Warning: %s\n", reason);
 }
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_matrix_t A, B, RHS;
     int info;
@@ -1334,194 +1334,43 @@ Time complexity: TODO.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-<span class="strong"><strong>#define</strong></span> DIM 10
-
-igraph_bool_t <span class="strong"><strong>check_ev</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *A,
-                       <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *values,
-                       <span class="strong"><strong>const</strong></span> igraph_matrix_t *vectors, igraph_real_t tol) {
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v, y;
-    int i, j;
-    igraph_integer_t m = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(vectors);
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(A);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(A) != n)       {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(values) != m)  {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(vectors) != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;y, n);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; m; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors, 0, i), n);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_update" title="2.6.2. igraph_vector_update — Update a vector from another one.">igraph_vector_update</a></strong></span>(&amp;y, &amp;v);
-        <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_blas_dgemv" title="1.3. igraph_blas_dgemv — Matrix-vector multiplication using BLAS, vector version.">igraph_blas_dgemv</a></strong></span>(<span class="emphasis"><em>/*transpose=*/</em></span> 0, <span class="emphasis"><em>/*alpha=*/</em></span> 1.0, A, &amp;v,
-                                         <span class="emphasis"><em>/*beta=*/</em></span> -<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values)[i], &amp;y);
-        <span class="strong"><strong>for</strong></span> (j = 0; j &lt; n; j++) {
-            <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(y)[i]) &gt; tol) {
-                <span class="strong"><strong>printf</strong></span>("Matrix:\n");
-                <span class="strong"><strong>igraph_matrix_print</strong></span>(A);
-                <span class="strong"><strong>printf</strong></span>("lambda= %g\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values)[i]);
-                <span class="strong"><strong>printf</strong></span>("v= ");
-                <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;v);
-                <span class="strong"><strong>printf</strong></span>("residual: ");
-                <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;y);
-                <span class="strong"><strong>return</strong></span> 1;
-            }
-        }
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;y);
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_matrix_t A;
-    igraph_matrix_t vectors, vectors2;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> values, values2;
-    int i, j;
-    int il, iu;
-    igraph_real_t vl, vu;
+    igraph_matrix_t vectors;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> values;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, DIM, DIM);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, 2, 2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values, 0);
 
-    <span class="emphasis"><em>/* All eigenvalues and eigenvectors */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 0) = 2.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 1) = -1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 0) = -1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 1) = 3.0;
 
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; DIM; i++) {
-        <span class="strong"><strong>for</strong></span> (j = i; j &lt; DIM; j++) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, i, j) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, j, i) =
-                                  <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1, 10);
-        }
-    }
+    <span class="strong"><strong>printf</strong></span>("Take a subset:\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dsyevr" title="2.2.1. igraph_lapack_dsyevr — Selected eigenvalues and optionally eigenvectors of a symmetric matrix">igraph_lapack_dsyevr</a></strong></span>(&amp;A, IGRAPH_LAPACK_DSYEV_ALL, <span class="emphasis"><em>/*vl=*/</em></span> 0, <span class="emphasis"><em>/*vu=*/</em></span> 0,
-                         <span class="emphasis"><em>/*vestimate=*/</em></span> 0, <span class="emphasis"><em>/*il=*/</em></span> 0, <span class="emphasis"><em>/*iu=*/</em></span> 0,
-                         <span class="emphasis"><em>/*abstol=*/</em></span> 1e-10, &amp;values, &amp;vectors, <span class="emphasis"><em>/*support=*/</em></span> 0);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;values) != DIM) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;vectors) != DIM ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(&amp;vectors) != DIM) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>check_ev</strong></span>(&amp;A, &amp;values, &amp;vectors, <span class="emphasis"><em>/*tol=*/</em></span> 1e-8)) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-
-    <span class="emphasis"><em>/* Only a subset */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors2, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values2, 0);
-
-    il = 2;
-    iu = 5;
     <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dsyevr" title="2.2.1. igraph_lapack_dsyevr — Selected eigenvalues and optionally eigenvectors of a symmetric matrix">igraph_lapack_dsyevr</a></strong></span>(&amp;A, IGRAPH_LAPACK_DSYEV_SELECT, <span class="emphasis"><em>/*vl=*/</em></span> 0, <span class="emphasis"><em>/*vu=*/</em></span> 0,
-                         <span class="emphasis"><em>/*vestimate=*/</em></span> 0, <span class="emphasis"><em>/*il=*/</em></span> il, <span class="emphasis"><em>/*iu=*/</em></span> iu,
-                         <span class="emphasis"><em>/*abstol=*/</em></span> 1e-10, &amp;values2, &amp;vectors2,
+                         <span class="emphasis"><em>/*vestimate=*/</em></span> 0, <span class="emphasis"><em>/*il=*/</em></span> 1, <span class="emphasis"><em>/*iu=*/</em></span> 1,
+                         <span class="emphasis"><em>/*abstol=*/</em></span> 1e-10, &amp;values, &amp;vectors,
+                         <span class="emphasis"><em>/*support=*/</em></span> 0);
+    <span class="strong"><strong>printf</strong></span>("eigenvalues:\n");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values);
+    <span class="strong"><strong>printf</strong></span>("eigenvectors:\n");
+    <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors);
+
+    <span class="strong"><strong>printf</strong></span>("\nTake a subset based on an interval:\n");
+
+    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dsyevr" title="2.2.1. igraph_lapack_dsyevr — Selected eigenvalues and optionally eigenvectors of a symmetric matrix">igraph_lapack_dsyevr</a></strong></span>(&amp;A, IGRAPH_LAPACK_DSYEV_INTERVAL, <span class="emphasis"><em>/*vl*/</em></span> 3, <span class="emphasis"><em>/*vu*/</em></span> 4,
+                         <span class="emphasis"><em>/*vestimate=*/</em></span> 1, <span class="emphasis"><em>/*il=*/</em></span> 0, <span class="emphasis"><em>/*iu=*/</em></span> 0,
+                         <span class="emphasis"><em>/*abstol=*/</em></span> 1e-10, &amp;values, &amp;vectors,
                          <span class="emphasis"><em>/*support=*/</em></span> 0);
 
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;values2) != iu - il + 1) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;vectors2) != DIM ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(&amp;vectors2) != iu - il + 1) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; iu - il + 1; i++) {
-        igraph_real_t m1 = 1.0;
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[il + i - 1] - <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values2)[i]) &gt; 1e-8) {
-            <span class="strong"><strong>printf</strong></span>("Full:   ");
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values);
-            <span class="strong"><strong>printf</strong></span>("Subset: ");
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values2);
-            <span class="strong"><strong>return</strong></span> 6;
-        }
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors, 0, il + i - 1) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors2, 0, i) &lt; 0) {
-            m1 = -1.0;
-        } <span class="strong"><strong>else</strong></span> {
-            m1 = 1.0;
-        }
-
-        <span class="strong"><strong>for</strong></span> (j = 0; j &lt; DIM; j++) {
-            <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors, j, il + i - 1) -
-                     m1 * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors2, j, i)) &gt; 1e-8) {
-                <span class="strong"><strong>printf</strong></span>("Full:\n");
-                <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors);
-                <span class="strong"><strong>printf</strong></span>("Subset:\n");
-                <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors2);
-                <span class="strong"><strong>return</strong></span> 7;
-            }
-        }
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors2);
-
-    <span class="emphasis"><em>/* Subset based on an interval */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors2, 0, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values2, 0);
-
-    il = 2;
-    iu = 5;
-    vl = (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[il - 1] + <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[il - 2]) / 2.0;
-    vu = (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[iu] + <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[iu - 1]) / 2.0;
-
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dsyevr" title="2.2.1. igraph_lapack_dsyevr — Selected eigenvalues and optionally eigenvectors of a symmetric matrix">igraph_lapack_dsyevr</a></strong></span>(&amp;A, IGRAPH_LAPACK_DSYEV_INTERVAL, vl, vu,
-                         <span class="emphasis"><em>/*vestimate=*/</em></span> iu - il + 1, <span class="emphasis"><em>/*il=*/</em></span> 0, <span class="emphasis"><em>/*iu=*/</em></span> 0,
-                         <span class="emphasis"><em>/*abstol=*/</em></span> 1e-10, &amp;values2, &amp;vectors2,
-                         <span class="emphasis"><em>/*support=*/</em></span> 0);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(&amp;values2) != iu - il + 1) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(&amp;vectors2) != DIM ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(&amp;vectors2) != iu - il + 1) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; iu - il + 1; i++) {
-        igraph_real_t m1 = 1.0;
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values)[il + i - 1] - <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(values2)[i]) &gt; 1e-8) {
-            <span class="strong"><strong>printf</strong></span>("Full:   ");
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values);
-            <span class="strong"><strong>printf</strong></span>("Subset: ");
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values2);
-            <span class="strong"><strong>return</strong></span> 6;
-        }
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors, 0, il + i - 1) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors2, 0, i) &lt; 0) {
-            m1 = -1.0;
-        } <span class="strong"><strong>else</strong></span> {
-            m1 = 1.0;
-        }
-
-        <span class="strong"><strong>for</strong></span> (j = 0; j &lt; DIM; j++) {
-            <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors, j, il + i - 1) -
-                     m1 * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(vectors2, j, i)) &gt; 1e-8) {
-                <span class="strong"><strong>printf</strong></span>("Full:\n");
-                <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors);
-                <span class="strong"><strong>printf</strong></span>("Subset:\n");
-                <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors2);
-                <span class="strong"><strong>return</strong></span> 7;
-            }
-        }
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors2);
+    <span class="strong"><strong>printf</strong></span>("eigenvalues:\n");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;values);
+    <span class="strong"><strong>printf</strong></span>("eigenvectors:\n");
+    <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors);
@@ -1674,223 +1523,37 @@ Time complexity: TODO.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-<span class="strong"><strong>#define</strong></span> DIM 10
-
-int <span class="strong"><strong>real_cplx_mult</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *A,
-                   <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_real,
-                   <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_imag,
-                   <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_real,
-                   <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_imag) {
-
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_real);
-    igraph_integer_t r, c;
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(A) != n ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(A) != n ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_imag) != n) {
-        <span class="strong"><strong>printf</strong></span>("Wrong matrix or vector size");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_imag, n);
-
-    <span class="strong"><strong>for</strong></span> (r = 0; r &lt; n; r++) {
-        igraph_real_t s_real = 0.0;
-        igraph_real_t s_imag = 0.0;
-        <span class="strong"><strong>for</strong></span> (c = 0; c &lt; n; c++) {
-            s_real += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*A, r, c) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[c];
-            s_imag += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*A, r, c) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[c];
-        }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_real)[r] = s_real;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_imag)[r] = s_imag;
-    }
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>sc_cplx_cplx_mult</strong></span>(igraph_real_t lambda_real,
-                      igraph_real_t lambda_imag,
-                      <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_real,
-                      <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_imag,
-                      <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_real,
-                      <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_imag) {
-
-    igraph_integer_t r;
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_real);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_imag) != n) {
-        <span class="strong"><strong>printf</strong></span>("Wrong vector sizes");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_imag, n);
-
-    <span class="strong"><strong>for</strong></span> (r = 0; r &lt; n; r++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_real)[r] = (lambda_real * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[r] -
-                                lambda_imag * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[r]);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_imag)[r] = (lambda_imag * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[r] +
-                                lambda_real * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[r]);
-    }
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-igraph_bool_t <span class="strong"><strong>check_ev</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *A,
-                       <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *values_real,
-                       <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *values_imag,
-                       <span class="strong"><strong>const</strong></span> igraph_matrix_t *vectors_left,
-                       <span class="strong"><strong>const</strong></span> igraph_matrix_t *vectors_right,
-                       igraph_real_t tol) {
-
-    int i, n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(A);
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v_real, v_imag;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> AV_real, AV_imag, lv_real, lv_imag;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> null;
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(A)             != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(values_real)   != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(values_imag)   != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(vectors_left)  != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(vectors_left)  != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(vectors_right) != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(vectors_right) != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;AV_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;AV_imag, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;lv_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;lv_imag, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;null, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_null" title="2.3.1. igraph_vector_null — Sets each element in the vector to zero.">igraph_vector_null</a></strong></span>(&amp;null);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] == 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(null), n);
-        } <span class="strong"><strong>else</strong></span> <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] &gt; 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i + 1), n);
-        } <span class="strong"><strong>else</strong></span> <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] &lt; 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i - 1), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_scale" title="2.8.2. igraph_vector_scale — Multiplies all elements of a vector by a constant.">igraph_vector_scale</a></strong></span>(&amp;v_imag, -1.0);
-        }
-        <span class="strong"><strong>real_cplx_mult</strong></span>(A, &amp;v_real, &amp;v_imag, &amp;AV_real, &amp;AV_imag);
-        <span class="strong"><strong>sc_cplx_cplx_mult</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_real)[i], <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i],
-                          &amp;v_real, &amp;v_imag, &amp;lv_real, &amp;lv_imag);
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_maxdifference" title="2.11.7. igraph_vector_maxdifference — The maximum absolute difference of m1 and m2.">igraph_vector_maxdifference</a></strong></span>(&amp;AV_real, &amp;lv_real) &gt; tol ||
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_maxdifference" title="2.11.7. igraph_vector_maxdifference — The maximum absolute difference of m1 and m2.">igraph_vector_maxdifference</a></strong></span>(&amp;AV_imag, &amp;lv_imag) &gt; tol) {
-            <span class="strong"><strong>printf</strong></span>("ERROR:\n");
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;AV_real);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;AV_imag);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;lv_real);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;lv_imag);
-            <span class="strong"><strong>return</strong></span> 1;
-        }
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;null);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;AV_imag);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;AV_real);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;lv_imag);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;lv_real);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_matrix_t A;
     igraph_matrix_t vectors_left, vectors_right;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> values_real, values_imag;
-    int i, j;
+    igraph_vector_complex_t values;
     int info = 1;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, DIM, DIM);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, 2, 2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors_left, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors_right, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values_real, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values_imag, 0);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; DIM; i++) {
-        <span class="strong"><strong>for</strong></span> (j = 0; j &lt; DIM; j++) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, i, j) = <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1, 10);
-        }
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 0) = 1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 1) = 1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 0) = -1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 1) = 1.0;
 
     <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dgeev" title="2.2.2. igraph_lapack_dgeev — Eigenvalues and optionally eigenvectors of a non-symmetric matrix">igraph_lapack_dgeev</a></strong></span>(&amp;A, &amp;values_real, &amp;values_imag,
                         &amp;vectors_left, &amp;vectors_right, &amp;info);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>check_ev</strong></span>(&amp;A, &amp;values_real, &amp;values_imag,
-                 &amp;vectors_left, &amp;vectors_right, <span class="emphasis"><em>/*tol=*/</em></span> 1e-8)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="emphasis"><em>/* ------------------------------------------------------- */</em></span>
-
-    <span class="emphasis"><em>/* igraph_matrix_resize(&amp;A, 10, 10); */</em></span>
-    <span class="emphasis"><em>/* igraph_matrix_null(&amp;A); */</em></span>
-    <span class="emphasis"><em>/* for (i=0; i&lt;10; i++) { MATRIX(A, i, i) = 1.0; }  */</em></span>
-    <span class="emphasis"><em>/* MATRIX(A,0,1) = 1.0; */</em></span>
-
-    <span class="emphasis"><em>/* igraph_lapack_dgeev(&amp;A, &amp;values_real, &amp;values_imag,  */</em></span>
-    <span class="emphasis"><em>/*              &amp;vectors_left, &amp;vectors_right, &amp;info);   */</em></span>
-
-    <span class="emphasis"><em>/* if (check_ev(&amp;A, &amp;values_real, &amp;values_imag, */</em></span>
-    <span class="emphasis"><em>/*           &amp;vectors_left, &amp;vectors_right, /\*tol=*\/ 1e-8)) { */</em></span>
-    <span class="emphasis"><em>/*   return 2; */</em></span>
-    <span class="emphasis"><em>/* } */</em></span>
-
-    <span class="emphasis"><em>/* ------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_resize" title="3.14.1. igraph_matrix_resize — Resizes a matrix.">igraph_matrix_resize</a></strong></span>(&amp;A, 10, 10);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_null" title="3.3.1. igraph_matrix_null — Sets all elements in a matrix to zero.">igraph_matrix_null</a></strong></span>(&amp;A);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 1) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 2) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 3) = 1 / 3.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 0) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 4) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 5) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 6) = 1 / 4.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 2, 0) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 2, 7) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 2, 8) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 2, 9) = 1 / 4.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 3, 0) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 4, 1) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 5, 1) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 6, 1) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 7, 2) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 8, 2) = 1.0;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 9, 2) = 1.0;
-
-    info = 0;
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dgeev" title="2.2.2. igraph_lapack_dgeev — Eigenvalues and optionally eigenvectors of a non-symmetric matrix">igraph_lapack_dgeev</a></strong></span>(&amp;A, &amp;values_real, &amp;values_imag,
-                        &amp;vectors_left, &amp;vectors_right, &amp;info);
-
-    <span class="emphasis"><em>/* igraph_matrix_print(&amp;A); */</em></span>
-    <span class="emphasis"><em>/* printf("---\n"); */</em></span>
-    <span class="emphasis"><em>/* igraph_vector_print(&amp;values_real); */</em></span>
-    <span class="emphasis"><em>/* igraph_vector_print(&amp;values_imag); */</em></span>
-    <span class="emphasis"><em>/* igraph_matrix_print(&amp;vectors_left); */</em></span>
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>check_ev</strong></span>(&amp;A, &amp;values_real, &amp;values_imag,
-                 &amp;vectors_left, &amp;vectors_right, <span class="emphasis"><em>/*tol=*/</em></span> 1e-8)) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_complex_create" title="2.14.4. igraph_vector_complex_create — Creates a complex vector from a real and imaginary part.">igraph_vector_complex_create</a></strong></span>(&amp;values, &amp;values_real, &amp;values_imag);
+    <span class="strong"><strong>printf</strong></span>("eigenvalues:\n");
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;values);
+    <span class="strong"><strong>printf</strong></span>("left eigenvectors:\n");
+    <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors_left);
+    <span class="strong"><strong>printf</strong></span>("right eigenvectors:\n");
+    <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;vectors_right);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values_imag);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values_real);
+    <span class="strong"><strong>igraph_vector_complex_destroy</strong></span>(&amp;values);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors_right);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors_left);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;A);
@@ -1966,7 +1629,8 @@ reciprocal condition numbers correspond to the balanced matrix.
 Permuting rows and columns will not change the condition numbers
 (in exact arithmetic) but diagonal scaling will.  For further
 explanation of balancing, see section 4.10.2 of the LAPACK
-Users' Guide.
+Users' Guide. Note that the eigenvectors obtained for the balanced
+matrix are backtransformed to those of <em class="parameter"><code>A</code></em>.
 
 </p>
 <p><b>Arguments: </b>
@@ -2063,7 +1727,8 @@ Users' Guide.
   stored in a compressed form. If the j-th eigenvalue is real then
   column j contains the corresponding eigenvector. If the j-th and
   (j+1)-th eigenvalues form a complex conjugate pair, then the j-th
-  and (j+1)-th columns contain their corresponding eigenvectors.
+  and (j+1)-th columns contain the real and imaginary parts of the
+  corresponding eigenvectors.
 </p></td>
 </tr>
 <tr>
@@ -2082,7 +1747,8 @@ Users' Guide.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ihi</code></em>:</span></p></td>
 <td><p>
-  <em class="parameter"><code>ilo</code></em> and <em class="parameter"><code>ihi</code></em> are integer values determined when A was
+  if not NULL, <em class="parameter"><code>ilo</code></em> and <em class="parameter"><code>ihi</code></em> point to integer values
+  determined when A was
   balanced.  The balanced A(i,j) = 0 if I&gt;J and
   J=1,...,ilo-1 or I=ihi+1,...,N.
 </p></td>
@@ -2205,189 +1871,69 @@ Time complexity: TODO
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-<span class="strong"><strong>#define</strong></span> DIM 10
+void <span class="strong"><strong>matrix_to_complex_vectors</strong></span>(igraph_vector_complex_t *c1, igraph_vector_complex_t *c2, igraph_matrix_t *m) {
+    <span class="strong"><strong>IGRAPH_REAL</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c1)[0]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 0, 0);
+    <span class="strong"><strong>IGRAPH_REAL</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c1)[1]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 1, 0);
+    <span class="strong"><strong>IGRAPH_IMAG</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c1)[0]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 0, 1);
+    <span class="strong"><strong>IGRAPH_IMAG</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c1)[1]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 1, 1);
 
-int <span class="strong"><strong>real_cplx_mult</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *A,
-                   <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_real,
-                   <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_imag,
-                   <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_real,
-                   <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_imag) {
-
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_real);
-    igraph_integer_t r, c;
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(A) != n ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(A) != n ||
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_imag) != n) {
-        <span class="strong"><strong>printf</strong></span>("Wrong matrix or vector size");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_imag, n);
-
-    <span class="strong"><strong>for</strong></span> (r = 0; r &lt; n; r++) {
-        igraph_real_t s_real = 0.0;
-        igraph_real_t s_imag = 0.0;
-        <span class="strong"><strong>for</strong></span> (c = 0; c &lt; n; c++) {
-            s_real += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*A, r, c) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[c];
-            s_imag += <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*A, r, c) * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[c];
-        }
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_real)[r] = s_real;
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_imag)[r] = s_imag;
-    }
-
-    <span class="strong"><strong>return</strong></span> 0;
+    <span class="strong"><strong>IGRAPH_REAL</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c2)[0]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 0, 0);
+    <span class="strong"><strong>IGRAPH_REAL</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c2)[1]) = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 1, 0);
+    <span class="strong"><strong>IGRAPH_IMAG</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c2)[0]) = -<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 0, 1);
+    <span class="strong"><strong>IGRAPH_IMAG</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*c2)[1]) = -<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*m, 1, 1);
 }
 
-int <span class="strong"><strong>sc_cplx_cplx_mult</strong></span>(igraph_real_t lambda_real,
-                      igraph_real_t lambda_imag,
-                      <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_real,
-                      <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v_imag,
-                      <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_real,
-                      <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *res_imag) {
-
-    igraph_integer_t r;
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_real);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(v_imag) != n) {
-        <span class="strong"><strong>printf</strong></span>("Wrong vector sizes");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(res_imag, n);
-
-    <span class="strong"><strong>for</strong></span> (r = 0; r &lt; n; r++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_real)[r] = (lambda_real * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[r] -
-                                lambda_imag * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[r]);
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*res_imag)[r] = (lambda_imag * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_real)[r] +
-                                lambda_real * <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v_imag)[r]);
-    }
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-igraph_bool_t <span class="strong"><strong>check_ev</strong></span>(<span class="strong"><strong>const</strong></span> igraph_matrix_t *A,
-                       <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *values_real,
-                       <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *values_imag,
-                       <span class="strong"><strong>const</strong></span> igraph_matrix_t *vectors_left,
-                       <span class="strong"><strong>const</strong></span> igraph_matrix_t *vectors_right,
-                       igraph_real_t tol) {
-
-    igraph_integer_t n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(A);
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v_real, v_imag;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> AV_real, AV_imag, lv_real, lv_imag;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> null;
-    igraph_integer_t i;
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(A)             != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(values_real)   != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — Returns the size (=length) of the vector.">igraph_vector_size</a></strong></span>(values_imag)   != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(vectors_left)  != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(vectors_left)  != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_nrow" title="3.12.5. igraph_matrix_nrow — The number of rows in a matrix.">igraph_matrix_nrow</a></strong></span>(vectors_right) != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_ncol" title="3.12.6. igraph_matrix_ncol — The number of columns in a matrix.">igraph_matrix_ncol</a></strong></span>(vectors_right) != n) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;AV_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;AV_imag, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;lv_real, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;lv_imag, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;null, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_null" title="2.3.1. igraph_vector_null — Sets each element in the vector to zero.">igraph_vector_null</a></strong></span>(&amp;null);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] == 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(null), n);
-        } <span class="strong"><strong>else</strong></span> <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] &gt; 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i + 1), n);
-        } <span class="strong"><strong>else</strong></span> <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i] &lt; 0.0) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_real, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i - 1), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_view" title="2.5.1. igraph_vector_view — Handle a regular C array as a igraph_vector_t.">igraph_vector_view</a></strong></span>(&amp;v_imag, &amp;<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(*vectors_right, 0, i), n);
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_scale" title="2.8.2. igraph_vector_scale — Multiplies all elements of a vector by a constant.">igraph_vector_scale</a></strong></span>(&amp;v_imag, -1.0);
-        }
-        <span class="strong"><strong>real_cplx_mult</strong></span>(A, &amp;v_real, &amp;v_imag, &amp;AV_real, &amp;AV_imag);
-        <span class="strong"><strong>sc_cplx_cplx_mult</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_real)[i], <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*values_imag)[i],
-                          &amp;v_real, &amp;v_imag, &amp;lv_real, &amp;lv_imag);
-
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_maxdifference" title="2.11.7. igraph_vector_maxdifference — The maximum absolute difference of m1 and m2.">igraph_vector_maxdifference</a></strong></span>(&amp;AV_real, &amp;lv_real) &gt; tol ||
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_maxdifference" title="2.11.7. igraph_vector_maxdifference — The maximum absolute difference of m1 and m2.">igraph_vector_maxdifference</a></strong></span>(&amp;AV_imag, &amp;lv_imag) &gt; tol) {
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;AV_real);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;AV_imag);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;lv_real);
-            <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;lv_imag);
-            <span class="strong"><strong>return</strong></span> 1;
-        }
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;null);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;AV_imag);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;AV_real);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;lv_imag);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;lv_real);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_matrix_t A;
     igraph_matrix_t vectors_left, vectors_right;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> values_real, values_imag;
-    igraph_integer_t i, j;
+    igraph_vector_complex_t values;
+    igraph_vector_complex_t eigenvector1;
+    igraph_vector_complex_t eigenvector2;
     int info = 1;
-    int ilo, ihi;
     igraph_real_t abnrm;
 
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, DIM, DIM);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A, 2, 2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors_left, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;vectors_right, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values_real, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;values_imag, 0);
-
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; DIM; i++) {
-        <span class="strong"><strong>for</strong></span> (j = 0; j &lt; DIM; j++) {
-            <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, i, j) = <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 1, 10);
-        }
-    }
+    <span class="strong"><strong>igraph_vector_complex_init</strong></span>(&amp;eigenvector1, 2);
+    <span class="strong"><strong>igraph_vector_complex_init</strong></span>(&amp;eigenvector2, 2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 0) = 1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 0, 1) = 1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 0) = -1.0;
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#MATRIX" title="3.4.1. MATRIX — Accessing an element of a matrix.">MATRIX</a></strong></span>(A, 1, 1) = 1.0;
 
     <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_lapack_dgeevx" title="2.2.3. igraph_lapack_dgeevx — Eigenvalues/vectors of nonsymmetric matrices, expert mode">igraph_lapack_dgeevx</a></strong></span>(IGRAPH_LAPACK_DGEEVX_BALANCE_BOTH,
                          &amp;A, &amp;values_real, &amp;values_imag,
-                         &amp;vectors_left, &amp;vectors_right, &amp;ilo, &amp;ihi,
-                         <span class="emphasis"><em>/*scale=*/</em></span> 0, &amp;abnrm, <span class="emphasis"><em>/*rconde=*/</em></span> 0,
-                         <span class="emphasis"><em>/*rcondv=*/</em></span> 0, &amp;info);
+                         &amp;vectors_left, &amp;vectors_right, NULL, NULL,
+                         <span class="emphasis"><em>/*scale=*/</em></span> NULL, &amp;abnrm, <span class="emphasis"><em>/*rconde=*/</em></span> NULL,
+                         <span class="emphasis"><em>/*rcondv=*/</em></span> NULL, &amp;info);
 
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>check_ev</strong></span>(&amp;A, &amp;values_real, &amp;values_imag,
-                 &amp;vectors_left, &amp;vectors_right, <span class="emphasis"><em>/*tol=*/</em></span> 1e-8)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_complex_create" title="2.14.4. igraph_vector_complex_create — Creates a complex vector from a real and imaginary part.">igraph_vector_complex_create</a></strong></span>(&amp;values, &amp;values_real, &amp;values_imag);
+    <span class="strong"><strong>printf</strong></span>("eigenvalues:\n");
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;values);
 
-    <span class="emphasis"><em>/* igraph_matrix_print(&amp;A); */</em></span>
-    <span class="emphasis"><em>/* igraph_vector_print(&amp;values_real); */</em></span>
-    <span class="emphasis"><em>/* igraph_vector_print(&amp;values_imag); */</em></span>
-    <span class="emphasis"><em>/* igraph_matrix_print(&amp;vectors_left); */</em></span>
-    <span class="emphasis"><em>/* igraph_matrix_print(&amp;vectors_right); */</em></span>
+    <span class="strong"><strong>printf</strong></span>("\nleft eigenvectors:\n");
+    <span class="emphasis"><em>/*matrix_to_complex_vectors only works because we have two complex</em></span>
+<span class="emphasis"><em>      conjugate eigenvalues */</em></span>
+    <span class="strong"><strong>matrix_to_complex_vectors</strong></span>(&amp;eigenvector1, &amp;eigenvector2, &amp;vectors_left);
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;eigenvector1);
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;eigenvector2);
+
+    <span class="strong"><strong>printf</strong></span>("\nright eigenvectors:\n");
+    <span class="strong"><strong>matrix_to_complex_vectors</strong></span>(&amp;eigenvector1, &amp;eigenvector2, &amp;vectors_right);
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;eigenvector1);
+    <span class="strong"><strong>igraph_vector_complex_print</strong></span>(&amp;eigenvector2);
+    <span class="strong"><strong>printf</strong></span>("\nOne-norm of the balanced matrix:\n%g\n", abnrm);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values_imag);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;values_real);
+    <span class="strong"><strong>igraph_vector_complex_destroy</strong></span>(&amp;values);
+    <span class="strong"><strong>igraph_vector_complex_destroy</strong></span>(&amp;eigenvector1);
+    <span class="strong"><strong>igraph_vector_complex_destroy</strong></span>(&amp;eigenvector2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors_right);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;vectors_left);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;A);
@@ -2964,7 +2510,8 @@ typedef struct igraph_arpack_storage_t {
     igraph_real_t *resid;
     igraph_real_t *ax;
     int *select;
-    igraph_real_t *di;        /* These two only for non-symmetric problems */
+    /* The following two are only used for non-symmetric problems: */
+    igraph_real_t *di;
     igraph_real_t *workev;
 } igraph_arpack_storage_t;
 </pre>
@@ -3386,7 +2933,7 @@ This is the ARPACK solver for symmetric matrices. Please use
   If not a null pointer, then it must be a pointer to
     an initialized matrix. The eigenvectors will be stored in the
     columns of the matrix. The matrix will be resized as needed.
-    Either this or the <em class="parameter"><code>vectors</code></em> argument must be non-null if the
+    Either this or the <em class="parameter"><code>storage</code></em> argument must be non-null if the
     ARPACK iteration is started from a given starting vector. If
     both are given <em class="parameter"><code>vectors</code></em> take precedence.
 </p></td>

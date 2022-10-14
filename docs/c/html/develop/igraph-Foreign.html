@@ -154,14 +154,15 @@
 <dt><span class="section"><a href="igraph-Foreign.html#pajek-format">5. Pajek format</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#ucinets-dl-file-format">6. UCINET's DL file format</a></span></dt>
 <dt><span class="section"><a href="igraph-Foreign.html#graphviz-format">7. Graphviz format</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#locale-helpers">8. Convenience functions for locale change</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#deprecated-formats">9. Deprecated functions</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#leda-format">8. LEDA format</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#locale-helpers">9. Convenience functions for locale change</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#deprecated-formats">10. Deprecated functions</a></span></dt>
 </dl></div>
 <p>These functions can write a graph to a file, or read a graph
 from a file.</p>
 <p>They assume that the current locale uses a decimal point and not
-a decimal comma. See <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="8.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a> and
-<a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="8.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a> for more information.</p>
+a decimal comma. See <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="9.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a> and
+<a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="9.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a> for more information.</p>
 <p>Note that as <span class="command"><strong>igraph</strong></span> uses the traditional C streams, it is
 possible to read/write files from/to memory, at least on GNU
 operating systems supporting <span class="quote">“<span class="quote">non-standard</span>”</span> streams.</p>
@@ -744,7 +745,7 @@ while |E| is the number of edges.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     FILE *input;
@@ -929,7 +930,7 @@ time complexity O(1).
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t graph;
     igraph_strvector_t names;
@@ -989,13 +990,14 @@ int <span class="strong"><strong>main</strong></span>() {
 <a class="indexterm" name="id-1.22.5.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_read_graph_dimacs_flow(igraph_t *graph, FILE *instream,
-                             igraph_strvector_t *problem,
-                             igraph_vector_int_t *label,
-                             igraph_integer_t *source,
-                             igraph_integer_t *target,
-                             igraph_vector_t *capacity,
-                             igraph_bool_t directed);
+igraph_error_t igraph_read_graph_dimacs_flow(
+        igraph_t *graph, FILE *instream,
+        igraph_strvector_t *problem,
+        igraph_vector_int_t *label,
+        igraph_integer_t *source,
+        igraph_integer_t *target,
+        igraph_vector_t *capacity,
+        igraph_bool_t directed);
 </pre></div>
 <p>
 </p>
@@ -1005,28 +1007,33 @@ igraph_error_t igraph_read_graph_dimacs_flow(igraph_t *graph, FILE *instream,
 
 This function reads the DIMACS file format, more specifically the
 version for network flow problems, see the files at
-ftp://dimacs.rutgers.edu/pub/netflow/general-info/
+<a class="ulink" href="http://archive.dimacs.rutgers.edu/pub/netflow/general-info/" target="_top">http://archive.dimacs.rutgers.edu/pub/netflow/general-info/</a>
 
 </p>
 <p>
 This is a line-oriented text file (ASCII) format. The first
 character of each line defines the type of the line. If the first
-character is <code class="literal">c</code> the line is a comment line and it is
-ignored. There is one problem line (<code class="literal">p</code> in the file, it
+character is <code class="constant">c</code> the line is a comment line and it is
+ignored. There is one problem line (<code class="constant">p</code> in the file), it
 must appear before any node and arc descriptor lines. The problem
 line has three fields separated by spaces: the problem type
-(<code class="literal">min</code>, <code class="literal">max</code> or <code class="literal">asn</code>), the
-number of vertices and number of edges in the graph.
-Exactly two node identification lines are expected
-(<code class="literal">n</code>), one for the source, one for the target vertex.
-These have two fields: the id of the vertex and the type of the
-vertex, either <code class="literal">s</code> (=source) or <code class="literal">t</code>
-(=target). Arc lines start with <code class="literal">a</code> and have three
-fields: the source vertex, the target vertex and the edge capacity.
+(<code class="constant">max</code> or <code class="constant">edge</code>), the number of vertices,
+and number of edges in the graph. In MAX problems,
+exactly two node identification lines are expected
+(<code class="constant">n</code>), one for the source, and one for the target vertex.
+These have two fields: the ID of the vertex and the type of the
+vertex, either <code class="constant">s</code> ( = source) or <code class="constant">t</code> ( = target).
+Arc lines start with <code class="constant">a</code> and have three fields: the source vertex,
+the target vertex and the edge capacity. In EDGE problems,
+there may be a node line (<code class="constant">n</code>) for each node. It specifies the
+node index and an integer node label. Nodes for which no explicit
+label was specified will use their index as label. In EDGE problems,
+each edge is specified as an edge line (<code class="constant">e</code>).
 
 </p>
 <p>
-Vertex IDs are numbered from 1.
+Within DIMACS files, vertex IDs are numbered from 1.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1049,26 +1056,38 @@ Vertex IDs are numbered from 1.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>problem</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code>, it will contain the problem type.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>label</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code>, node labels will be stored here for <code class="constant">edge</code>
+   problems. Ignored for <code class="constant">max</code> problems.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>source</code></em>:</span></p></td>
 <td><p>
-  Pointer to an integer, the id of the source node will
+  Pointer to an integer, the ID of the source node will
    be stored here. (The igraph vertex ID, which is one less than
-   the actual number in the file.) It is ignored if
-   <code class="literal">NULL</code>.
+   the actual number in the file.) It is ignored if <code class="constant">NULL</code>.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>target</code></em>:</span></p></td>
 <td><p>
-  Pointer to an integer, the (igraph) id of the target
-   node will be stored here. It is ignored if <code class="literal">NULL</code>.
+  Pointer to an integer, the (igraph) ID of the target
+   node will be stored here. It is ignored if <code class="constant">NULL</code>.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>capacity</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector, the capacity of
-   the edges will be stored here if not <code class="literal">NULL</code>.
+   the edges will be stored here if not \ NULL.
 </p></td>
 </tr>
 <tr>
@@ -1109,7 +1128,7 @@ number of edges, plus the size of the file in characters.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Foreign.html#igraph_write_graph_dimacs" title="9.2. igraph_write_graph_dimacs — Write a graph in DIMACS format (deprecated alias)."><code class="function">igraph_write_graph_dimacs()</code></a>
+  <a class="link" href="igraph-Foreign.html#igraph_write_graph_dimacs" title="10.2. igraph_write_graph_dimacs — Write a graph in DIMACS format (deprecated alias)."><code class="function">igraph_write_graph_dimacs()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1241,9 +1260,13 @@ igraph_error_t igraph_read_graph_graphdb(igraph_t *graph, FILE *instream,
 
 
 
-This is a binary format, used in the graph database
-for isomorphism testing. From the (now defunct) graph database
-homepage:
+This is a binary format, used in the ARG Graph Database
+for isomorphism testing. For more information, see
+<a class="ulink" href="https://mivia.unisa.it/datasets/graph-database/arg-database/" target="_top">https://mivia.unisa.it/datasets/graph-database/arg-database/</a>
+
+</p>
+<p>
+From the graph database homepage:
 </p>
 <div class="blockquote"><blockquote class="blockquote">
 <p>
@@ -1259,7 +1282,8 @@ destination node of the edge. Node numeration is 0-based, so the
 first node of the graph has index 0.</p>
 </blockquote></div>
 <p>
-Only unlabelled graphs are implemented.
+As of igraph 0.10, only unlabelled graphs are implemented.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1312,11 +1336,11 @@ number of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.22.6.2.10.1"></a><p class="title"><b>Example 21.3.  File <code class="code">examples/simple/igraph_read_graph_graphdb.c</code></b></p>
+<a name="id-1.22.6.2.11.1"></a><p class="title"><b>Example 21.3.  File <code class="code">examples/simple/igraph_read_graph_graphdb.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     FILE *input;
@@ -1444,7 +1468,7 @@ igraph will fall back to the <code class="constant">id</code> attribute of the <
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt; <span class="emphasis"><em>/* unlink */</em></span>
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     <span class="strong"><strong>const</strong></span> char *infilename  = "test.graphml";
     <span class="strong"><strong>const</strong></span> char *outfilename = "test2.graphml";
@@ -1599,7 +1623,7 @@ O(1).
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;unistd.h&gt; <span class="emphasis"><em>/* unlink */</em></span>
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     <span class="strong"><strong>const</strong></span> char *infilename  = "test.graphml";
     <span class="strong"><strong>const</strong></span> char *outfilename = "test2.graphml";
@@ -1807,7 +1831,7 @@ Time complexity: should be proportional to the length of the file.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     FILE *ifile;
 
@@ -2037,7 +2061,7 @@ to the file.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     FILE *ifile;
 
@@ -2260,7 +2284,7 @@ in the graph if there are attribute handlers installed.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     FILE *ifile;
 
@@ -2410,7 +2434,7 @@ this suites <span class="command"><strong>igraph</strong></span> graphs better.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     igraph_strvector_t names;
@@ -2558,7 +2582,7 @@ number of vertices.
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong>const</strong></span> char *files[] = { "fullmatrix1.dl", "fullmatrix2.dl",
                             "fullmatrix3.dl", "fullmatrix4.dl",
@@ -2678,7 +2702,7 @@ to the file.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
     FILE *ifile;
@@ -2716,15 +2740,106 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="locale-helpers"></a>8. Convenience functions for locale change</h2></div></div></div>
+<a name="leda-format"></a>8. LEDA format</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_leda">8.1. <code class="function">igraph_write_graph_leda</code> —  Write a graph in LEDA native graph format.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_write_graph_leda"></a>8.1. <code class="function">igraph_write_graph_leda</code> —  Write a graph in LEDA native graph format.</h3></div></div></div>
+<a class="indexterm" name="id-1.22.12.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_write_graph_leda(const igraph_t *graph, FILE *outstream,
+                                       const char *vertex_attr_name,
+                                       const char *edge_attr_name);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function writes a graph to an output stream in LEDA format.
+See <a class="ulink" href="http://www.algorithmic-solutions.info/leda_guide/graphs/leda_native_graph_fileformat.html" target="_top">http://www.algorithmic-solutions.info/leda_guide/graphs/leda_native_graph_fileformat.html</a>
+
+</p>
+<p>
+The support for the LEDA format is very basic at the moment; igraph
+writes only the LEDA graph section which supports one selected vertex
+and edge attribute and no layout information or visual attributes.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to write to the stream.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>outstream</code></em>:</span></p></td>
+<td><p>
+  The stream.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_attr_name</code></em>:</span></p></td>
+<td><p>
+  The name of the vertex attribute whose values
+                        are to be stored in the output, or <code class="constant">NULL</code> if no
+                        vertex attribute should be stored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_attr_name</code></em>:</span></p></td>
+<td><p>
+  The name of the edge attribute whose values
+                        are to be stored in the output, or <code class="constant">NULL</code> if no
+                        edge attribute should be stored.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), the number of vertices and edges in the
+graph.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="locale-helpers"></a>9. Convenience functions for locale change</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_enter_safelocale">8.1. <code class="function">igraph_enter_safelocale</code> —  Temporarily set the C locale.</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_exit_safelocale">8.2. <code class="function">igraph_exit_safelocale</code> —  Temporarily set the C locale.</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_enter_safelocale">9.1. <code class="function">igraph_enter_safelocale</code> —  Temporarily set the C locale.</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_exit_safelocale">9.2. <code class="function">igraph_exit_safelocale</code> —  Temporarily set the C locale.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_enter_safelocale"></a>8.1. <code class="function">igraph_enter_safelocale</code> —  Temporarily set the C locale.</h3></div></div></div>
-<a class="indexterm" name="id-1.22.12.2.2"></a><p>
+<a name="igraph_enter_safelocale"></a>9.1. <code class="function">igraph_enter_safelocale</code> —  Temporarily set the C locale.</h3></div></div></div>
+<a class="indexterm" name="id-1.22.13.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_enter_safelocale(igraph_safelocale_t *loc);
@@ -2745,7 +2860,7 @@ major version of igraph. Use it at your own risk.</p>
 <p>igraph's foreign format readers and writers require a locale that uses a
 decimal point instead of a decimal comma. This is a convenience function
 that temporarily sets the C locale so that readers and writer would work
-correctly. It <span class="emphasis"><em>must</em></span> be paired with a call to <a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="8.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a>,
+correctly. It <span class="emphasis"><em>must</em></span> be paired with a call to <a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="9.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a>,
 otherwise a memory leak will occur.
 
 </p>
@@ -2778,7 +2893,7 @@ be done unless the locale has been changed away from the default.
 <td><p>
   Pointer to a variable of type <code class="constant">igraph_safelocale_t</code>. The current
     locale will be stored here, so that it can be restored using
-    <a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="8.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a>.
+    <a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="9.2. igraph_exit_safelocale — Temporarily set the C locale."><code class="function">igraph_exit_safelocale()</code></a>.
 </p></td>
 </tr></tbody>
 </table></div>
@@ -2802,7 +2917,7 @@ be done unless the locale has been changed away from the default.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.22.12.2.12.1"></a><p class="title"><b>Example 21.12.  File <code class="code">examples/simple/safelocale.c</code></b></p>
+<a name="id-1.22.13.2.12.1"></a><p class="title"><b>Example 21.12.  File <code class="code">examples/simple/safelocale.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2810,7 +2925,7 @@ be done unless the locale has been changed away from the default.
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
 
-int <span class="strong"><strong>main</strong></span>() {
+int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>const</strong></span> char *filename = "weighted.gml";
     igraph_t graph;
     igraph_safelocale_t loc;
@@ -2840,13 +2955,13 @@ int <span class="strong"><strong>main</strong></span>() {
     <span class="emphasis"><em>/* At this point, the current locale may use decimal commas.</em></span>
 <span class="emphasis"><em>     * We temporarily set a C locale using enter_safelocale() to</em></span>
 <span class="emphasis"><em>     * allow the GML reader and writer to work correctly.*/</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="8.1. igraph_enter_safelocale — Temporarily set the C locale.">igraph_enter_safelocale</a></strong></span>(&amp;loc);
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="9.1. igraph_enter_safelocale — Temporarily set the C locale.">igraph_enter_safelocale</a></strong></span>(&amp;loc);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_gml" title="4.1. igraph_read_graph_gml — Read a graph in GML format.">igraph_read_graph_gml</a></strong></span>(&amp;graph, file) != IGRAPH_SUCCESS) {
         <span class="strong"><strong>fprintf</strong></span>(stderr, "Reading %s failed.\n", filename);
         <span class="strong"><strong>abort</strong></span>();
     }
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_gml" title="4.2. igraph_write_graph_gml — Write the graph to a stream in GML format.">igraph_write_graph_gml</a></strong></span>(&amp;graph, stdout, IGRAPH_WRITE_GML_DEFAULT_SW, NULL, "");
-    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="8.2. igraph_exit_safelocale — Temporarily set the C locale.">igraph_exit_safelocale</a></strong></span>(&amp;loc);
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_exit_safelocale" title="9.2. igraph_exit_safelocale — Temporarily set the C locale.">igraph_exit_safelocale</a></strong></span>(&amp;loc);
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
@@ -2863,8 +2978,8 @@ int <span class="strong"><strong>main</strong></span>() {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_exit_safelocale"></a>8.2. <code class="function">igraph_exit_safelocale</code> —  Temporarily set the C locale.</h3></div></div></div>
-<a class="indexterm" name="id-1.22.12.3.2"></a><p>
+<a name="igraph_exit_safelocale"></a>9.2. <code class="function">igraph_exit_safelocale</code> —  Temporarily set the C locale.</h3></div></div></div>
+<a class="indexterm" name="id-1.22.13.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_exit_safelocale(igraph_safelocale_t *loc);
@@ -2882,9 +2997,9 @@ void igraph_exit_safelocale(igraph_safelocale_t *loc);
 We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
-<p>Restores a locale saved by <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="8.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a> and deallocates
+<p>Restores a locale saved by <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="9.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a> and deallocates
 all associated data. This function <span class="emphasis"><em>must</em></span> be paired with a call to
-<a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="8.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a>.
+<a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="9.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -2898,7 +3013,7 @@ all associated data. This function <span class="emphasis"><em>must</em></span> b
 <td><p><span class="term"><em class="parameter"><code>loc</code></em>:</span></p></td>
 <td><p>
   A variable of type <code class="constant">igraph_safelocale_t</code>, originally set
-    by <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="8.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a>.</p></td>
+    by <a class="link" href="igraph-Foreign.html#igraph_enter_safelocale" title="9.1. igraph_enter_safelocale — Temporarily set the C locale."><code class="function">igraph_enter_safelocale()</code></a>.</p></td>
 </tr></tbody>
 </table></div>
 <p>
@@ -2909,15 +3024,15 @@ all associated data. This function <span class="emphasis"><em>must</em></span> b
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="deprecated-formats"></a>9. Deprecated functions</h2></div></div></div>
+<a name="deprecated-formats"></a>10. Deprecated functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_dimacs">9.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_dimacs">9.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_read_graph_dimacs">10.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Foreign.html#igraph_write_graph_dimacs">10.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_read_graph_dimacs"></a>9.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</h3></div></div></div>
-<a class="indexterm" name="id-1.22.13.2.2"></a><p>
+<a name="igraph_read_graph_dimacs"></a>10.1. <code class="function">igraph_read_graph_dimacs</code> —  Read a graph in DIMACS format (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.22.14.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_read_graph_dimacs(igraph_t *graph, FILE *instream,
@@ -2946,8 +3061,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_write_graph_dimacs"></a>9.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</h3></div></div></div>
-<a class="indexterm" name="id-1.22.13.3.2"></a><p>
+<a name="igraph_write_graph_dimacs"></a>10.2. <code class="function">igraph_write_graph_dimacs</code> —  Write a graph in DIMACS format (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.22.14.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_write_graph_dimacs(const igraph_t *graph, FILE *outstream,
