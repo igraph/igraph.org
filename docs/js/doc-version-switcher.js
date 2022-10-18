@@ -51,7 +51,7 @@ function generateVersionSwitcher(selector, lang, doctype) {
             // API docs are now a subfolder of the main docs. However,
             // to help the user here we still link the API subpage if
             // the user comes from a different API version
-            if (version_is_pre_010(version)) {
+            if (lang === 'python' && version_is_pre_010(version)) {
                 href = '/' + lang + '/' + doctype + version + '/';
             } else {
                 if (doctype === "api/") {
