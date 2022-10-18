@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
 
-    <title>R/igraph 1.3.2</title>
+    <title>python-igraph 0.10.2</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -160,74 +160,16 @@
     <div class="col-md-8">
       <div class="bs-docs-section">
         <div class="post-header">
-          <h1>R/igraph 1.3.2</h1>
-	      <div class="post-time"><time class="text-muted">Jun 13th, 2022</time></div>
+          <h1>python-igraph 0.10.2</h1>
+	      <div class="post-time"><time class="text-muted">Oct 17th, 2022</time></div>
         </div>
 
-        <p><a href="https://igraph.org/r/">R-igraph</a> 1.3.2, the second bugfix release of the 1.3
-series is now released – and it looks like we forgot to post an announcement
-about 1.3.1, so in the rest of this post we summarnize the changes in versions
-1.3.1 and 1.3.2 as well.</p>
+        <p><a href="https://igraph.org/python/">python-igraph</a> 0.10.2, the second bugfix release of the 0.10 series, has arrived. Thise release updates the C core of igraph to 0.10.2, adds support for Python 3.11 and fixes a crash and a reference leak in earlier versions of the library. There are also some minor additions and improvements; please refer to the <a href="https://github.com/igraph/python-igraph/releases/tag/0.10.2">changelog</a> for more details.</p>
 
-<p>As always, we tried to do our best not to cause breaking changes for users of
-igraph from R, but in case we have made unintentional mistakes, please report
-issues in the <a href="https://github.com/igraph/rigraph/issues">Github issue tracker</a>.</p>
+<p>The preferred way of installing the Python interface is via <code class="language-plaintext highlighter-rouge">pip</code>; typing <code class="language-plaintext highlighter-rouge">pip install igraph</code> should install a pre-compiled Python wheel on most supported platforms (Windows, Linux and macOS). The pre-compiled wheels and the source code are also available from the <a href="https://pypi.org/project/igraph/0.10.1/">Python Package Index page</a>.</p>
 
-<!--more-->
+<p>The documentation of the project has also been moved to <a href="https://igraph.readthedocs.io">Read The Docs</a>.</p>
 
-<h2 id="igraph-132">igraph 1.3.2</h2>
-
-<p>The C core is updated to 0.9.9, fixing a range of bugs.</p>
-
-<h3 id="fixed">Fixed</h3>
-
-<ul>
-  <li>The length of size-zero <code class="language-plaintext highlighter-rouge">communities</code> objects is now reported correctly.</li>
-  <li><code class="language-plaintext highlighter-rouge">layout_with_kk()</code> would fail to produce reasonable results with the default initial
-coordinates. This has been corrected, however, this function no longer produces
-precisely the same output for a given graph as before. To restore the previous
-behaviour, use <code class="language-plaintext highlighter-rouge">layout_with_kk(g, coord=layout_in_circle(g))</code> in 2D or
-<code class="language-plaintext highlighter-rouge">layout_with_kk(g, dim=3, coord=layout_on_sphere(g))</code> in 3D.</li>
-  <li>Indexing an <code class="language-plaintext highlighter-rouge">igraph.vs</code> object with <code class="language-plaintext highlighter-rouge">v[x, na_ok=T]</code> now correctly handles the
-<code class="language-plaintext highlighter-rouge">na_ok</code> argument in all cases; previous versions ignored it when <code class="language-plaintext highlighter-rouge">x</code> was
-a single number.</li>
-</ul>
-
-<h3 id="other">Other</h3>
-
-<ul>
-  <li>Documentation improvements and fixes.</li>
-</ul>
-
-<h2 id="igraph-131">igraph 1.3.1</h2>
-
-<h3 id="fixed-1">Fixed</h3>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">graph_from_adjacency_matrix()</code> now works with sparse matrices even if the
-cell values in the sparse matrix are unspecified.</li>
-  <li>Fixed crash in <code class="language-plaintext highlighter-rouge">cluster_walktrap()</code> when <code class="language-plaintext highlighter-rouge">modularity=FALSE</code> and <code class="language-plaintext highlighter-rouge">membership=FALSE</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">cluster_walktrap()</code> no longer accepts invalid weight vectors.</li>
-  <li><code class="language-plaintext highlighter-rouge">cluster_walktrap()</code> no longer returns a modularity vector of invalid length for
-disconnected graphs. This also fixes some rare failures of this function on
-weighted disconnected graphs.</li>
-  <li><code class="language-plaintext highlighter-rouge">edge_attr()</code> does not ignore its <code class="language-plaintext highlighter-rouge">index=...</code> argument any more.</li>
-  <li><code class="language-plaintext highlighter-rouge">automorphisms()</code>, <code class="language-plaintext highlighter-rouge">automorphism_group()</code> and <code class="language-plaintext highlighter-rouge">canonical_permutation()</code> now
-allow all possible values supported by the C core in the <code class="language-plaintext highlighter-rouge">sh</code> argument.
-Earlier versions supported only <code class="language-plaintext highlighter-rouge">"fm"</code>.</li>
-  <li>The <code class="language-plaintext highlighter-rouge">vertex.frame.width</code> plotting parameter now allows zero and negative
-values; these will simply remove the outline of the corresponding vertex.</li>
-  <li>The documentation of the <code class="language-plaintext highlighter-rouge">sh</code> argument of the BLISS isomorphism algorithm in
-<code class="language-plaintext highlighter-rouge">isomorphic()</code> was fixed; earlier versions incorrectly referred to <code class="language-plaintext highlighter-rouge">sh1</code> and
-<code class="language-plaintext highlighter-rouge">sh2</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">dominator_tree()</code> now conforms to its documentation with respect to the
-<code class="language-plaintext highlighter-rouge">dom</code> component of the result: it contains the indices of the dominator
-vertices for each vertex and <code class="language-plaintext highlighter-rouge">-1</code> for the root of the dominator tree.</li>
-  <li>Mentions of the <code class="language-plaintext highlighter-rouge">"power"</code> algorithm of <code class="language-plaintext highlighter-rouge">page_rank()</code> have been removed from
-the documentation, as this method is no longer available.</li>
-  <li>Several other documentation fixes to bring the docs up to date with new behaviours
-in igraph 1.3.</li>
-</ul>
 
       </div>
     </div>
