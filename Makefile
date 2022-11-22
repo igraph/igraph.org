@@ -4,7 +4,7 @@ all: jekyll
 .PHONY: all core c r python jekyll devserver
 
 # Default doc version
-CVERSION?=0.10.1
+CVERSION?=0.10.2
 RVERSION?=1.3.5
 PYVERSION?=0.10.1
 
