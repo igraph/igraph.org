@@ -7328,8 +7328,9 @@ the vector type.</p>
 destructors</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_init">3.2.1. <code class="function">igraph_matrix_init</code> —  Initializes a matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_init_copy">3.2.2. <code class="function">igraph_matrix_init_copy</code> —  Copies a matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_destroy">3.2.3. <code class="function">igraph_matrix_destroy</code> —  Destroys a matrix object.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_init_array">3.2.2. <code class="function">igraph_matrix_init_array</code> —  Initializes a matrix from an ordinary C array (constructor).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_init_copy">3.2.3. <code class="function">igraph_matrix_init_copy</code> —  Copies a matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_destroy">3.2.4. <code class="function">igraph_matrix_destroy</code> —  Destroys a matrix object.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -7351,7 +7352,7 @@ igraph_error_t igraph_matrix_init(
 <p>
 Every matrix needs to be initialized before using it. This is done
 by calling this function. A matrix has to be destroyed if it is not
-needed any more; see <a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object."><code class="function">igraph_matrix_destroy()</code></a>.
+needed any more; see <a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object."><code class="function">igraph_matrix_destroy()</code></a>.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -7405,8 +7406,99 @@ Time complexity: usually O(n), n is the number of elements in the matrix.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_matrix_init_copy"></a>3.2.2. <code class="function">igraph_matrix_init_copy</code> —  Copies a matrix.</h4></div></div></div>
+<a name="igraph_matrix_init_array"></a>3.2.2. <code class="function">igraph_matrix_init_array</code> —  Initializes a matrix from an ordinary C array (constructor).</h4></div></div></div>
 <a class="indexterm" name="id-1.8.4.3.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_matrix_init_array(
+        igraph_matrix_t *m, const igraph_real_t *data,
+        igraph_integer_t nrow, igraph_integer_t ncol,
+        igraph_matrix_storage_t storage);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+The array is assumed to store the matrix data contiguously, either in
+a column-major or row-major format. In other words, <em class="parameter"><code>data</code></em> may
+store concatenated matrix columns or concatenated matrix rows.
+Constructing a matrix from column-major data is faster, as this is
+igraph's native storage format.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized matrix object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em>:</span></p></td>
+<td><p>
+  A regular C array, storing the elements of the matrix in
+       column-major order, i.e. the elements of the first column are stored
+       first, followed by the second column and so on.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>nrow</code></em>:</span></p></td>
+<td><p>
+  The number of rows in the matrix.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ncol</code></em>:</span></p></td>
+<td><p>
+  The number of columns in the matrix.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>storage</code></em>:</span></p></td>
+<td><p>
+  <code class="constant">IGRAPH_ROW_MAJOR</code> if the array is in row-major format,
+          <code class="constant">IGRAPH_COLUMN_MAJOR</code> if the array is in column-major format.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system specific, usually
+O(<em class="parameter"><code>nrow</code></em> <em class="parameter"><code>ncol</code></em>).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_matrix_init_copy"></a>3.2.3. <code class="function">igraph_matrix_init_copy</code> —  Copies a matrix.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.4.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_matrix_init_copy(igraph_matrix_t *to, const igraph_matrix_t *from);
@@ -7469,8 +7561,8 @@ of elements in the matrix.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_matrix_destroy"></a>3.2.3. <code class="function">igraph_matrix_destroy</code> —  Destroys a matrix object.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.4.3.4.2"></a><p>
+<a name="igraph_matrix_destroy"></a>3.2.4. <code class="function">igraph_matrix_destroy</code> —  Destroys a matrix object.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.4.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_matrix_destroy(igraph_matrix_t *m);
@@ -8898,7 +8990,7 @@ columns of the result matrix.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_prod">3.8.8. <code class="function">igraph_matrix_prod</code> — Product of the elements.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_rowsum">3.8.9. <code class="function">igraph_matrix_rowsum</code> — Rowwise sum.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_colsum">3.8.10. <code class="function">igraph_matrix_colsum</code> — Columnwise sum.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_transpose">3.8.11. <code class="function">igraph_matrix_transpose</code> —  Transpose a matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_matrix_transpose">3.8.11. <code class="function">igraph_matrix_transpose</code> —  Transpose of a matrix.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -9459,7 +9551,7 @@ Time complexity: O(mn), the number of elements in the matrix.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_matrix_transpose"></a>3.8.11. <code class="function">igraph_matrix_transpose</code> —  Transpose a matrix.</h4></div></div></div>
+<a name="igraph_matrix_transpose"></a>3.8.11. <code class="function">igraph_matrix_transpose</code> —  Transpose of a matrix.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.4.9.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -9471,8 +9563,9 @@ igraph_error_t igraph_matrix_transpose(igraph_matrix_t *m);
 
 
 
-Calculate the transpose of a matrix. Note that the function
-reallocates the memory used for the matrix.
+Calculates the transpose of a matrix. When the matrix is non-square,
+this function reallocates the storage used for the matrix.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -11993,7 +12086,7 @@ igraph_error_t igraph_matrix_copy(igraph_matrix_t *to, const igraph_matrix_t *fr
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p>Deprecated since version 0.10. Please do not use this function in new
-code; use <a class="link" href="igraph-Data-structures.html#igraph_matrix_init_copy" title="3.2.2. igraph_matrix_init_copy — Copies a matrix."><code class="function">igraph_matrix_init_copy()</code></a>
+code; use <a class="link" href="igraph-Data-structures.html#igraph_matrix_init_copy" title="3.2.3. igraph_matrix_init_copy — Copies a matrix."><code class="function">igraph_matrix_init_copy()</code></a>
 instead.</p>
 </div>
 <p> 
@@ -12338,7 +12431,7 @@ igraph_bool_t <span class="strong"><strong>check_same</strong></span>(<span clas
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;A_dense, 1, 1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;A_dense, A);
     result = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_all_e" title="3.9.1. igraph_matrix_all_e — Are all elements equal?">igraph_matrix_all_e</a></strong></span>(&amp;A_dense, M);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;A_dense);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;A_dense);
 
     <span class="strong"><strong>return</strong></span> result;
 }
@@ -12402,8 +12495,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;q);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;A);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
 
 <span class="strong"><strong>#undef</strong></span> NROW
 <span class="strong"><strong>#undef</strong></span> NCOL
@@ -12493,8 +12586,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;p);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;q);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
 
     <span class="emphasis"><em>/* Indexing only the rows or the columns */</em></span>
 
@@ -12541,8 +12634,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;B);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;p);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;q);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
 
     <span class="strong"><strong>RNG_END</strong></span>();
 
@@ -12890,9 +12983,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat3);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat3);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
@@ -12955,7 +13048,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 4;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
@@ -13003,7 +13096,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;spmat, &amp;spmat2);
@@ -13018,8 +13111,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
 
     <span class="emphasis"><em>/* COLSUMS, ROWSUMS */</em></span>
 
@@ -13053,7 +13146,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 6;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;sums1);
@@ -13099,7 +13192,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 8;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
@@ -13123,8 +13216,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 9;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
@@ -13150,8 +13243,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 10;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;mat2);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix.">igraph_sparsemat_destroy</a></strong></span>(&amp;spmat2);
 
@@ -17385,7 +17478,7 @@ igraph_error_t igraph_sparsemat_arpack_rssolve(const igraph_sparsemat_t *A,
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   It is passed to <a class="link" href="igraph-Arpack.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a>. Supply
-   <code class="constant">NULL</code> here to use the defaults. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a> for the
+   <code class="constant">NULL</code> here to use the defaults. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a> for the
    details. If <code class="constant">mode</code> is 1, then ARPACK uses regular mode, if <code class="constant">mode</code> is 3,
    then shift and invert mode is used and the <code class="constant">sigma</code> structure member defines
    the shift.
@@ -17394,7 +17487,7 @@ igraph_error_t igraph_sparsemat_arpack_rssolve(const igraph_sparsemat_t *A,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>storage</code></em>:</span></p></td>
 <td><p>
-  Storage for ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a> and <a class="link" href="igraph-Arpack.html#igraph_arpack_storage_t" title="3.1.2. igraph_arpack_storage_t — Storage for ARPACK"><code class="function">igraph_arpack_storage_t</code></a> for
+  Storage for ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a> and <a class="link" href="igraph-Arpack.html#igraph_arpack_storage_t" title="3.1.2. igraph_arpack_storage_t — Storage for ARPACK."><code class="function">igraph_arpack_storage_t</code></a> for
    details.
 </p></td>
 </tr>
@@ -17508,13 +17601,13 @@ Eigenvalues and/or eigenvectors of a nonsymmetric sparse matrix.
 <td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
 <td><p>
   ARPACK options, it is passed to <a class="link" href="igraph-Arpack.html#igraph_arpack_rnsolve" title="3.2.2. igraph_arpack_rnsolve — ARPACK solver for non-symmetric matrices."><code class="function">igraph_arpack_rnsolve()</code></a>. Supply <code class="constant">NULL</code> here to use the defaults.
-   See also <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK"><code class="function">igraph_arpack_options_t</code></a> for details.
+   See also <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a> for details.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>storage</code></em>:</span></p></td>
 <td><p>
-  Storage for ARPACK, this is passed to <a class="link" href="igraph-Arpack.html#igraph_arpack_rnsolve" title="3.2.2. igraph_arpack_rnsolve — ARPACK solver for non-symmetric matrices."><code class="function">igraph_arpack_rnsolve()</code></a>. See <a class="link" href="igraph-Arpack.html#igraph_arpack_storage_t" title="3.1.2. igraph_arpack_storage_t — Storage for ARPACK"><code class="function">igraph_arpack_storage_t</code></a> for
+  Storage for ARPACK, this is passed to <a class="link" href="igraph-Arpack.html#igraph_arpack_rnsolve" title="3.2.2. igraph_arpack_rnsolve — ARPACK solver for non-symmetric matrices."><code class="function">igraph_arpack_rnsolve()</code></a>. See <a class="link" href="igraph-Arpack.html#igraph_arpack_storage_t" title="3.1.2. igraph_arpack_storage_t — Storage for ARPACK."><code class="function">igraph_arpack_storage_t</code></a> for
    details.
 </p></td>
 </tr>
@@ -17584,7 +17677,7 @@ igraph_error_t igraph_sparsemat(igraph_t *graph, const igraph_sparsemat_t *A,
 
 One edge is created for each non-zero entry in the matrix. If you
 have a symmetric matrix, and want to create an undirected graph,
-then delete the entries in the upper diagonal first, or call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.5. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result graph to eliminate the multiple
+then delete the entries in the upper diagonal first, or call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result graph to eliminate the multiple
 edges.
 </p>
 <p><b>Arguments: </b>

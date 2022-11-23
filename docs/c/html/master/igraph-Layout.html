@@ -2149,7 +2149,8 @@ in the same grid cell.
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_reingold_tilford_circular">2.2. <code class="function">igraph_layout_reingold_tilford_circular</code> —  Circular Reingold-Tilford layout for trees.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_roots_for_tree_layout">2.3. <code class="function">igraph_roots_for_tree_layout</code> —  Roots suitable for a nice tree layout.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sugiyama">2.4. <code class="function">igraph_layout_sugiyama</code> —  Sugiyama layout algorithm for layered directed acyclic graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_umap">2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection for Dimension Reduction.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_umap">2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection (UMAP).</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_umap_compute_weights">2.6. <code class="function">igraph_layout_umap_compute_weights</code> —  Compute weights for a UMAP layout starting from distances.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -2306,7 +2307,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <span class="emphasis"><em>      printf("%6.3f %6.3f\n", MATRIX(coords, i, 0), MATRIX(coords, i, 1));</em></span>
 <span class="emphasis"><em>    }*/</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2697,7 +2698,7 @@ Cybernetics 11(2):109-125, 1981.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_umap"></a>2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection for Dimension Reduction.</h3></div></div></div>
+<a name="igraph_layout_umap"></a>2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection (UMAP).</h3></div></div></div>
 <a class="indexterm" name="id-1.21.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -2707,7 +2708,7 @@ igraph_error_t igraph_layout_umap(const igraph_t *graph,
                                   const igraph_vector_t *distances,
                                   igraph_real_t min_dist,
                                   igraph_integer_t epochs,
-                                  igraph_real_t sampling_prob);
+                                  igraph_bool_t distances_are_weights);
 </pre></div>
 <p>
 </p>
@@ -2723,90 +2724,34 @@ We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
 <p>UMAP is mostly used to embed high-dimensional vectors in a low-dimensional space
-(most commonly by far, 2D). The algorithm is probabilistic and introduces
-nonlinearities, unlike e.g. PCA and similar to T-distributed Stochastic Neighbor
-Embedding (t-SNE). Nonlinearity helps "cluster" very similar vectors together without
-imposing a global geometry on the embedded space (e.g. a rigid rotation + compression
-in PCA).
+(most commonly 2D). The algorithm is probabilistic and introduces nonlinearities,
+unlike e.g. PCA and similar to T-distributed Stochastic Neighbor Embedding (t-SNE).
+Nonlinearity helps "cluster" very similar vectors together without imposing a
+global geometry on the embedded space (e.g. a rigid rotation + compression in PCA).
+UMAP uses graphs as intermediate data structures, hence it can be used as a
+graph layout algorithm as well.
 
 </p>
 <p>
 
-However, UMAP uses a graph with distances associated to the edges as a key
-intermediate representation of the high-dimensional space, so it is also useful as
-a general graph layouting algorithm, hence its inclusion in igraph.
+The general UMAP workflow is to start from vectors, compute a sparse distance
+graph that only contains edges between simiar points (e.g. a k-nearest neighbors
+graph), and then convert these distances into exponentially decaying weights
+between 0 and 1 that are larger for points that are closest neighbors in the
+distance graph. If a graph without any distances associated to the edges is used,
+all weights will be set to 1.
 
 </p>
 <p>
 
-Importantly, the edge-associated distances are derived from a similarity metric
-between the high-dimensional vectors, often Pearson correlation:
-
-</p>
-<p>
-
-<code class="literal">corr(v1, v2) = v1 . v2 / [ sqrt(v1 . v1) * sqrt(v2 . v2) ]</code>,
-
-</p>
-<p>
-
-where <code class="literal">.</code> denotes the dot product.
-In this case, the associated distance is usually defined as:
-
-</p>
-<p>
-
-<code class="literal">d(v1, v2) = 1 - corr(v1, v2)</code>
-
-</p>
-<p>
-
-This implementation can also work with unweighted similarity graphs, in which case
-the distance parameter should be a null pointer and all edges beget a similarity
-score of 1 (a distance of 0).
-
-</p>
-<p>
-
-While all similarity graphs are theoretically embeddable, UMAP's stochastic gradient
-descent approach really shines when the graph is sparse. In practice, most people
-feed a k-nearest neighbor (either computed exactly or approximated) similarity graph
-with some additional cutoff to exclude "quasi-neighbors" that lie beyond a certain
-distance (e.g. correlation less than 0.2).
-
-</p>
-<p>
-
-Therefore, if you are trying to use this function to embed high-dimensional vectors,
-the steps are:
-
-</p>
-<p>
-
-1. Compute a sparse similarity graph (either exact or approximate) from your vectors,
-   weighted or unweighted. If unsure, compute a k-nearest neighbors graph.
-
-</p>
-<p>
-
-2. If you keep the weights, convert them into distances or store them as a "weight"
-   edge attribute and use a null pointer for the distances. If using similarity
-   weights instead of distances, make sure they do not exceed 1.
-
-</p>
-<p>
-
-3. Feed the graph (and distances, if you have them) into this function.
-
-</p>
-<p>
-
-Note: Step 1 above involves deciding if two high-dimensional vectors "look similar"
-      which, because of the curse of dimensionality, is in many cases a highly
-      subjective and potentially controversial operation: thread with care and at
-      your own risk. Two high-dimensional vectors might look similar or extremely
-      different depending on the point of view/angle, and there are a lot of
-      viewpoints when the dimensionality ramps up.
+If you are trying to use this function to embed high-dimensional vectors, you should
+first compute a k-nearest neighbors graph between your vectors and compute the
+associated distances, and then call this function on that graph. If you already
+have a distance graph, or you have a graph with no distances, you can call this
+function directly. If you already have a graph with meaningful weights
+associated to each edge, you can also call this function, but set the argument
+distances_are_weights to true. To compute weights from distances
+without computing the layout, see <a class="link" href="igraph-Layout.html#igraph_layout_umap_compute_weights" title="2.6. igraph_layout_umap_compute_weights — Compute weights for a UMAP layout starting from distances."><code class="function">igraph_layout_umap_compute_weights()</code></a>.
 
 </p>
 <p>
@@ -2828,7 +2773,9 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  Pointer to the similarity graph to find a layout for (i.e. to embed).
+  Pointer to the graph to find a layout for (i.e. to embed). This is
+  typically a sparse graph with only edges for the shortest distances stored, e.g.
+  a k-nearest neighbors graph.
 </p></td>
 </tr>
 <tr>
@@ -2847,34 +2794,160 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <tr>
 <td><p><span class="term"><em class="parameter"><code>distances</code></em>:</span></p></td>
 <td><p>
-  Pointer to a vector of edge lengths. Similarity graphs for
-  UMAP are often originally meant in terms of similarity weights (e.g. correlation between
-  high-dimensional vectors) and converted into distances by crude <code class="literal">dist = 1 - corr</code>.
-  That is fine here too. If this argument <code class="constant">NULL</code>, all lengths are assumed to be the same.
+  Pointer to a vector of distances associated with the graph edges.
+  If this argument is <code class="constant">NULL</code>, all weights will be set to 1.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_dist</code></em>:</span></p></td>
 <td><p>
-  A fudge parameter that decides how close two unconnected vertices can be in the
-  embedding before feeling a repulsive force. It should be positive. Typically, 0.01 is a good
-  number.
+  A fudge parameter that decides how close two unconnected vertices
+  can be in the embedding before feeling a repulsive force. It must not be
+  negative. Typical values are between 0 and 1.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>epochs</code></em>:</span></p></td>
 <td><p>
-  Number of iterations of the main stochastic gradient descent loop on the
-  cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
-  (less than 50000 edges), 50 epochs are used for larger graphs.
+  Number of iterations of the main stochastic gradient descent loop on
+  the cross-entropy. Typical values are between 30 and 500.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>sampling_prob</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>distances_are_weights</code></em>:</span></p></td>
 <td><p>
-  The fraction of vertices moved at each iteration of the stochastic gradient
-  descent (epoch). At fixed number of epochs, a higher fraction makes the algorithm slower.
-  Vice versa, a too low number will converge very slowly, possibly too slowly.</p></td>
+  Whether to use precomputed weights. If
+  true, the "distances" vector contains precomputed weights. If false (the
+  typical use case), this function will compute weights from distances and
+  then use them to compute the layout.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_umap_compute_weights"></a>2.6. <code class="function">igraph_layout_umap_compute_weights</code> —  Compute weights for a UMAP layout starting from distances.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_layout_umap_compute_weights(
+        const igraph_t *graph,
+        const igraph_vector_t *distances,
+        igraph_vector_t *weights);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>UMAP is used to embed high-dimensional vectors in a low-dimensional space
+(most commonly 2D). It uses a distance graph as an intermediate data structure,
+making it also a useful graph layout algorithm. See <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a>
+for more information.
+
+</p>
+<p>
+
+An early step in UMAP is to compute exponentially decaying "weights" from the
+distance graph. Connectivities can also be viewed as edge weights that quantify
+similarity between two vertices. This function computes weights from the
+distance graph. To compute the layout from precomputed weights, call
+<a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a> with the <em class="parameter"><code>distances_are_weights</code></em> argument set to <code class="constant">true</code>.
+
+</p>
+<p>
+
+While the distance graph can be directed (e.g. in a k-nearest neighbors, it is
+clear *who* you are a neighbor of), the weights are usually undirected. Whenever two
+vertices are doubly connected in the distance graph, the resulting weight W is set as:
+
+W = W1 + W2 - W1 * W2
+
+Because UMAP weights are interpreted as probabilities, this is just the probability
+that either edge is present, without double counting. It is called "fuzzy union" in
+the original UMAP implementation and is the default. One could also require that both
+edges are there, i.e. W = W1 * W2: this would represent the fuzzy intersection and is
+not implemented in igraph. As a consequence of this symmetrization, information is lost,
+i.e. one needs fewer weights than one had distances. To keep things efficient, here
+we set the weight for one of the two edges as above and the weight for its opposite edge
+as 0, so that it will be skipped in the UMAP gradient descent later on.
+
+</p>
+<p>
+
+Technical note: For each vertex, this function computes its scale factor (sigma),
+its connectivity correction (rho), and finally the weights themselves.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to the distance graph. This can be directed (e.g. connecting
+  each vertex to its neighbors in a k-nearest neighbor) or undirected, but must
+  have no loops nor parallel edges. The only exception is: if the graph is directed,
+  having pairs of edges with opposite direction is accepted.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>distances</code></em>:</span></p></td>
+<td><p>
+  Pointer to the vector with the vertex-to-vertex distance associated with
+  each edge. This argument can be NULL, in which case all edges are assumed to have the
+  same distance.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector where the result will be stored. If the
+  input graph is directed, the weights represent a symmetrized version which contains
+  less information. Therefore, whenever two edges between the same vertices and opposite
+  direction are present in the input graph, only one of the weights is set and the other
+  is fixed to zero. That format is accepted by <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a>, which skips
+  all zero-weight edges from the layout optimization.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -3461,7 +3534,7 @@ igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
                                      const igraph_vector_t *distances,
                                      igraph_real_t min_dist,
                                      igraph_integer_t epochs,
-                                     igraph_real_t sampling_prob);
+                                     igraph_bool_t distances_are_weights);
 </pre></div>
 <p>
 </p>
@@ -3476,8 +3549,11 @@ igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
 We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
-<p>This is the 3D version of the UMAP algorithm
-(see <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection for Dimension Reduction."><code class="function">igraph_layout_umap()</code></a> for the 2D version).
+<p></p>
+<p>
+
+This is the 3D version of the UMAP algorithm
+(see <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a> for the 2D version).
 
 </p>
 <p><b>Arguments: </b>
@@ -3491,7 +3567,11 @@ major version of igraph. Use it at your own risk.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  Pointer to the similarity graph to find a layout for (i.e. to embed).
+  Pointer to the graph to find a layout for (i.e. to embed). This is
+  typically a directed, sparse graph with only edges for the shortest distances
+  stored, e.g. a k-nearest neighbors graph with the edges going from each focal
+  vertex to its neighbors. However, it can also be an undirected graph. If the
+  <em class="parameter"><code>distances_are_weights</code></em> is <code class="constant">true</code>, this is treated as an undirected graph.
 </p></td>
 </tr>
 <tr>
@@ -3510,40 +3590,38 @@ major version of igraph. Use it at your own risk.</p>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>distances</code></em>:</span></p></td>
 <td><p>
-  Pointer to a vector of edge lengths. Similarity graphs for
-  UMAP are often originally meant in terms of similarity weights (e.g. correlation between
-  high-dimensional vectors) and converted into distances by crude <code class="literal">dist = 1 - corr</code>.
-  That is fine here too. If this argument is <code class="constant">NULL</code>, all lengths are assumed to be the same.
+  Pointer to a vector of distances associated with the graph edges.
+  If this argument is <code class="constant">NULL</code>, all edges are assumed to have the same distance.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>min_dist</code></em>:</span></p></td>
 <td><p>
-  A fudge parameter that decides how close two unconnected vertices can be in the
-  embedding before feeling a repulsive force. It should be positive. Typically, 0.01 is a good
-  number.
+  A fudge parameter that decides how close two unconnected vertices
+  can be in the embedding before feeling a repulsive force. It must not be
+  negative. Typical values are between 0 and 1.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>epochs</code></em>:</span></p></td>
 <td><p>
-  Number of iterations of the main stochastic gradient descent loop on the
-  cross-entropy. Usually, 500 epochs can be used if the graph is the graph is small
-  (less than 50000 edges), 50 epochs are used for larger graphs.
+  Number of iterations of the main stochastic gradient descent loop on
+  the cross-entropy. Typical values are between 30 and 500.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>sampling_prob</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>distances_are_weights</code></em>:</span></p></td>
 <td><p>
-  The fraction of vertices moved at each iteration of the stochastic gradient
-  descent (epoch). At fixed number of epochs, a higher fraction makes the algorithm slower.
-  Vice versa, a too low number will converge very slowly, possibly too slowly.</p></td>
+  Whether to use precomputed weights. If <code class="constant">false</code> (the
+  typical use case), this function will compute weights from distances and
+  then use them to compute the layout.  If <code class="constant">true</code>, the "distances" vector contains
+  precomputed weights, including possibly some weights equal to zero that are
+  inconsequential for the layout optimization.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
-
 </p>
 <p><b>Returns: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
