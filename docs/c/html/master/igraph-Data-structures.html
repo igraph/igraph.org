@@ -23279,7 +23279,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <span class="emphasis"><em>     * whether the two are isomorphic (they should be) */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.12. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from an incidence list.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from a given graph.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.7. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?">igraph_isomorphic</a></strong></span>(&amp;g, &amp;g2, &amp;iso);
     <span class="strong"><strong>if</strong></span> (!iso) {
@@ -23301,7 +23301,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="titlepage"><div><div><h3 class="title">
 <a name="adjacent-vertices"></a>10.1. Adjacent vertices</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init">10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init">10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from a given graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_empty">10.1.2. <code class="function">igraph_adjlist_init_empty</code> —  Initializes an empty adjacency list.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_init_complementer">10.1.3. <code class="function">igraph_adjlist_init_complementer</code> —  Adjacency lists for the complementer graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_adjlist_destroy">10.1.4. <code class="function">igraph_adjlist_destroy</code> —  Deallocates an adjacency list.</a></span></dt>
@@ -23313,12 +23313,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_adjlist_init"></a>10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from an incidence list.</h4></div></div></div>
+<a name="igraph_adjlist_init"></a>10.1.1. <code class="function">igraph_adjlist_init</code> —  Constructs an adjacency list of vertices from a given graph.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.11.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_adjlist_init_from_inclist(
-    const igraph_t *graph, igraph_adjlist_t *al, const igraph_inclist_t *il);
+igraph_error_t igraph_adjlist_init(const igraph_t *graph, igraph_adjlist_t *al,
+                        igraph_neimode_t mode, igraph_loops_t loops,
+                        igraph_multiple_t multiple);
 </pre></div>
 <p>
 </p>
@@ -23326,20 +23327,22 @@ igraph_error_t igraph_adjlist_init_from_inclist(
 
 
 
-In some algorithms it is useful to have an adjacency list <span class="emphasis"><em>and</em></span> an incidence
-list representation of the same graph, and in many cases it is the most useful
-if they are consistent with each other, i.e. if can be guaranteed that the
-vertex ID in the i-th entry of the adjacency list of vertex v is the
-<span class="emphasis"><em>other</em></span> endpoint of the edge in the i-th entry of the incidence list of the
-same vertex. This function creates such an adjacency list from the corresponding
-incidence list by looking up the endpoints of each edge in the incidence
-list and constructing the corresponding adjacenecy vectors.
+Creates a list of vectors containing the neighbors of all vertices
+in a graph. The adjacency list is independent of the graph after
+creation, e.g. the graph can be destroyed and modified, the
+adjacency list contains the state of the graph at the time of its
+initialization.
 
 </p>
 <p>
-The adjacency list is independent of the graph or the incidence list after
-creation; in other words, modifications that are made to the graph or the
-incidence list are not reflected in the adjacency list.
+This function returns each neighbor list in sorted order, just
+like <a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex."><code class="function">igraph_neighbors()</code></a>.
+
+</p>
+<p>
+As of igraph 0.10, there is a small performance cost to setting <em class="parameter"><code>loops</code></em>
+to a different value than <code class="constant">IGRAPH_LOOPS_TWICE</code> or setting <em class="parameter"><code>multiple</code></em> to a
+different value from <code class="constant">IGRAPH_MULTIPLE</code>.
 
 </p>
 <p><b>Arguments: </b>
@@ -23363,10 +23366,35 @@ incidence list are not reflected in the adjacency list.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>il</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <span class="emphasis"><em>initialized</em></span> <span class="type">igraph_inclist_t</span> object
-       that will be converted into an adjacency list.
+  Constant specifying whether to include only outgoing
+  (<code class="constant">IGRAPH_OUT</code>), only incoming (<code class="constant">IGRAPH_IN</code>),
+  or both (<code class="constant">IGRAPH_ALL</code>) types of neighbors
+  in the adjacency list. It is ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat loop edges. <code class="constant">IGRAPH_NO_LOOPS</code>
+  removes loop edges from the adjacency list. <code class="constant">IGRAPH_LOOPS_ONCE</code>
+  makes each loop edge appear only once in the adjacency list of the
+  corresponding vertex. <code class="constant">IGRAPH_LOOPS_TWICE</code> makes loop edges
+  appear <span class="emphasis"><em>twice</em></span> in the adjacency list of the corresponding vertex,
+  but only if the graph is undirected or <em class="parameter"><code>mode</code></em> is set to
+  <code class="constant">IGRAPH_ALL</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat multiple (parallel) edges.
+  <code class="constant">IGRAPH_NO_MULTIPLE</code> collapses parallel edges into a single one;
+  <code class="constant">IGRAPH_MULTIPLE</code> keeps the multiplicities of parallel edges
+  so the same vertex will appear as many times in the adjacency list of
+  another vertex as the number of parallel edges going between the two
+  vertices.
 </p></td>
 </tr>
 </tbody>
@@ -23383,6 +23411,23 @@ incidence list are not reflected in the adjacency list.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex."><code class="function">igraph_neighbors()</code></a> for getting the neighbor lists of individual
+vertices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -23410,6 +23455,7 @@ igraph_error_t igraph_adjlist_init_empty(igraph_adjlist_t *al, igraph_integer_t 
 Creates a list of vectors, one for each vertex. This is useful when you
 are <span class="emphasis"><em>constructing</em></span> a graph using an adjacency list representation as
 it does not require your graph to exist yet.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -23475,6 +23521,11 @@ This function creates adjacency lists for the complementer
 of the input graph. In the complementer graph all edges are present
 which are not present in the original graph. Multiple edges in the
 input graph are ignored.
+
+</p>
+<p>
+This function returns each neighbor list in sorted order.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -23500,8 +23551,8 @@ input graph are ignored.
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
   Constant specifying whether outgoing
-  (<code class="literal">IGRAPH_OUT</code>), incoming (<code class="literal">IGRAPH_IN</code>),
-  or both (<code class="literal">IGRAPH_ALL</code>) types of neighbors (in the
+  (<code class="constant">IGRAPH_OUT</code>), incoming (<code class="constant">IGRAPH_IN</code>),
+  or both (<code class="constant">IGRAPH_ALL</code>) types of neighbors (in the
   complementer graph) to include in the adjacency list. It is
   ignored for undirected networks.
 </p></td>
@@ -23526,6 +23577,22 @@ input graph are ignored.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from a given graph."><code class="function">igraph_adjlist_init()</code></a>, <a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph."><code class="function">igraph_complementer()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -24106,7 +24173,7 @@ the total number of elements in the incidence list.
 <div class="titlepage"><div><div><h3 class="title">
 <a name="lazy-adjacency-list"></a>10.3. Lazy adjacency list for vertices</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_init">10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_init">10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initializes a lazy adjacency list.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_destroy">10.3.2. <code class="function">igraph_lazy_adjlist_destroy</code> —  Deallocate a lazt adjacency list.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_get">10.3.3. <code class="function">igraph_lazy_adjlist_get</code> —  Query neighbor vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_lazy_adjlist_has">10.3.4. <code class="function">igraph_lazy_adjlist_has</code> —  Are adjacenct vertices already stored in a lazy adjacency list?</a></span></dt>
@@ -24115,7 +24182,7 @@ the total number of elements in the incidence list.
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_lazy_adjlist_init"></a>10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initialized a lazy adjacency list.</h4></div></div></div>
+<a name="igraph_lazy_adjlist_init"></a>10.3.1. <code class="function">igraph_lazy_adjlist_init</code> —  Initializes a lazy adjacency list.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.11.8.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -24133,7 +24200,9 @@ igraph_error_t igraph_lazy_adjlist_init(const igraph_t *graph,
 
 Create a lazy adjacency list for vertices. This function only
 allocates some memory for storing the vectors of an adjacency list,
-but the neighbor vertices are not queried, only at the <a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="10.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> calls.
+but the neighbor vertices are not queried, only at the
+<a class="link" href="igraph-Data-structures.html#igraph_lazy_adjlist_get" title="10.3.3. igraph_lazy_adjlist_get — Query neighbor vertices."><code class="function">igraph_lazy_adjlist_get()</code></a> calls. Neighbor lists will be returned
+in sorted order.
 
 </p>
 <p>
@@ -24165,19 +24234,33 @@ different value from <code class="constant">IGRAPH_MULTIPLE</code>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
-  Constant, it gives whether incoming edges
-  (<code class="literal">IGRAPH_IN</code>), outgoing edges
-  (<code class="literal">IGRPAH_OUT</code>) or both types of edges
-  (<code class="literal">IGRAPH_ALL</code>) are considered. It is ignored for
-  undirected graphs.
+  Constant specifying whether to include only outgoing
+  (<code class="constant">IGRAPH_OUT</code>), only incoming (<code class="constant">IGRAPH_IN</code>),
+  or both (<code class="constant">IGRAPH_ALL</code>) types of neighbors
+  in the adjacency list. It is ignored for undirected graphs.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>simplify</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Constant, it gives whether to simplify the vectors
-  in the adjacency list (<code class="literal">IGRAPH_SIMPLIFY</code>) or not
-  (<code class="literal">IGRAPH_DONT_SIMPLIFY</code>).
+  Specifies how to treat loop edges. <code class="constant">IGRAPH_NO_LOOPS</code>
+  removes loop edges from the adjacency list. <code class="constant">IGRAPH_LOOPS_ONCE</code>
+  makes each loop edge appear only once in the adjacency list of the
+  corresponding vertex. <code class="constant">IGRAPH_LOOPS_TWICE</code> makes loop edges
+  appear <span class="emphasis"><em>twice</em></span> in the adjacency list of the corresponding vertex,
+  but only if the graph is undirected or <em class="parameter"><code>mode</code></em> is set to
+  <code class="constant">IGRAPH_ALL</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat multiple (parallel) edges.
+  <code class="constant">IGRAPH_NO_MULTIPLE</code> collapses parallel edges into a single one;
+  <code class="constant">IGRAPH_MULTIPLE</code> keeps the multiplicities of parallel edges
+  so the same vertex will appear as many times in the adjacency list of
+  another vertex as the number of parallel edges going between the two
+  vertices.
 </p></td>
 </tr>
 </tbody>
@@ -24194,6 +24277,23 @@ different value from <code class="constant">IGRAPH_MULTIPLE</code>.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex."><code class="function">igraph_neighbors()</code></a> for getting the neighbor lists of individual
+vertices.
   </p></td>
 </tr></tbody>
 </table></div>
