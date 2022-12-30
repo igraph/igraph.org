@@ -227,7 +227,7 @@ igraph_rng_t *igraph_rng_default(void);
 <a class="indexterm" name="id-1.9.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-void igraph_rng_set_default(igraph_rng_t *rng);
+igraph_rng_t *igraph_rng_set_default(igraph_rng_t *rng);
 </pre></div>
 <p>
 </p>
@@ -235,15 +235,11 @@ void igraph_rng_set_default(igraph_rng_t *rng);
 
 
 
-This function <span class="emphasis"><em>copies</em></span> the internal structure of the given <span class="type">igraph_rng_t</span>
-object to igraph's internal default RNG structure. The structure itself
-contains two pointers only, one to the "methods" of the RNG and one to the
-memory buffer holding the internal state of the RNG. This means that if you
-keep on generating random numbers from the RNG after setting it as the
-default, it will affect the state of the default RNG as well because the two
-share the same state pointer. However, do <span class="emphasis"><em>not</em></span> expect
-<a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator."><code class="function">igraph_rng_default()</code></a> to return the same pointer as the one you passed
-in here - the state is shared, but the entire structure is not.
+This function updates the default RNG used by igraph to be the one
+pointed to by <em class="parameter"><code>rng</code></em>, and returns a pointer to the previous default
+RNG. Future calls to <a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator."><code class="function">igraph_rng_default()</code></a> will return the same
+pointer as <em class="parameter"><code>rng</code></em>. The RNG pointed to by <em class="parameter"><code>rng</code></em> must not be destroyed
+for as long as it is used as the default.
 
 </p>
 <p><b>Arguments: </b>
@@ -259,11 +255,26 @@ in here - the state is shared, but the entire structure is not.
   The random number generator to use as default from now
    on. Calling <a class="link" href="igraph-Random.html#igraph_rng_destroy" title="3.2. igraph_rng_destroy — Deallocates memory associated with a random number generator."><code class="function">igraph_rng_destroy()</code></a> on it, while it is still
    being used as the default will result in crashes and/or
-   unpredictable results.</p></td>
+   unpredictable results.
+</p></td>
 </tr></tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Pointer the previous default RNG.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 Time complexity: O(1).
  
