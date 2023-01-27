@@ -165,17 +165,16 @@ igraph_error_t igraph_vertex_coloring_greedy(const igraph_t *graph, igraph_vecto
 
 
 
-</p>
-<p>
 This function assigns a "color"—represented as a non-negative integer—to
 each vertex of the graph in such a way that neighboring vertices never have
 the same color. The obtained coloring is not necessarily minimal.
 
 </p>
 <p>
-Vertices are colored one by one, choosing the smallest color index that
-differs from that of already colored neighbors.
-Colors are represented with non-negative integers 0, 1, 2, ...
+Vertices are colored greedily, one by one, always choosing the smallest color
+index that differs from that of already colored neighbors. Vertices are picked
+in an order determined by the speified heuristic.
+Colors are represented by non-negative integers 0, 1, 2, ...
 
 </p>
 <p><b>Arguments: </b>
@@ -201,7 +200,8 @@ Colors are represented with non-negative integers 0, 1, 2, ...
 <tr>
 <td><p><span class="term"><em class="parameter"><code>heuristic</code></em>:</span></p></td>
 <td><p>
-  The vertex ordering heuristic to use during greedy coloring. See <a class="link" href="igraph-Coloring.html#igraph_coloring_greedy_t" title="2. igraph_coloring_greedy_t — Ordering heuristics for greedy graph coloring."><code class="function">igraph_coloring_greedy_t</code></a></p></td>
+  The vertex ordering heuristic to use during greedy coloring.
+   See <a class="link" href="igraph-Coloring.html#igraph_coloring_greedy_t" title="2. igraph_coloring_greedy_t — Ordering heuristics for greedy graph coloring."><code class="function">igraph_coloring_greedy_t</code></a> for more information.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -227,7 +227,7 @@ Colors are represented with non-negative integers 0, 1, 2, ...
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.19.2.10.1"></a><p class="title"><b>Example 18.1.  File <code class="code">examples/simple/igraph_coloring.c</code></b></p>
+<a name="id-1.19.2.9.1"></a><p class="title"><b>Example 18.1.  File <code class="code">examples/simple/igraph_coloring.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -283,7 +283,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <pre class="programlisting">
 typedef enum {
-    IGRAPH_COLORING_GREEDY_COLORED_NEIGHBORS = 0
+    IGRAPH_COLORING_GREEDY_COLORED_NEIGHBORS = 0,
+    IGRAPH_COLORING_GREEDY_DSATUR = 1
 } igraph_coloring_greedy_t;
 </pre>
 <p>
@@ -301,14 +302,25 @@ Ordering heuristics for <a class="link" href="igraph-Coloring.html#igraph_vertex
 <col align="left" valign="top">
 <col>
 </colgroup>
-<tbody><tr>
+<tbody>
+<tr>
 <td><p><span class="term"><code class="constant">IGRAPH_COLORING_GREEDY_COLORED_NEIGHBORS</code>:</span></p></td>
 <td><p>
-  Choose vertex with largest number of already colored neighbors.</p></td>
-</tr></tbody>
+  Choose the vertex with largest number of already colored neighbors.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_COLORING_GREEDY_DSATUR</code>:</span></p></td>
+<td><p>
+  Choose the vertex with largest number of unique colors in its neighborhood, i.e. its
+   "saturation degree". When multiple vertices have the same saturation degree, choose
+   the one with the most not yet colored neighbors. This heuristic is known as "DSatur",
+   and was introduced in Daniel Brélaz: New methods to color the vertices of a graph,
+   Commun. ACM 22, 4 (1979), 251–256. <a class="ulink" href="https://doi.org/10.1145/359094.359101" target="_top">https://doi.org/10.1145/359094.359101</a></p></td>
+</tr>
+</tbody>
 </table></div>
 <p>
-
 
  
 </p>
@@ -406,7 +418,7 @@ Time complexity: worst case exponenital, often faster in practice.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	  &copy; 2003 &ndash; 2022 The igraph core team.
+	  &copy; 2003 &ndash; 2023 The igraph core team.
             &bull; Code licensed under 
             <a href="http://www.gnu.org/licenses/gpl-2.0.html">
             GNU GPL 2</a> or later, documentation under 

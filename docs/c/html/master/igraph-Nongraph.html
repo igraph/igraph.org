@@ -233,7 +233,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     int major, minor, subminor;
 
     <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_version" title="1.1. igraph_version — The version of the igraph C library.">igraph_version</a></strong></span>(&amp;string, &amp;major, &amp;minor, &amp;subminor);
-    <span class="strong"><strong>sprintf</strong></span>(tmp, "%i.%i.%i", major, minor, subminor);
+    <span class="strong"><strong>snprintf</strong></span>(tmp, <span class="strong"><strong>sizeof</strong></span>(tmp), "%i.%i.%i", major, minor, subminor);
 
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>strncmp</strong></span>(string, tmp, <span class="strong"><strong>strlen</strong></span>(tmp))) {
         <span class="strong"><strong>return</strong></span> 1;
@@ -437,162 +437,17 @@ running time is O(length).
 <a name="id-1.33.4.2.10.1"></a><p class="title"><b>Example 32.2.  File <code class="code">examples/simple/igraph_random_sample.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
-
-<span class="strong"><strong>#define</strong></span> <span class="strong"><strong>R_INTEGER</strong></span>(a,b) (<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval.">igraph_rng_get_integer</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), (a), (b)))
-
-<span class="emphasis"><em>/* test parameters */</em></span>
-<span class="strong"><strong>typedef</strong></span> <span class="strong"><strong>struct</strong></span> {
-    igraph_integer_t low;
-    igraph_integer_t high;
-    igraph_integer_t length;
-    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> retval;
-} sampling_test_t;
-
-<span class="emphasis"><em>/* Get a few random samples and test their properties. */</em></span>
-int <span class="strong"><strong>random_sample_test</strong></span>(void) {
-    <span class="strong"><strong>const</strong></span> igraph_integer_t min = -1000;
-    <span class="strong"><strong>const</strong></span> igraph_integer_t max = 1000;
-    igraph_integer_t low;       <span class="emphasis"><em>/* lower limit */</em></span>
-    igraph_integer_t high;      <span class="emphasis"><em>/* upper limit */</em></span>
-    igraph_integer_t length;    <span class="emphasis"><em>/* sample size */</em></span>
-    igraph_integer_t poolsize;  <span class="emphasis"><em>/* size of candidate pool */</em></span>
-    igraph_real_t sP;           <span class="emphasis"><em>/* population total sum */</em></span>
-    igraph_real_t ss;           <span class="emphasis"><em>/* sample total sum */</em></span>
-    igraph_vector_int_t V;
-    igraph_integer_t i;
-
-    <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 57); <span class="emphasis"><em>/* make tests deterministic */</em></span>
-
-    <span class="emphasis"><em>/* The generated sequence of numbers must be in increasing order. */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, <span class="emphasis"><em>/*size*/</em></span> 0);
-    <span class="strong"><strong>do</strong></span> {
-        high = (igraph_integer_t)<span class="strong"><strong>R_INTEGER</strong></span>(min, max);
-    } <span class="strong"><strong>while</strong></span> (high == min);
-    <span class="strong"><strong>do</strong></span> {
-        low = (igraph_integer_t)<span class="strong"><strong>R_INTEGER</strong></span>(min, max);
-    } <span class="strong"><strong>while</strong></span> (low &gt;= high);
-    poolsize = (igraph_integer_t)<span class="strong"><strong>fabs</strong></span>((double)high - (double)low);
-    <span class="strong"><strong>do</strong></span> {
-        length = (igraph_integer_t)<span class="strong"><strong>R_INTEGER</strong></span>(1, max);
-    } <span class="strong"><strong>while</strong></span> (length &gt; poolsize);
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, low, high, length);
-    <span class="strong"><strong>if</strong></span> (length != <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V)) {
-        <span class="strong"><strong>printf</strong></span>("Requested vector length and resulting length mismatch.\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; length - 1; i++) {
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i] &gt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i + 1]) {
-            <span class="strong"><strong>printf</strong></span>("Sample not in increasing order.\n");
-            <span class="strong"><strong>return</strong></span> 1;
-        }
-    }
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
-
-    <span class="emphasis"><em>/* Let P be a candidate pool of positive integers with total sum s_P. */</em></span>
-    <span class="emphasis"><em>/* Let S be a random sample from P and having total sum s_S. Then we */</em></span>
-    <span class="emphasis"><em>/* have the bound s_s &lt;= s_P. */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, <span class="emphasis"><em>/*size*/</em></span> 0);
-    low = 1;
-    <span class="strong"><strong>do</strong></span> {
-        high = (igraph_integer_t)<span class="strong"><strong>R_INTEGER</strong></span>(low, max);
-    } <span class="strong"><strong>while</strong></span> (high == low);
-    poolsize = (igraph_integer_t)<span class="strong"><strong>fabs</strong></span>((double)high - (double)low);
-    <span class="strong"><strong>do</strong></span> {
-        length = (igraph_integer_t)<span class="strong"><strong>R_INTEGER</strong></span>(low, max);
-    } <span class="strong"><strong>while</strong></span> (length &gt; poolsize);
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, low, high, length);
-    <span class="emphasis"><em>/* Use Gauss' formula to sum all consecutive positive integers from 1 */</em></span>
-    <span class="emphasis"><em>/* up to and including an upper limit. In LaTeX, Gauss' formula is */</em></span>
-    <span class="emphasis"><em>/* \sum_{i=1}^n i = \frac{n(n+1)}{2} where n is the upper limit. */</em></span>
-    sP = (high * (high + 1)) / 2;
-    ss = <span class="strong"><strong>igraph_vector_int_sum</strong></span>(&amp;V);
-    <span class="strong"><strong>if</strong></span> (ss &gt; sP) {
-        <span class="strong"><strong>printf</strong></span>("Sum of sampled sequence exceeds sum of whole population.\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>equal_test</strong></span>(void) {
-    igraph_vector_int_t V;
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 0, 0, 1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 1) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[0] != 0) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 10, 10, 1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 1) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[0] != 10) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 2, 12, 11);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 11) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
-    <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; 11; i++)
-        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[i] != i + 2) {
-            <span class="strong"><strong>return</strong></span> 6;
-        }
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
-int <span class="strong"><strong>rare_test</strong></span>(void) {
-    igraph_vector_int_t V;
-
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 0, 0, 1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 1) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[0] != 0) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 10, 10, 1);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;V) != 1) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(V)[0] != 10) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
-    <span class="strong"><strong>return</strong></span> 0;
-}
 
 int <span class="strong"><strong>main</strong></span>(void) {
-    int ret;
+    igraph_vector_int_t V;
 
-    ret = <span class="strong"><strong>random_sample_test</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-    ret = <span class="strong"><strong>equal_test</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-    ret = <span class="strong"><strong>rare_test</strong></span>();
-    <span class="strong"><strong>if</strong></span> (ret) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, 0);
 
-    <span class="strong"><strong>return</strong></span> 0;
+    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 0, 100, 5);
+
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;V);
+
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
 }
 </pre>
 <p></p>
@@ -1596,7 +1451,7 @@ to each other with a given level of tolerance on the relative error.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	  &copy; 2003 &ndash; 2022 The igraph core team.
+	  &copy; 2003 &ndash; 2023 The igraph core team.
             &bull; Code licensed under 
             <a href="http://www.gnu.org/licenses/gpl-2.0.html">
             GNU GPL 2</a> or later, documentation under 

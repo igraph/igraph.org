@@ -151,17 +151,18 @@
 <dt><span class="section"><a href="igraph-Attributes.html#attribute-combinations">2. Handling attribute combination lists</a></span></dt>
 <dt><span class="section"><a href="igraph-Attributes.html#accessing-attributes-from-c">3. Accessing attributes from C</a></span></dt>
 </dl></div>
-<p>Attributes are numbers or strings (or basically any kind
-of data) associated with the vertices or edges of a graph, or
-with the graph itself. E.g. you may label vertices with symbolic names
-or attach numeric weights to the edges of a graph. </p>
+<p>Attributes are numbers, boolean values or strings associated with
+the vertices or edges of a graph, or with the graph itself. E.g. you may
+label vertices with symbolic names or attach numeric weights to the edges
+of a graph. In addition to these three basic types, a custom object
+type is supported as well.</p>
 <p>igraph attributes are designed to be flexible and extensible.
 In igraph attributes are implemented via an interface abstraction:
 any type implementing the functions in the interface, can be used
 for storing vertex, edge and graph attributes. This means that
 different attribute implementations can be used together with
 igraph. This is reasonable: if igraph is used from Python attributes can be
-of any Python type, from GNU R all R types are allowed. There is an
+of any Python type, from R all R types are allowed. There is also an
 experimental attribute implementation to be used when programming
 in C, but by default it is currently turned off.</p>
 <p>First we briefly look over how attribute handlers can be
@@ -182,9 +183,13 @@ interface to <span class="command"><strong>igraph</strong></span>. This is simpl
 type <a class="link" href="igraph-Attributes.html#igraph_attribute_table_t" title="1.1. igraph_attribute_table_t — Table of functions to perform operations on attributes."><code class="function">igraph_attribute_table_t</code></a>. These functions are invoked to
 notify the attribute handling code about the structural changes in
 a graph. See the documentation of this type for details.</p>
-<p>By default there is no attribute interface attached to <span class="command"><strong>igraph</strong></span>,
-to attach one, call <a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table."><code class="function">igraph_set_attribute_table</code></a> with your new
-table. </p>
+<p>By default there is no attribute interface attached to <span class="command"><strong>igraph</strong></span>.
+To attach one, call <a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table."><code class="function">igraph_set_attribute_table</code></a> with your new
+table. This is normally done on program startup, and is kept untouched
+for the program's lifetime. It must be done before any graph object
+is created, as graphs created with a given attribute handler
+cannot be manipulated while a different attribute handler is
+active.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_attribute_table_t"></a>1.1. <code class="function">igraph_attribute_table_t</code> —  Table of functions to perform operations on attributes.</h3></div></div></div>
@@ -457,6 +462,13 @@ This function attaches attribute handling code to the igraph library.
 Note that the attribute handler table is <span class="emphasis"><em>not</em></span> thread-local even if
 igraph is compiled in thread-local mode. In the vast majority of cases,
 this is not a significant restriction.
+
+</p>
+<p>
+Attribute handlers are normally attached on program startup, and are
+left active for the program's lifetime. This is because a graph object
+created with a given attribute handler must not be manipulated while
+a different attribute handler is active.
 
 </p>
 <p><b>Arguments: </b>
@@ -6522,7 +6534,7 @@ structure holding the vertex or edge attributes.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	  &copy; 2003 &ndash; 2022 The igraph core team.
+	  &copy; 2003 &ndash; 2023 The igraph core team.
             &bull; Code licensed under 
             <a href="http://www.gnu.org/licenses/gpl-2.0.html">
             GNU GPL 2</a> or later, documentation under 
