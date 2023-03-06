@@ -8869,7 +8869,7 @@ not be part of any of the biconnected components.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. It will be treated as undirected.
 </p></td>
 </tr>
 <tr>
@@ -9038,7 +9038,7 @@ igraph_error_t igraph_articulation_points(const igraph_t *graph, igraph_vector_i
 
 
 A vertex is an articulation point if its removal increases
-the number of connected components in the graph.
+the number of (weakly) connected components in the graph.
 
 </p>
 <p><b>Arguments: </b>
@@ -9052,7 +9052,7 @@ the number of connected components in the graph.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. It will be treated as undirected.
 </p></td>
 </tr>
 <tr>
@@ -11231,6 +11231,11 @@ parameter, see below) and checking whether the eigenvalue is very close
 to zero.
 
 </p>
+<p>
+When working with directed graphs, consider using hub and authority
+scores instead, see <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a>.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -11327,6 +11332,8 @@ Time complexity: depends on the input graph, usually it is O(|V|+|E|).
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank</code></a> and <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank</code></a> for
   modifications of eigenvector centrality.
+<a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> for a similar pair of measures
+intended for directed graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11335,7 +11342,7 @@ Time complexity: depends on the input graph, usually it is O(|V|+|E|).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.12.13.15.1"></a><p class="title"><b>Example 13.18.  File <code class="code">examples/simple/eigenvector_centrality.c</code></b></p>
+<a name="id-1.14.12.13.16.1"></a><p class="title"><b>Example 13.18.  File <code class="code">examples/simple/eigenvector_centrality.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> "igraph.h"
 
@@ -11400,8 +11407,15 @@ igraph_error_t igraph_hub_and_authority_scores(const igraph_t *graph,
 
 The hub and authority scores of the vertices are defined as the principal
 eigenvectors of <code class="literal">A*A^T</code> and <code class="literal">A^T*A</code>, respectively,
-where <code class="literal">A</code> is the adjacency
-matrix of the graph, <code class="literal">A^T</code> is its transposed.
+where <code class="literal">A</code> is the adjacency matrix of the graph and <code class="literal">A^T</code>
+is its transposed.
+
+</p>
+<p>
+The concept of hub and authority scores were developed for <span class="emphasis"><em>directed</em></span> graphs.
+In undirected graphs, both the hub and authority scores are equal to the
+eigenvector centrality, which can be computed using
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a>.
 
 </p>
 <p>
@@ -11513,7 +11527,8 @@ the number of vertices.
   <a class="link" href="igraph-Structural.html#igraph_hub_score" title="10.14. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="10.15. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
 for the separate calculations,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for a similar measure intended
+for undirected graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -16027,7 +16042,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_minimum_spanning_tree(
-    const igraph_t* graph, igraph_vector_int_t* res, const igraph_vector_t* weights
+    const igraph_t *graph, igraph_vector_int_t *res, const igraph_vector_t *weights
 );
 </pre></div>
 <p>
@@ -16037,11 +16052,9 @@ igraph_error_t igraph_minimum_spanning_tree(
 
 
 
-</p>
-<p>
-If the graph has more minimum spanning trees (this is always the
-case, except if it is a forest) this implementation returns only
-the same one.
+Finds a spanning tree of the graph. If the graph is not connected
+then its minimum spanning forest is returned. This is the set of the
+minimum spanning trees of each component.
 
 </p>
 <p>
@@ -16049,9 +16062,9 @@ Directed graphs are considered as undirected for this computation.
 
 </p>
 <p>
-If the graph is not connected then its minimum spanning forest is
-returned. This is the set of the minimum spanning trees of each
-component.
+This function is deterministic, i.e. it always returns the same
+spanning tree. See <a class="link" href="igraph-Structural.html#igraph_random_spanning_tree" title="15.4. igraph_random_spanning_tree — Uniformly samples the spanning trees of a graph."><code class="function">igraph_random_spanning_tree()</code></a> for the uniform
+random sampling of spanning trees of a graph.
 
 </p>
 <p><b>Arguments: </b>
@@ -16131,7 +16144,7 @@ number of edges in the graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.17.2.13.1"></a><p class="title"><b>Example 13.29.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
+<a name="id-1.14.17.2.12.1"></a><p class="title"><b>Example 13.29.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -16203,8 +16216,6 @@ igraph_error_t igraph_minimum_spanning_tree_unweighted(const igraph_t *graph,
 
 
 
-</p>
-<p>
 If the graph has more minimum spanning trees (this is always the
 case, except if it is a forest) this implementation returns only
 the same one.
@@ -16218,6 +16229,7 @@ Directed graphs are considered as undirected for this computation.
 If the graph is not connected then its minimum spanning forest is
 returned. This is the set of the minimum spanning trees of each
 component.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -16230,7 +16242,7 @@ component.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The graph object.
+  The graph object. Edge directions will be ignored.
 </p></td>
 </tr>
 <tr>
@@ -16304,18 +16316,9 @@ igraph_error_t igraph_minimum_spanning_tree_prim(const igraph_t *graph, igraph_t
 
 
 
-</p>
-<p>
-This function uses Prim's method for carrying out the computation,
-see Prim, R.C.: Shortest connection networks and some
-generalizations, Bell System Technical
-Journal, Vol. 36,
-1957, 1389--1401.
-
-</p>
-<p>
-If the graph has more than one minimum spanning tree, the current
-implementation returns always the same one.
+Finds a spanning tree or spanning forest for which the sum of edge
+weights is the smallest. This function uses Prim's method for carrying
+out the computation.
 
 </p>
 <p>
@@ -16323,9 +16326,15 @@ Directed graphs are considered as undirected for this computation.
 
 </p>
 <p>
-If the graph is not connected then its minimum spanning forest is
-returned. This is the set of the minimum spanning trees of each
-component.
+Reference:
+
+</p>
+<p>
+Prim, R.C.: Shortest connection networks and some
+generalizations, Bell System Technical
+Journal, Vol. 36,
+1957, 1389--1401.
+<a class="ulink" href="https://doi.org/10.1002/j.1538-7305.1957.tb01515.x" target="_top">https://doi.org/10.1002/j.1538-7305.1957.tb01515.x</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -16339,7 +16348,7 @@ component.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The graph object.
+  The graph object. Edge directions will be ignored.
 </p></td>
 </tr>
 <tr>
@@ -16408,7 +16417,7 @@ graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.17.4.14.1"></a><p class="title"><b>Example 13.30.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
+<a name="id-1.14.17.4.13.1"></a><p class="title"><b>Example 13.30.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 

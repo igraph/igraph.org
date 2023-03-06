@@ -8858,7 +8858,7 @@ not be part of any of the biconnected components.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. It will be treated as undirected.
 </p></td>
 </tr>
 <tr>
@@ -9027,7 +9027,7 @@ igraph_error_t igraph_articulation_points(const igraph_t *graph, igraph_vector_i
 
 
 A vertex is an articulation point if its removal increases
-the number of connected components in the graph.
+the number of (weakly) connected components in the graph.
 
 </p>
 <p><b>Arguments: </b>
@@ -9041,7 +9041,7 @@ the number of connected components in the graph.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. It will be treated as undirected.
 </p></td>
 </tr>
 <tr>
@@ -11220,6 +11220,11 @@ parameter, see below) and checking whether the eigenvalue is very close
 to zero.
 
 </p>
+<p>
+When working with directed graphs, consider using hub and authority
+scores instead, see <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a>.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -11316,6 +11321,8 @@ Time complexity: depends on the input graph, usually it is O(|V|+|E|).
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank</code></a> and <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank</code></a> for
   modifications of eigenvector centrality.
+<a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> for a similar pair of measures
+intended for directed graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11324,7 +11331,7 @@ Time complexity: depends on the input graph, usually it is O(|V|+|E|).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.12.13.15.1"></a><p class="title"><b>Example 13.18.  File <code class="code">examples/simple/eigenvector_centrality.c</code></b></p>
+<a name="id-1.14.12.13.16.1"></a><p class="title"><b>Example 13.18.  File <code class="code">examples/simple/eigenvector_centrality.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> "igraph.h"
 
@@ -11332,32 +11339,30 @@ Time complexity: depends on the input graph, usually it is O(|V|+|E|).
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
-    igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v, weights;
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vector, weights;
     igraph_real_t value;
-    <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK.">igraph_arpack_options_t</a> options;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 9);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element.">igraph_vector_fill</a></strong></span>(&amp;weights, 1);
+    <span class="emphasis"><em>/* Create a star graph, with vertex 0 at the center, and associated edge weights. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;weights, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)+1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options.">igraph_arpack_options_init</a></strong></span>(&amp;options);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices.">igraph_eigenvector_centrality</a></strong></span>(&amp;g, &amp;v, &amp;value, <span class="emphasis"><em>/*directed=*/</em></span> 0,
-                                  <span class="emphasis"><em>/*scale=*/</em></span>1, &amp;weights,
-                                  &amp;options);
+    <span class="emphasis"><em>/* Initialize the vector where the result will be stored. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vector, 0);
 
-    <span class="strong"><strong>if</strong></span> (options.info != 0) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="emphasis"><em>/* Compute eigenvector centrality. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices.">igraph_eigenvector_centrality</a></strong></span>(&amp;graph, &amp;vector, &amp;value, IGRAPH_UNDIRECTED,
+                                  <span class="emphasis"><em>/*scale=*/</em></span> true, &amp;weights, <span class="emphasis"><em>/*options=*/</em></span> NULL);
 
+    <span class="emphasis"><em>/* Print results. */</em></span>
     <span class="strong"><strong>printf</strong></span>("eigenvalue: %g\n", value);
     <span class="strong"><strong>printf</strong></span>("eigenvector:\n");
-    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;v);
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;vector);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
+    <span class="emphasis"><em>/* Free allocated data structures. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vector);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -11389,8 +11394,15 @@ igraph_error_t igraph_hub_and_authority_scores(const igraph_t *graph,
 
 The hub and authority scores of the vertices are defined as the principal
 eigenvectors of <code class="literal">A*A^T</code> and <code class="literal">A^T*A</code>, respectively,
-where <code class="literal">A</code> is the adjacency
-matrix of the graph, <code class="literal">A^T</code> is its transposed.
+where <code class="literal">A</code> is the adjacency matrix of the graph and <code class="literal">A^T</code>
+is its transposed.
+
+</p>
+<p>
+The concept of hub and authority scores were developed for <span class="emphasis"><em>directed</em></span> graphs.
+In undirected graphs, both the hub and authority scores are equal to the
+eigenvector centrality, which can be computed using
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a>.
 
 </p>
 <p>
@@ -11502,7 +11514,8 @@ the number of vertices.
   <a class="link" href="igraph-Structural.html#igraph_hub_score" title="10.14. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="10.15. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
 for the separate calculations,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for a similar measure intended
+for undirected graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -12912,71 +12925,57 @@ Time complexity: O(n), the length of the score vector.
 <a name="id-1.14.15.2.13.1"></a><p class="title"><b>Example 13.19.  File <code class="code">examples/simple/centralization.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
-    igraph_t g;
+    igraph_t graph;
     igraph_real_t cent;
-    <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK.">igraph_arpack_options_t</a> arpack_options;
 
-    <span class="emphasis"><em>/****************************/</em></span>
-    <span class="emphasis"><em>/* undirected star */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
+    <span class="emphasis"><em>/* Create an undirected star graph, which is the most centralized graph</em></span>
+<span class="emphasis"><em>     * with several common centrality scores. */</em></span>
+    <span class="strong"><strong>printf</strong></span>("undirected star graph:\n");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_ALL, IGRAPH_NO_LOOPS,
                                  &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*normalized=*/</em></span> true);
-    <span class="strong"><strong>if</strong></span> (cent != 1.0) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, degree: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 21;
-    }
+    <span class="strong"><strong>printf</strong></span>("degree centralization: %g\n", cent);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                       IGRAPH_UNDIRECTED, &amp;cent,
                                       <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                       <span class="emphasis"><em>/*normalized=*/</em></span> true);
-    <span class="strong"><strong>if</strong></span> (cent != 1.0) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, betweenness: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 22;
-    }
+    <span class="strong"><strong>printf</strong></span>("betweenness centralization: %g\n", cent);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                     IGRAPH_ALL, &amp;cent,
                                     <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                     <span class="emphasis"><em>/*normalized=*/</em></span> true);
+    <span class="strong"><strong>printf</strong></span>("closeness centralization: %g\n", cent);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, closeness: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 23;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="emphasis"><em>/* With eigenvector centrality, the most centralized structure is</em></span>
+<span class="emphasis"><em>     * a graph containing a single edge. */</em></span>
+    <span class="strong"><strong>printf</strong></span>("\ngraph with single edge:\n");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*n=*/</em></span> 10, <span class="emphasis"><em>/*directed=*/</em></span> 0,
+                 0,1, -1);
 
-    <span class="emphasis"><em>/****************************/</em></span>
-    <span class="emphasis"><em>/* single dyad */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n=*/</em></span> 10, <span class="emphasis"><em>/*directed=*/</em></span> 0,
-                 0, 1, -1);
-
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options.">igraph_arpack_options_init</a></strong></span>(&amp;arpack_options);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(
-                &amp;g,
+                &amp;graph,
                 <span class="emphasis"><em>/*vector=*/</em></span> NULL,
                 <span class="emphasis"><em>/*value=*/</em></span> NULL,
                 IGRAPH_DIRECTED,
                 <span class="emphasis"><em>/*scale=*/</em></span> true,
-                &amp;arpack_options, &amp;cent,
+                <span class="emphasis"><em>/*options=*/</em></span> NULL,
+                &amp;cent,
                 <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                 <span class="emphasis"><em>/*normalized=*/</em></span> true);
+    <span class="strong"><strong>printf</strong></span>("eigenvector centralization: %g\n", cent);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "dyad, eigenvector centrality: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 24;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -16016,7 +16015,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_minimum_spanning_tree(
-    const igraph_t* graph, igraph_vector_int_t* res, const igraph_vector_t* weights
+    const igraph_t *graph, igraph_vector_int_t *res, const igraph_vector_t *weights
 );
 </pre></div>
 <p>
@@ -16026,11 +16025,9 @@ igraph_error_t igraph_minimum_spanning_tree(
 
 
 
-</p>
-<p>
-If the graph has more minimum spanning trees (this is always the
-case, except if it is a forest) this implementation returns only
-the same one.
+Finds a spanning tree of the graph. If the graph is not connected
+then its minimum spanning forest is returned. This is the set of the
+minimum spanning trees of each component.
 
 </p>
 <p>
@@ -16038,9 +16035,9 @@ Directed graphs are considered as undirected for this computation.
 
 </p>
 <p>
-If the graph is not connected then its minimum spanning forest is
-returned. This is the set of the minimum spanning trees of each
-component.
+This function is deterministic, i.e. it always returns the same
+spanning tree. See <a class="link" href="igraph-Structural.html#igraph_random_spanning_tree" title="15.4. igraph_random_spanning_tree — Uniformly samples the spanning trees of a graph."><code class="function">igraph_random_spanning_tree()</code></a> for the uniform
+random sampling of spanning trees of a graph.
 
 </p>
 <p><b>Arguments: </b>
@@ -16120,7 +16117,7 @@ number of edges in the graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.17.2.13.1"></a><p class="title"><b>Example 13.29.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
+<a name="id-1.14.17.2.12.1"></a><p class="title"><b>Example 13.29.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -16192,8 +16189,6 @@ igraph_error_t igraph_minimum_spanning_tree_unweighted(const igraph_t *graph,
 
 
 
-</p>
-<p>
 If the graph has more minimum spanning trees (this is always the
 case, except if it is a forest) this implementation returns only
 the same one.
@@ -16207,6 +16202,7 @@ Directed graphs are considered as undirected for this computation.
 If the graph is not connected then its minimum spanning forest is
 returned. This is the set of the minimum spanning trees of each
 component.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -16219,7 +16215,7 @@ component.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The graph object.
+  The graph object. Edge directions will be ignored.
 </p></td>
 </tr>
 <tr>
@@ -16293,18 +16289,9 @@ igraph_error_t igraph_minimum_spanning_tree_prim(const igraph_t *graph, igraph_t
 
 
 
-</p>
-<p>
-This function uses Prim's method for carrying out the computation,
-see Prim, R.C.: Shortest connection networks and some
-generalizations, Bell System Technical
-Journal, Vol. 36,
-1957, 1389--1401.
-
-</p>
-<p>
-If the graph has more than one minimum spanning tree, the current
-implementation returns always the same one.
+Finds a spanning tree or spanning forest for which the sum of edge
+weights is the smallest. This function uses Prim's method for carrying
+out the computation.
 
 </p>
 <p>
@@ -16312,9 +16299,15 @@ Directed graphs are considered as undirected for this computation.
 
 </p>
 <p>
-If the graph is not connected then its minimum spanning forest is
-returned. This is the set of the minimum spanning trees of each
-component.
+Reference:
+
+</p>
+<p>
+Prim, R.C.: Shortest connection networks and some
+generalizations, Bell System Technical
+Journal, Vol. 36,
+1957, 1389--1401.
+<a class="ulink" href="https://doi.org/10.1002/j.1538-7305.1957.tb01515.x" target="_top">https://doi.org/10.1002/j.1538-7305.1957.tb01515.x</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -16328,7 +16321,7 @@ component.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The graph object.
+  The graph object. Edge directions will be ignored.
 </p></td>
 </tr>
 <tr>
@@ -16397,7 +16390,7 @@ graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.17.4.14.1"></a><p class="title"><b>Example 13.30.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
+<a name="id-1.14.17.4.13.1"></a><p class="title"><b>Example 13.30.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
