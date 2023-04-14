@@ -19,42 +19,42 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
 ## Attending network packages
 
 <a href="https://networkx.org/">
-    <img src="https://networkx.org/documentation/stable/_static/networkx_banner.svg"
+    <img src="/img/workshop/logos/networkx.svg"
          height="64"
          alt="NetworkX"
          title="NetworkX"/>
 </a>
 
 <a href="https://graph-tool.skewed.de">
-    <img src="https://graph-tool.skewed.de/img/graph-tool-logo.svg"
+    <img src="/img/workshop/logos/graph-tool.svg"
          height="64"
          alt="graph-tool"
          title="graph-tool"/>
 </a>
 
 <a href="https://statnet.org/">
-    <img src="https://statnet.org/assets/images/statnet-logo.png"
+    <img src="/img/workshop/logos/statnet.png"
          height="64"
          alt="statnet"
          title="statnet"/>
 </a>
 
 <a href="https://gephi.org">
-    <img src="https://gephi.org/images/badge/logo_about_2.png"
+    <img src="/img/workshop/logos/gephi.png"
          height="64"
          alt="Gephi"
          title="Gephi"/>
 </a>
 
 <a href="http://mrvar.fdv.uni-lj.si/pajek/">
-    <img src="http://mrvar.fdv.uni-lj.si/pajek/Pajek1.gif"
+    <img src="/img/workshop/logos/pajek.gif"
          height="64"
          alt="Pajek"
          title="Pajek"/>
 </a>
 
 <a href="https://networkit.github.io/">
-    <img src="https://networkit.github.io/_static/logo_bw_inv.png"
+    <img src="/img/workshop/logos/networkit.png"
          style="background-color: #104870;"
          height="64"
          alt="NetworKit"
@@ -64,7 +64,7 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
 
 
 <a href="https://nodexl.com/">
-    <img src="https://nodexl.com/wp-content/uploads/2017/04/nodexl-logo-long.png"
+    <img src="/img/workshop/logos/nodexl.png"
         height="64"
         alt="NodeXL"
         title="NodeXL"/>
@@ -75,7 +75,7 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
 </a>
 
 <a href="https://graphlayouts.schochastics.net/">
-    <img src="http://graphlayouts.schochastics.net/reference/figures/logo.png"
+    <img src="/img/workshop/logos/graphlayouts.png"
          height="64"
          alt="graphlayouts"
          title="graphlayouts"/>
