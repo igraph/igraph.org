@@ -74,7 +74,7 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
     SocNetV
 </a>
 
-<a href="">
+<a href="https://graphlayouts.schochastics.net/">
     <img src="http://graphlayouts.schochastics.net/reference/figures/logo.png"
          height="64"
          alt="graphlayouts"
