@@ -2,6 +2,7 @@ require "pathname"
 require "shellwords"
 
 def latest_version_in(dir)
+  return nil if not File.directory?(dir)
   Pathname(dir).children.select(&:directory?).map {
     |pn| pn.basename.to_s
   }.filter {
@@ -40,7 +41,9 @@ Jekyll::Hooks.register :site, :post_write do |site|
   }
   Dir.chdir(site.dest) do
     links.each_pair { |key, value|
-      system "ln -s #{Shellwords.escape(value)} #{Shellwords.escape(key)}"
+      if value
+        system "ln -s #{Shellwords.escape(value)} #{Shellwords.escape(key)}"
+      end
     }
   end
 end
