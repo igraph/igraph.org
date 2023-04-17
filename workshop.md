@@ -24,14 +24,12 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
          alt="NetworkX"
          title="NetworkX"/>
 </a>
-
 <a href="https://graph-tool.skewed.de">
     <img src="/img/workshop/logos/graph-tool.svg"
          height="64"
          alt="graph-tool"
          title="graph-tool"/>
 </a>
-
 <a href="https://statnet.org/">
     <img src="/img/workshop/logos/statnet.png"
          height="64"
@@ -45,14 +43,12 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
          alt="Gephi"
          title="Gephi"/>
 </a>
-
 <a href="http://mrvar.fdv.uni-lj.si/pajek/">
     <img src="/img/workshop/logos/pajek.gif"
          height="64"
          alt="Pajek"
          title="Pajek"/>
 </a>
-
 <a href="https://networkit.github.io/">
     <img src="/img/workshop/logos/networkit.png"
          style="background-color: #104870;"
@@ -60,7 +56,6 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
          alt="NetworKit"
          title="NetworKit"/>
 </a>
-<br/>
 
 
 <a href="https://nodexl.com/">
@@ -69,11 +64,9 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
         alt="NodeXL"
         title="NodeXL"/>
 </a>
-
 <a href="https://socnetv.org/">
     SocNetV
 </a>
-
 <a href="https://graphlayouts.schochastics.net/">
     <img src="/img/workshop/logos/graphlayouts.png"
          height="64"
@@ -81,3 +74,12 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
          title="graphlayouts"/>
 </a>
 
+**Organisers**:
+- Vincent Traag
+- Kwun-Hang Lai
+- Tamás Nepusz
+- Szabolcs Horvát
+- Brooke Foucault Welles
+- Eugenia Perekhodko
+- Frank Takes
+- Hanjo Boekhout
