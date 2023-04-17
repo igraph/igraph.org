@@ -1,5 +1,6 @@
 ---
 layout: generic
+title: Workshop on the sustainability of network analysis software
 mainheader: Workshop on the sustainability of network analysis software
 lead: 21-22 June, 2023 - University Leiden, Leiden, the Netherlands
 ---
@@ -16,7 +17,9 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
 
 **Participation**: Invitation only
 
-## Attending network packages
+## Attending
+
+### Network packages
 
 <a href="https://networkx.org/">
     <img src="/img/workshop/logos/networkx.svg"
@@ -87,6 +90,16 @@ Dimitris Kalamaras
          title="graphlayouts"/>
 </a>
 David Schoch
+
+### Special attendance
+
+<a href="https://www.esciencecenter.nl/">
+    <img src="/img/workshop/logos/logo_fc.svg"
+         height="32"
+         alt="eScienceCenter"
+         title="eScienceCenter"/>
+</a>
+Willem van Hage
 
 **Organisers**:
 - Vincent Traag
