@@ -94,7 +94,7 @@ David Schoch
 ### Special attendance
 
 <a href="https://www.esciencecenter.nl/">
-    <img src="/img/workshop/logos/logo_fc.svg"
+    <img src="/img/workshop/logos/logo-fc.svg"
          height="32"
          alt="eScienceCenter"
          title="eScienceCenter"/>
