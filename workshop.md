@@ -1,5 +1,6 @@
 ---
 layout: generic
+title: Workshop on the sustainability of network analysis software
 mainheader: Workshop on the sustainability of network analysis software
 lead: 21-22 June, 2023 - University Leiden, Leiden, the Netherlands
 ---
@@ -16,68 +17,96 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
 
 **Participation**: Invitation only
 
-## Attending network packages
+## Attending
+
+### Network packages
 
 <a href="https://networkx.org/">
     <img src="/img/workshop/logos/networkx.svg"
-         height="64"
+         height="32"
          alt="NetworkX"
          title="NetworkX"/>
 </a>
+Jarrod Millman
 
 <a href="https://graph-tool.skewed.de">
     <img src="/img/workshop/logos/graph-tool.svg"
-         height="64"
+         height="32"
          alt="graph-tool"
          title="graph-tool"/>
 </a>
+Tiago de Paula Peixoto
 
 <a href="https://statnet.org/">
     <img src="/img/workshop/logos/statnet.png"
-         height="64"
+         height="32"
          alt="statnet"
          title="statnet"/>
 </a>
+Michał Bojanowski
 
 <a href="https://gephi.org">
     <img src="/img/workshop/logos/gephi.png"
-         height="64"
+         height="32"
          alt="Gephi"
          title="Gephi"/>
 </a>
+Mathieu Bastian
 
 <a href="http://mrvar.fdv.uni-lj.si/pajek/">
     <img src="/img/workshop/logos/pajek.gif"
-         height="64"
+         height="32"
          alt="Pajek"
          title="Pajek"/>
 </a>
+Vladimir Batagelj
 
 <a href="https://networkit.github.io/">
     <img src="/img/workshop/logos/networkit.png"
          style="background-color: #104870;"
-         height="64"
+         height="32"
          alt="NetworKit"
          title="NetworKit"/>
 </a>
-<br/>
-
+Henning Meyerhenke
 
 <a href="https://nodexl.com/">
     <img src="/img/workshop/logos/nodexl.png"
-        height="64"
+        height="32"
         alt="NodeXL"
         title="NodeXL"/>
 </a>
+Marc Smith
 
 <a href="https://socnetv.org/">
     SocNetV
 </a>
+Dimitris Kalamaras
 
 <a href="https://graphlayouts.schochastics.net/">
     <img src="/img/workshop/logos/graphlayouts.png"
-         height="64"
+         height="32"
          alt="graphlayouts"
          title="graphlayouts"/>
 </a>
+David Schoch
 
+### Special attendance
+
+<a href="https://www.esciencecenter.nl/">
+    <img src="/img/workshop/logos/logo_fc.svg"
+         height="32"
+         alt="eScienceCenter"
+         title="eScienceCenter"/>
+</a>
+Willem van Hage
+
+**Organisers**:
+- Vincent Traag
+- Kwun-Hang Lai
+- Tamás Nepusz
+- Szabolcs Horvát
+- Brooke Foucault Welles
+- Eugenia Perekhodko
+- Frank Takes
+- Hanjo Boekhout
