@@ -27,7 +27,7 @@ We hope to stimulate mutual learning among the packages. We also aim to propose 
          alt="NetworkX"
          title="NetworkX"/>
 </a>
-Jarrod Millman
+NetworkX
 
 <a href="https://graph-tool.skewed.de">
     <img src="/img/workshop/logos/graph-tool.svg"
@@ -35,7 +35,7 @@ Jarrod Millman
          alt="graph-tool"
          title="graph-tool"/>
 </a>
-Tiago de Paula Peixoto
+graph-tool
 
 <a href="https://statnet.org/">
     <img src="/img/workshop/logos/statnet.png"
@@ -43,7 +43,7 @@ Tiago de Paula Peixoto
          alt="statnet"
          title="statnet"/>
 </a>
-Michał Bojanowski
+statnet
 
 <a href="https://gephi.org">
     <img src="/img/workshop/logos/gephi.png"
@@ -51,7 +51,7 @@ Michał Bojanowski
          alt="Gephi"
          title="Gephi"/>
 </a>
-Mathieu Bastian
+Gephi
 
 <a href="http://mrvar.fdv.uni-lj.si/pajek/">
     <img src="/img/workshop/logos/pajek.gif"
@@ -59,7 +59,7 @@ Mathieu Bastian
          alt="Pajek"
          title="Pajek"/>
 </a>
-Vladimir Batagelj
+Pajek
 
 <a href="https://networkit.github.io/">
     <img src="/img/workshop/logos/networkit.png"
@@ -68,7 +68,7 @@ Vladimir Batagelj
          alt="NetworKit"
          title="NetworKit"/>
 </a>
-Henning Meyerhenke
+NetworKit
 
 <a href="https://nodexl.com/">
     <img src="/img/workshop/logos/nodexl.png"
@@ -76,12 +76,11 @@ Henning Meyerhenke
         alt="NodeXL"
         title="NodeXL"/>
 </a>
-Marc Smith
+NodeXL
 
 <a href="https://socnetv.org/">
     SocNetV
 </a>
-Dimitris Kalamaras
 
 <a href="https://graphlayouts.schochastics.net/">
     <img src="/img/workshop/logos/graphlayouts.png"
@@ -89,17 +88,25 @@ Dimitris Kalamaras
          alt="graphlayouts"
          title="graphlayouts"/>
 </a>
-David Schoch
+graphlayouts
+
+<a href="https://textnets.readthedocs.io/">
+    <img src="/img/workshop/logos/textnets.svg"
+         height="32"
+         alt="textnets"
+         title="textnets"/>
+</a>
+textnets
 
 ### Special attendance
 
 <a href="https://www.esciencecenter.nl/">
-    <img src="/img/workshop/logos/logo_fc.svg"
+    <img src="/img/workshop/logos/logo-fc.svg"
          height="32"
          alt="eScienceCenter"
          title="eScienceCenter"/>
 </a>
-Willem van Hage
+eScienceCenter
 
 **Organisers**:
 - Vincent Traag
