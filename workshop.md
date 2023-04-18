@@ -91,6 +91,14 @@ Dimitris Kalamaras
 </a>
 David Schoch
 
+<a href="https://textnets.readthedocs.io/">
+    <img src="/img/workshop/logos/textnets.svg"
+         height="32"
+         alt="textnets"
+         title="textnets"/>
+</a>
+John Boy
+
 ### Special attendance
 
 <a href="https://www.esciencecenter.nl/">
