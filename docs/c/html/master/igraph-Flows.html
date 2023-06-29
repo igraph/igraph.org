@@ -1327,40 +1327,6 @@ O(F) is the time complexity of the maximum flow algorithm, see <a class="link" h
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-int <span class="strong"><strong>print_and_destroy</strong></span>(igraph_t *g,
-                      igraph_real_t value,
-                      igraph_vector_int_list_t *partitions,
-                      igraph_vector_int_list_t *cuts) {
-    igraph_integer_t i, e, m, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(partitions);
-    <span class="strong"><strong>printf</strong></span>("Found %" IGRAPH_PRId " cuts, value: %g\n", n, value);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        igraph_vector_int_t *vec = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(partitions, i);
-        igraph_vector_int_t *vec2 = cuts ? <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(cuts, i) : 0;
-        <span class="strong"><strong>printf</strong></span>("Partition %" IGRAPH_PRId ": ", i);
-        <span class="strong"><strong>igraph_vector_int_print</strong></span>(vec);
-        <span class="strong"><strong>if</strong></span> (vec2) {
-            <span class="strong"><strong>printf</strong></span>("Cut %" IGRAPH_PRId ":\n", i);
-            m = <span class="strong"><strong>igraph_vector_int_size</strong></span>(vec2);
-            <span class="strong"><strong>for</strong></span> (e = 0; e &lt; m; e++) {
-                igraph_integer_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]), to = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]);
-                <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(g)) {
-                    <span class="strong"><strong>printf</strong></span>("  %" IGRAPH_PRId " -&gt; %" IGRAPH_PRId "\n", from, to);
-                } <span class="strong"><strong>else</strong></span> {
-                    <span class="strong"><strong>printf</strong></span>("  %" IGRAPH_PRId " -- %" IGRAPH_PRId "\n", from, to);
-                }
-            }
-        }
-    }
-
-    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(partitions);
-    <span class="strong"><strong>if</strong></span> (cuts) {
-        <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(cuts);
-    }
-    <span class="strong"><strong>printf</strong></span>("\n");
-
-    <span class="strong"><strong>return</strong></span> 0;
-}
-
 int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
@@ -1378,82 +1344,26 @@ int <span class="strong"><strong>main</strong></span>(void) {
                           <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 4,
                           <span class="emphasis"><em>/*capacity=*/</em></span> 0);
 
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    igraph_integer_t i, e, m, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;partitions);
+    <span class="strong"><strong>printf</strong></span>("Found %" IGRAPH_PRId " cuts, value: %g\n", n, value);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        igraph_vector_int_t *vec = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;partitions, i);
+        igraph_vector_int_t *vec2 = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;cuts, i);
+        <span class="strong"><strong>printf</strong></span>("Partition %" IGRAPH_PRId ": ", i);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(vec);
+        <span class="strong"><strong>if</strong></span> (vec2) {
+            <span class="strong"><strong>printf</strong></span>("Cut %" IGRAPH_PRId ":\n", i);
+            m = <span class="strong"><strong>igraph_vector_int_size</strong></span>(vec2);
+            <span class="strong"><strong>for</strong></span> (e = 0; e &lt; m; e++) {
+                igraph_integer_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]), to = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]);
+                <span class="strong"><strong>printf</strong></span>("  %" IGRAPH_PRId " -&gt; %" IGRAPH_PRId "\n", from, to);
+            }
+        }
+    }
 
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED, 0, 1, 1, 2, 1, 3, 2, 4, 3, 4, 4, 5, -1);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 5, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED, 0, 1, 1, 2, 1, 3, 2, 4, 3, 4, 4, 5, -1);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 4, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 9, IGRAPH_DIRECTED, 0, 1, 0, 2, 1, 3, 2, 3,
-                 1, 4, 4, 2, 1, 5, 5, 2, 1, 6, 6, 2, 1, 7, 7, 2, 1, 8, 8, 2,
-                 -1);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 3, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_DIRECTED,
-                 1, 0, 2, 0, 2, 1, 3, 2,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 2, <span class="emphasis"><em>/*target=*/</em></span> 0, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_DIRECTED,
-                 1, 0, 2, 0, 2, 1, 2, 3,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 2, <span class="emphasis"><em>/*target=*/</em></span> 0, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>/* ---------------------------------------------------------------- */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 9, IGRAPH_DIRECTED,
-                 0, 4,  0, 7,  1, 6,  2, 1,  3, 8,  4, 0,  4, 2,
-                 4, 5,  5, 0,  5, 3,  6, 7,  7, 8,
-                 -1);
-
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;partitions, 0);
-    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;cuts, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_all_st_mincuts" title="2.4. igraph_all_st_mincuts — All minimum s-t cuts of a directed graph.">igraph_all_st_mincuts</a></strong></span>(&amp;g, &amp;value, &amp;cuts, &amp;partitions,
-                          <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 8, <span class="emphasis"><em>/*capacity=*/</em></span> 0);
-
-    <span class="strong"><strong>print_and_destroy</strong></span>(&amp;g, value, &amp;partitions, &amp;cuts);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;partitions);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;cuts);
+    <span class="strong"><strong>printf</strong></span>("\n");
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -2884,7 +2794,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t block_tree;
     igraph_integer_t i;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.20. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "zachary");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.22. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "zachary");
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;blocks, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;cohesion, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;parent, 0);

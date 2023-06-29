@@ -156,6 +156,7 @@
 <dt><span class="section"><a href="igraph-HRG.html#hrg-sampling">4. HRG sampling</a></span></dt>
 <dt><span class="section"><a href="igraph-HRG.html#conversion-to-and-from-igraph-graphs">5. Conversion to and from igraph graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-HRG.html#predicting-missing-edges">6. Predicting missing edges</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#hrg-deprecated">7. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -179,7 +180,7 @@ et al. (Eds.): ICML 2006 Ws, Lecture Notes in Computer Science
 igraph contains functions for fitting HRG models to a given network
 (<a class="link" href="igraph-HRG.html#igraph_hrg_fit" title="3.1. igraph_hrg_fit — Fit a hierarchical random graph model to a network."><code class="function">igraph_hrg_fit</code></a>), for generating networks from a given HRG
 ensemble (<a class="link" href="igraph-HRG.html#igraph_hrg_game" title="4.2. igraph_hrg_game — Generate a hierarchical random graph."><code class="function">igraph_hrg_game</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_sample" title="4.1. igraph_hrg_sample — Sample from a hierarchical random graph model."><code class="function">igraph_hrg_sample</code></a>), converting
-an igraph graph to a HRG and back (<a class="link" href="igraph-HRG.html#igraph_hrg_create" title="5.2. igraph_hrg_create — Create a HRG from an igraph graph."><code class="function">igraph_hrg_create</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_dendrogram" title="5.1. igraph_hrg_dendrogram — Create a dendrogram from a hierarchical random graph."><code class="function">igraph_hrg_dendrogram</code></a>), for calculating a consensus tree from a
+an igraph graph to a HRG and back (<a class="link" href="igraph-HRG.html#igraph_hrg_create" title="5.2. igraph_hrg_create — Create a HRG from an igraph graph."><code class="function">igraph_hrg_create</code></a>, <a class="link" href="igraph-HRG.html#igraph_hrg_dendrogram" title="7.1. igraph_hrg_dendrogram — Create a dendrogram from a hierarchical random graph."><code class="function">igraph_hrg_dendrogram</code></a>), for calculating a consensus tree from a
 set of sampled HRGs (<a class="link" href="igraph-HRG.html#igraph_hrg_consensus" title="3.2. igraph_hrg_consensus — Calculate a consensus tree for a HRG."><code class="function">igraph_hrg_consensus</code></a>) and for predicting
 missing edges in a network based on its HRG models (<a class="link" href="igraph-HRG.html#igraph_hrg_predict" title="6.1. igraph_hrg_predict — Predict missing edges in a graph, based on HRG models."><code class="function">igraph_hrg_predict</code></a>).
 </p>
@@ -815,17 +816,17 @@ Time complexity: TODO.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="conversion-to-and-from-igraph-graphs"></a>5. Conversion to and from igraph graphs</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_dendrogram">5.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-HRG.html#igraph_from_hrg_dendrogram">5.1. <code class="function">igraph_from_hrg_dendrogram</code> —  Create a graph representation of the dendrogram of a hierarchical random graph model.</a></span></dt>
 <dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_create">5.2. <code class="function">igraph_hrg_create</code> —  Create a HRG from an igraph graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hrg_dendrogram"></a>5.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</h3></div></div></div>
+<a name="igraph_from_hrg_dendrogram"></a>5.1. <code class="function">igraph_from_hrg_dendrogram</code> —  Create a graph representation of the dendrogram of a hierarchical random graph model.</h3></div></div></div>
 <a class="indexterm" name="id-1.27.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_hrg_dendrogram(
-    igraph_t *graph, const igraph_hrg_t *hrg
+igraph_error_t igraph_from_hrg_dendrogram(
+    igraph_t *graph, const igraph_hrg_t *hrg, igraph_vector_t *prob
 );
 </pre></div>
 <p>
@@ -834,8 +835,10 @@ igraph_error_t igraph_hrg_dendrogram(
 
 
 
-Creates the igraph graph equivalent of an <a class="link" href="igraph-HRG.html#igraph_hrg_t" title="2.1. igraph_hrg_t — Data structure to store a hierarchical random graph."><code class="function">igraph_hrg_t</code></a> data
-structure.
+Creates the igraph graph equivalent of the dendrogram encoded in an
+<a class="link" href="igraph-HRG.html#igraph_hrg_t" title="2.1. igraph_hrg_t — Data structure to store a hierarchical random graph."><code class="function">igraph_hrg_t</code></a> data structure. The probabilities associated to the
+nodes are returned in a vector so this function works without an
+attribute handler.
 
 </p>
 <p><b>Arguments: </b>
@@ -857,6 +860,15 @@ structure.
 <td><p><span class="term"><em class="parameter"><code>hrg</code></em>:</span></p></td>
 <td><p>
   The hierarchical random graph to convert.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>prob</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <span class="emphasis"><em>initialized</em></span> vector; the probabilities
+  associated to the nodes of the dendrogram will be stored here. Leaf nodes
+  will have an associated probability of <code class="constant">IGRAPH_NAN</code> .
+  You may set this to <code class="constant">NULL</code> if you do not need the probabilities.
 </p></td>
 </tr>
 </tbody>
@@ -1057,6 +1069,81 @@ that an edge was falsely observed as non-existent in the network.
 
 Time complexity: TODO.
  
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="hrg-deprecated"></a>7. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-HRG.html#igraph_hrg_dendrogram">7.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_hrg_dendrogram"></a>7.1. <code class="function">igraph_hrg_dendrogram</code> —  Create a dendrogram from a hierarchical random graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.27.8.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_hrg_dendrogram(igraph_t *graph, const igraph_hrg_t *hrg);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Creates the igraph graph equivalent of an <a class="link" href="igraph-HRG.html#igraph_hrg_t" title="2.1. igraph_hrg_t — Data structure to store a hierarchical random graph."><code class="function">igraph_hrg_t</code></a> data
+structure.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized graph, the result is
+  stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hrg</code></em>:</span></p></td>
+<td><p>
+  The hierarchical random graph to convert.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the number of vertices in the graph.
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.5. Please do not use this function in new
+code; use <a class="link" href="igraph-HRG.html#igraph_hrg_dendrogram" title="7.1. igraph_hrg_dendrogram — Create a dendrogram from a hierarchical random graph."><code class="function">igraph_hrg_dendrogram()</code></a>
+instead.</p>
+</div>
+<p> 
 </p>
 </div>
 </div>

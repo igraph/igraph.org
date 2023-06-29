@@ -320,7 +320,7 @@ Weighted Graphs". <a class="ulink" href="https://doi.org/10.1002/rsa.20130" targ
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        the calculated spanner will be returned here. Use
-<a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.7. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
+<a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.8. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
        graph object.
 </p></td>
 </tr>
@@ -1190,7 +1190,8 @@ paths longer than <em class="parameter"><code>cutoff</code></em> will not be con
    non-negative for Dijkstra's algorithm to work. Additionally, no
    edge weight may be NaN. If either case does not hold, an error
    is returned. If this is a null pointer, then the unweighted
-   version, <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> is called.
+   version, <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> is called. Edges with positive infinite
+   weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1612,7 +1613,7 @@ J. ACM 24, 1 (1977), 1–13.
 <td><p>
   Optional edge weights. If it is a null-pointer, then
   the unweighted breadth-first search based <a class="link" href="igraph-Structural.html#igraph_distances" title="3.1. igraph_distances — Length of the shortest paths between vertices."><code class="function">igraph_distances()</code></a> will
-  be called.
+  be called.  Edges with positive infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1761,6 +1762,7 @@ Ars Mathematica Contemporanea, vol. 22, issue 1, p. #P1.01 (2021).
 <td><p>
   The edge weights. If <code class="constant">NULL</code>, all weights are assumed to be 1.
   Negative weights are allowed, but the graph must not contain negative cycles.
+  Edges with positive infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -2180,7 +2182,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_integer_t i;
     igraph_vs_t vs;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, 0, 1);
 
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;vecs, 0);
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;evecs, 0);
@@ -2875,6 +2877,7 @@ If there are no negative weights, you are better off with
    us to decrease the weight of any path containing at least a single
    vertex of this loop infinitely). If this is a null pointer, then the
    unweighted version, <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.8. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> is called.
+   Edges with positive infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -3223,7 +3226,7 @@ does not overestimate distances, i.e. if the heuristic function is
   Optional edge weights. Supply <code class="constant">NULL</code> for unweighted graphs.
        All edge weights must be non-negative. Additionally, no
        edge weight may be NaN. If either case does not hold, an error
-       is returned.
+       is returned. Edges with positive infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -4408,7 +4411,8 @@ All distinct ordered vertex pairs are taken into account.
       non-negative for Dijkstra's algorithm to work. Additionally, no
       edge weight may be NaN. If either case does not hold, an error
       is returned. If this is a null pointer, then the unweighted
-      version, <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> is called.
+      version, <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> is called. Edges with positive
+      infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -4818,7 +4822,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, 0, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;path, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;path_edge, 0);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;g, &amp;result, &amp;from, &amp;to, &amp;path, &amp;path_edge, IGRAPH_DIRECTED, 1);
@@ -4889,7 +4893,7 @@ If the graph has no vertices, <code class="constant">IGRAPH_NAN</code> is return
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
   The edge weights of the graph. Can be <code class="constant">NULL</code> for an
-       unweighted graph.
+       unweighted graph. Edges with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -5088,7 +5092,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t circle;
     igraph_integer_t chord[] = { 0, 50 };
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 1);
     <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;v, chord, <span class="strong"><strong>sizeof</strong></span>(chord) / <span class="strong"><strong>sizeof</strong></span>(chord[0]));
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_add_edges" title="4.3.2. igraph_add_edges — Adds edges to a graph object.">igraph_add_edges</a></strong></span>(&amp;g, &amp;v, 0);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_girth" title="3.25. igraph_girth — The girth of a graph is the length of the shortest cycle in it.">igraph_girth</a></strong></span>(&amp;g, &amp;girth, 0);
@@ -5099,7 +5103,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Special case: null graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 1);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;circle, 1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(circle)[0] = 2;
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_girth" title="3.25. igraph_girth — The girth of a graph is the length of the shortest cycle in it.">igraph_girth</a></strong></span>(&amp;g, &amp;girth, &amp;circle);
@@ -5317,7 +5321,8 @@ components. Isolated vertices have eccentricity zero.
    non-negative for Dijkstra's algorithm to work. Additionally, no
    edge weight may be NaN. If either case does not hold, an error
    is returned. If this is a null pointer, then the unweighted
-   version, <a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a> is called.
+   version, <a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a> is called. Edges with positive
+   infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6072,7 +6077,7 @@ one, using Dijkstra's algorithm.
 <td><p>
   The edge weights. Edge weights can be negative. If this
        is a null pointer or if any edge weight is NaN, then an error
-       is returned.
+       is returned. Edges with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6204,7 +6209,7 @@ the largest width between two vertices, this function gives only one of them.
 <td><p>
   The edge weights. Edge weights can be negative. If this
        is a null pointer or if any edge weight is NaN, then an error
-       is returned.
+       is returned. Edges with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6426,7 +6431,7 @@ This implementation uses a binary heap for efficiency.
 <td><p>
   The edge weights. Edge weights can be negative. If this
        is a null pointer or if any edge weight is NaN, then an error
-       is returned.
+       is returned. Edges with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6555,7 +6560,7 @@ calculation.
 <td><p>
   The edge weights. Edge weights can be negative. If this
        is a null pointer or if any edge weight is NaN, then an error
-       is returned.
+       is returned. Edges with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6678,7 +6683,8 @@ Phys. Rev. Lett. 87, 198701 (2001).
       edge weight may be NaN. If either case does not hold, an error
       is returned. If this is a null pointer, then the unweighted
       version, <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> is used in calculating
-      the global efficiency.
+      the global efficiency. Edges with positive infinite weights are
+      ignored.
 </p></td>
 </tr>
 <tr>
@@ -6815,7 +6821,8 @@ Phys. Rev. E 71, 1 (2005).
       non-negative. Additionally, no edge weight may be NaN. If either
       case does not hold, an error is returned. If this is a null
       pointer, then the unweighted version,
-      <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> is called.
+      <a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — Calculates the average unweighted shortest path length between all vertex pairs."><code class="function">igraph_average_path_length()</code></a> is called. Edges with positive
+      infinite weights are ignored.
 </p></td>
 </tr>
 <tr>
@@ -6982,7 +6989,8 @@ For the null graph, zero is returned by convention.
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
   The edge weights. They must be all non-negative.
-   If a null pointer is given, all weights are assumed to be 1.
+   If a null pointer is given, all weights are assumed to be 1. Edges
+   with positive infinite weight are ignored.
 </p></td>
 </tr>
 <tr>
@@ -8384,7 +8392,7 @@ edges in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.3. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices."><code class="function">igraph_induced_subgraph()</code></a> if you want a graph object consisting only
+  <a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.4. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices."><code class="function">igraph_induced_subgraph()</code></a> if you want a graph object consisting only
 a given set of vertices and the edges between them.
   </p></td>
 </tr></tbody>
@@ -8726,7 +8734,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_graph_list_init</strong></span>(&amp;complist, 0);
 
     <span class="emphasis"><em>/* A ring, a single component */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, IGRAPH_UNDIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, IGRAPH_UNDIRECTED, 0, 1);
 
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_decompose" title="8.5. igraph_decompose — Decomposes a graph into connected components.">igraph_decompose</a></strong></span>(&amp;ring, &amp;complist, IGRAPH_WEAK, -1, 0);
     component = <span class="strong"><strong>igraph_graph_list_get_ptr</strong></span>(&amp;complist, 0);
@@ -8735,8 +8743,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_graph_list_clear</strong></span>(&amp;complist);
 
     <span class="emphasis"><em>/* Random graph with a giant component */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;g, IGRAPH_ERDOS_RENYI_GNP, 100, 4.0 / 100,
-                            IGRAPH_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities.">igraph_erdos_renyi_game_gnp</a></strong></span>(&amp;g, 100, 4.0 / 100, IGRAPH_UNDIRECTED, 0);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_decompose" title="8.5. igraph_decompose — Decomposes a graph into connected components.">igraph_decompose</a></strong></span>(&amp;g, &amp;complist, IGRAPH_WEAK, -1, 20);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_graph_list_size</strong></span>(&amp;complist) != 1) {
         <span class="strong"><strong>return</strong></span> 1;
@@ -9367,7 +9374,7 @@ G. Cairns and S. Mendan, Degree Sequence for Graphs with Loops (2013).
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_is_bigraphical" title="9.2. igraph_is_bigraphical — Is there a bipartite graph with the given bi-degree-sequence?"><code class="function">igraph_is_bigraphical()</code></a> to check if a bi-degree-sequence can be realized as a bipartite graph;
-<a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.19. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct a graph with a given degree sequence.
+<a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.21. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct a graph with a given degree sequence.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9543,9 +9550,7 @@ where n is the length of the larger degree sequence.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_strength">10.11. <code class="function">igraph_strength</code> —  Strength of the vertices, also called weighted vertex degree.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_eigenvector_centrality">10.12. <code class="function">igraph_eigenvector_centrality</code> —  Eigenvector centrality of the vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_hub_and_authority_scores">10.13. <code class="function">igraph_hub_and_authority_scores</code> —  Kleinberg's hub and authority scores.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_hub_score">10.14. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_authority_score">10.15. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_convergence_degree">10.16. <code class="function">igraph_convergence_degree</code> —  Calculates the convergence degree of each edge in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_convergence_degree">10.14. <code class="function">igraph_convergence_degree</code> —  Calculates the convergence degree of each edge in a graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -10464,7 +10469,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_real_t value;
 
     <span class="emphasis"><em>/* Create a directed graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.26. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 3);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.28. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 3);
 
     <span class="emphasis"><em>/* Initialize the vector where the results will be stored */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;pagerank, 0);
@@ -11350,32 +11355,30 @@ intended for directed graphs.
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
-    igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v, weights;
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vector, weights;
     igraph_real_t value;
-    <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK.">igraph_arpack_options_t</a> options;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 9);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element.">igraph_vector_fill</a></strong></span>(&amp;weights, 1);
+    <span class="emphasis"><em>/* Create a star graph, with vertex 0 at the center, and associated edge weights. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;weights, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)+1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options.">igraph_arpack_options_init</a></strong></span>(&amp;options);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices.">igraph_eigenvector_centrality</a></strong></span>(&amp;g, &amp;v, &amp;value, <span class="emphasis"><em>/*directed=*/</em></span> 0,
-                                  <span class="emphasis"><em>/*scale=*/</em></span>1, &amp;weights,
-                                  &amp;options);
+    <span class="emphasis"><em>/* Initialize the vector where the result will be stored. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vector, 0);
 
-    <span class="strong"><strong>if</strong></span> (options.info != 0) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="emphasis"><em>/* Compute eigenvector centrality. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices.">igraph_eigenvector_centrality</a></strong></span>(&amp;graph, &amp;vector, &amp;value, IGRAPH_UNDIRECTED,
+                                  <span class="emphasis"><em>/*scale=*/</em></span> true, &amp;weights, <span class="emphasis"><em>/*options=*/</em></span> NULL);
 
+    <span class="emphasis"><em>/* Print results. */</em></span>
     <span class="strong"><strong>printf</strong></span>("eigenvalue: %g\n", value);
     <span class="strong"><strong>printf</strong></span>("eigenvector:\n");
-    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;v);
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;vector);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
+    <span class="emphasis"><em>/* Free allocated data structures. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vector);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -11405,8 +11408,16 @@ igraph_error_t igraph_hub_and_authority_scores(const igraph_t *graph,
 
 
 
+Hub and authority scores are a generalization of the ideas behind
+eigenvector centrality to directed graphs. The authority score of
+a vertex is proportional to the sum of the hub scores of vertices
+that point to it. Conversely, the hub score of a vertex is proportional
+to the sum of authority scores of vertices that it points to.
+
+</p>
+<p>
 The hub and authority scores of the vertices are defined as the principal
-eigenvectors of <code class="literal">A*A^T</code> and <code class="literal">A^T*A</code>, respectively,
+eigenvectors of <code class="literal">A A^T</code> and <code class="literal">A^T A</code>, respectively,
 where <code class="literal">A</code> is the adjacency matrix of the graph and <code class="literal">A^T</code>
 is its transposed.
 
@@ -11419,17 +11430,13 @@ eigenvector centrality, which can be computed using
 
 </p>
 <p>
-When both the hub and authority scores are needed (the typical use case),
-using this function is more efficient than separate calculations
-with <a class="link" href="igraph-Structural.html#igraph_hub_score" title="10.14. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a> and <a class="link" href="igraph-Structural.html#igraph_authority_score" title="10.15. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>.
-
-</p>
-<p>
 See the following reference on the meaning of this score:
 J. Kleinberg. Authoritative sources in a hyperlinked
 environment. <span class="emphasis"><em> Proc. 9th ACM-SIAM Symposium on Discrete
 Algorithms, </em></span> 1998. Extended version in <span class="emphasis"><em> Journal of the
-ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
+ACM </em></span> 46(1999).
+<a class="ulink" href="https://doi.org/10.1145/324133.324140" target="_top">https://doi.org/10.1145/324133.324140</a>
+Also appears as IBM Research Report RJ 10076, May
 1997.
 
 </p>
@@ -11478,7 +11485,7 @@ ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  A null pointer (=no edge weights), or a vector
+  A null pointer (meaning no edge weights), or a vector
     giving the weights of the edges.
 </p></td>
 </tr>
@@ -11524,7 +11531,7 @@ the number of vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_hub_score" title="10.14. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="10.15. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.8. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.9. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
 for the separate calculations,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for a similar measure intended
@@ -11538,262 +11545,8 @@ for undirected graphs.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hub_score"></a>10.14. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</h3></div></div></div>
+<a name="igraph_convergence_degree"></a>10.14. <code class="function">igraph_convergence_degree</code> —  Calculates the convergence degree of each edge in a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.12.15.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_hub_score(const igraph_t *graph, igraph_vector_t *vector,
-                     igraph_real_t *value, igraph_bool_t scale,
-                     const igraph_vector_t *weights,
-                     igraph_arpack_options_t *options);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-The hub scores of the vertices are defined as the principal
-eigenvector of <code class="literal">A*A^T</code>, where <code class="literal">A</code> is the adjacency
-matrix of the graph, <code class="literal">A^T</code> is its transposed.
-
-</p>
-<p>
-See the following reference on the meaning of this score:
-J. Kleinberg. Authoritative sources in a hyperlinked
-environment. <span class="emphasis"><em> Proc. 9th ACM-SIAM Symposium on Discrete
-Algorithms, </em></span> 1998. Extended version in <span class="emphasis"><em> Journal of the
-ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
-1997.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  The input graph. Can be directed and undirected.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>vector</code></em>:</span></p></td>
-<td><p>
-  Pointer to an initialized vector, the result is
-   stored here. If a null pointer then it is ignored.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em>:</span></p></td>
-<td><p>
-  If not a null pointer then the eigenvalue
-   corresponding to the calculated eigenvector is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
-<td><p>
-  If not zero then the result will be scaled such that
-    the absolute value of the maximum centrality is one.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  A null pointer (=no edge weights), or a vector
-    giving the weights of the edges.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
-<td><p>
-  Options to ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the
-   <code class="literal">n</code> (number of vertices) parameter and
-   it always starts the calculation from a non-random vector
-   calculated based on the degree of the vertices.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: depends on the input graph, usually it is O(|V|),
-the number of vertices.
-
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
-hub and authrotity scores efficiently at the same time,
-<a class="link" href="igraph-Structural.html#igraph_authority_score" title="10.15. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a> for the companion measure,
-<a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_authority_score"></a>10.15. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.12.16.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_authority_score(const igraph_t *graph, igraph_vector_t *vector,
-                           igraph_real_t *value, igraph_bool_t scale,
-                           const igraph_vector_t *weights,
-                           igraph_arpack_options_t *options);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-The authority scores of the vertices are defined as the principal
-eigenvector of <code class="literal">A^T*A</code>, where <code class="literal">A</code> is the adjacency
-matrix of the graph, <code class="literal">A^T</code> is its transposed.
-
-</p>
-<p>
-See the following reference on the meaning of this score:
-J. Kleinberg. Authoritative sources in a hyperlinked
-environment. <span class="emphasis"><em> Proc. 9th ACM-SIAM Symposium on Discrete
-Algorithms, </em></span> 1998. Extended version in <span class="emphasis"><em> Journal of the
-ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
-1997.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  The input graph. Can be directed and undirected.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>vector</code></em>:</span></p></td>
-<td><p>
-  Pointer to an initialized vector, the result is
-   stored here. If a null pointer then it is ignored.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em>:</span></p></td>
-<td><p>
-  If not a null pointer then the eigenvalue
-   corresponding to the calculated eigenvector is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
-<td><p>
-  If not zero then the result will be scaled such that
-    the absolute value of the maximum centrality is one.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  A null pointer (=no edge weights), or a vector
-    giving the weights of the edges.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
-<td><p>
-  Options to ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a>
-   for details. Note that the function overwrites the
-   <code class="literal">n</code> (number of vertices) parameter and
-   it always starts the calculation from a non-random vector
-   calculated based on the degree of the vertices.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: depends on the input graph, usually it is O(|V|),
-the number of vertices.
-
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
-hub and authrotity scores efficiently at the same time,
-<a class="link" href="igraph-Structural.html#igraph_hub_score" title="10.14. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a> for the companion measure,
-<a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_convergence_degree"></a>10.16. <code class="function">igraph_convergence_degree</code> —  Calculates the convergence degree of each edge in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.12.17.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_convergence_degree(const igraph_t *graph, igraph_vector_t *result,
@@ -12938,71 +12691,57 @@ Time complexity: O(n), the length of the score vector.
 <a name="id-1.14.15.2.13.1"></a><p class="title"><b>Example 13.19.  File <code class="code">examples/simple/centralization.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
-<span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
-    igraph_t g;
+    igraph_t graph;
     igraph_real_t cent;
-    <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK.">igraph_arpack_options_t</a> arpack_options;
 
-    <span class="emphasis"><em>/****************************/</em></span>
-    <span class="emphasis"><em>/* undirected star */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
+    <span class="emphasis"><em>/* Create an undirected star graph, which is the most centralized graph</em></span>
+<span class="emphasis"><em>     * with several common centrality scores. */</em></span>
+    <span class="strong"><strong>printf</strong></span>("undirected star graph:\n");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;graph, 10, IGRAPH_STAR_UNDIRECTED, <span class="emphasis"><em>/*center=*/</em></span> 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_degree" title="13.2. igraph_centralization_degree — Calculate vertex degree and graph centralization.">igraph_centralization_degree</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*mode=*/</em></span> IGRAPH_ALL, IGRAPH_NO_LOOPS,
                                  &amp;cent, <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                  <span class="emphasis"><em>/*normalized=*/</em></span> true);
-    <span class="strong"><strong>if</strong></span> (cent != 1.0) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, degree: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 21;
-    }
+    <span class="strong"><strong>printf</strong></span>("degree centralization: %g\n", cent);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_betweenness" title="13.3. igraph_centralization_betweenness — Calculate vertex betweenness and graph centralization.">igraph_centralization_betweenness</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                       IGRAPH_UNDIRECTED, &amp;cent,
                                       <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                       <span class="emphasis"><em>/*normalized=*/</em></span> true);
-    <span class="strong"><strong>if</strong></span> (cent != 1.0) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, betweenness: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 22;
-    }
+    <span class="strong"><strong>printf</strong></span>("betweenness centralization: %g\n", cent);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL,
+
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_closeness" title="13.4. igraph_centralization_closeness — Calculate vertex closeness and graph centralization.">igraph_centralization_closeness</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*res=*/</em></span> NULL,
                                     IGRAPH_ALL, &amp;cent,
                                     <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                                     <span class="emphasis"><em>/*normalized=*/</em></span> true);
+    <span class="strong"><strong>printf</strong></span>("closeness centralization: %g\n", cent);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "undirected star, closeness: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 23;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="emphasis"><em>/* With eigenvector centrality, the most centralized structure is</em></span>
+<span class="emphasis"><em>     * a graph containing a single edge. */</em></span>
+    <span class="strong"><strong>printf</strong></span>("\ngraph with single edge:\n");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, <span class="emphasis"><em>/*n=*/</em></span> 10, <span class="emphasis"><em>/*directed=*/</em></span> 0,
+                 0,1, -1);
 
-    <span class="emphasis"><em>/****************************/</em></span>
-    <span class="emphasis"><em>/* single dyad */</em></span>
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, <span class="emphasis"><em>/*n=*/</em></span> 10, <span class="emphasis"><em>/*directed=*/</em></span> 0,
-                 0, 1, -1);
-
-    <span class="strong"><strong><a class="link" href="igraph-Arpack.html#igraph_arpack_options_init" title="3.1.4. igraph_arpack_options_init — Initialize ARPACK options.">igraph_arpack_options_init</a></strong></span>(&amp;arpack_options);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_centralization_eigenvector_centrality" title="13.5. igraph_centralization_eigenvector_centrality — Calculate eigenvector centrality scores and graph centralization.">igraph_centralization_eigenvector_centrality</a></strong></span>(
-                &amp;g,
+                &amp;graph,
                 <span class="emphasis"><em>/*vector=*/</em></span> NULL,
                 <span class="emphasis"><em>/*value=*/</em></span> NULL,
                 IGRAPH_DIRECTED,
                 <span class="emphasis"><em>/*scale=*/</em></span> true,
-                &amp;arpack_options, &amp;cent,
+                <span class="emphasis"><em>/*options=*/</em></span> NULL,
+                &amp;cent,
                 <span class="emphasis"><em>/*theoretical_max=*/</em></span> NULL,
                 <span class="emphasis"><em>/*normalized=*/</em></span> true);
+    <span class="strong"><strong>printf</strong></span>("eigenvector centralization: %g\n", cent);
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_almost_equals" title="7.2. igraph_almost_equals — Compare two double-precision floats with a tolerance.">igraph_almost_equals</a></strong></span>(cent, 1.0, 1e-8)) {
-        <span class="strong"><strong>fprintf</strong></span>(stderr, "dyad, eigenvector centrality: %g\n", cent);
-        <span class="strong"><strong>return</strong></span> 24;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -14290,7 +14029,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_similarity_jaccard(const igraph_t *graph, igraph_matrix_t *res,
-                              const igraph_vs_t vids, igraph_neimode_t mode, igraph_bool_t loops);
+                              const igraph_vs_t from, const igraph_vs_t to, igraph_neimode_t mode, igraph_bool_t loops);
 </pre></div>
 <p>
 </p>
@@ -14324,14 +14063,21 @@ the pairwise Jaccard similarities for some (or all) of the vertices.
 <td><p>
   Pointer to a matrix, the result of the calculation will
        be stored here. The number of its rows and columns is the same
-       as the number of vertex IDs in <em class="parameter"><code>vids</code></em>.
+       as the number of vertex IDs in <em class="parameter"><code>vit_from</code></em> and <em class="parameter"><code>vit_to</code></em>, respectively.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>vit_from</code></em>:</span></p></td>
 <td><p>
-  The vertex IDs of the vertices for which the
-       calculation will be done.
+  The vertex IDs of the first set of vertices of the
+       pairs for which the calculation will be done.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vit_to</code></em>:</span></p></td>
+<td><p>
+  The vertex IDs of the second set of vertices of the
+       pairs for which the calculation will be done.
 </p></td>
 </tr>
 <tr>
@@ -14493,7 +14239,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -14505,7 +14251,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -14749,7 +14495,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -14761,7 +14507,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -15005,7 +14751,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -15017,7 +14763,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -15055,7 +14801,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_similarity_dice(const igraph_t *graph, igraph_matrix_t *res,
-                                      const igraph_vs_t vids,
+                                      const igraph_vs_t vit_from, const igraph_vs_t vit_to,
                                       igraph_neimode_t mode, igraph_bool_t loops);
 </pre></div>
 <p>
@@ -15089,14 +14835,21 @@ calculates the pairwise Dice similarities for some (or all) of the vertices.
 <td><p>
   Pointer to a matrix, the result of the calculation will
        be stored here. The number of its rows and columns is the same
-       as the number of vertex IDs in <em class="parameter"><code>vids</code></em>.
+       as the number of vertex IDs in <em class="parameter"><code>vit_from</code></em> and <em class="parameter"><code>vit_to</code></em>, respectively.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>vit_from</code></em>:</span></p></td>
 <td><p>
-  The vertex IDs of the vertices for which the
-       calculation will be done.
+  The vertex IDs of the first vertices of the
+       pairs for which the calculation will be done.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vit_to</code></em>:</span></p></td>
+<td><p>
+  The vertex IDs of the second vertices of the
+       pairs for which the calculation will be done.
 </p></td>
 </tr>
 <tr>
@@ -15258,7 +15011,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -15270,7 +15023,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -15513,7 +15266,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -15525,7 +15278,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -15768,7 +15521,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -15780,7 +15533,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -15979,7 +15732,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>printf</strong></span>("Jaccard similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_jaccard" title="14.3. igraph_similarity_jaccard — Jaccard similarity coefficient for the given vertices.">igraph_similarity_jaccard</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nJaccard similarity, pairs:\n");
@@ -15991,7 +15744,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;res);
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_similarity_dice" title="14.6. igraph_similarity_dice — Dice similarity coefficient.">igraph_similarity_dice</a></strong></span>(&amp;g, &amp;m, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version).">igraph_vss_range</a></strong></span>(1, 3), IGRAPH_ALL, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>igraph_matrix_printf</strong></span>(&amp;m, "%.2f");
 
     <span class="strong"><strong>printf</strong></span>("\nDice similarity, pairs:\n");
@@ -16086,7 +15839,7 @@ random sampling of spanning trees of a graph.
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        a spanning tree will be returned here. Use
-       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.7. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.8. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
        a separate graph object.
 </p></td>
 </tr>
@@ -16155,7 +15908,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t edges;
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.20. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.22. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
 
     <span class="emphasis"><em>/* Compute the edge betweenness. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
@@ -16428,7 +16181,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t edges;
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.20. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.22. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
 
     <span class="emphasis"><em>/* Compute the edge betweenness. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
@@ -16518,7 +16271,7 @@ and <code class="literal">3-1-2</code> will be sampled with multiplicity 2, whil
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        a spanning tree will be returned here. Use
-       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.7. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.8. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
        a separate graph object.
 </p></td>
 </tr>
@@ -16693,7 +16446,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Create a directed binary tree on 15 nodes,</em></span>
 <span class="emphasis"><em>       with edges pointing towards the root. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.12. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;graph, 15, 2, IGRAPH_TREE_IN);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.14. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;graph, 15, 2, IGRAPH_TREE_IN);
 
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
     <span class="strong"><strong>printf</strong></span>("Is it an in-tree? %s\n", res ? "Yes" : "No");
@@ -16916,7 +16669,7 @@ sequence of n-2 integers, each between 0 and n-1 (inclusive).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.23. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.25. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -17064,7 +16817,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Trivial cases */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph.">igraph_transitivity_undirected</a></strong></span>(&amp;g, &amp;res, IGRAPH_TRANSITIVITY_NAN);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -17072,7 +16825,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph.">igraph_transitivity_undirected</a></strong></span>(&amp;g, &amp;res, IGRAPH_TRANSITIVITY_NAN);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -17997,7 +17750,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;m, 1, 1);
     <span class="strong"><strong>igraph_vector_init_int</strong></span>(&amp;weights, 5, 1, 2, 3, 4, 5);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED, 0, 1);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_laplacian" title="18.1. igraph_get_laplacian — Returns the Laplacian matrix of a graph.">igraph_get_laplacian</a></strong></span>(&amp;g, &amp;m, IGRAPH_OUT, IGRAPH_LAPLACIAN_SYMMETRIC, &amp;weights);
     <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;m);
 
@@ -18127,7 +17880,7 @@ int <span class="strong"><strong>test_laplacian</strong></span>(<span class="str
     }
 
     <span class="emphasis"><em>/* Base graph, no loop or multiple edges */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 5, dir, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 5, dir, 0, 1);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_laplacian_sparse" title="18.2. igraph_get_laplacian_sparse — Returns the Laplacian of a graph in a sparse matrix format.">igraph_get_laplacian_sparse</a></strong></span>(&amp;g, &amp;sm, mode, normalization, weights);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;m, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_as_matrix" title="4.9.3. igraph_sparsemat_as_matrix — Converts a sparse matrix to a dense matrix.">igraph_sparsemat_as_matrix</a></strong></span>(&amp;m, &amp;sm);
@@ -18370,7 +18123,7 @@ multiple edges.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_is_loop" title="19.2. igraph_is_loop — Find the loop edges in a graph."><code class="function">igraph_is_loop()</code></a> and <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.3. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> to
-find the loops and multiple edges, <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to
+find the loops and multiple edges, <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to
 get rid of them, or <a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.4. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> to decide whether
 there is at least one multiple edge.
   </p></td>
@@ -18457,7 +18210,7 @@ A loop edge is an edge from a vertex to itself.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
+  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -18592,7 +18345,7 @@ appearances of the multiple edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.5. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.4. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.5. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.4. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -18722,7 +18475,7 @@ will return a cached value in O(1) time.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.5. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.3. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.5. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.3. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -18887,7 +18640,7 @@ is the number of edges between its endpoints.
   <a class="link" href="igraph-Structural.html#igraph_count_multiple_1" title="19.6. igraph_count_multiple_1 — The multiplicity of a single edge in a graph."><code class="function">igraph_count_multiple_1()</code></a> if you only need the multiplicity of a
 single edge; <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.3. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> if you are only interested in whether
 the graph has at least one edge with multiplicity greater than one;
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -18972,7 +18725,7 @@ igraph_error_t igraph_count_multiple_1(const igraph_t *graph, igraph_integer_t *
   <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.5. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a> if you need the multiplicity of multiple
 edges; <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.3. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> if you are only interested in whether the
 graph has at least one edge with multiplicity greater than one;
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19181,13 +18934,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
         igraph_t g;
 
         <span class="emphasis"><em>/* Generate undirected graph with 1000 nodes and 50 vertex types */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.16. igraph_preference_game — Generates a graph with vertex types and connection preferences.">igraph_preference_game</a></strong></span>(&amp;g, nodes, types, <span class="emphasis"><em>/* type_dist= */</em></span> NULL, <span class="emphasis"><em>/* fixed_sizes= */</em></span> 1, &amp;pref_matrix, &amp;node_type_vec, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.17. igraph_preference_game — Generates a graph with vertex types and connection preferences.">igraph_preference_game</a></strong></span>(&amp;g, nodes, types, <span class="emphasis"><em>/* type_dist= */</em></span> NULL, <span class="emphasis"><em>/* fixed_sizes= */</em></span> 1, &amp;pref_matrix, &amp;node_type_vec, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
 
         <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_nominal" title="20.1. igraph_assortativity_nominal — Assortativity of a graph based on vertex categories.">igraph_assortativity_nominal</a></strong></span>(&amp;g, &amp;node_type_vec, &amp;assortativity, IGRAPH_UNDIRECTED, 1);
         <span class="strong"><strong>printf</strong></span>("Assortativity before rewiring = %g\n", assortativity);
 
         <span class="emphasis"><em>/* Rewire graph */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving its degree sequence.">igraph_rewire</a></strong></span>(&amp;g, 10 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g), IGRAPH_REWIRING_SIMPLE);
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_rewire" title="2.13. igraph_rewire — Randomly rewires a graph while preserving its degree sequence.">igraph_rewire</a></strong></span>(&amp;g, 10 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g), IGRAPH_REWIRING_SIMPLE);
 
         <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_nominal" title="20.1. igraph_assortativity_nominal — Assortativity of a graph based on vertex categories.">igraph_assortativity_nominal</a></strong></span>(&amp;g, &amp;node_type_vec, &amp;assortativity, IGRAPH_UNDIRECTED, 1);
         <span class="strong"><strong>printf</strong></span>("Assortativity after rewiring = %g\n\n", assortativity);
@@ -19507,14 +19260,14 @@ int <span class="strong"><strong>main</strong></span>(void){
         igraph_real_t assortativity;
 
         <span class="emphasis"><em>/* Generate graph from the forest fire model. */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_forest_fire_game" title="2.11. igraph_forest_fire_game — Generates a network according to the “forest fire game”.">igraph_forest_fire_game</a></strong></span>(&amp;g, vcount, pf, 1.0, 1, IGRAPH_UNDIRECTED);
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_forest_fire_game" title="2.12. igraph_forest_fire_game — Generates a network according to the “forest fire game”.">igraph_forest_fire_game</a></strong></span>(&amp;g, vcount, pf, 1.0, 1, IGRAPH_UNDIRECTED);
 
         <span class="emphasis"><em>/* Compute assortativity. */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g, &amp;assortativity, <span class="emphasis"><em>/* ignore edge directions */</em></span> IGRAPH_UNDIRECTED);
         <span class="strong"><strong>printf</strong></span>("Assortativity before rewiring = %g\n", assortativity);
 
         <span class="emphasis"><em>/* Randomize the graph while preserving the degrees. */</em></span>
-        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_rewire" title="2.12. igraph_rewire — Randomly rewires a graph while preserving its degree sequence.">igraph_rewire</a></strong></span>(&amp;g, 20 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g), IGRAPH_REWIRING_SIMPLE);
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_rewire" title="2.13. igraph_rewire — Randomly rewires a graph while preserving its degree sequence.">igraph_rewire</a></strong></span>(&amp;g, 20 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g), IGRAPH_REWIRING_SIMPLE);
 
         <span class="emphasis"><em>/* Re-compute assortativity. Did it change? */</em></span>
         <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree.">igraph_assortativity_degree</a></strong></span>(&amp;g, &amp;assortativity, <span class="emphasis"><em>/* ignore edge directions */</em></span> IGRAPH_UNDIRECTED);
@@ -19654,7 +19407,7 @@ etc. need to be included.
 <p>
 The current implementation of this function iteratively decrements support
 of each edge using O(|E|) space and O(|E|^1.5) time. The implementation does
-not support multigraphs; use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to collapse edges before
+not support multigraphs; use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to collapse edges before
 calling this function.
 
 </p>
@@ -21170,7 +20923,7 @@ allowed to have a connected to themselves? This is controlled by the
 </p>
 <p>
 Note that density is ill-defined for graphs which have multiple edges
-between some pairs of vertices. Consider calling <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
+between some pairs of vertices. Consider calling <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
 on such graphs.
 
 </p>
@@ -21343,7 +21096,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Trivial cases */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 100, IGRAPH_UNDIRECTED, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_reciprocity" title="26.2. igraph_reciprocity — Calculates the reciprocity of a directed graph.">igraph_reciprocity</a></strong></span>(&amp;g, &amp;res, 0, IGRAPH_RECIPROCITY_DEFAULT);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -21417,7 +21170,7 @@ will be zero.
 </p>
 <p>
 The measure works only if the graph is undirected and has no multiple edges.
-If the graph has multiple edges, simplify it first using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>. If the graph is directed, convert it into an undirected
+If the graph has multiple edges, simplify it first using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>. If the graph is directed, convert it into an undirected
 graph with <a class="link" href="igraph-Structural.html#igraph_to_undirected" title="17.2. igraph_to_undirected — Convert a directed graph to an undirected one."><code class="function">igraph_to_undirected()</code></a> .
 
 </p>
@@ -21734,7 +21487,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     mode = IGRAPH_IN;
     neighbour_degree_mode = IGRAPH_OUT;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*directed=*/</em></span> 1, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*directed=*/</em></span> 1, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, n);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v2, n);
@@ -21783,8 +21536,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <a class="indexterm" name="id-1.14.28.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-#define WEIGHT_OF(eid) (weights ? VECTOR(*weights)[eid] : 1)
-
 igraph_error_t igraph_get_adjacency(
     const igraph_t *graph, igraph_matrix_t *res, igraph_get_adjacency_t type,
     const igraph_vector_t *weights, igraph_loops_t loops
@@ -22433,6 +22184,8 @@ vertices and edges in the original input graph.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic_sparsemat">27.5. <code class="function">igraph_get_stochastic_sparsemat</code> —  Stochastic adjacency matrix of a graph (deprecated).</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_get_sparsemat">27.6. <code class="function">igraph_get_sparsemat</code> —  Converts an igraph graph to a sparse matrix (deprecated).</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_laplacian">27.7. <code class="function">igraph_laplacian</code> —  Returns the Laplacian matrix of a graph (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_hub_score">27.8. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_authority_score">27.9. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -22801,6 +22554,276 @@ code; use <a class="link" href="igraph-Structural.html#igraph_get_laplacian" tit
 instead.</p>
 </div>
 <p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_hub_score"></a>27.8. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_hub_score(const igraph_t *graph, igraph_vector_t *vector,
+                     igraph_real_t *value, igraph_bool_t scale,
+                     const igraph_vector_t *weights,
+                     igraph_arpack_options_t *options);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.5. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a>
+instead.</p>
+</div>
+<p>
+The hub scores of the vertices are defined as the principal
+eigenvector of <code class="literal">A A^T</code>, where <code class="literal">A</code> is the adjacency
+matrix of the graph, <code class="literal">A^T</code> is its transposed.
+
+</p>
+<p>
+See the following reference on the meaning of this score:
+J. Kleinberg. Authoritative sources in a hyperlinked
+environment. <span class="emphasis"><em> Proc. 9th ACM-SIAM Symposium on Discrete
+Algorithms, </em></span> 1998. Extended version in <span class="emphasis"><em> Journal of the
+ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
+1997.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Can be directed and undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vector</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector, the result is
+   stored here. If a null pointer then it is ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em>:</span></p></td>
+<td><p>
+  If not a null pointer then the eigenvalue
+   corresponding to the calculated eigenvector is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
+<td><p>
+  If not zero then the result will be scaled such that
+    the absolute value of the maximum centrality is one.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A null pointer (=no edge weights), or a vector
+    giving the weights of the edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
+<td><p>
+  Options to ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a>
+   for details. Note that the function overwrites the
+   <code class="literal">n</code> (number of vertices) parameter and
+   it always starts the calculation from a non-random vector
+   calculated based on the degree of the vertices.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: depends on the input graph, usually it is O(|V|),
+the number of vertices.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
+hub and authrotity scores efficiently at the same time,
+<a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.9. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a> for the companion measure,
+<a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_authority_score"></a>27.9. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_authority_score(const igraph_t *graph, igraph_vector_t *vector,
+                           igraph_real_t *value, igraph_bool_t scale,
+                           const igraph_vector_t *weights,
+                           igraph_arpack_options_t *options);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.5. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a>
+instead.</p>
+</div>
+<p>
+The authority scores of the vertices are defined as the principal
+eigenvector of <code class="literal">A^T A</code>, where <code class="literal">A</code> is the adjacency
+matrix of the graph, <code class="literal">A^T</code> is its transposed.
+
+</p>
+<p>
+See the following reference on the meaning of this score:
+J. Kleinberg. Authoritative sources in a hyperlinked
+environment. <span class="emphasis"><em> Proc. 9th ACM-SIAM Symposium on Discrete
+Algorithms, </em></span> 1998. Extended version in <span class="emphasis"><em> Journal of the
+ACM </em></span> 46(1999). Also appears as IBM Research Report RJ 10076, May
+1997.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Can be directed and undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vector</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector, the result is
+   stored here. If a null pointer then it is ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em>:</span></p></td>
+<td><p>
+  If not a null pointer then the eigenvalue
+   corresponding to the calculated eigenvector is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
+<td><p>
+  If not zero then the result will be scaled such that
+    the absolute value of the maximum centrality is one.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A null pointer (=no edge weights), or a vector
+    giving the weights of the edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
+<td><p>
+  Options to ARPACK. See <a class="link" href="igraph-Arpack.html#igraph_arpack_options_t" title="3.1.1. igraph_arpack_options_t — Options for ARPACK."><code class="function">igraph_arpack_options_t</code></a>
+   for details. Note that the function overwrites the
+   <code class="literal">n</code> (number of vertices) parameter and
+   it always starts the calculation from a non-random vector
+   calculated based on the degree of the vertices.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: depends on the input graph, usually it is O(|V|),
+the number of vertices.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
+hub and authrotity scores efficiently at the same time,
+<a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.8. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a> for the companion measure,
+<a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
 </p>
 </div>
 </div>

@@ -152,9 +152,10 @@
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Bipartite.html#about-bipartite">1.  Bipartite networks in igraph</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#create-two-mode-networks">2. Create two-mode networks</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#incidence-matrices">3. Incidence matrices</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#bipartite-adjacency-matrices">3. Bipartite adjacency matrices</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#project-two-mode-graphs">4. Project two-mode graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#other-operations-on-bipartite-graphs">5. Other operations on bipartite graphs</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#deprecated-bipartite">6. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -426,7 +427,7 @@ edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_full" title="1.15. igraph_full — Creates a full graph (directed or undirected, with or without loops)."><code class="function">igraph_full()</code></a> for non-bipartite full graphs.
+  <a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (directed or undirected, with or without loops)."><code class="function">igraph_full()</code></a> for non-bipartite full graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -598,7 +599,7 @@ realize.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game</code></a>.
+  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="3.1. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -612,21 +613,22 @@ edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="incidence-matrices"></a>3. Incidence matrices</h2></div></div></div>
+<a name="bipartite-adjacency-matrices"></a>3. Bipartite adjacency matrices</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_incidence">3.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from an incidence matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_incidence">3.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into an incidence matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_biadjacency">3.1. <code class="function">igraph_biadjacency</code> —  Creates a bipartite graph from a bipartite adjacency matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_biadjacency">3.2. <code class="function">igraph_get_biadjacency</code> —  Convert a bipartite graph into a bipartite adjacency matrix.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_incidence"></a>3.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from an incidence matrix.</h3></div></div></div>
+<a name="igraph_biadjacency"></a>3.1. <code class="function">igraph_biadjacency</code> —  Creates a bipartite graph from a bipartite adjacency matrix.</h3></div></div></div>
 <a class="indexterm" name="id-1.31.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_incidence(igraph_t *graph, igraph_vector_bool_t *types,
-                     const igraph_matrix_t *incidence,
-                     igraph_bool_t directed,
-                     igraph_neimode_t mode, igraph_bool_t multiple);
+igraph_error_t igraph_biadjacency(
+    igraph_t *graph, igraph_vector_bool_t *types,
+    const igraph_matrix_t *input, igraph_bool_t directed,
+    igraph_neimode_t mode, igraph_bool_t multiple
+);
 </pre></div>
 <p>
 </p>
@@ -635,7 +637,7 @@ igraph_error_t igraph_incidence(igraph_t *graph, igraph_vector_bool_t *types,
 
 
 A bipartite (or two-mode) graph contains two types of vertices and
-edges always connect vertices of different types. An incidence
+edges always connect vertices of different types. A bipartite adjacency
 matrix is an <span class="emphasis"><em>n</em></span> x <span class="emphasis"><em>m</em></span> matrix, <span class="emphasis"><em>n</em></span> and <span class="emphasis"><em>m</em></span> are the number of vertices
 of the two types, respectively. Nonzero elements in the matrix denote
 edges between the two corresponding vertices.
@@ -644,7 +646,7 @@ edges between the two corresponding vertices.
 <p>
 Note that this function can operate in two modes, depending on the
 <em class="parameter"><code>multiple</code></em> argument. If it is <code class="constant">false</code>, then a single edge is
-created for every non-zero element in the incidence matrix. If <em class="parameter"><code>multiple</code></em> is <code class="constant">true</code>, then the matrix elements are rounded up
+created for every non-zero element in the bipartite adjacency matrix. If <em class="parameter"><code>multiple</code></em> is <code class="constant">true</code>, then the matrix elements are rounded up
 to the closest non-negative integer to get the number of edges to
 create between a pair of vertices.
 
@@ -677,15 +679,16 @@ This function does not create multiple edges if <em class="parameter"><code>mult
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>incidence</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>input</code></em>:</span></p></td>
 <td><p>
-  The incidence matrix.
+  The bipartite adjacency matrix that serves as an input
+  to this function.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Gives whether to create an undirected or a directed
+  Specifies whether to create an undirected or a directed
   graph.
 </p></td>
 </tr>
@@ -701,8 +704,7 @@ This function does not create multiple edges if <em class="parameter"><code>mult
 <tr>
 <td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
 <td><p>
-  How to interpret the incidence matrix elements. See
-  details below.
+  How to interpret the matrix elements. See details below.
 </p></td>
 </tr>
 </tbody>
@@ -724,21 +726,21 @@ This function does not create multiple edges if <em class="parameter"><code>mult
 </table></div>
 <p>
 
-Time complexity: O(n*m), the size of the incidence matrix.
+Time complexity: O(n*m), the size of the bipartite adjacency matrix.
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_incidence"></a>3.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into an incidence matrix.</h3></div></div></div>
+<a name="igraph_get_biadjacency"></a>3.2. <code class="function">igraph_get_biadjacency</code> —  Convert a bipartite graph into a bipartite adjacency matrix.</h3></div></div></div>
 <a class="indexterm" name="id-1.31.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_get_incidence(const igraph_t *graph,
-                         const igraph_vector_bool_t *types,
-                         igraph_matrix_t *res,
-                         igraph_vector_int_t *row_ids,
-                         igraph_vector_int_t *col_ids);
+igraph_error_t igraph_get_biadjacency(
+    const igraph_t *graph, const igraph_vector_bool_t *types,
+    igraph_matrix_t *res, igraph_vector_int_t *row_ids,
+    igraph_vector_int_t *col_ids
+);
 </pre></div>
 <p>
 </p>
@@ -827,7 +829,7 @@ different kind.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Bipartite.html#igraph_incidence" title="3.1. igraph_incidence — Creates a bipartite graph from an incidence matrix."><code class="function">igraph_incidence()</code></a> for the opposite operation.
+  <a class="link" href="igraph-Bipartite.html#igraph_biadjacency" title="3.1. igraph_biadjacency — Creates a bipartite graph from a bipartite adjacency matrix."><code class="function">igraph_biadjacency()</code></a> for the opposite operation.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1184,6 +1186,70 @@ can be mapped independently.
 Time complexity: O(|V|+|E|), linear in the number of vertices and
 edges.
  
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="deprecated-bipartite"></a>6. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_incidence">6.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_incidence">6.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_incidence"></a>6.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.31.7.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_incidence(
+    igraph_t *graph, igraph_vector_bool_t *types,
+    const igraph_matrix_t *incidence, igraph_bool_t directed,
+    igraph_neimode_t mode, igraph_bool_t multiple
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.5. Please do not use this function in new
+code; use <a class="link" href="igraph-Bipartite.html#igraph_biadjacency" title="3.1. igraph_biadjacency — Creates a bipartite graph from a bipartite adjacency matrix."><code class="function">igraph_biadjacency()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_get_incidence"></a>6.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.31.7.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_get_incidence(const igraph_t *graph,
+                         const igraph_vector_bool_t *types,
+                         igraph_matrix_t *res,
+                         igraph_vector_int_t *row_ids,
+                         igraph_vector_int_t *col_ids);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.5. Please do not use this function in new
+code; use <a class="link" href="igraph-Bipartite.html#igraph_get_biadjacency" title="3.2. igraph_get_biadjacency — Convert a bipartite graph into a bipartite adjacency matrix."><code class="function">igraph_get_biadjacency()</code></a>
+instead.</p>
+</div>
+<p> 
 </p>
 </div>
 </div>

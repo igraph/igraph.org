@@ -1,0 +1,65 @@
+---
+title: C/igraph 0.10.5
+date: 2023-06-29
+tags: c
+---
+
+[C/igraph](https://igraph.org/c/) 0.10.5, the fourth bugfix release of the 0.10 series, has arrived.
+
+The source can be obtained from [the GitHub releases page](https://github.com/igraph/igraph/releases/tag/0.10.5).
+
+This is a maintenance release bringing bug fixes, performance improvements, as
+well as new experimental features.
+
+Read on for more details about the changes in version 0.10.5.
+
+<!--more-->
+
+### Added
+
+ - `igraph_graph_power()` computes the kth power of a graph (experimental function).
+ - `igraph_community_voronoi()` for detecting communities using Voronoi partitioning (experimental function).
+
+### Changes
+
+ - `igraph_community_walktrap()` no longer requires `modularity` and `merges` to be non-NULL when `membership` is non-NULL.
+ - `igraph_isomorphic()` now supports multigraphs.
+ - Shortest path related functions now consistently ignore edges with positive infinite weights.
+
+### Fixed
+
+ - `igraph_hub_and_authority_scores()`, `igraph_hub_score()` and `igraph_authority_score()` considered self-loops only once on the diagonal of the adjacency matrix of undirected graphs, thus the result was not identical to that obtained by `igraph_eigenvector_centrality()` on loopy undirected graphs. This is now corrected.
+ - `igraph_community_infomap()` now checks edge and vertex weights for validity.
+ - `igraph_minimum_spanning_tree()` and `igraph_minimum_spanning_tree_prim()` now check that edge weights are not NaN.
+ - Fixed an initialization error in the string attribute combiner of the C attribute handler.
+ - Fixed an issue with the weighted clique number calculation when all the weights were the same.
+ - HRG functions now require a graph with at least 3 vertices; previous versions crashed with smaller graphs.
+ - `igraph_arpack_rssolve()` and `igraph_arpack_rnsolve()`, i.e. the ARPACK interface in igraph, are now interruptible. As a result, several other functions that rely on ARPACK (eigenvector centrality, hub and authority scores, etc.) also became interruptible.
+ - `igraph_get_shortest_paths_dijkstra()`, `igraph_get_all_shortest_paths_dijkstra()` and `igraph_get_shortest_paths_bellman_ford()` now validate the `from` vertex.
+ - Fixed bugs in `igraph_local_scan_1_ecount()` for weighted undirected graphs which would miscount loops and multi-edges.
+
+### Deprecated
+
+- `igraph_automorphisms()` is now deprecated; its new name is `igraph_count_automorphisms()`. The old name is kept available until at least igraph 0.11.
+- `igraph_hub_score()` and `igraph_authority_score()` are now deprecated. Use `igraph_hub_and_authority_scores()` instead.
+- `igraph_get_incidence()` is now deprecated; its new name is `igraph_get_biadjacency()` to reflect that the returned matrix is an _adjacency_ matrix between pairs of vertices and not an _incidence_ matrix between vertices and edges. The new name is kept available until at least igraph 0.11. We plan to re-use the name in later versions to provide a proper incidence matrix where the rows are vertices and the columns are edges.
+- `igraph_hrg_dendrogram()` is deprecated because it requires an attribute handler and it goes against the convention of returning attributes in vectors where possible. Use `igraph_from_hrg_dendrogram()` instead, which constructs the dendrogram as an igraph graph _and_ returns the associated probabilities in a vector.
+
+### Other
+
+ - Improved performance for `igraph_vertex_connectivity()`.
+ - `igraph_simplify()` makes use of the cache, and avoids simplification when the graph is already known to be simple.
+ - Documentation improvements.
+
+### Known issues
+
+ - `strtod()` does not respect the locale on macOS 13 Ventura, causing the `example::safelocale` test to fail within igraph's test suite. This is a bug in macOS 13. This issue will be inconsequential for most users. It affects use cases when igraph is run within a process whose numeric locale has been explicitly set to one that does not use a decimal point, and then `igraph_enter_safelocale()` (or other means) are used to temporarily set the locale to `"C"` before calling igraph functions. See the following links for more details:
+
+    * https://stackoverflow.com/q/76133503/695132
+    * https://github.com/igraph/igraph/issues/2340
+
+ - ARPACK-NG 3.9.0 fails to produce a result under rare circumstances. This issue can affect any use of ARPACK-NG in principle, and may cause igraph's `example::centralization` and `test::centralization` tests to fail, depending on the specific configuration and BLAS implementation that is being used. For more details, see:
+
+    * https://github.com/opencollab/arpack-ng/issues/410
+    * https://github.com/igraph/igraph/issues/2311
+

@@ -177,11 +177,17 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
   <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
 
-  <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph.">igraph_erdos_renyi_game</a></strong></span>(&amp;graph, IGRAPH_ERDOS_RENYI_GNM,
-                          num_vertices, num_edges,
-                          IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+  <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(
+    &amp;graph, num_vertices, num_edges,
+    IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE
+  );
 
-  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;graph, &amp;diameter, NULL, NULL, NULL, NULL, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn= */</em></span> true);
+  <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(
+    &amp;graph, &amp;diameter,
+    <span class="emphasis"><em>/* from = */</em></span> NULL, <span class="emphasis"><em>/* to = */</em></span> NULL,
+    <span class="emphasis"><em>/* vertex_path = */</em></span> NULL, <span class="emphasis"><em>/* edge_path = */</em></span> NULL,
+    IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn= */</em></span> true
+  );
   <span class="strong"><strong>printf</strong></span>("Diameter of a random graph with average degree %g: %g\n",
           2.0 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph) / <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph),
           (double) diameter);
@@ -201,7 +207,8 @@ This example illustrates a couple of points:
 First, programs
 using the <span class="command"><strong>igraph</strong></span> library should include the
 <code class="filename">igraph.h</code> header
-file.
+file. Note that while igraph installs several sub-headers, the organization of these may change
+without notice. Only use <code class="filename">igraph.h</code> in your projects, not any of the sub-headers.
 </p></li>
 <li class="listitem"><p>
 Second, <span class="command"><strong>igraph</strong></span> uses the
@@ -217,7 +224,7 @@ Third, <span class="command"><strong>igraph</strong></span> graph objects are re
 type.
 </p></li>
 <li class="listitem"><p>
-Fourth, the <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="2.3. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game()</code></a>
+Fourth, the <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a>
 creates a graph and <a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a>
 destroys it, i.e. deallocates the memory associated to it.
 </p></li>
@@ -289,7 +296,7 @@ that finds <span class="command"><strong>igraph</strong></span> on the host mach
 not enabled in the CMake project.</p>
 <p>C++ support is enabled by default when no languages are explicitly
 specified in CMake's <a class="ulink" href="https://cmake.org/cmake/help/latest/command/project.html" target="_top"><code class="code">project</code></a>
-command, e.g. <code class="code">project(igraph_test)</code>. If you do specify some languages explicitly, 
+command, e.g. <code class="code">project(igraph_test)</code>. If you do specify some languages explicitly,
 make sure to also include <code class="code">CXX</code>, e.g. <code class="code">project(igraph_test C CXX)</code>.
 </p>
 </div>
@@ -348,9 +355,10 @@ On most systems, the executable can be run by simply typing its name like this:
 </pre>
 <p>
 If you use dynamic linking and the <span class="command"><strong>igraph</strong></span>
-library is not in a standard place, you may need to add its location to the
+library is not installed in a standard place, you may need to add its location to the
 <code class="envar">LD_LIBRARY_PATH</code> (Linux), <code class="envar">DYLD_LIBRARY_PATH</code> (macOS)
-or <code class="envar">PATH</code> (Windows) environment variables.
+or <code class="envar">PATH</code> (Windows) environment variables. This is typically necessary
+on Windows systems.
 </p>
 </div>
 </div>
@@ -374,9 +382,9 @@ directed or undirected paths.
 <span class="command"><strong>igraph</strong></span> has sophisticated ways for creating graphs. The simplest
 graphs are deterministic regular structures like star graphs
 (<a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center."><code class="function">igraph_star()</code></a>),
-ring graphs (<a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>), lattices
+ring graphs (<a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>), lattices
 (<a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.10. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a>) or trees
-(<a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.12. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>).
+(<a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.14. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>).
 </p>
 <p>
 The following example creates an undirected regular circular lattice,
@@ -472,7 +480,7 @@ between the same pair of vertices.
 <span class="type">igraph_t</span> can of course represent loops and multiple edges, although some
 routines expect simple graphs, i.e. graphs which contain neither of these. This is because some
 structural properties are ill-defined for non-simple graphs. Loop and multi-edges can be removed by calling
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
 </p>
 </div>
 <div class="section">

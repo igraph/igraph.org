@@ -911,6 +911,7 @@ argument is not used.
 
 
 Install the supplied warning handler function.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1782,8 +1783,8 @@ It is guaranteed to be evaluated only once.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>code</code></em>:</span></p></td>
 <td><p>
-  Pointer to an optional variable of type <code class="constant">igraph_error_t</code>; the
-value of this variable will be set to the error code if it is not a null
+  Pointer to an optional variable of type <span class="type">igraph_error_t</span>;
+the value of this variable will be set to the error code if it is not a null
 pointer.
  </p></td>
 </tr>
@@ -1967,12 +1968,13 @@ restore the error handler before they return.
 <a name="fatal-error-handlers"></a>5.5.  Fatal errors</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Error.html#igraph_fatal_handler_t">5.5.1. <code class="function">igraph_fatal_handler_t</code> —  The type of igraph fatal error handler functions.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_fatal_handler_abort">5.5.2. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATAL">5.5.3. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATALF">5.5.4. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ASSERT">5.5.5. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_fatal">5.5.6. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</a></span></dt>
-<dt><span class="section"><a href="igraph-Error.html#igraph_fatalf">5.5.7. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_set_fatal_handler">5.5.2. <code class="function">igraph_set_fatal_handler</code> —  Installs a fatal error handler.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatal_handler_abort">5.5.3. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATAL">5.5.4. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATALF">5.5.5. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ASSERT">5.5.6. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatal">5.5.7. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatalf">5.5.8. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</a></span></dt>
 </dl></div>
 <p>
 In some rare situations, <span class="command"><strong>igraph</strong></span> may encounter an internal error
@@ -2030,7 +2032,7 @@ call <code class="literal">abort()</code> or do a <code class="literal">longjmp(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
 <td><p>
-  The number of the line in the source file which triggered the error
+  The number of the line in the source file which triggered the error.
  </p></td>
 </tr>
 </tbody>
@@ -2041,8 +2043,65 @@ call <code class="literal">abort()</code> or do a <code class="literal">longjmp(
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_fatal_handler_abort"></a>5.5.2. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</h4></div></div></div>
+<a name="igraph_set_fatal_handler"></a>5.5.2. <code class="function">igraph_set_fatal_handler</code> —  Installs a fatal error handler.</h4></div></div></div>
 <a class="indexterm" name="id-1.6.6.6.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ igraph_fatal_handler_t* igraph_set_fatal_handler(igraph_fatal_handler_t* new_handler);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Installs the supplied fatal error handler function.
+
+</p>
+<p>
+Fatal error handler functions <span class="emphasis"><em>must</em></span> not return. Typically, the fatal
+error handler would either call <code class="literal">abort()</code> or <code class="literal">longjmp()</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>new_handler</code></em>:</span></p></td>
+<td><p>
+  The new fatal error handler function to install.
+       Supply a null pointer here to uninstall the current
+       fatal error handler, without installing a new one.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The current fatal error handler function.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_fatal_handler_abort"></a>5.5.3. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.7.2"></a><p>
 </p>
 <pre class="programlisting">
 IGRAPH_EXPORT igraph_fatal_handler_t igraph_fatal_handler_abort;
@@ -2058,8 +2117,8 @@ The default fatal error handler, prints an error message and aborts the program.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="IGRAPH_FATAL"></a>5.5.3. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</h4></div></div></div>
-<a class="indexterm" name="id-1.6.6.6.7.2"></a><p>
+<a name="IGRAPH_FATAL"></a>5.5.4. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.8.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_FATAL(reason)
@@ -2070,7 +2129,7 @@ The default fatal error handler, prints an error message and aborts the program.
 
 
 This is the usual way of triggering a fatal error from an igraph
-function. It calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.6. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
+function. It calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
 
 </p>
 <p>
@@ -2098,8 +2157,8 @@ The normal way to handle errors is <a class="link" href="igraph-Error.html#IGRAP
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="IGRAPH_FATALF"></a>5.5.4. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</h4></div></div></div>
-<a class="indexterm" name="id-1.6.6.6.8.2"></a><p>
+<a name="IGRAPH_FATALF"></a>5.5.5. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_FATALF
@@ -2111,7 +2170,8 @@ The normal way to handle errors is <a class="link" href="igraph-Error.html#IGRAP
 
 <span class="command"><strong>igraph</strong></span> functions can use this macro when a fatal error occurs and
 want to pass on extra information to the user about what went wrong.
-It calls <a class="link" href="igraph-Error.html#igraph_fatalf" title="5.5.7. igraph_fatalf — Triggers a fatal error, printf-like syntax."><code class="function">igraph_fatalf()</code></a> with the proper parameters.
+It calls <a class="link" href="igraph-Error.html#igraph_fatalf" title="5.5.8. igraph_fatalf — Triggers a fatal error, printf-like syntax."><code class="function">igraph_fatalf()</code></a> with the proper parameters.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2143,8 +2203,8 @@ It calls <a class="link" href="igraph-Error.html#igraph_fatalf" title="5.5.7. i
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="IGRAPH_ASSERT"></a>5.5.5. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</h4></div></div></div>
-<a class="indexterm" name="id-1.6.6.6.9.2"></a><p>
+<a name="IGRAPH_ASSERT"></a>5.5.6. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.10.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_ASSERT(condition)
@@ -2155,7 +2215,7 @@ It calls <a class="link" href="igraph-Error.html#igraph_fatalf" title="5.5.7. i
 
 
 This macro is like the standard <code class="literal">assert()</code>, but instead of
-calling <code class="literal">abort()</code>, it calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.6. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>. This allows for returning
+calling <code class="literal">abort()</code>, it calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>. This allows for returning
 the control to the calling program, e.g. returning to the top level in a high-level
 <span class="command"><strong>igraph</strong></span> interface.
 
@@ -2195,8 +2255,8 @@ macro in C++ code. With most compilers, destructor will not be called when
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_fatal"></a>5.5.6. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</h4></div></div></div>
-<a class="indexterm" name="id-1.6.6.6.10.2"></a><p>
+<a name="igraph_fatal"></a>5.5.7. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
  IGRAPH_FUNCATTR_NORETURN void igraph_fatal(const char *reason, const char *file, int line);
@@ -2208,7 +2268,7 @@ macro in C++ code. With most compilers, destructor will not be called when
 
 
 This function triggers a fatal error. Typically it is called indirectly through
-<a class="link" href="igraph-Error.html#IGRAPH_FATAL" title="5.5.3. IGRAPH_FATAL — Triggers a fatal error."><code class="function">IGRAPH_FATAL()</code></a> or <a class="link" href="igraph-Error.html#IGRAPH_ASSERT" title="5.5.5. IGRAPH_ASSERT — igraph-specific replacement for assert()."><code class="function">IGRAPH_ASSERT()</code></a>.
+<a class="link" href="igraph-Error.html#IGRAPH_FATAL" title="5.5.4. IGRAPH_FATAL — Triggers a fatal error."><code class="function">IGRAPH_FATAL()</code></a> or <a class="link" href="igraph-Error.html#IGRAPH_ASSERT" title="5.5.6. IGRAPH_ASSERT — igraph-specific replacement for assert()."><code class="function">IGRAPH_ASSERT()</code></a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -2245,8 +2305,8 @@ This function triggers a fatal error. Typically it is called indirectly through
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_fatalf"></a>5.5.7. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</h4></div></div></div>
-<a class="indexterm" name="id-1.6.6.6.11.2"></a><p>
+<a name="igraph_fatalf"></a>5.5.8. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 IGRAPH_FUNCATTR_PRINTFLIKE(1,4)
@@ -2258,9 +2318,9 @@ IGRAPH_EXPORT IGRAPH_FUNCATTR_NORETURN void igraph_fatalf(const char *reason, co
 
 
 
-This function is similar to <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.6. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>, but
+This function is similar to <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>, but
 uses a printf-like syntax. It substitutes the additional arguments
-into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.6. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
+into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
 
 </p>
 <p><b>Arguments: </b>

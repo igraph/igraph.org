@@ -206,10 +206,6 @@ first graph into the edge set of the second. This mapping is called
 an <span class="emphasis"><em>isomorphism.</em></span>
 
 </p>
-<p>Currently, this function supports simple graphs and graphs
-with self-loops, but does not support multigraphs.
-
-</p>
 <p>This function decides which graph isomorphism algorithm to be
 used based on the input graphs. Right now it does the following:
 </p>
@@ -220,7 +216,8 @@ If one graph is directed and the other undirected then an
 
 </p></li>
 <li class="listitem"><p>
-If one of the graphs has multi-edges then an error is triggered.
+If one of the graphs has multi-edges then both graphs are
+   simplified and colorized using <a class="link" href="igraph-Isomorphism.html#igraph_simplify_and_colorize" title="6.2. igraph_simplify_and_colorize — Simplify the graph and compute self-loop and edge multiplicities."><code class="function">igraph_simplify_and_colorize()</code></a> and sent to VF2.
 
 </p></li>
 <li class="listitem"><p>
@@ -1250,7 +1247,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 12345);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>1);
     <span class="strong"><strong>igraph_vector_int_init_range</strong></span>(&amp;perm, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring1));
     <span class="strong"><strong>igraph_vector_int_shuffle</strong></span>(&amp;perm);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_permute_vertices" title="6.1. igraph_permute_vertices — Permute the vertices.">igraph_permute_vertices</a></strong></span>(&amp;ring1, &amp;ring2, &amp;perm);
@@ -1280,8 +1277,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;perm);
 
     <span class="emphasis"><em>/* Two colors, count subisomorphisms */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.11. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring1, 100, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring2, 80, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span>0);
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;color2, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;ring2));
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;color1); i += 2) {
@@ -3394,7 +3391,7 @@ vertex and edge colors.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.6. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2."><code class="function">igraph_isomorphic_vf2()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a>
+  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2."><code class="function">igraph_isomorphic_vf2()</code></a>, <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>

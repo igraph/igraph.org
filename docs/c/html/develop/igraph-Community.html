@@ -159,6 +159,7 @@
 <dt><span class="section"><a href="igraph-Community.html#fluid-communities">7. Fluid communities</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#label-propagation">8. Label propagation</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#infomap-algorithm">9. The InfoMAP algorithm</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#voronoi-communities">10. Voronoi communities</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -296,7 +297,7 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>resolution</code></em>:</span></p></td>
 <td><p>
-  The resolutin parameter <code class="constant">γ</code>. Must not be negative.
+  The resolution parameter <code class="constant">γ</code>. Must not be negative.
                   Set it to 1 to use the classical definition of modularity.
 </p></td>
 </tr>
@@ -1268,7 +1269,7 @@ with positive and negative links, <a class="ulink" href="http://arxiv.org/abs/08
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
   The input graph, it may be directed but the direction
-    of the edges is not used in the algorithm.
+    of the edges is ignored by the algorithm.
 </p></td>
 </tr>
 <tr>
@@ -1277,7 +1278,7 @@ with positive and negative links, <a class="ulink" href="http://arxiv.org/abs/08
   The vector giving the edge weights, it may be <code class="constant">NULL</code>,
     in which case all edges are weighted equally. The edge weights
     must be positive unless using the <code class="constant">IGRAPH_SPINCOMM_IMP_NEG</code>
-    implementation. This condition is not verified by the function.
+    implementation.
 </p></td>
 </tr>
 <tr>
@@ -1319,40 +1320,37 @@ with positive and negative links, <a class="ulink" href="http://arxiv.org/abs/08
 <td><p><span class="term"><em class="parameter"><code>spins</code></em>:</span></p></td>
 <td><p>
   Integer giving the number of spins, i.e. the maximum
-    number of clusters. Usually it is not a program to give a high
-    number here, the default was 25 in the original code. Even if
-    the number of spins is high the number of clusters in the
-    result might be small.
+    number of clusters. Even if the number of spins is high the number of
+    clusters in the result might be small.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>parupdate</code></em>:</span></p></td>
 <td><p>
   A logical constant, whether to update all spins in
-    parallel. The default for this argument was <code class="constant">false</code> in
-    the original code. It is not implemented in the
-    <code class="constant">IGRAPH_SPINCOMM_INP_NEG</code> implementation.
+    parallel. It is not implemented in the <code class="constant">IGRAPH_SPINCOMM_INP_NEG</code>
+    implementation.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>starttemp</code></em>:</span></p></td>
 <td><p>
-  Real number, the temperature at the start. The
-    value of this argument was 1.0 in the original code.
+  Real number, the temperature at the start. A reasonable
+    default is 1.0.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stoptemp</code></em>:</span></p></td>
 <td><p>
-  Real number, the algorithm stops at this
-    temperature. The default was 0.01 in the original code.
+  Real number, the algorithm stops at this temperature. A
+    reasonable default is 0.01.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>coolfact</code></em>:</span></p></td>
 <td><p>
   Real number, the cooling factor for the simulated
-    annealing. The default was 0.99 in the original code.
+    annealing. A reasonable default is 0.99.
 </p></td>
 </tr>
 <tr>
@@ -1370,14 +1368,9 @@ with positive and negative links, <a class="ulink" href="http://arxiv.org/abs/08
 <tr>
 <td><p><span class="term"><em class="parameter"><code>gamma</code></em>:</span></p></td>
 <td><p>
-  Real number. The gamma parameter of the
-    algorithm. This defines the weight of the missing and existing
-    links in the quality function for the clustering. The default
-    value in the original code was 1.0, which is equal weight to
-    missing and existing edges. Smaller values make the existing
-    links contibute more to the energy function which is minimized
-    in the algorithm. Bigger values make the missing links more
-    important. (If my understanding is correct.)
+  Real number. The gamma parameter of the algorithm,
+    acting as a resolution parameter. Smaller values typically lead to
+    larger clusters, larger values typically lead to smaller clusters.
 </p></td>
 </tr>
 <tr>
@@ -1387,21 +1380,18 @@ with positive and negative links, <a class="ulink" href="http://arxiv.org/abs/08
     implementations of the spin-glass algorithm that are included
     in igraph. <code class="constant">IGRAPH_SPINCOMM_IMP_ORIG</code> selects the original
     implementation, this is faster, <code class="constant">IGRAPH_SPINCOMM_INP_NEG</code> selects
-    a new implementation by Vincent Traag that allows negative edge
-    weights.
+    an implementation that allows negative edge weights.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>gamma_minus</code></em>:</span></p></td>
 <td><p>
-  Real number. Parameter for the <code class="constant">IGRAPH_SPINCOMM_IMP_NEG</code> implementation. This
-    specifies the balance between the importance of present and
-    non-present negative weighted edges in a community. Smaller values of
-    <em class="parameter"><code>gamma_minus</code></em> lead to communities with lesser
-    negative intra-connectivity.
-    If this argument is set to zero, the algorithm reduces to a graph
-    coloring algorithm, using the number of spins as the number of
-    colors.
+  Real number. Parameter for the <code class="constant">IGRAPH_SPINCOMM_IMP_NEG</code>
+    implementation. This acts as a resolution parameter for the negative part
+    of the network. Smaller values of <em class="parameter"><code>gamma_minus</code></em> leads to fewer negative
+    edges within clusters. If this argument is set to zero, the algorithm
+    reduces to a graph coloring algorithm when all edges have negative
+    weights, using the number of spins as the number of colors.
 </p></td>
 </tr>
 </tbody>
@@ -1627,7 +1617,7 @@ Time complexity: TODO.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector">3.1. <code class="function">igraph_community_leading_eigenvector</code> —  Leading eigenvector community finding (proper version).</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector_callback_t">3.2. <code class="function">igraph_community_leading_eigenvector_callback_t</code> — Callback for the leading eigenvector community finding method.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> — Vertex membership from the leading eigenvector community structure</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</a></span></dt>
 </dl></div>
 <p>
 The function documented in these section implements the
@@ -1801,10 +1791,12 @@ Phys Rev E 74:036104 (2006).
   The result of the algorithm, a matrix containing the
    information about the splits performed. The matrix is built in
    the opposite way however, it is like the result of an
-   agglomerative algorithm. If at the end of the algorithm (after
-   <em class="parameter"><code>steps</code></em> steps was done) there are <span class="quote">“<span class="quote">p</span>”</span> communities,
-   then these are numbered from zero to <span class="quote">“<span class="quote">p-1</span>”</span>. The
-   first line of the matrix contains the first <span class="quote">“<span class="quote">merge</span>”</span>
+   agglomerative algorithm. Unlike with most other hierarchicaly
+   community detection functions in igraph, the integers in this matrix
+   represent community indices, not vertex indices. If at the end of
+   the algorithm (after <em class="parameter"><code>steps</code></em> steps was done) there are <span class="quote">“<span class="quote">p</span>”</span>
+   communities, then these are numbered from zero to <span class="quote">“<span class="quote">p-1</span>”</span>.
+   The first line of the matrix contains the first <span class="quote">“<span class="quote">merge</span>”</span>
    (which is in reality the last split) of two communities into
    community <span class="quote">“<span class="quote">p</span>”</span>, the merge in the second line forms
    community <span class="quote">“<span class="quote">p+1</span>”</span>, etc. The matrix should be
@@ -2098,7 +2090,7 @@ The following arguments are passed to the callback:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> — Vertex membership from the leading eigenvector community structure</h3></div></div></div>
+<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.4.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -2114,10 +2106,10 @@ igraph_error_t igraph_le_community_to_membership(const igraph_matrix_int_t *merg
 
 
 This function creates a membership vector from the
-result of <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>,
-It takes <code class="constant">membership</code>
-and performs <code class="constant">steps</code> merges, according to the supplied
-<code class="constant">merges</code> matrix.
+result of <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>.
+It takes <code class="constant">membership</code> and performs <code class="constant">steps</code> merges,
+according to the supplied <code class="constant">merges</code> matrix.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2130,8 +2122,8 @@ and performs <code class="constant">steps</code> merges, according to the suppli
 <tr>
 <td><p><span class="term"><em class="parameter"><code>merges</code></em>:</span></p></td>
 <td><p>
-  The two-column matrix containing the merge
-   operations. See <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> for the
+  The two-column matrix containing the merge operations.
+   See <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a> for the
    detailed syntax. This is usually from the output of the
    leading eigenvector community structure detection routines.
 </p></td>
@@ -2152,7 +2144,7 @@ and performs <code class="constant">steps</code> merges, according to the suppli
 <tr>
 <td><p><span class="term"><em class="parameter"><code>csize</code></em>:</span></p></td>
 <td><p>
-  Optionally the sizes of the communities is stored here,
+  Optionally the sizes of the communities are stored here,
     if this is not a null pointer, but an initialized vector.
 </p></td>
 </tr>
@@ -3694,7 +3686,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t membership;
     igraph_real_t modularity;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.20. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.22. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
 
     <span class="emphasis"><em>/* Label propagation is a stochastic method; the result will depend on the random seed. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 123);
@@ -3877,6 +3869,164 @@ implementation) you can use <a class="link" href="igraph-Random.html#igraph_rng_
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Community.html#igraph_community_spinglass" title="2.1. igraph_community_spinglass — Community detection based on statistical mechanics."><code class="function">igraph_community_spinglass()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="voronoi-communities"></a>10. Voronoi communities</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Community.html#igraph_community_voronoi">10.1. <code class="function">igraph_community_voronoi</code> —  Finds communities using Voronoi partitioning.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_community_voronoi"></a>10.1. <code class="function">igraph_community_voronoi</code> —  Finds communities using Voronoi partitioning.</h3></div></div></div>
+<a class="indexterm" name="id-1.25.11.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_community_voronoi(
+        const igraph_t *graph,
+        igraph_vector_int_t *membership, igraph_vector_int_t *generators, igraph_real_t *modularity,
+        const igraph_vector_t *lengths, const igraph_vector_t *weights,
+        igraph_neimode_t mode, igraph_real_t r);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function finds communities using a Voronoi partitioning of vertices based
+on the given edge lengths divided by the edge clustering coefficient
+(<a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>). The generator vertices are chosen to be those with the
+largest local relative density within a radius <em class="parameter"><code>r</code></em>, with the local relative
+density of a vertex defined as
+<code class="literal">s m / (m + k)</code>, where <code class="constant">s</code> is the strength of the vertex,
+<code class="constant">m</code> is the number of edges within the vertex's first order neighborhood,
+while <code class="constant">k</code> is the number of edges with only one endpoint within this
+neighborhood.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Deritei et al, Community detection by graph Voronoi diagrams,
+New Journal of Physics 16, 063007 (2014)
+<a class="ulink" href="https://doi.org/10.1088/1367-2630/16/6/063007" target="_top">https://doi.org/10.1088/1367-2630/16/6/063007</a>
+
+</p>
+<p>
+Molnár et al, Community Detection in Directed Weighted Networks using Voronoi Partitioning,
+<a class="ulink" href="https://arxiv.org/abs/2304.12389" target="_top">https://arxiv.org/abs/2304.12389</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. It must be simple.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code>, the membership of each vertex is returned here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>generators</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code>, the generator points used for Voronoi partitioning are returned here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>modularity</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code>, the modularity score of the partitioning is returned here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lengths</code></em>:</span></p></td>
+<td><p>
+  Edge lengths, or <code class="constant">NULL</code> to consider all edges as having unit length.
+  Voronoi partitioning will use edge lengths equal to lengths / ECC where ECC is the edge
+  clustering coefficient.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Edge weights, or <code class="constant">NULL</code> to consider all edges as having unit weight.
+  Weights are used when selecting generator points, as well as for computing modularity.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  If <code class="constant">IGRAPH_OUT</code>, distances from generator points to all other nodes are considered.
+  If <code class="constant">IGRAPH_IN</code>, the reverse distances are used. If <code class="constant">IGRAPH_ALL</code>, edge directions are ignored.
+  This parameter is ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>r</code></em>:</span></p></td>
+<td><p>
+  The radius/resolution to use when selecting generator points. The larger this value, the
+  fewer partitions there will be. Pass in a negative value to automatically select the radius
+  that maximizes modularity.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.31. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>, <a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
