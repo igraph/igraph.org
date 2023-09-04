@@ -278,10 +278,13 @@ igraph_error_t igraph_triad_census(const igraph_t *graph, igraph_vector_t *res);
 
 
 
-</p>
-<p>
 Calculating the triad census means classifying every triple of
-vertices in a directed graph. A triple can be in one of 16 states:
+vertices in a directed graph based on the type of pairwise
+connections it contains, i.e. mutual, asymmetric or no connection.
+A triple can be in one of 16 states, commonly described using
+Davis and Leinhardt's "MAN labels". The <em class="parameter"><code>res</code></em> vector will
+contain the counts of these in the following order:
+
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -290,7 +293,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><code class="constant">003</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 0: 003</code></span></p></td>
 <td><p>
 
      A, B, C, the empty graph.
@@ -298,7 +301,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">012</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 1: 012</code></span></p></td>
 <td><p>
 
      A-&gt;B, C, a graph with a single directed edge.
@@ -306,7 +309,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">102</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 2: 102</code></span></p></td>
 <td><p>
 
      A&lt;-&gt;B, C, a graph with a mutual connection between two vertices.
@@ -314,7 +317,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">021D</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 3: 021D</code></span></p></td>
 <td><p>
 
      A&lt;-B-&gt;C, the binary out-tree.
@@ -322,7 +325,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">021U</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 4: 021U</code></span></p></td>
 <td><p>
 
      A-&gt;B&lt;-C, the binary in-tree.
@@ -330,7 +333,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">021C</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 5: 021C</code></span></p></td>
 <td><p>
 
      A-&gt;B-&gt;C, the directed line.
@@ -338,7 +341,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">111D</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 6: 111D</code></span></p></td>
 <td><p>
 
      A&lt;-&gt;B&lt;-C.
@@ -346,7 +349,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">111U</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 7: 111U</code></span></p></td>
 <td><p>
 
      A&lt;-&gt;B-&gt;C.
@@ -354,7 +357,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">030T</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 8: 030T</code></span></p></td>
 <td><p>
 
      A-&gt;B&lt;-C, A-&gt;C.
@@ -362,7 +365,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">030C</code></span></p></td>
+<td><p><span class="term"><code class="constant"> 9: 030C</code></span></p></td>
 <td><p>
 
      A&lt;-B&lt;-C, A-&gt;C.
@@ -370,7 +373,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">201</code></span></p></td>
+<td><p><span class="term"><code class="constant">10: 201</code></span></p></td>
 <td><p>
 
      A&lt;-&gt;B&lt;-&gt;C.
@@ -378,7 +381,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">120D</code></span></p></td>
+<td><p><span class="term"><code class="constant">11: 120D</code></span></p></td>
 <td><p>
 
      A&lt;-B-&gt;C, A&lt;-&gt;C.
@@ -386,7 +389,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">120U</code></span></p></td>
+<td><p><span class="term"><code class="constant">12: 120U</code></span></p></td>
 <td><p>
 
      A-&gt;B&lt;-C, A&lt;-&gt;C.
@@ -394,7 +397,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">120C</code></span></p></td>
+<td><p><span class="term"><code class="constant">13: 120C</code></span></p></td>
 <td><p>
 
      A-&gt;B-&gt;C, A&lt;-&gt;C.
@@ -402,7 +405,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">210</code></span></p></td>
+<td><p><span class="term"><code class="constant">14: 210</code></span></p></td>
 <td><p>
 
      A-&gt;B&lt;-&gt;C, A&lt;-&gt;C.
@@ -410,7 +413,7 @@ vertices in a directed graph. A triple can be in one of 16 states:
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">300</code></span></p></td>
+<td><p><span class="term"><code class="constant">15: 300</code></span></p></td>
 <td><p>
 
      A&lt;-&gt;B&lt;-&gt;C, A&lt;-&gt;C, the complete graph.
@@ -423,16 +426,25 @@ vertices in a directed graph. A triple can be in one of 16 states:
 
 </p>
 <p>
-See also Davis, J.A. and Leinhardt, S.  (1972).  The Structure of
-Positive Interpersonal Relations in Small Groups.  In J. Berger
-(Ed.), Sociological Theories in Progress, Volume 2, 218-251.
-Boston: Houghton Mifflin.
+This function is intended for directed graphs. If the input is undirected,
+a warning is shown, and undirected edges will be interpreted as mutual.
 
 </p>
 <p>
 This function calls <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a> which is an
 implementation of the FANMOD motif finder tool, see <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a> for details. Note that the order of the
 triads is not the same for <a class="link" href="igraph-Motifs.html#igraph_triad_census" title="2. igraph_triad_census — Triad census, as defined by Davis and Leinhardt."><code class="function">igraph_triad_census()</code></a> and <a class="link" href="igraph-Motifs.html#igraph_motifs_randesu" title="4.1. igraph_motifs_randesu — Count the number of motifs in a graph."><code class="function">igraph_motifs_randesu()</code></a>.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Davis, J.A. and Leinhardt, S.  (1972).  The Structure of
+Positive Interpersonal Relations in Small Groups.  In J. Berger
+(Ed.), Sociological Theories in Progress, Volume 2, 218-251.
+Boston: Houghton Mifflin.
 
 </p>
 <p><b>Arguments: </b>
@@ -446,8 +458,7 @@ triads is not the same for <a class="link" href="igraph-Motifs.html#igraph_triad
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph. A warning is given for undirected
-  graphs, as the result is undefined for those.
+  The input graph.
 </p></td>
 </tr>
 <tr>

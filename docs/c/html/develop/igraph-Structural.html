@@ -411,11 +411,14 @@ Time complexity: The algorithm is a randomized Las Vegas algorithm. The expected
 <dt><span class="section"><a href="igraph-Structural.html#igraph_girth">3.25. <code class="function">igraph_girth</code> —  The girth of a graph is the length of the shortest cycle in it.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_eccentricity">3.26. <code class="function">igraph_eccentricity</code> —  Eccentricity of some vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_eccentricity_dijkstra">3.27. <code class="function">igraph_eccentricity_dijkstra</code> —  Eccentricity of some vertices, using weighted edges.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_graph_center">3.28. <code class="function">igraph_graph_center</code> —  Central vertices of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_radius">3.29. <code class="function">igraph_radius</code> —  Radius of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_pseudo_diameter">3.30. <code class="function">igraph_pseudo_diameter</code> —  Approximation and lower bound of diameter.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_voronoi">3.31. <code class="function">igraph_voronoi</code> —  Voronoi partitioning of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_vertex_path_from_edge_path">3.32. <code class="function">igraph_vertex_path_from_edge_path</code> —  Converts a path of edge IDs to the traversed vertex IDs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_radius">3.28. <code class="function">igraph_radius</code> —  Radius of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_radius_dijkstra">3.29. <code class="function">igraph_radius_dijkstra</code> —  Radius of a graph, using weighted edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_graph_center">3.30. <code class="function">igraph_graph_center</code> —  Central vertices of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_graph_center_dijkstra">3.31. <code class="function">igraph_graph_center_dijkstra</code> —  Central vertices of a graph, using weighted edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_pseudo_diameter">3.32. <code class="function">igraph_pseudo_diameter</code> —  Approximation and lower bound of diameter.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_pseudo_diameter_dijkstra">3.33. <code class="function">igraph_pseudo_diameter_dijkstra</code> —  Approximation and lower bound of the diameter of a weighted graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_voronoi">3.34. <code class="function">igraph_voronoi</code> —  Voronoi partitioning of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_vertex_path_from_edge_path">3.35. <code class="function">igraph_vertex_path_from_edge_path</code> —  Converts a path of edge IDs to the traversed vertex IDs.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -4676,8 +4679,9 @@ igraph_error_t igraph_diameter(const igraph_t *graph, igraph_real_t *res,
 
 
 
-The diameter of a graph is the length of the longest shortest path it has.
-This function computes both the diameter, as well as the corresponding path.
+The diameter of a graph is the length of the longest shortest path it has,
+i.e. the maximum eccentricity of the graph's vertices.
+This function computes both the diameter, as well as a corresponding path.
 The diameter of the null graph is considered be infinity by convention.
 
 If the graph has no vertices, <code class="constant">IGRAPH_NAN</code> is returned.
@@ -4785,7 +4789,8 @@ number of vertices times the number of edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_diameter_dijkstra" title="3.24. igraph_diameter_dijkstra — Calculates the weighted diameter of a graph using Dijkstra's algorithm."><code class="function">igraph_diameter_dijkstra()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_diameter_dijkstra" title="3.24. igraph_diameter_dijkstra — Calculates the weighted diameter of a graph using Dijkstra's algorithm."><code class="function">igraph_diameter_dijkstra()</code></a> for the weighted version,
+<a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a> for the minimum eccentricity.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -4870,7 +4875,10 @@ igraph_error_t igraph_diameter_dijkstra(const igraph_t *graph,
 
 
 
-This function computes the weighted diameter of a graph.
+This function computes the weighted diameter of a graph, defined as the longest
+weighted shortest path, or the maximum weighted eccentricity of the graph's
+vertices. A corresponding shortest path, as well as its endpoints,
+can also be optionally computed.
 
 If the graph has no vertices, <code class="constant">IGRAPH_NAN</code> is returned.
 
@@ -4983,7 +4991,8 @@ Time complexity: O(|V||E|*log|E|), |V| is the number of vertices,
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic)."><code class="function">igraph_diameter()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic)."><code class="function">igraph_diameter()</code></a> for the unweighted version,
+<a class="link" href="igraph-Structural.html#igraph_radius_dijkstra" title="3.29. igraph_radius_dijkstra — Radius of a graph, using weighted edges."><code class="function">igraph_radius_dijkstra()</code></a> for the minimum weighted eccentricity.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5224,7 +5233,7 @@ vertices for which eccentricity is calculated.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_radius" title="3.29. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5367,111 +5376,20 @@ components. Isolated vertices have eccentricity zero.
 </table></div>
 <p>
 
+Time complexity: O(|V| |E| log|V| + |V|), where |V| is the number of
+vertices, |E| the number of edges.
+
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_graph_center"></a>3.28. <code class="function">igraph_graph_center</code> —  Central vertices of a graph.</h3></div></div></div>
+<a name="igraph_radius"></a>3.28. <code class="function">igraph_radius</code> —  Radius of a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.29.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_graph_center(
-    const igraph_t *graph, igraph_vector_int_t *res, igraph_neimode_t mode
-);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-The central vertices of a graph are calculated by finding the vertices
-with the minimum eccentricity. This concept is typically applied to
-connected graphs. In undirected disconnected graphs, the calculation
-is effectively done per connected component.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  The input graph, it can be directed or undirected.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
-<td><p>
-  Pointer to an initialized vector, the result is stored
-   here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
-<td><p>
-  What kind of paths to consider for the calculation:
-   <code class="constant">IGRAPH_OUT</code>, paths that follow edge directions;
-   <code class="constant">IGRAPH_IN</code>, paths that follow the opposite directions; and
-   <code class="constant">IGRAPH_ALL</code>, paths that ignore edge directions. This argument
-   is ignored for undirected graphs.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(|V| (|V|+|E|)), where |V| is the number of
-vertices and |E| is the number of edges.
-
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a>.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_radius"></a>3.29. <code class="function">igraph_radius</code> —  Radius of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.5.30.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_radius(const igraph_t *graph, igraph_real_t *radius,
-                  igraph_neimode_t mode);
+                             igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -5546,7 +5464,9 @@ vertices and |E| is the number of edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_radius_dijkstra" title="3.29. igraph_radius_dijkstra — Radius of a graph, using weighted edges."><code class="function">igraph_radius_dijkstra()</code></a> for the weighted version,
+<a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic)."><code class="function">igraph_diameter()</code></a> for the maximum eccentricity,
+<a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a> for the eccentricities of all vertices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5555,7 +5475,7 @@ vertices and |E| is the number of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.5.30.10.1"></a><p class="title"><b>Example 13.14.  File <code class="code">examples/simple/igraph_radius.c</code></b></p>
+<a name="id-1.14.5.29.10.1"></a><p class="title"><b>Example 13.14.  File <code class="code">examples/simple/igraph_radius.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -5565,21 +5485,21 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_real_t radius;
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.29. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_OUT);
     <span class="strong"><strong>if</strong></span> (radius != 1) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.29. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_ALL);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_ALL);
     <span class="strong"><strong>if</strong></span> (radius != 1) {
         <span class="strong"><strong>return</strong></span> 2;
     }
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.29. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph.">igraph_radius</a></strong></span>(&amp;g, &amp;radius, IGRAPH_OUT);
     <span class="strong"><strong>if</strong></span> (radius != 0) {
         <span class="strong"><strong>return</strong></span> 3;
     }
@@ -5598,8 +5518,329 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_pseudo_diameter"></a>3.30. <code class="function">igraph_pseudo_diameter</code> —  Approximation and lower bound of diameter.</h3></div></div></div>
+<a name="igraph_radius_dijkstra"></a>3.29. <code class="function">igraph_radius_dijkstra</code> —  Radius of a graph, using weighted edges.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.30.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_radius_dijkstra(const igraph_t *graph, const igraph_vector_t *weights,
+                                      igraph_real_t *radius, igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The radius of a graph is the defined as the minimum eccentricity of
+its vertices, see <a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, it can be directed or undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  The edge weights. All edge weights must be
+   non-negative for Dijkstra's algorithm to work. Additionally, no
+   edge weight may be NaN. If either case does not hold, an error
+   is returned. If this is a null pointer, then the unweighted
+   version, <a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a> is called. Edges with positive
+   infinite weights are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>radius</code></em>:</span></p></td>
+<td><p>
+  Pointer to a real variable, the result is stored
+  here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  What kind of paths to consider for the calculation:
+   <code class="constant">IGRAPH_OUT</code>, paths that follow edge directions;
+   <code class="constant">IGRAPH_IN</code>, paths that follow the opposite directions; and
+   <code class="constant">IGRAPH_ALL</code>, paths that ignore edge directions. This argument
+   is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V| |E| log|V| + |V|), where |V| is the number of
+vertices, |E| the number of edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a> for the unweighted version,
+<a class="link" href="igraph-Structural.html#igraph_diameter_dijkstra" title="3.24. igraph_diameter_dijkstra — Calculates the weighted diameter of a graph using Dijkstra's algorithm."><code class="function">igraph_diameter_dijkstra()</code></a> for the maximum weighted eccentricity,
+<a class="link" href="igraph-Structural.html#igraph_eccentricity_dijkstra" title="3.27. igraph_eccentricity_dijkstra — Eccentricity of some vertices, using weighted edges."><code class="function">igraph_eccentricity_dijkstra()</code></a> for weighted eccentricities of
+all vertices.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_graph_center"></a>3.30. <code class="function">igraph_graph_center</code> —  Central vertices of a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.5.31.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_graph_center(
+    const igraph_t *graph, igraph_vector_int_t *res, igraph_neimode_t mode
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The central vertices of a graph are calculated by finding the vertices
+with the minimum eccentricity. This concept is typically applied to
+(strongly) connected graphs. In disconnected graphs, the smallest
+eccentricity is taken across all components.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, it can be directed or undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector, the result is stored
+   here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  What kind of paths to consider for the calculation:
+   <code class="constant">IGRAPH_OUT</code>, paths that follow edge directions;
+   <code class="constant">IGRAPH_IN</code>, paths that follow the opposite directions; and
+   <code class="constant">IGRAPH_ALL</code>, paths that ignore edge directions. This argument
+   is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V| (|V|+|E|)), where |V| is the number of
+vertices and |E| is the number of edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_graph_center_dijkstra" title="3.31. igraph_graph_center_dijkstra — Central vertices of a graph, using weighted edges."><code class="function">igraph_graph_center_dijkstra()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices."><code class="function">igraph_eccentricity()</code></a>, <a class="link" href="igraph-Structural.html#igraph_radius" title="3.28. igraph_radius — Radius of a graph."><code class="function">igraph_radius()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_graph_center_dijkstra"></a>3.31. <code class="function">igraph_graph_center_dijkstra</code> —  Central vertices of a graph, using weighted edges.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.32.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_graph_center_dijkstra(
+    const igraph_t *graph, const igraph_vector_t *weights, igraph_vector_int_t *res, igraph_neimode_t mode
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The central vertices of a graph are calculated by finding the vertices
+with the minimum eccentricity. This function takes edge weights into
+account and uses Dijkstra's algorithm for the shortest path calculation.
+The concept of the graph center is typically applied to
+(strongly) connected graphs. In disconnected graphs, the smallest
+eccentricity is taken across all components.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, it can be directed or undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  The edge weights. All edge weights must be
+   non-negative for Dijkstra's algorithm to work. Additionally, no
+   edge weight may be NaN. If either case does not hold, an error
+   is returned. If this is a null pointer, then the unweighted
+   version, <a class="link" href="igraph-Structural.html#igraph_graph_center" title="3.30. igraph_graph_center — Central vertices of a graph."><code class="function">igraph_graph_center()</code></a> is called. Edges with positive
+   infinite weights are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector, the result is stored
+   here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  What kind of paths to consider for the calculation:
+   <code class="constant">IGRAPH_OUT</code>, paths that follow edge directions;
+   <code class="constant">IGRAPH_IN</code>, paths that follow the opposite directions; and
+   <code class="constant">IGRAPH_ALL</code>, paths that ignore edge directions. This argument
+   is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V| |E| log|V| + |V|), where |V| is the number of
+vertices, |E| the number of edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_graph_center" title="3.30. igraph_graph_center — Central vertices of a graph."><code class="function">igraph_graph_center()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_eccentricity_dijkstra" title="3.27. igraph_eccentricity_dijkstra — Eccentricity of some vertices, using weighted edges."><code class="function">igraph_eccentricity_dijkstra()</code></a>, <a class="link" href="igraph-Structural.html#igraph_radius_dijkstra" title="3.29. igraph_radius_dijkstra — Radius of a graph, using weighted edges."><code class="function">igraph_radius_dijkstra()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_pseudo_diameter"></a>3.32. <code class="function">igraph_pseudo_diameter</code> —  Approximation and lower bound of diameter.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.33.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_pseudo_diameter(const igraph_t *graph,
@@ -5733,8 +5974,154 @@ vertices and |E| is the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_voronoi"></a>3.31. <code class="function">igraph_voronoi</code> —  Voronoi partitioning of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.5.32.2"></a><p>
+<a name="igraph_pseudo_diameter_dijkstra"></a>3.33. <code class="function">igraph_pseudo_diameter_dijkstra</code> —  Approximation and lower bound of the diameter of a weighted graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.34.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_pseudo_diameter_dijkstra(const igraph_t *graph,
+                                    const igraph_vector_t *weights,
+                                    igraph_real_t *diameter,
+                                    igraph_integer_t vid_start,
+                                    igraph_integer_t *from,
+                                    igraph_integer_t *to,
+                                    igraph_bool_t directed,
+                                    igraph_bool_t unconn);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This algorithm finds a pseudo-peripheral vertex and returns its
+weighted eccentricity. This value can be used as an approximation
+and lower bound of the diameter of a graph.
+
+</p>
+<p>
+A pseudo-peripheral vertex is a vertex v, such that for every
+vertex u which is as far away from v as possible, v is also as
+far away from u as possible. The process of finding one depends
+on where the search starts, and for a disconnected graph the
+maximum diameter found will be that of the component <em class="parameter"><code>vid_start</code></em>
+is in.
+
+</p>
+<p>
+If the graph has no vertices, <code class="constant">IGRAPH_NAN</code> is returned.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, can be directed or undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  The edge weights of the graph. Can be <code class="constant">NULL</code> for an
+       unweighted graph. All weights should be non-negative. Edges with
+       positive infinite weights are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>diameter</code></em>:</span></p></td>
+<td><p>
+  This will contain the weighted pseudo-diameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vid_start</code></em>:</span></p></td>
+<td><p>
+  Id of the starting vertex. If this is negative, a
+       random starting vertex is chosen.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code> this will be set to the
+       source vertex of the diameter path. If the graph has no diameter path,
+       it will be set to -1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code> this will be set to the
+       target vertex of the diameter path. If the graph has no diameter path,
+       it will be set to -1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to consider directed
+       paths. Ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>unconn</code></em>:</span></p></td>
+<td><p>
+  What to do if the graph is not connected. If
+       <code class="constant">true</code> the longest geodesic within a component
+       will be returned, otherwise <code class="constant">IGRAPH_INFINITY</code> is
+       returned.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V||E|*log|E|), |V| is the number of vertices,
+|E| is the number of edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_diameter_dijkstra" title="3.24. igraph_diameter_dijkstra — Calculates the weighted diameter of a graph using Dijkstra's algorithm."><code class="function">igraph_diameter_dijkstra()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_voronoi"></a>3.34. <code class="function">igraph_voronoi</code> —  Voronoi partitioning of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.35.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_voronoi(
@@ -5910,8 +6297,8 @@ vertices and |V| and |E| are the number of vertices and edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_vertex_path_from_edge_path"></a>3.32. <code class="function">igraph_vertex_path_from_edge_path</code> —  Converts a path of edge IDs to the traversed vertex IDs.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.5.33.2"></a><p>
+<a name="igraph_vertex_path_from_edge_path"></a>3.35. <code class="function">igraph_vertex_path_from_edge_path</code> —  Converts a path of edge IDs to the traversed vertex IDs.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.5.36.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vertex_path_from_edge_path(
@@ -9767,11 +10154,10 @@ For isolated vertices, i.e. those having no associated paths, NaN is returned.
 </table></div>
 <p>
 
-Time complexity: O(n|E|),
-n is the number
-of vertices for which the calculation is done and
-|E| is the number
-of edges in the graph.
+Time complexity: O(n|E|) for the unweighted case and O(n|E|log|V|+|V|)
+for the weighted case, where n is the number
+of vertices for which the calculation is done, |V| is the number of vertices
+and |E| is the number of edges in the graph.
 
 </p>
 <p><b>See also: </b></p>
@@ -9979,9 +10365,10 @@ S. Vigna and P. Boldi, Axioms for Centrality, Internet Mathematics 10, (2014).
 </table></div>
 <p>
 
-Time complexity: O(n|E|), where
-n is the numberof vertices for which the calculation is done and
-|E| is the number of edges in the graph.
+Time complexity: O(n|E|) for the unweighted case and O(n*|E|log|V|+|V|)
+for the weighted case, where n is the number
+of vertices for which the calculation is done, |V| is the number of vertices
+and |E| is the number of edges in the graph.
 
 </p>
 <p><b>See also: </b></p>
@@ -10376,7 +10763,9 @@ Brisbane, Australia, April 1998.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
 <td><p>
-  The vertex IDs for which the PageRank is returned.
+  The vertex IDs for which the PageRank is returned. This parameter
+   is only for convenience. Computing PageRank for fewer than all vertices will
+   not speed up the calculation.
 </p></td>
 </tr>
 <tr>
@@ -10582,7 +10971,9 @@ does not result in any performance increase at all.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
 <td><p>
-  The vertex IDs for which the PageRank is returned.
+  The vertex IDs for which the PageRank is returned. This parameter
+   is only for convenience. Computing PageRank for fewer than all vertices will
+   not speed up the calculation.
 </p></td>
 </tr>
 <tr>
@@ -10758,7 +11149,9 @@ does not result in any performance increase at all.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
 <td><p>
-  The vertex IDs for which the PageRank is returned.
+  The vertex IDs for which the PageRank is returned. This parameter
+   is only for convenience. Computing PageRank for fewer than all vertices will
+   not speed up the calculation.
 </p></td>
 </tr>
 <tr>
@@ -11843,11 +12236,11 @@ then the given cutoff value.
 </table></div>
 <p>
 
-Time complexity: O(n|E|),
-n is the number
-of vertices for which the calculation is done and
-|E| is the number
-of edges in the graph.
+Time complexity: At most O(n|E|) for the unweighted case and O(n|E|log|V|+|V|)
+for the weighted case, where n is the number
+of vertices for which the calculation is done, |V| is the number of vertices
+and |E| is the number of edges in the graph. The timing decreases with smaller
+cutoffs in a way that depends on the graph structure.
 
 </p>
 <p><b>See also: </b></p>
@@ -12046,9 +12439,11 @@ to be zero.
 </table></div>
 <p>
 
-Time complexity: O(n|E|), where
-n is the number of vertices for which the calculation is done and
-|E| is the number of edges in the graph.
+Time complexity: At most O(n|E|) for the unweighted case and O(n|E|log|V|+|V|)
+for the weighted case, where n is the number
+of vertices for which the calculation is done, |V| is the number of vertices
+and |E| is the number of edges in the graph. The timing decreases with smaller
+cutoffs in a way that depends on the graph structure.
 
 </p>
 <p><b>See also: </b></p>

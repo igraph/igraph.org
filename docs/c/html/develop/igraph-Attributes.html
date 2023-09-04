@@ -303,11 +303,16 @@ It has the following members:
 <tr>
 <td><p><span class="term"><code class="constant">permute_vertices</code>:</span></p></td>
 <td><p>
-  Typically called when a new graph is
-   created based on an existing one, e.g. if vertices are removed
-   from a graph. The supplied index vector defines which old vertex
+  Called when a new graph is created based on an
+   existing one such that there is a mapping from the vertices of the new
+   graph back to the vertices of the old graph (e.g. if vertices are removed
+   from a graph). The supplied index vector defines which old vertex
    a new vertex corresponds to. Its length must be the same as the
-   number of vertices in the new graph.
+   number of vertices in the new graph. Note that the old and the new graph
+   may be the same. If the two graph instances are <span class="emphasis"><em>not</em></span> the same, implementors
+   may safely assume that the new graph has no vertex attributes yet (but it
+   may already have graph or edge attributes by the time this function is
+   called).
 </p></td>
 </tr>
 <tr>
@@ -317,7 +322,11 @@ It has the following members:
    of a new graph involves a merge (contraction, etc.) of vertices
    from another graph. The function is after the new graph was created.
    An argument specifies how several vertices from the old graph map to a
-   single vertex in the new graph.
+   single vertex in the new graph. It is guaranteed that the old and the
+   new graph instances are different when this callback is called.
+   Implementors may safely assume that the new graph has no vertex attributes
+   yet (but it may already have graph or edge attributes by the time this
+   function is called).
 </p></td>
 </tr>
 <tr>
@@ -331,12 +340,16 @@ It has the following members:
 <tr>
 <td><p><span class="term"><code class="constant">permute_edges</code>:</span></p></td>
 <td><p>
-  Typically called when a new graph is created and
+  Called when a new graph is created and
    some of the new edges should carry the attributes of some of the
    old edges. The idx vector shows the mapping between the old edges and
    the new ones. Its length is the same as the number of edges in the new
-   graph, and for each edge it gives the id of the old edge (the edge in
-   the old graph).
+   graph, and for each edge it gives the ID of the old edge (the edge in
+   the old graph). Note that the old and the new graph instances <span class="emphasis"><em>may</em></span>
+   be the same. If the two graph instances are <span class="emphasis"><em>not</em></span> the same, implementors
+   may safely assume that the new graph has no edge attributes yet (but it
+   may already have graph or vertex attributes by the time this function is
+   called).
 </p></td>
 </tr>
 <tr>
@@ -346,7 +359,11 @@ It has the following members:
    of a new graph involves a merge (contraction, etc.) of edges
    from another graph. The function is after the new graph was created.
    An argument specifies how several edges from the old graph map to a
-   single edge in the new graph.
+   single edge in the new graph. It is guaranteed that the old and the
+   new graph instances are different when this callback is called.
+   Implementors may safely assume that the new graph has no edge attributes
+   yet (but it may already have graph or vertex attributes by the time this
+   function is called).
 </p></td>
 </tr>
 <tr>

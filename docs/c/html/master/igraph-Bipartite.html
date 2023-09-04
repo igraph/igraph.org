@@ -187,7 +187,8 @@ to them.</p>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_create_bipartite">2.1. <code class="function">igraph_create_bipartite</code> —  Create a bipartite graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_full_bipartite">2.2. <code class="function">igraph_full_bipartite</code> —  Create a full bipartite network.</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game">2.3. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnm">2.3. <code class="function">igraph_bipartite_game_gnm</code> —  Generate a random bipartite graph with a fixed number of edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnp">2.4. <code class="function">igraph_bipartite_game_gnp</code> —  Generates a random bipartite graph with a fixed connection probability.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -437,15 +438,14 @@ edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_bipartite_game"></a>2.3. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</h3></div></div></div>
+<a name="igraph_bipartite_game_gnm"></a>2.3. <code class="function">igraph_bipartite_game_gnm</code> —  Generate a random bipartite graph with a fixed number of edges.</h3></div></div></div>
 <a class="indexterm" name="id-1.31.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_bipartite_game(igraph_t *graph, igraph_vector_bool_t *types,
-                          igraph_erdos_renyi_t type,
-                          igraph_integer_t n1, igraph_integer_t n2,
-                          igraph_real_t p, igraph_integer_t m,
-                          igraph_bool_t directed, igraph_neimode_t mode);
+igraph_error_t igraph_bipartite_game_gnm(igraph_t *graph, igraph_vector_bool_t *types,
+                              igraph_integer_t n1, igraph_integer_t n2,
+                              igraph_integer_t m, igraph_bool_t directed,
+                              igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -453,12 +453,8 @@ igraph_error_t igraph_bipartite_game(igraph_t *graph, igraph_vector_bool_t *type
 
 
 
-Similarly to unipartite (one-mode) networks, we can define the
-G(n,p), and G(n,m) graph classes for bipartite graphs, via their
-generating process. In G(n,p) every possible edge between top and
-bottom vertices is realized with probability p, independently of the
-rest of the edges. In G(n,m), we uniformly choose m edges to
-realize.
+In the G(n1, n2, m) model we uniformly choose <em class="parameter"><code>m</code></em> edges to realize
+between the <em class="parameter"><code>n1</code></em> bottom vertices and <em class="parameter"><code>n2</code></em> top vertices.
 
 </p>
 <p><b>Arguments: </b>
@@ -486,45 +482,6 @@ realize.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>type</code></em>:</span></p></td>
-<td>
-<p>
-  The type of the random graph, possible values:
-       </p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ERDOS_RENYI_GNM</code></span></p></td>
-<td><p>
-
-         G(n,m) graph,
-         m edges are
-         selected uniformly randomly in a graph with
-         n vertices.
-       
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ERDOS_RENYI_GNP</code></span></p></td>
-<td><p>
-
-         G(n,p) graph,
-         every possible edge is included in the graph with
-         probability p.
-       
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-</td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>n1</code></em>:</span></p></td>
 <td><p>
   The number of bottom vertices.
@@ -537,17 +494,9 @@ realize.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
-<td><p>
-  The connection probability for G(n,p) graphs. It is
-    ignored for G(n,m) graphs.
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
 <td><p>
-  The number of edges for G(n,m) graphs. It is ignored for
-    G(n,p) graphs.
+  The number of edges.
 </p></td>
 </tr>
 <tr>
@@ -599,7 +548,132 @@ realize.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game" title="3.1. igraph_erdos_renyi_game — Generates a random (Erdős-Rényi) graph."><code class="function">igraph_erdos_renyi_game</code></a>.
+  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> for the unipartite version,
+<a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnp" title="2.4. igraph_bipartite_game_gnp — Generates a random bipartite graph with a fixed connection probability."><code class="function">igraph_bipartite_game_gnp()</code></a> for the G(n1, n2, p) model.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number of vertices and
+edges.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_bipartite_game_gnp"></a>2.4. <code class="function">igraph_bipartite_game_gnp</code> —  Generates a random bipartite graph with a fixed connection probability.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bipartite_game_gnp(igraph_t *graph, igraph_vector_bool_t *types,
+                              igraph_integer_t n1, igraph_integer_t n2,
+                              igraph_real_t p, igraph_bool_t directed,
+                              igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+In the G(n1, n2, p) model, every possible edge between the <em class="parameter"><code>n1</code></em> bottom vertices
+and <em class="parameter"><code>n2</code></em> top vertices is realized with probability <em class="parameter"><code>p</code></em>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized igraph graph, the result
+   is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized boolean vector, or a null
+   pointer. If not <code class="constant">NULL</code>, then the vertex types are stored
+   here. Bottom vertices come first, <em class="parameter"><code>n1</code></em> of them, then <em class="parameter"><code>n2</code></em> top
+   vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n1</code></em>:</span></p></td>
+<td><p>
+  The number of bottom vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n2</code></em>:</span></p></td>
+<td><p>
+  The number of top vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<td><p>
+  The connection probability.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to generate a directed graph. See
+    also the <em class="parameter"><code>mode</code></em> argument.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies how to direct the edges in directed
+    graphs. If it is <code class="constant">IGRAPH_OUT</code>, then directed edges point from
+    bottom vertices to top vertices. If it is <code class="constant">IGRAPH_IN</code>, edges
+    point from top vertices to bottom vertices. <code class="constant">IGRAPH_OUT</code> and
+    <code class="constant">IGRAPH_IN</code> do not generate mutual edges. If this argument is
+    <code class="constant">IGRAPH_ALL</code>, then each edge direction is considered
+    independently and mutual edges might be generated. This
+    argument is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> for the unipartite version,
+<a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> for the G(n1, n2, m) model.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1193,13 +1267,185 @@ edges.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="deprecated-bipartite"></a>6. Deprecated functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_incidence">6.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_incidence">6.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game">6.1. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_incidence">6.2. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_incidence">6.3. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_incidence"></a>6.1. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
+<a name="igraph_bipartite_game"></a>6.1. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</h3></div></div></div>
 <a class="indexterm" name="id-1.31.7.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bipartite_game(igraph_t *graph, igraph_vector_bool_t *types,
+                          igraph_erdos_renyi_t type,
+                          igraph_integer_t n1, igraph_integer_t n2,
+                          igraph_real_t p, igraph_integer_t m,
+                          igraph_bool_t directed, igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function is deprecated; use <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> or
+<a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnp" title="2.4. igraph_bipartite_game_gnp — Generates a random bipartite graph with a fixed connection probability."><code class="function">igraph_bipartite_game_gnp()</code></a> instead.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized igraph graph, the result
+   is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized boolean vector, or a null
+   pointer. If not a null pointer, then the vertex types are stored
+   here. Bottom vertices come first, n1 of them, then n2 top
+   vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>type</code></em>:</span></p></td>
+<td>
+<p>
+  The type of the random graph, possible values:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ERDOS_RENYI_GNM</code></span></p></td>
+<td><p>
+
+         G(n,m) graph,
+         m edges are
+         selected uniformly randomly in a graph with
+         n vertices.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ERDOS_RENYI_GNP</code></span></p></td>
+<td><p>
+
+         G(n,p) graph,
+         every possible edge is included in the graph with
+         probability p.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n1</code></em>:</span></p></td>
+<td><p>
+  The number of bottom vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n2</code></em>:</span></p></td>
+<td><p>
+  The number of top vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<td><p>
+  The connection probability for G(n,p) graphs. It is
+    ignored for G(n,m) graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p>
+  The number of edges for G(n,m) graphs. It is ignored for
+    G(n,p) graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to generate a directed graph. See
+    also the <em class="parameter"><code>mode</code></em> argument.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies how to direct the edges in directed
+    graphs. If it is <code class="constant">IGRAPH_OUT</code>, then directed edges point from
+    bottom vertices to top vertices. If it is <code class="constant">IGRAPH_IN</code>, edges
+    point from top vertices to bottom vertices. <code class="constant">IGRAPH_OUT</code> and
+    <code class="constant">IGRAPH_IN</code> do not generate mutual edges. If this argument is
+    <code class="constant">IGRAPH_ALL</code>, then each edge direction is considered
+    independently and mutual edges might be generated. This
+    argument is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a>, <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnp" title="2.4. igraph_bipartite_game_gnp — Generates a random bipartite graph with a fixed connection probability."><code class="function">igraph_bipartite_game_gnp()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number of vertices and
+edges.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_incidence"></a>6.2. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.31.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_incidence(
@@ -1226,8 +1472,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_incidence"></a>6.2. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
-<a class="indexterm" name="id-1.31.7.3.2"></a><p>
+<a name="igraph_get_incidence"></a>6.3. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.31.7.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_incidence(const igraph_t *graph,
