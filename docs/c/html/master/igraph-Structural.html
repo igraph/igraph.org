@@ -5004,11 +5004,10 @@ igraph_error_t igraph_girth(const igraph_t *graph, igraph_real_t *girth,
 
 
 
-</p>
-<p>
 The current implementation works for undirected graphs only,
 directed graphs are treated as undirected graphs. Self-loops and
-multiple edges are ignored.
+multiple edges are ignored, i.e. cycles of length 1 or 2 are
+not considered.
 
 </p>
 <p>
@@ -5017,11 +5016,21 @@ infinity is returned.
 
 </p>
 <p>
-This implementation is based on Alon Itai and Michael Rodeh:
+The first implementation of this function was done by Keith Briggs,
+thanks Keith.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Alon Itai and Michael Rodeh:
 Finding a minimum circuit in a graph
 <span class="emphasis"><em> Proceedings of the ninth annual ACM symposium on Theory of
-computing </em></span>, 1-10, 1977. The first implementation of this
-function was done by Keith Briggs, thanks Keith.
+computing </em></span>, 1-10, 1977.
+<a class="ulink" href="https://doi.org/10.1145/800105.803390" target="_top">https://doi.org/10.1145/800105.803390</a>
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -5034,7 +5043,7 @@ function was done by Keith Briggs, thanks Keith.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions will be ignored.
 </p></td>
 </tr>
 <tr>
@@ -5079,7 +5088,7 @@ this and then it stops.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.5.26.11.1"></a><p class="title"><b>Example 13.12.  File <code class="code">examples/simple/igraph_girth.c</code></b></p>
+<a name="id-1.14.5.26.12.1"></a><p class="title"><b>Example 13.12.  File <code class="code">examples/simple/igraph_girth.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -11434,6 +11443,22 @@ calculated. If the graph has no vertices, or <em class="parameter"><code>vids</c
 Time complexity: O(v) if <em class="parameter"><code>loops</code></em> is <code class="constant">true</code>, and O(v*d) otherwise. v is the number
 of vertices for which the degree will be calculated, and d is their
 (average) degree.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a> to retrieve the degrees for several vertices.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
  
 </p>
 </div>
@@ -21369,16 +21394,20 @@ igraph_error_t igraph_reciprocity(const igraph_t *graph, igraph_real_t *res,
 
 
 
-</p>
-<p>
 The measure of reciprocity defines the proportion of mutual
 connections, in a directed graph. It is most commonly defined as
-the probability that the opposite counterpart of a directed edge is
-also included in the graph. In adjacency matrix notation:
-<code class="literal">sum(i, j, (A.*A')ij) / sum(i, j, Aij)</code>, where
-<code class="literal">A.*A'</code> is the element-wise product of matrix
-<code class="literal">A</code> and its transpose. This measure is
-calculated if the <em class="parameter"><code>mode</code></em> argument is <code class="constant">IGRAPH_RECIPROCITY_DEFAULT</code>.
+the probability that the opposite counterpart of a randomly chosen
+directed edge is also included in the graph. In adjacency matrix
+notation: <code class="literal">1 - (sum_ij |A_ij - A_ji|) / (2 sum_ij A_ij)</code>.
+In multigraphs, each parallel edges between two vertices must
+have its own separate reciprocal edge, in accordance with the
+above formula. This measure is calculated if the <em class="parameter"><code>mode</code></em> argument is
+<code class="constant">IGRAPH_RECIPROCITY_DEFAULT</code>.
+
+</p>
+<p>
+For directed graphs with no edges, NaN is returned.
+For undirected graphs, 1 is returned unconditionally.
 
 </p>
 <p>
@@ -21415,7 +21444,7 @@ sizes (2)+(3). This measure is calculated if <em class="parameter"><code>mode</c
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ignore_loops</code></em>:</span></p></td>
 <td><p>
-  Whether to ignore loop edges.
+  Whether to ignore self-loops when counting edges.
 </p></td>
 </tr>
 <tr>

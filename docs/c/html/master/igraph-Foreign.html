@@ -198,12 +198,16 @@ igraph_error_t igraph_read_graph_edgelist(igraph_t *graph, FILE *instream,
 
 
 
-</p>
-<p>
 This format is simply a series of an even number of non-negative integers separated by
 whitespace. The integers represent vertex IDs. Placing each edge (i.e. pair of integers)
 on a separate line is not required, but it is recommended for readability.
 Edges of directed graphs are assumed to be in "from, to" order.
+
+</p>
+<p>
+The largest vertex ID plus one, or the parameter <em class="parameter"><code>n</code></em> determines the vertex count,
+whichever is larger. See <a class="link" href="igraph-Foreign.html#igraph_read_graph_ncol" title="1.3. igraph_read_graph_ncol — Reads an .ncol file used by LGL."><code class="function">igraph_read_graph_ncol()</code></a> for reading files where
+vertices are specified by name instead of by a numerical vertex ID.
 
 </p>
 <p><b>Arguments: </b>
@@ -2122,6 +2126,105 @@ igraph_error_t igraph_read_graph_pajek(igraph_t *graph, FILE *instream);
 
 
 
+Only a subset of the Pajek format is implemented. This is partially
+because this format is not fully documented, but also because
+<span class="command"><strong>igraph</strong></span> does not support some Pajek features, like
+mixed graphs.
+
+</p>
+<p>
+Starting from version 0.6.1 igraph reads bipartite (two-mode)
+graphs from Pajek files and add the <code class="constant">type</code> vertex attribute for them.
+Warnings are given for invalid edges, i.e. edges connecting
+vertices of the same type.
+
+</p>
+<p>
+The list of the current limitations:
+</p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>
+Only <code class="filename">.net</code> files are supported, Pajek
+project files (<code class="filename">.paj</code>) are not.
+
+</p></li>
+<li class="listitem"><p>
+Time events networks are not supported.
+
+</p></li>
+<li class="listitem"><p>
+Hypergraphs (i.e. graphs with non-binary edges) are not
+supported.
+
+</p></li>
+<li class="listitem"><p>
+Graphs with both directed and non-directed edges are not
+supported, as they cannot be represented in <span class="command"><strong>igraph</strong></span>.
+
+</p></li>
+<li class="listitem"><p>
+Only Pajek networks are supported; permutations, hierarchies,
+clusters and vectors are not.
+
+</p></li>
+<li class="listitem"><p>
+Graphs with multiple edge sets are not supported.
+
+</p></li>
+</ol></div>
+<p>
+
+</p>
+<p>
+If an attribute handler is installed,
+<span class="command"><strong>igraph</strong></span> also reads the vertex and edge attributes
+from the file. Most attributes are renamed to be more informative:
+<code class="constant">color</code> instead of <code class="constant">c</code>, <code class="constant">xfact</code> instead of <code class="constant">x_fact</code>,
+<code class="constant">yfact</code> instead of y_fact, <code class="constant">labeldist</code> instead of <code class="constant">lr</code>,
+<code class="constant">labeldegree2</code> instead of <code class="constant">lphi</code>, <code class="constant">framewidth</code> instead of <code class="constant">bw</code>,
+<code class="constant">fontsize</code> instead of <code class="constant">fos</code>, <code class="constant">rotation</code> instead of <code class="constant">phi</code>,
+<code class="constant">radius</code> instead of <code class="constant">r</code>, <code class="constant">diamondratio</code> instead of <code class="constant">q</code>,
+<code class="constant">labeldegree</code> instead of <code class="constant">la</code>, <code class="constant">vertexsize</code> instead of <code class="constant">size</code>,
+<code class="constant">color</code> instead of <code class="constant">ic</code>, <code class="constant">framecolor</code> instead of <code class="constant">bc</code>,
+<code class="constant">labelcolor</code> instead of <code class="constant">lc</code>; these belong to vertices.
+
+</p>
+<p>
+Edge attributes are also renamed, <code class="constant">s</code> to <code class="constant">arrowsize</code>,
+<code class="constant">w</code> to <code class="constant">edgewidth</code>, <code class="constant">h1</code> to <code class="constant">hook1</code>, <code class="constant">h2</code> to <code class="constant">hook2</code>,
+<code class="constant">a1</code> to <code class="constant">angle1</code>, <code class="constant">a2</code> to <code class="constant">angle2</code>, <code class="constant">k1</code> to
+<code class="constant">velocity1</code>, <code class="constant">k2</code> to <code class="constant">velocity2</code>, <code class="constant">ap</code> to <code class="constant">arrowpos</code>,
+<code class="constant">lp</code> to <code class="constant">labelpos</code>, <code class="constant">lr</code> to <code class="constant">labelangle</code>,
+<code class="constant">lphi</code> to <code class="constant">labelangle2</code>, <code class="constant">la</code> to <code class="constant">labeldegree</code>,
+<code class="constant">fos</code> to <code class="constant">fontsize</code>, <code class="constant">a</code> to <code class="constant">arrowtype</code>, <code class="constant">p</code> to <code class="constant">linepattern</code>,
+<code class="constant">l</code> to <code class="constant">label</code>, <code class="constant">lc</code> to <code class="constant">labelcolor</code>, <code class="constant">c</code> to <code class="constant">color</code>.
+
+</p>
+<p>
+Unknown vertex or edge parameters are read as string vertex
+or edge attributes. If the parameter name conflicts with one
+the standard attribute names mentioned above, a <code class="literal">_</code>
+character is appended to it to avoid conflict.
+
+</p>
+<p>
+In addition the following vertex attributes might be added: <code class="constant">id</code>
+if there are vertex IDs in the file, <code class="constant">x</code> and <code class="constant">y</code> or <code class="constant">x</code>
+and <code class="constant">y</code> and <code class="constant">z</code> if there are vertex coordinates in the file.
+
+</p>
+<p>The <code class="constant">weight</code> edge attribute might be
+added if there are edge weights present.
+
+</p>
+<p>
+See the Pajek homepage:
+<a class="ulink" href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/" target="_top">http://vlado.fmf.uni-lj.si/pub/networks/pajek/</a> for more info on
+Pajek. The Pajek manual,
+<a class="ulink" href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf" target="_top">http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf</a>,
+and <a class="ulink" href="http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm" target="_top">http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm</a>
+have information on the Pajek file format.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2162,104 +2265,6 @@ igraph_error_t igraph_read_graph_pajek(igraph_t *graph, FILE *instream);
 </table></div>
 <p>
 
-</p>
-<p>
-Only a subset of the Pajek format is implemented. This is partially
-because this format is not very well documented, but also because
-<span class="command"><strong>igraph</strong></span> does not support some Pajek features, like
-multigraphs.
-
-</p>
-<p>
-Starting from version 0.6.1 igraph reads bipartite (two-mode)
-graphs from Pajek files and add the <code class="constant">type</code> vertex attribute for them.
-Warnings are given for invalid edges, i.e. edges connecting
-vertices of the same type.
-
-</p>
-<p>
-The list of the current limitations:
-</p>
-<div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><p>
-Only <code class="filename">.net</code> files are supported, Pajek
-project files (<code class="filename">.paj</code>) are not. These might be
-supported in the future if there is need for it.
-
-</p></li>
-<li class="listitem"><p>
-Time events networks are not supported.
-
-</p></li>
-<li class="listitem"><p>
-Hypergraphs (i.e. graphs with non-binary edges) are not
-supported.
-
-</p></li>
-<li class="listitem"><p>
-Graphs with both directed and non-directed edges are not
-supported, are they cannot be represented in
-<span class="command"><strong>igraph</strong></span>.
-
-</p></li>
-<li class="listitem"><p>
-Only Pajek networks are supported, permutations, hierarchies,
-clusters and vectors are not.
-
-</p></li>
-<li class="listitem"><p>
-Graphs with multiple edge sets are not supported.
-
-</p></li>
-</ol></div>
-<p>
-
-</p>
-<p>
-If there are attribute handlers installed,
-<span class="command"><strong>igraph</strong></span> also reads the vertex and edge attributes
-from the file. Most attributes are renamed to be more informative:
-<code class="constant">color</code> instead of <code class="constant">c</code>, <code class="constant">xfact</code> instead of <code class="constant">x_fact</code>,
-<code class="constant">yfact</code> instead of y_fact, <code class="constant">labeldist</code> instead of <code class="constant">lr</code>,
-<code class="constant">labeldegree2</code> instead of <code class="constant">lphi</code>, <code class="constant">framewidth</code> instead of <code class="constant">bw</code>,
-<code class="constant">fontsize</code>
-instead of <code class="constant">fos</code>, <code class="constant">rotation</code> instead of <code class="constant">phi</code>, <code class="constant">radius</code> instead
-of <code class="constant">r</code>,
-<code class="constant">diamondratio</code> instead of <code class="constant">q</code>, <code class="constant">labeldegree</code> instead of <code class="constant">la</code>,
-<code class="constant">vertexsize</code>
-instead of <code class="constant">size</code>, <code class="constant">color</code> instead of <code class="constant">ic</code>, <code class="constant">framecolor</code> instead of
-<code class="constant">bc</code>, <code class="constant">labelcolor</code> instead of <code class="constant">lc</code>, these belong to vertices.
-
-</p>
-<p>
-Edge attributes are also renamed, <code class="constant">s</code> to <code class="constant">arrowsize</code>, <code class="constant">w</code>
-to <code class="constant">edgewidth</code>, <code class="constant">h1</code> to <code class="constant">hook1</code>, <code class="constant">h2</code> to <code class="constant">hook2</code>,
-<code class="constant">a1</code> to <code class="constant">angle1</code>, <code class="constant">a2</code> to <code class="constant">angle2</code>, <code class="constant">k1</code> to
-<code class="constant">velocity1</code>, <code class="constant">k2</code> to <code class="constant">velocity2</code>, <code class="constant">ap</code> to <code class="constant">arrowpos</code>, <code class="constant">lp</code> to <code class="constant">labelpos</code>, <code class="constant">lr</code> to
-<code class="constant">labelangle</code>, <code class="constant">lphi</code> to <code class="constant">labelangle2</code>, <code class="constant">la</code> to <code class="constant">labeldegree</code>, <code class="constant">fos</code> to
-<code class="constant">fontsize</code>, <code class="constant">a</code> to <code class="constant">arrowtype</code>, <code class="constant">p</code> to <code class="constant">linepattern</code>, <code class="constant">l</code> to <code class="constant">label</code>, <code class="constant">lc</code> to
-<code class="constant">labelcolor</code>, <code class="constant">c</code> to <code class="constant">color</code>.
-
-</p>
-<p>
-In addition the following vertex attributes might be added: <code class="constant">id</code>
-if there are vertex IDs in the file, <code class="constant">x</code> and <code class="constant">y</code> or <code class="constant">x</code>
-and <code class="constant">y</code> and <code class="constant">z</code> if there are vertex coordinates in the file.
-
-</p>
-<p>The <code class="constant">weight</code> edge attribute might be
-added if there are edge weights present.
-
-</p>
-<p>
-See the pajek homepage:
-<a class="ulink" href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/" target="_top">http://vlado.fmf.uni-lj.si/pub/networks/pajek/</a> for more info on
-Pajek and the Pajek manual:
-<a class="ulink" href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf" target="_top">http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf</a> for
-information on the Pajek file format.
-
-</p>
-<p>
 Time complexity: O(|V|+|E|+|A|), |V| is the number of vertices, |E|
 the number of edges, |A| the number of attributes (vertex + edge)
 in the graph if there are attribute handlers installed.
@@ -2283,7 +2288,7 @@ in the graph if there are attribute handlers installed.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.22.9.2.19.1"></a><p class="title"><b>Example 21.8.  File <code class="code">examples/simple/foreign.c</code></b></p>
+<a name="id-1.22.9.2.18.1"></a><p class="title"><b>Example 21.8.  File <code class="code">examples/simple/foreign.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -2335,6 +2340,10 @@ igraph_error_t igraph_write_graph_pajek(const igraph_t *graph, FILE *outstream);
 <p>
 
 
+
+Writes files in the native format of the Pajek software. This format
+is not recommended for data exchange or archival. It is meant solely
+for interoperability with Pajek.
 
 </p>
 <p>
@@ -2527,6 +2536,7 @@ are added as attributes. (If an attribute handler is attached.)
 <p> Note the specification does not mention whether the
 format is case sensitive or not. For igraph DL files are case
 sensitive, i.e. <code class="constant">Larry</code> and <code class="constant">larry</code> are not the same.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -2646,13 +2656,21 @@ igraph_error_t igraph_write_graph_dot(const igraph_t *graph, FILE* outstream);
 
 
 
+</p>
+<p>
 DOT is the format used by the widely known GraphViz software, see
 <a class="ulink" href="http://www.graphviz.org" target="_top">http://www.graphviz.org</a> for details. The grammar of the DOT format
 can be found here: <a class="ulink" href="http://www.graphviz.org/doc/info/lang.html" target="_top">http://www.graphviz.org/doc/info/lang.html</a>
 
 </p>
-<p>This is only a preliminary implementation, no visualization
+<p>
+This is only a preliminary implementation, no visualization
 information is written.
+
+</p>
+<p>
+This format is meant solely for interoperability with Graphviz.
+It is not recommended for data exchange or archival.
 
 </p>
 <p><b>Arguments: </b>
@@ -2701,7 +2719,7 @@ to the file.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.22.11.2.9.1"></a><p class="title"><b>Example 21.11.  File <code class="code">examples/simple/dot.c</code></b></p>
+<a name="id-1.22.11.2.11.1"></a><p class="title"><b>Example 21.11.  File <code class="code">examples/simple/dot.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
