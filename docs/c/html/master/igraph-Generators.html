@@ -304,7 +304,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v1);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_vector_int_all_e</strong></span>(&amp;v1, &amp;v2)) {
@@ -317,7 +317,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v2, 0);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v1);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v2);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong>igraph_vector_int_all_e</strong></span>(&amp;v1, &amp;v2)) {
@@ -353,17 +353,18 @@ igraph_error_t igraph_small(igraph_t *graph, igraph_integer_t n, igraph_bool_t d
 
 
 
-</p>
-<p>
 This function is handy when a relatively small graph needs to be created.
 Instead of giving the edges as a vector, they are given simply as
 arguments and a <code class="literal">-1</code> needs to be given after the last meaningful
 edge argument.
 
 </p>
-<p>Note that only graphs which have vertex IDs smaller than
-the largest value representable by the <span class="type">int</span> type can be created this way.
-If you give larger values then the result is undefined.
+<p>
+This function is intended to be used with vertex IDs that are entered as
+literal integers. If you use a variable instead of a literal, make sure
+that it is of type <span class="type">int</span>, as this is the type that this function
+assumes for all variadic arguments. Using a different integer type is
+undefined behaviour and likely to cause platform-specific issues.
 
 </p>
 <p><b>Arguments: </b>
@@ -425,10 +426,11 @@ If you give larger values then the result is undefined.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
 <td><p>
-  The additional arguments giving the edges of the
-       graph. Don't forget to supply an additional <code class="literal">-1</code> after the last
-       (meaningful) argument. The <em class="parameter"><code>first</code></em> parameter is present for
-       technical reasons and represents the first variadic argument.
+  The additional arguments giving the edges of the graph,
+       and <span class="emphasis"><em>must</em></span> be of type <span class="type">int</span>. Don't forget to supply an
+       additional <code class="literal">-1</code> after the last (meaningful) argument. The
+       <em class="parameter"><code>first</code></em> parameter is present for technical reasons and represents
+       the first variadic argument.
 </p></td>
 </tr>
 </tbody>
@@ -456,7 +458,7 @@ of edges in the graph to create.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.4.3.10.1"></a><p class="title"><b>Example 9.2.  File <code class="code">examples/simple/igraph_small.c</code></b></p>
+<a name="id-1.10.4.3.9.1"></a><p class="title"><b>Example 9.2.  File <code class="code">examples/simple/igraph_small.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -943,7 +945,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_weighted_adjacency" title="1.4. igraph_weighted_adjacency — Creates a graph from a weighted adjacency matrix.">igraph_weighted_adjacency</a></strong></span>(&amp;g, &amp;mat, IGRAPH_ADJ_DIRECTED, &amp;weights, IGRAPH_LOOPS_ONCE);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;el, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;el, 0);
     n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>for</strong></span> (i = 0, j = 0; i &lt; n; i++, j += 2) {
@@ -5174,7 +5176,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
     <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i] &lt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i + 1]) {
             <span class="strong"><strong>return</strong></span> 4;
@@ -5210,7 +5212,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*power=*/</em></span> 1, 2, 0, 1, <span class="emphasis"><em>/*A=*/</em></span> 1, 1,
                          IGRAPH_BARABASI_BAG, <span class="emphasis"><em>/*start_from=*/</em></span> 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.10. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g, &amp;v, 0);
     <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i] &lt;= <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[2 * i + 1]) {
             <span class="strong"><strong>return</strong></span> 7;
@@ -5386,7 +5388,7 @@ edges are selected uniformly at random.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate loops (self) edges.
+  Logical, whether to generate self-loops.
 </p></td>
 </tr>
 </tbody>
@@ -5533,7 +5535,7 @@ edge is included in the graph with probability p.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate loops (self) edges.
+  Logical, whether to generate self-loops.
 </p></td>
 </tr>
 </tbody>

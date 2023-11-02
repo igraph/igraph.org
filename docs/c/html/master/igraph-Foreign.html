@@ -2127,15 +2127,15 @@ igraph_error_t igraph_read_graph_pajek(igraph_t *graph, FILE *instream);
 
 
 Only a subset of the Pajek format is implemented. This is partially
-because this format is not fully documented, but also because
+because there is no formal specification for this format, but also because
 <span class="command"><strong>igraph</strong></span> does not support some Pajek features, like
 mixed graphs.
 
 </p>
 <p>
 Starting from version 0.6.1 igraph reads bipartite (two-mode)
-graphs from Pajek files and add the <code class="constant">type</code> vertex attribute for them.
-Warnings are given for invalid edges, i.e. edges connecting
+graphs from Pajek files and adds the <code class="constant">type</code> Boolean vertex attribute for
+them. Warnings are given for invalid edges, i.e. edges connecting
 vertices of the same type.
 
 </p>
@@ -2149,12 +2149,7 @@ project files (<code class="filename">.paj</code>) are not.
 
 </p></li>
 <li class="listitem"><p>
-Time events networks are not supported.
-
-</p></li>
-<li class="listitem"><p>
-Hypergraphs (i.e. graphs with non-binary edges) are not
-supported.
+Temporal networks (i.e. with time events) are not supported.
 
 </p></li>
 <li class="listitem"><p>
@@ -2168,7 +2163,13 @@ clusters and vectors are not.
 
 </p></li>
 <li class="listitem"><p>
-Graphs with multiple edge sets are not supported.
+Multi-relational networks (i.e. networks with multiple edge
+types) are not supported.
+
+</p></li>
+<li class="listitem"><p>
+Unicode characters encoded as <code class="literal">&amp;#dddd;</code>, or newlines
+encoded as <code class="literal">\n</code> will not be decoded.
 
 </p></li>
 </ol></div>
@@ -2184,7 +2185,7 @@ from the file. Most attributes are renamed to be more informative:
 <code class="constant">labeldegree2</code> instead of <code class="constant">lphi</code>, <code class="constant">framewidth</code> instead of <code class="constant">bw</code>,
 <code class="constant">fontsize</code> instead of <code class="constant">fos</code>, <code class="constant">rotation</code> instead of <code class="constant">phi</code>,
 <code class="constant">radius</code> instead of <code class="constant">r</code>, <code class="constant">diamondratio</code> instead of <code class="constant">q</code>,
-<code class="constant">labeldegree</code> instead of <code class="constant">la</code>, <code class="constant">vertexsize</code> instead of <code class="constant">size</code>,
+<code class="constant">labeldegree</code> instead of <code class="constant">la</code>,
 <code class="constant">color</code> instead of <code class="constant">ic</code>, <code class="constant">framecolor</code> instead of <code class="constant">bc</code>,
 <code class="constant">labelcolor</code> instead of <code class="constant">lc</code>; these belong to vertices.
 
@@ -2209,12 +2210,14 @@ character is appended to it to avoid conflict.
 </p>
 <p>
 In addition the following vertex attributes might be added: <code class="constant">id</code>
-if there are vertex IDs in the file, <code class="constant">x</code> and <code class="constant">y</code> or <code class="constant">x</code>
-and <code class="constant">y</code> and <code class="constant">z</code> if there are vertex coordinates in the file.
+and <code class="constant">name</code> are added (with the same value) if there are vertex IDs in the
+file. <code class="constant">id</code> is deprecated in favour of <code class="constant">name</code> and will no longer be used
+by future versions of igraph. <code class="constant">x</code> and <code class="constant">y</code>, and potentially <code class="constant">z</code> are also
+added if there are vertex coordinates in the file.
 
 </p>
-<p>The <code class="constant">weight</code> edge attribute might be
-added if there are edge weights present.
+<p>
+The <code class="constant">weight</code> edge attribute will be added if there are edge weights present.
 
 </p>
 <p>
@@ -2223,7 +2226,9 @@ See the Pajek homepage:
 Pajek. The Pajek manual,
 <a class="ulink" href="http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf" target="_top">http://vlado.fmf.uni-lj.si/pub/networks/pajek/doc/pajekman.pdf</a>,
 and <a class="ulink" href="http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm" target="_top">http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm</a>
-have information on the Pajek file format.
+have information on the Pajek file format. There is additional
+useful information and sample files at
+<a class="ulink" href="http://mrvar.fdv.uni-lj.si/pajek/history.htm" target="_top">http://mrvar.fdv.uni-lj.si/pajek/history.htm</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -2348,10 +2353,15 @@ for interoperability with Pajek.
 </p>
 <p>
 The Pajek vertex and edge parameters (like color) are determined by
-the attributes of the vertices and edges, of course this requires
+the attributes of the vertices and edges. Of course this requires
 an attribute handler to be installed. The names of the
 corresponding vertex and edge attributes are listed at <a class="link" href="igraph-Foreign.html#igraph_read_graph_pajek" title="5.1. igraph_read_graph_pajek — Reads a file in Pajek format."><code class="function">igraph_read_graph_pajek()</code></a>, e.g. the <code class="constant">color</code> vertex attributes
 determines the color (<code class="constant">c</code> in Pajek) parameter.
+
+</p>
+<p>
+Vertex and edge attributes that do not correspond to any documented
+Pajek parameter are discarded.
 
 </p>
 <p>
@@ -2377,6 +2387,13 @@ line endings manually with a text editor or with <code class="constant">unix2dos
 from the command line).
 
 </p>
+<p>
+Pajek will only interpret UTF-8 encoded files if they contain a byte-order
+mark (BOM) at the beginning. igraph is agnostic of string attribute encodings
+and therefore it will never write a BOM. You need to add this manually
+if/when necessary.
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -2394,10 +2411,7 @@ from the command line).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outstream</code></em>:</span></p></td>
 <td><p>
-  The file to write to. It should be opened and
-writable. Make sure that you open the file in binary format if you use MS Windows,
-otherwise end of line characters will be messed up. (igraph will be able
-to read back these messed up files, but Pajek won't.)
+  The file to write to. It should be opened and writable.
 </p></td>
 </tr>
 </tbody>
@@ -2443,7 +2457,7 @@ this suites <span class="command"><strong>igraph</strong></span> graphs better.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.22.9.3.13.1"></a><p class="title"><b>Example 21.9.  File <code class="code">examples/simple/igraph_write_graph_pajek.c</code></b></p>
+<a name="id-1.22.9.3.15.1"></a><p class="title"><b>Example 21.9.  File <code class="code">examples/simple/igraph_write_graph_pajek.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2455,7 +2469,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#igraph_set_attribute_table" title="1.2. igraph_set_attribute_table — Attach an attribute table.">igraph_set_attribute_table</a></strong></span>(&amp;igraph_cattribute_table);
 
     <span class="emphasis"><em>/* save a simple ring graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, 0 <span class="emphasis"><em>/* mutual */</em></span>, 1 <span class="emphasis"><em>/* circular */</em></span>);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED, false <span class="emphasis"><em>/* mutual */</em></span>, true <span class="emphasis"><em>/* circular */</em></span>);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_pajek" title="5.2. igraph_write_graph_pajek — Writes a graph to a file in Pajek format.">igraph_write_graph_pajek</a></strong></span>(&amp;g, stdout);
 
     <span class="emphasis"><em>/* add some vertex attributes */</em></span>
@@ -2484,9 +2498,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping spaces");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping \\backslashes\\");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping\nnewline");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "square");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "escaping \"quotes\"");
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_push_back" title="8.8. igraph_strvector_push_back — Adds an element to the back of a string vector.">igraph_strvector_push_back</a></strong></span>(&amp;names, "encoding \"quotes\"");
     <span class="strong"><strong><a class="link" href="igraph-Attributes.html#SETVASV" title="3.2.24. SETVASV — Set a string vertex attribute for all vertices">SETVASV</a></strong></span>(&amp;g, "shape", &amp;names);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Frees the memory allocated for the string vector.">igraph_strvector_destroy</a></strong></span>(&amp;names);
 

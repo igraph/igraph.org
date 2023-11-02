@@ -19138,6 +19138,7 @@ Time complexity: O(d), where d is the out-degree of the tail of the edge.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity_nominal">20.1. <code class="function">igraph_assortativity_nominal</code> —  Assortativity of a graph based on vertex categories.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity">20.2. <code class="function">igraph_assortativity</code> —  Assortativity based on numeric properties of vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity_degree">20.3. <code class="function">igraph_assortativity_degree</code> —  Assortativity of a graph based on vertex degree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_joint_degree_matrix">20.4. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -19678,6 +19679,133 @@ int <span class="strong"><strong>main</strong></span>(void){
 <br class="example-break">
 </div>
 <p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_joint_degree_matrix"></a>20.4. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.22.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_joint_degree_matrix(const igraph_t* graph,
+                          igraph_matrix_t* jdm,
+                          igraph_integer_t max_out_degree,
+                          igraph_integer_t max_in_degree,
+                          const igraph_vector_t* weights);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>In graph theory, the joint degree matrix <code class="constant">J_ij</code> of a graph gives the number
+of edges, or sum of edge weights, between vertices of degree <code class="constant">i</code> and degree
+<code class="constant">j</code>. This function stores <code class="constant">J_ij</code> into <code class="literal">jdm[i-1, j-1]</code>.
+Each edge, including self-loops, is counted precisely once, both in undirected
+and directed graphs.
+
+</p>
+<p>
+<code class="literal">sum_(i,j) J_ij</code> is the total number of edges (or total edge weight)
+<code class="constant">m</code> in the graph, where <code class="literal">(i,j)</code> refers to ordered or unordered
+pairs in directed and undirected graphs, respectively. Thus <code class="literal">J_ij / m</code>
+is the probability that an edge chosen at random (with probability proportional
+to its weight) connects vertices with degrees <code class="constant">i</code> and <code class="constant">j</code>.
+
+</p>
+<p>
+Note that <code class="constant">J_ij</code> is similar, but not identical to the joint degree
+<span class="emphasis"><em>distribution,</em></span> which is defined for <span class="emphasis"><em>ordered</em></span> <code class="literal">(i, j)</code> degree
+pairs even in the undirected case. When considering undirected graphs, the
+diagonal of the joint degree distribution is twice that of the joint
+degree matrix.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Isabelle Stanton and Ali Pinar:
+Constructing and sampling graphs with a prescribed joint degree distribution.
+ACM J. Exp. Algorithmics 17, Article 3.5 (2012).
+<a class="ulink" href="https://doi.org/10.1145/2133803.2330086" target="_top">https://doi.org/10.1145/2133803.2330086</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>jdm</code></em>:</span></p></td>
+<td><p>
+  A pointer to an initialized matrix that will be resized. The values
+       will be written here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_out_degree</code></em>:</span></p></td>
+<td><p>
+  Number of rows in the result, i.e. the largest (out-)degree
+       to consider. If negative, the largest (out-)degree of the graph will
+       be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_in_degree</code></em>:</span></p></td>
+<td><p>
+  Number of columns in the result, i.e. the largest (in-)degree
+       to consider. If negative, the largest (in-)degree of the graph will
+       be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector containing the weights of the edges. If passing a
+       <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights, i.e.
+       the matrix entries will be connection counts.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(E), where E is the number of edges in input graph.
+ 
 </p>
 </div>
 </div>
@@ -21286,13 +21414,14 @@ Time complexity: O(n+m), linear in the number vertices and edges.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_reciprocity">26.2. <code class="function">igraph_reciprocity</code> —  Calculates the reciprocity of a directed graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_diversity">26.3. <code class="function">igraph_diversity</code> —  Structural diversity index of the vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_is_mutual">26.4. <code class="function">igraph_is_mutual</code> —  Check whether some edges of a directed graph are mutual.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree">26.5. <code class="function">igraph_avg_nearest_neighbor_degree</code> — Average neighbor degree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency">26.6. <code class="function">igraph_get_adjacency</code> —  The adjacency matrix of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency_sparse">26.7. <code class="function">igraph_get_adjacency_sparse</code> —  Returns the adjacency matrix of a graph in a sparse matrix format.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic">26.8. <code class="function">igraph_get_stochastic</code> —  Stochastic adjacency matrix of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic_sparse">26.9. <code class="function">igraph_get_stochastic_sparse</code> —  The stochastic adjacency matrix of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_edgelist">26.10. <code class="function">igraph_get_edgelist</code> —  The list of edges in a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_is_acyclic">26.11. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree">26.5. <code class="function">igraph_avg_nearest_neighbor_degree</code> —  Average neighbor degree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_degree_correlation_vector">26.6. <code class="function">igraph_degree_correlation_vector</code> —  Degree correlation function.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency">26.7. <code class="function">igraph_get_adjacency</code> —  The adjacency matrix of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_adjacency_sparse">26.8. <code class="function">igraph_get_adjacency_sparse</code> —  Returns the adjacency matrix of a graph in a sparse matrix format.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic">26.9. <code class="function">igraph_get_stochastic</code> —  Stochastic adjacency matrix of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic_sparse">26.10. <code class="function">igraph_get_stochastic_sparse</code> —  The stochastic adjacency matrix of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_edgelist">26.11. <code class="function">igraph_get_edgelist</code> —  The list of edges in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_is_acyclic">26.12. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -21723,7 +21852,7 @@ supplied edges. An upper limit of the time complexity is O(n log(|E|)),
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_avg_nearest_neighbor_degree"></a>26.5. <code class="function">igraph_avg_nearest_neighbor_degree</code> — Average neighbor degree.</h3></div></div></div>
+<a name="igraph_avg_nearest_neighbor_degree"></a>26.5. <code class="function">igraph_avg_nearest_neighbor_degree</code> —  Average neighbor degree.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.28.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -21746,9 +21875,8 @@ optionally, the same quantity as a function of the vertex degree (<em class="par
 
 </p>
 <p>
-For isolated vertices <em class="parameter"><code>knn</code></em> is set to NaN.
-The same is done in <em class="parameter"><code>knnk</code></em> for vertex degrees that
-don't appear in the graph.
+For isolated vertices <em class="parameter"><code>knn</code></em> is set to NaN. The same is done in <em class="parameter"><code>knnk</code></em> for
+vertex degrees that don't appear in the graph.
 
 </p>
 <p>
@@ -21766,6 +21894,12 @@ The sum runs over the neighbors <code class="constant">v</code> of vertex <code 
 as indicated by <em class="parameter"><code>mode</code></em>. <code class="literal">w_uv</code> denotes the weighted adjacency matrix
 and <code class="literal">k_v</code> is the neighbors' degree, specified by <em class="parameter"><code>neighbor_degree_mode</code></em>.
 This is equation (6) in the reference below.
+
+</p>
+<p>
+When only the <code class="literal">k_nn(k)</code> degree correlation function is needed,
+<a class="link" href="igraph-Structural.html#igraph_degree_correlation_vector" title="26.6. igraph_degree_correlation_vector — Degree correlation function."><code class="function">igraph_degree_correlation_vector()</code></a> can be used as well. This function provides
+more flexible control over how degree at each end of directed edges are computed.
 
 </p>
 <p>
@@ -21826,7 +21960,7 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 <td><p>
   Pointer to an initialized vector, the result will be
   stored here. It will be resized as needed. Supply a <code class="constant">NULL</code> pointer
-  here, if you only want to calculate <code class="constant">knnk</code>.
+  here if you only want to calculate <code class="constant">knnk</code>.
 </p></td>
 </tr>
 <tr>
@@ -21834,9 +21968,10 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 <td><p>
   Pointer to an initialized vector, the average
   neighbor degree as a function of the vertex degree is stored
-  here. The first (zeroth) element is for degree one vertices,
-  etc. Supply a <code class="constant">NULL</code> pointer here if you don't want to calculate
-  this.
+  here. This is sometimes referred to as the <code class="literal">k_nn(k)</code>
+  degree correlation function. The first (zeroth) element is for degree
+  one vertices, etc. The calculation is done based only on the vertices
+  <em class="parameter"><code>vids</code></em>. Supply a <code class="constant">NULL</code> pointer here if you don't want to calculate this.
 </p></td>
 </tr>
 <tr>
@@ -21866,57 +22001,68 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 </table></div>
 <p>
 
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_degree_correlation_vector" title="26.6. igraph_degree_correlation_vector — Degree correlation function."><code class="function">igraph_degree_correlation_vector()</code></a> for computing only the degree correlation function,
+with more flexible control over degree computations.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: O(|V|+|E|), linear in the number of vertices and
 edges.
 
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.28.6.14.1"></a><p class="title"><b>Example 13.48.  File <code class="code">examples/simple/igraph_knn.c</code></b></p>
+<a name="id-1.14.28.6.17.1"></a><p class="title"><b>Example 13.48.  File <code class="code">examples/simple/igraph_avg_nearest_neighbor_degree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-    igraph_t g;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v, v2;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> v_weighted, v2_weighted;
-    igraph_integer_t n;
-    igraph_neimode_t mode, neighbour_degree_mode;
-
-    mode = IGRAPH_IN;
-    neighbour_degree_mode = IGRAPH_OUT;
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.13. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, <span class="emphasis"><em>/*directed=*/</em></span> 1, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
-    n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v2, n);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree.">igraph_avg_nearest_neighbor_degree</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                       mode, neighbour_degree_mode,
-                                       &amp;v, &amp;v2, <span class="emphasis"><em>/*weights=*/</em></span> 0);
-
+    igraph_t graph;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> knn, knnk;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g));
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_fill" title="2.3.2. igraph_vector_fill — Fill a vector with a constant element.">igraph_vector_fill</a></strong></span>(&amp;weights, 2.0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v_weighted, n);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v2_weighted, n);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree.">igraph_avg_nearest_neighbor_degree</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
-                                       mode, neighbour_degree_mode,
-                                       &amp;v_weighted, &amp;v2_weighted, &amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.22. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary");
 
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?">igraph_vector_all_e</a></strong></span>(&amp;v, &amp;v_weighted)) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;knn, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;knnk, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v_weighted);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v2_weighted);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree.">igraph_avg_nearest_neighbor_degree</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                       IGRAPH_ALL, IGRAPH_ALL,
+                                       &amp;knn, &amp;knnk, <span class="emphasis"><em>/*weights=*/</em></span> NULL);
 
+    <span class="strong"><strong>printf</strong></span>("knn: ");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;knn);
+    <span class="strong"><strong>printf</strong></span>("knn(k): ");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;knnk);
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;weights, 0, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
+
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree.">igraph_avg_nearest_neighbor_degree</a></strong></span>(&amp;graph, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(),
+                                       IGRAPH_ALL, IGRAPH_ALL,
+                                       &amp;knn, &amp;knnk, &amp;weights);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v2);
+    <span class="strong"><strong>printf</strong></span>("knn: ");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;knn);
+    <span class="strong"><strong>printf</strong></span>("knn(k): ");
+    <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;knnk);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;knn);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;knnk);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -21931,8 +22077,164 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_adjacency"></a>26.6. <code class="function">igraph_get_adjacency</code> —  The adjacency matrix of a graph.</h3></div></div></div>
+<a name="igraph_degree_correlation_vector"></a>26.6. <code class="function">igraph_degree_correlation_vector</code> —  Degree correlation function.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.28.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_degree_correlation_vector(
+    const igraph_t *graph, igraph_vector_t *knnk, const igraph_vector_t *weights,
+    igraph_neimode_t from_mode, igraph_neimode_t to_mode,
+    igraph_bool_t directed_neighbors);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Computes the degree correlation function <code class="literal">k_nn(k)</code>, defined as the
+mean degree of the targets of directed edges whose source has degree <code class="constant">k</code>.
+The averaging is done over all directed edges. The <em class="parameter"><code>from_mode</code></em> and <em class="parameter"><code>to_mode</code></em>
+parameters control how the source and target vertex degrees are computed.
+This way the out-in, out-out, in-in and in-out degree correlation functions
+can all be computed.
+
+</p>
+<p>
+In undirected graphs, edges are treated as if they were a pair of reciprocal directed
+ones.
+
+</p>
+<p>
+If P_ij is the joint degree distribution of the graph, then
+<code class="literal">k_nn(k) = sum_k j P_kj</code>.
+
+</p>
+<p>
+The function <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a>, whose main purpose is to
+calculate the average neighbor degree for each vertex separately, can also compute
+<code class="literal">k_nn(k)</code>. It differs from this function in that it can take a subset
+of vertices to base the calculation on, but it does not allow the same fine-grained
+control over how degrees are computed.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+R. Pastor-Satorras, A. Vazquez, A. Vespignani:
+Dynamical and Correlation Properties of the Internet,
+Phys. Rev. Lett., vol. 87, pp. 258701 (2001).
+<a class="ulink" href="https://doi.org/10.1103/PhysRevLett.87.258701" target="_top">https://doi.org/10.1103/PhysRevLett.87.258701</a>
+
+</p>
+<p>
+A. Vazquez, R. Pastor-Satorras, A. Vespignani:
+Large-scale topological and dynamical properties of the Internet,
+Phys. Rev. E, vol. 65, pp. 066130 (2002).
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.65.066130" target="_top">https://doi.org/10.1103/PhysRevE.65.066130</a>
+
+</p>
+<p>
+A. Barrat, M. Barthélemy, R. Pastor-Satorras, and A. Vespignani,
+The architecture of complex weighted networks,
+Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
+<a class="ulink" href="https://dx.doi.org/10.1073/pnas.0400087101" target="_top">https://dx.doi.org/10.1073/pnas.0400087101</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>knnk</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the result will be written here.
+   <code class="literal">knnk[d]</code> will contain the mean degree of vertices connected to
+   by vertices of degree <code class="constant">d</code>. Note that in contrast to
+   <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a>, <code class="literal">d=0</code> is also
+   included.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional weight vector. If not <code class="constant">NULL</code>, weighted averages will be computed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from_mode</code></em>:</span></p></td>
+<td><p>
+  How to compute the degree of sources? Can be <code class="constant">IGRAPH_OUT</code>
+   for out-degree, <code class="constant">IGRAPH_IN</code> for in-degree, or <code class="constant">IGRAPH_ALL</code> for total degree.
+   Ignored in undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to_mode</code></em>:</span></p></td>
+<td><p>
+  How to compute the degree of sources? Can be <code class="constant">IGRAPH_OUT</code>
+   for out-degree, <code class="constant">IGRAPH_IN</code> for in-degree, or <code class="constant">IGRAPH_ALL</code> for total degree.
+   Ignored in undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed_neighbors</code></em>:</span></p></td>
+<td><p>
+  Whether to consider <code class="literal">u -&gt; v</code> connections
+   to be directed. Undirected connections are treated as reciprocal directed ones,
+   i.e. both <code class="literal">u -&gt; v</code> and <code class="literal">v -&gt; u</code> will be considered.
+   Ignored in undirected graphs.
+\returns Error code.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a> for computing the average neighbour degree of
+a set of vertices.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E| + |V|)
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_get_adjacency"></a>26.7. <code class="function">igraph_get_adjacency</code> —  The adjacency matrix of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_adjacency(
@@ -22109,7 +22411,7 @@ weighted case.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a> if you want a sparse matrix representation
+  <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.8. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a> if you want a sparse matrix representation
   </p></td>
 </tr></tbody>
 </table></div>
@@ -22121,8 +22423,8 @@ Time complexity: O(|V||V|), |V| is the number of vertices in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_adjacency_sparse"></a>26.7. <code class="function">igraph_get_adjacency_sparse</code> —  Returns the adjacency matrix of a graph in a sparse matrix format.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.28.8.2"></a><p>
+<a name="igraph_get_adjacency_sparse"></a>26.8. <code class="function">igraph_get_adjacency_sparse</code> —  Returns the adjacency matrix of a graph in a sparse matrix format.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_adjacency_sparse(
@@ -22233,7 +22535,7 @@ igraph_error_t igraph_get_adjacency_sparse(
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_get_adjacency" title="26.6. igraph_get_adjacency — The adjacency matrix of a graph."><code class="function">igraph_get_adjacency()</code></a>, the dense version of this function.
+  <a class="link" href="igraph-Structural.html#igraph_get_adjacency" title="26.7. igraph_get_adjacency — The adjacency matrix of a graph."><code class="function">igraph_get_adjacency()</code></a>, the dense version of this function.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -22245,8 +22547,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_stochastic"></a>26.8. <code class="function">igraph_get_stochastic</code> —  Stochastic adjacency matrix of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.28.9.2"></a><p>
+<a name="igraph_get_stochastic"></a>26.9. <code class="function">igraph_get_stochastic</code> —  Stochastic adjacency matrix of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_stochastic(
@@ -22323,7 +22625,7 @@ Time complexity: O(|V||V|), |V| is the number of vertices in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.9. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>, the sparse version of this
+  <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.10. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>, the sparse version of this
 function.
   </p></td>
 </tr></tbody>
@@ -22334,8 +22636,8 @@ function.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_stochastic_sparse"></a>26.9. <code class="function">igraph_get_stochastic_sparse</code> —  The stochastic adjacency matrix of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.28.10.2"></a><p>
+<a name="igraph_get_stochastic_sparse"></a>26.10. <code class="function">igraph_get_stochastic_sparse</code> —  The stochastic adjacency matrix of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_stochastic_sparse(
@@ -22413,7 +22715,7 @@ edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_get_stochastic" title="26.8. igraph_get_stochastic — Stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic()</code></a>, the dense version of this function.
+  <a class="link" href="igraph-Structural.html#igraph_get_stochastic" title="26.9. igraph_get_stochastic — Stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic()</code></a>, the dense version of this function.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -22423,8 +22725,8 @@ edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_edgelist"></a>26.10. <code class="function">igraph_get_edgelist</code> —  The list of edges in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.28.11.2"></a><p>
+<a name="igraph_get_edgelist"></a>26.11. <code class="function">igraph_get_edgelist</code> —  The list of edges in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_edgelist(const igraph_t *graph, igraph_vector_int_t *res, igraph_bool_t bycol);
@@ -22510,8 +22812,8 @@ Time complexity: O(|E|), the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_acyclic"></a>26.11. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.28.12.2"></a><p>
+<a name="igraph_is_acyclic"></a>26.12. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.28.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_acyclic(const igraph_t *graph, igraph_bool_t *res);
@@ -22716,9 +23018,9 @@ igraph_error_t igraph_get_stochastic_sparsemat(const igraph_t *graph,
 
 
 
-This function is deprecated in favour of <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.9. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>,
+This function is deprecated in favour of <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.10. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>,
 but does not work in an identical way. This function takes an <span class="emphasis"><em>uninitialized</em></span>
-<code class="constant">igraph_sparsemat_t</code> while <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.9. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a> takes
+<code class="constant">igraph_sparsemat_t</code> while <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.10. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a> takes
 an already initialized one.
 
 </p>
@@ -22773,7 +23075,7 @@ an already initialized one.
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p>Deprecated since version 0.10.0. Please do not use this function in new
-code; use <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.9. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>
+code; use <a class="link" href="igraph-Structural.html#igraph_get_stochastic_sparse" title="26.10. igraph_get_stochastic_sparse — The stochastic adjacency matrix of a graph."><code class="function">igraph_get_stochastic_sparse()</code></a>
 instead.</p>
 </div>
 <p> 
@@ -22797,9 +23099,9 @@ If the graph is undirected, then a symmetric matrix is created.
 
 </p>
 <p>
-This function is deprecated in favour of <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a>,
+This function is deprecated in favour of <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.8. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a>,
 but does not work in an identical way. This function takes an <span class="emphasis"><em>uninitialized</em></span>
-<code class="constant">igraph_sparsemat_t</code> while <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a> takes
+<code class="constant">igraph_sparsemat_t</code> while <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.8. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a> takes
 an already initialized one.
 
 </p>
@@ -22847,7 +23149,7 @@ an already initialized one.
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3 class="title">Warning</h3>
 <p>Deprecated since version 0.10.0. Please do not use this function in new
-code; use <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.7. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a>
+code; use <a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.8. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format."><code class="function">igraph_get_adjacency_sparse()</code></a>
 instead.</p>
 </div>
 <p> 
