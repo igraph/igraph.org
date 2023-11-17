@@ -323,7 +323,7 @@ used. In fact, this implementation runs much faster than the
 <code class="constant">hi_pr</code> implementation discussed in
 B. V. Cherkassky and A. V. Goldberg: On implementing the
 push-relabel method for the maximum flow problem, (Algorithmica,
-19:390--410, 1997) on all the graph classes i've tried.
+19:390--410, 1997) on all the graph classes I've tried.
 
 </p>
 <p><b>See also: </b></p>
@@ -1037,8 +1037,8 @@ igraph_error_t igraph_st_mincut_value(const igraph_t *graph, igraph_real_t *valu
 </p>
 <p> The minimum s-t cut in a weighted (=valued) graph is the
 total minimum edge weight needed to remove from the graph to
-eliminate all paths from a given vertex (<code class="constant">source</code>) to
-another vertex (<code class="constant">target</code>). Directed paths are considered in
+eliminate all paths from a given vertex (<em class="parameter"><code>source</code></em>) to
+another vertex (<em class="parameter"><code>target</code></em>). Directed paths are considered in
 directed graphs, and undirected paths in undirected graphs.  </p>
 <p> The minimum s-t cut between two vertices is known to be same
 as the maximum flow between these two vertices. So this function
@@ -1860,10 +1860,11 @@ igraph_error_t igraph_st_edge_connectivity(const igraph_t *graph, igraph_integer
 
 
 
+The edge connectivity of two vertices (<em class="parameter"><code>source</code></em> and <em class="parameter"><code>target</code></em>) is the
+minimum number of edges that have to be deleted from the graph to eliminate
+all paths from <em class="parameter"><code>source</code></em> to <em class="parameter"><code>target</code></em>.
+
 </p>
-<p> The edge connectivity of two vertices (<code class="constant">source</code> and
-<code class="constant">target</code>) in a graph is the minimum number of edges that
-have to be deleted from the graph to eliminate all paths from <code class="constant">source</code> to <code class="constant">target</code>.</p>
 <p>This function uses the maximum flow algorithm to calculate
 the edge connectivity.
 
@@ -1931,7 +1932,8 @@ Time complexity: O(|V|^3).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Flows.html#igraph_maxflow_value" title="1.2. igraph_maxflow_value — Maximum flow in a network with the push/relabel algorithm."><code class="function">igraph_maxflow_value()</code></a>, <a class="link" href="igraph-Flows.html#igraph_edge_connectivity" title="3.2. igraph_edge_connectivity — The minimum edge connectivity in a graph."><code class="function">igraph_edge_connectivity()</code></a>,
+  <a class="link" href="igraph-Flows.html#igraph_maxflow_value" title="1.2. igraph_maxflow_value — Maximum flow in a network with the push/relabel algorithm."><code class="function">igraph_maxflow_value()</code></a>, <a class="link" href="igraph-Flows.html#igraph_edge_disjoint_paths" title="4.1. igraph_edge_disjoint_paths — The maximum number of edge-disjoint paths between two vertices."><code class="function">igraph_edge_disjoint_paths()</code></a>,
+<a class="link" href="igraph-Flows.html#igraph_edge_connectivity" title="3.2. igraph_edge_connectivity — The minimum edge connectivity in a graph."><code class="function">igraph_edge_connectivity()</code></a>,
 <a class="link" href="igraph-Flows.html#igraph_st_vertex_connectivity" title="3.3. igraph_st_vertex_connectivity — The vertex connectivity of a pair of vertices."><code class="function">igraph_st_vertex_connectivity()</code></a>, <a class="link" href="igraph-Flows.html#igraph_vertex_connectivity" title="3.4. igraph_vertex_connectivity — The vertex connectivity of a graph."><code class="function">igraph_vertex_connectivity()</code></a>.
   </p></td>
 </tr></tbody>
@@ -2058,14 +2060,19 @@ igraph_error_t igraph_st_vertex_connectivity(const igraph_t *graph,
 
 
 
+The vertex connectivity of two vertices (<em class="parameter"><code>source</code></em> and
+<em class="parameter"><code>target</code></em>) is the minimum number of vertices that must be
+deleted to eliminate all paths from <em class="parameter"><code>source</code></em> to <em class="parameter"><code>target</code></em>. Directed paths are considered in directed graphs.
+
 </p>
-<p>The vertex connectivity of two vertices (<code class="constant">source</code> and
-<code class="constant">target</code>) is the minimum number of vertices that have to be
-deleted to eliminate all paths from <code class="constant">source</code> to <code class="constant">target</code>. Directed paths are considered in directed graphs.</p>
-<p>The vertex connectivity of a pair is the same as the number
+<p>
+The vertex connectivity of a pair is the same as the number
 of different (i.e. node-independent) paths from source to
-target.</p>
-<p>The current implementation uses maximum flow calculations to
+target, assuming no direct edges between them.
+
+</p>
+<p>
+The current implementation uses maximum flow calculations to
 obtain the result.
 
 </p>
@@ -2112,7 +2119,7 @@ obtain the result.
     <code class="constant">IGRAPH_VCONN_NEI_IGNORE</code>, ignore the fact that the two vertices
        are connected and calculate the number of vertices needed
        to eliminate all paths except for the trivial (direct) paths
-       between <em class="parameter"><code>source</code></em> and <em class="parameter"><code>vertex</code></em>. TODO: what about neighbors?
+       between <em class="parameter"><code>source</code></em> and <em class="parameter"><code>vertex</code></em>.
 </p></td>
 </tr>
 </tbody>
@@ -2162,8 +2169,9 @@ Time complexity: O(|V|^3), but see the discussion at <a class="link" href="igrap
 <a class="indexterm" name="id-1.23.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vertex_connectivity(const igraph_t *graph, igraph_integer_t *res,
-                               igraph_bool_t checks);
+igraph_error_t igraph_vertex_connectivity(
+        const igraph_t *graph, igraph_integer_t *res,
+        igraph_bool_t checks);
 </pre></div>
 <p>
 </p>
@@ -2278,13 +2286,13 @@ igraph_error_t igraph_edge_disjoint_paths(const igraph_t *graph, igraph_integer_
 
 
 
+A set of paths between two vertices is called edge-disjoint if they do not
+share any edges. The maximum number of edge-disjoint paths are calculated
+by this function using maximum flow techniques. Directed paths are
+considered in directed graphs.
+
 </p>
-<p> A set of paths between two vertices is called
-edge-disjoint if they do not share any edges. The maximum number of
-edge-disjoint paths are calculated by this function using maximum
-flow techniques. Directed paths are considered in directed
-graphs. </p>
-<p> Note that the number of disjoint paths is the same as the
+<p>Note that the number of disjoint paths is the same as the
 edge connectivity of the two vertices using uniform edge weights.
 
 </p>
@@ -2376,13 +2384,18 @@ igraph_error_t igraph_vertex_disjoint_paths(const igraph_t *graph, igraph_intege
 
 
 
+A set of paths between two vertices is called vertex-disjoint if
+they share no vertices, other than the endpoints. This function computes
+the largest number of such paths that can be constructed between
+a source and a target vertex. The calculation is performed by using maximum
+flow techniques.
+
 </p>
-<p> A set of paths between two vertices is called
-vertex-disjoint if they share no vertices. The calculation is
-performed by using maximum flow techniques. </p>
-<p> Note that the number of vertex-disjoint paths is the same as
-the vertex connectivity of the two vertices in most cases (if the
-two vertices are not connected by an edge).
+<p>
+When there are no edges from the source to the target, the number of
+vertex-disjoint paths is the same as the vertex connectivity of
+the two vertices. When some edges are present, each one of them
+contributes one extra path.
 
 </p>
 <p><b>Arguments: </b>
@@ -2449,7 +2462,8 @@ Time complexity: O(|V|^3).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Flows.html#igraph_edge_disjoint_paths" title="4.1. igraph_edge_disjoint_paths — The maximum number of edge-disjoint paths between two vertices."><code class="function">igraph_edge_disjoint_paths()</code></a>, <a class="link" href="igraph-Flows.html#igraph_vertex_connectivity" title="3.4. igraph_vertex_connectivity — The vertex connectivity of a graph."><code class="function">igraph_vertex_connectivity()</code></a>, <a class="link" href="igraph-Flows.html#igraph_maxflow_value" title="1.2. igraph_maxflow_value — Maximum flow in a network with the push/relabel algorithm."><code class="function">igraph_maxflow_value()</code></a>.
+  <a class="link" href="igraph-Flows.html#igraph_edge_disjoint_paths" title="4.1. igraph_edge_disjoint_paths — The maximum number of edge-disjoint paths between two vertices."><code class="function">igraph_edge_disjoint_paths()</code></a>,
+<a class="link" href="igraph-Flows.html#igraph_st_vertex_connectivity" title="3.3. igraph_st_vertex_connectivity — The vertex connectivity of a pair of vertices."><code class="function">igraph_st_vertex_connectivity()</code></a>, <a class="link" href="igraph-Flows.html#igraph_maxflow_value" title="1.2. igraph_maxflow_value — Maximum flow in a network with the push/relabel algorithm."><code class="function">igraph_maxflow_value()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>

@@ -274,21 +274,28 @@ It has the following members:
 <td><p>
   This function is called whenever a new graph object is
    created, right after it is created but before any vertices or
-   edges are added. It is supposed to set the <code class="constant">attr</code> member of the <code class="constant">igraph_t</code> object. It is expected to return an error code.
+   edges are added. It is supposed to set the <code class="constant">attr</code> member of the <code class="constant">igraph_t</code> object, which is guaranteed to be set to a null pointer
+   before this function is called. It is expected to return an error code.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><code class="constant">destroy</code>:</span></p></td>
 <td><p>
   This function is called whenever the graph object
-   is destroyed, right before freeing the allocated memory.
+   is destroyed, right before freeing the allocated memory. It is supposed
+   to do any cleanup operations that are need to dispose of the <code class="constant">attr</code>
+   member of the <code class="constant">igraph_t</code> object properly. The caller will set the
+   <code class="constant">attr</code> member to a null pointer after this function returns.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><code class="constant">copy</code>:</span></p></td>
 <td><p>
   This function is called when copying a graph with <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy</code></a>, after the structure of the graph has been already
-   copied. It is expected to return an error code.
+   copied. It is supposed to populate the <code class="constant">attr</code> member of the target
+   <code class="constant">igraph_t</code> object. The <code class="constant">attr</code> member of the target is guaranteed to be
+   set to a null pointer before this function is called. It is expected to
+   return an error code.
 </p></td>
 </tr>
 <tr>

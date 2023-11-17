@@ -201,7 +201,9 @@ igraph_error_t igraph_are_connected(const igraph_t *graph,
 
 
 
-This function is of course symmetric for undirected graphs.
+Decides whether there are any edges that have <em class="parameter"><code>v1</code></em> and <em class="parameter"><code>v2</code></em>
+as endpoints. This function is of course symmetric for undirected
+graphs.
 
 </p>
 <p><b>Arguments: </b>
@@ -19163,7 +19165,9 @@ Time complexity: O(d), where d is the out-degree of the tail of the edge.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity_nominal">20.1. <code class="function">igraph_assortativity_nominal</code> —  Assortativity of a graph based on vertex categories.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity">20.2. <code class="function">igraph_assortativity</code> —  Assortativity based on numeric properties of vertices.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_assortativity_degree">20.3. <code class="function">igraph_assortativity_degree</code> —  Assortativity of a graph based on vertex degree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_joint_degree_matrix">20.4. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_joint_type_distribution">20.4. <code class="function">igraph_joint_type_distribution</code> —  Mixing matrix for vertex categories.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_joint_degree_distribution">20.5. <code class="function">igraph_joint_degree_distribution</code> —  The joint degree distribution of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_joint_degree_matrix">20.6. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -19318,6 +19322,7 @@ number of vertex types.
   <a class="link" href="igraph-Structural.html#igraph_assortativity" title="20.2. igraph_assortativity — Assortativity based on numeric properties of vertices."><code class="function">igraph_assortativity()</code></a> for computing the assortativity
 based on continuous vertex values instead of discrete categories.
 <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> to compute generalized modularity.
+<a class="link" href="igraph-Structural.html#igraph_joint_type_distribution" title="20.4. igraph_joint_type_distribution — Mixing matrix for vertex categories."><code class="function">igraph_joint_type_distribution()</code></a> to obtain the mixing matrix.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19652,7 +19657,9 @@ the number of vertices.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_assortativity" title="20.2. igraph_assortativity — Assortativity based on numeric properties of vertices."><code class="function">igraph_assortativity()</code></a> for the general function
-calculating assortativity for any kind of numeric vertex values.
+calculating assortativity for any kind of numeric vertex values,
+and <a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a> to get the complete
+joint degree distribution.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19708,15 +19715,394 @@ int <span class="strong"><strong>main</strong></span>(void){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_joint_degree_matrix"></a>20.4. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</h3></div></div></div>
+<a name="igraph_joint_type_distribution"></a>20.4. <code class="function">igraph_joint_type_distribution</code> —  Mixing matrix for vertex categories.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.22.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_joint_degree_matrix(const igraph_t* graph,
-                          igraph_matrix_t* jdm,
-                          igraph_integer_t max_out_degree,
-                          igraph_integer_t max_in_degree,
-                          const igraph_vector_t* weights);
+igraph_error_t igraph_joint_type_distribution(
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_matrix_t *p,
+        const igraph_vector_int_t *from_types, const igraph_vector_int_t *to_types,
+        igraph_bool_t directed, igraph_bool_t normalized);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Computes the mixing matrix M_ij, i.e. the joint distribution of vertex types
+at the endpoints directed of edges. Categories are represented by non-negative integer
+indices, passed in <em class="parameter"><code>from_types</code></em> and <em class="parameter"><code>to_types</code></em>. The row and column counts of <em class="parameter"><code>m</code></em>
+will be one larger than the largest source and target type, respectively. Re-index type
+vectors using <a class="link" href="igraph-Community.html#igraph_reindex_membership" title="1.5. igraph_reindex_membership — Makes the IDs in a membership vector contiguous."><code class="function">igraph_reindex_membership()</code></a> if they are not contiguous integers,
+to avoid producing a very large matrix.
+
+</p>
+<p>
+M_ij is proportional to the probability that a randomly chosen ordered pair of vertices
+have types <code class="constant">i</code> and <code class="constant">j</code>.
+
+</p>
+<p>
+When there is a single categorization of vertices, i.e. <em class="parameter"><code>from_types</code></em> and <em class="parameter"><code>to_types</code></em>
+are the same, M_ij is related to the modularity (<a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a>) and nominal
+assortativity (<a class="link" href="igraph-Structural.html#igraph_assortativity_nominal" title="20.1. igraph_assortativity_nominal — Assortativity of a graph based on vertex categories."><code class="function">igraph_assortativity_nominal()</code></a>). Let <code class="literal">a_i = sum_j M_ij</code> and
+<code class="literal">b_j = sum_i M_ij</code>. If M_ij is normalized, i.e. <code class="literal">sum_ij M_ij = 1</code>,
+and the types represent membership in vertex partitions, then the modularity of the
+partitioning can be computed as
+
+</p>
+<p>
+<code class="literal">Q = sum_ii M_ii - sum_i a_i b_i</code>
+
+</p>
+<p>
+The normalized nominal assortativity is
+
+</p>
+<p>
+<code class="literal">Q / (1 - sum_i a_i b_i)</code>
+
+</p>
+<p>
+<a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a> is a special case of this function, with
+categories consisting vertices of the same degree.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+M. E. J. Newman: Mixing patterns in networks,
+Phys. Rev. E 67, 026126 (2003)
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.67.026126" target="_top">https://doi.org/10.1103/PhysRevE.67.026126</a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<td><p>
+  The mixing matrix M_ij will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector containing the weights of the edges. If passing a
+   <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from_types</code></em>:</span></p></td>
+<td><p>
+  Vertex types for source vertices. These must be non-negative integers.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to_types</code></em>:</span></p></td>
+<td><p>
+  Vertex types for target vertices. These must be non-negative integers.
+   If <code class="constant">NULL</code>, it is assumed to be the same as <em class="parameter"><code>from_types</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Whether to treat edges are directed. Ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
+<td><p>
+  Whether to normalize the matrix so that entries sum to 1.0.
+   If false, matrix entries will be connection counts. Normalization is not
+   meaningful if some edge weights are negative.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a> to compute the joint distribution
+of vertex degrees; <a class="link" href="igraph-Community.html#igraph_modularity" title="1.1. igraph_modularity — Calculates the modularity of a graph with respect to some clusters or vertex types."><code class="function">igraph_modularity()</code></a> to compute the modularity of
+a vertex partitioning; <a class="link" href="igraph-Structural.html#igraph_assortativity_nominal" title="20.1. igraph_assortativity_nominal — Assortativity of a graph based on vertex categories."><code class="function">igraph_assortativity_nominal()</code></a> to compute
+assortativity based on vertex categories.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(E), where E is the number of edges in the input graph.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_joint_degree_distribution"></a>20.5. <code class="function">igraph_joint_degree_distribution</code> —  The joint degree distribution of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.22.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_joint_degree_distribution(
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_matrix_t *p,
+        igraph_neimode_t from_mode, igraph_neimode_t to_mode,
+        igraph_bool_t directed_neighbors,
+        igraph_bool_t normalized,
+        igraph_integer_t max_from_degree, igraph_integer_t max_to_degree);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Computes the joint degree distribution <code class="constant">P_ij</code> of a graph, used in the
+study of degree correlations. <code class="constant">P_ij</code> is the probability that a randomly
+chosen ordered pair of <span class="emphasis"><em>connected</em></span> vertices have degrees <code class="constant">i</code> and <code class="constant">j</code>.
+
+</p>
+<p>
+In directed graphs, directionally connected <code class="literal">u -&gt; v</code> pairs
+are considered. The joint degree distribution of an undirected graph is the
+same as that of the corresponding directed graph in which all connection are
+bidirectional, assuming that <em class="parameter"><code>from_mode</code></em> is <code class="constant">IGRAPH_OUT</code>, <em class="parameter"><code>to_mode</code></em> is
+<code class="constant">IGRAPH_IN</code> and <em class="parameter"><code>directed_neighbors</code></em> is true.
+
+</p>
+<p>
+When <em class="parameter"><code>normalized</code></em> is false, <code class="literal">sum_ij P_ij</code> gives the total
+number of connections in a directed graph, or twice that value in an
+undirected graph. The sum is taken over ordered <code class="literal">(i,j)</code> degree
+pairs.
+
+</p>
+<p>
+The joint degree distribution relates to other concepts used in the study of
+degree correlations. If <code class="constant">P_ij</code> is normalized then the degree correlation
+function <code class="literal">k_nn(k)</code> is obtained as
+
+</p>
+<p>
+<code class="literal">k_nn(k) = (sum_j j P_kj) / (sum_j P_kj)</code>.
+
+</p>
+<p>
+The non-normalized degree assortativity is obtained as
+
+</p>
+<p>
+<code class="literal">a = sum_ij i j (P_ij - q_i r_j)</code>,
+
+</p>
+<p>
+where <code class="literal">q_i = sum_k P_ik</code> and <code class="literal">r_j = sum_k P_kj</code>.
+
+</p>
+<p>
+Note that the joint degree distribution <code class="constant">P_ij</code> is similar, but not identical
+to the joint degree matrix <code class="constant">J_ij</code> computed by <a class="link" href="igraph-Structural.html#igraph_joint_degree_matrix" title="20.6. igraph_joint_degree_matrix — The joint degree matrix of a graph."><code class="function">igraph_joint_degree_matrix()</code></a>.
+If the graph is undirected, then the diagonal entries of an unnormalized <code class="constant">P_ij</code>
+are double that of <code class="constant">J_ij</code>, as any undirected connection between same-degree vertices
+is counted in both directions. In contrast to <a class="link" href="igraph-Structural.html#igraph_joint_degree_matrix" title="20.6. igraph_joint_degree_matrix — The joint degree matrix of a graph."><code class="function">igraph_joint_degree_matrix()</code></a>,
+this function returns matrices which include the row and column corresponding
+to zero degrees. In directed graphs, this row and column is not necessarily
+zero when <em class="parameter"><code>from_mode</code></em> is different from <code class="constant">IGRAPH_OUT</code> or <em class="parameter"><code>to_mode</code></em> is different
+from <code class="constant">IGRAPH_IN</code>.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+M. E. J. Newman: Mixing patterns in networks,
+Phys. Rev. E 67, 026126 (2003)
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.67.026126" target="_top">https://doi.org/10.1103/PhysRevE.67.026126</a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector containing the weights of the edges. If passing a
+   <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<td><p>
+  A pointer to an initialized matrix that will be resized. The <code class="constant">P_ij</code>
+   value will be written into <code class="literal">p[i,j]</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from_mode</code></em>:</span></p></td>
+<td><p>
+  How to compute the degree of sources? Can be <code class="constant">IGRAPH_OUT</code>
+   for out-degree, <code class="constant">IGRAPH_IN</code> for in-degree, or <code class="constant">IGRAPH_ALL</code> for total degree.
+   Ignored in undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to_mode</code></em>:</span></p></td>
+<td><p>
+  How to compute the degree of sources? Can be <code class="constant">IGRAPH_OUT</code>
+   for out-degree, <code class="constant">IGRAPH_IN</code> for in-degree, or <code class="constant">IGRAPH_ALL</code> for total degree.
+   Ignored in undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed_neighbors</code></em>:</span></p></td>
+<td><p>
+  Whether to consider <code class="literal">u -&gt; v</code> connections
+   to be directed. Undirected connections are treated as reciprocal directed ones,
+   i.e. both <code class="literal">u -&gt; v</code> and <code class="literal">v -&gt; u</code> will be considered.
+   Ignored in undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>normalized</code></em>:</span></p></td>
+<td><p>
+  Whether to normalize the matrix so that entries sum to 1.0.
+   If false, matrix entries will be connection counts. Normalization is not
+   meaningful if some edge weights are negative.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_from_degree</code></em>:</span></p></td>
+<td><p>
+  The largest source vertex degree to consider. If negative,
+   the largest source degree will be used. The row count of the result matrix
+   is one larger than this value.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_to_degree</code></em>:</span></p></td>
+<td><p>
+  The largest target vertex degree to consider. If negative,
+   the largest target degree will be used. The column count of the result matrix
+   is one larger than this value.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_joint_degree_matrix" title="20.6. igraph_joint_degree_matrix — The joint degree matrix of a graph."><code class="function">igraph_joint_degree_matrix()</code></a> for computing the joint degree matrix;
+<a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree."><code class="function">igraph_assortativity_degree()</code></a> and <a class="link" href="igraph-Structural.html#igraph_assortativity" title="20.2. igraph_assortativity — Assortativity based on numeric properties of vertices."><code class="function">igraph_assortativity()</code></a> for
+degree correlations coefficients, and <a class="link" href="igraph-Structural.html#igraph_degree_correlation_vector" title="26.6. igraph_degree_correlation_vector — Degree correlation function."><code class="function">igraph_degree_correlation_vector()</code></a>
+for the degree correlation function.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(E), where E is the number of edges in the input graph.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_joint_degree_matrix"></a>20.6. <code class="function">igraph_joint_degree_matrix</code> —  The joint degree matrix of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.22.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_joint_degree_matrix(
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_matrix_t *jdm,
+        igraph_integer_t max_out_degree, igraph_integer_t max_in_degree);
 </pre></div>
 <p>
 </p>
@@ -19748,7 +20134,8 @@ to its weight) connects vertices with degrees <code class="constant">i</code> an
 </p>
 <p>
 Note that <code class="constant">J_ij</code> is similar, but not identical to the joint degree
-<span class="emphasis"><em>distribution,</em></span> which is defined for <span class="emphasis"><em>ordered</em></span> <code class="literal">(i, j)</code> degree
+<span class="emphasis"><em>distribution,</em></span> computed by <a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a>,
+which is defined for <span class="emphasis"><em>ordered</em></span> <code class="literal">(i, j)</code> degree
 pairs even in the undirected case. When considering undirected graphs, the
 diagonal of the joint degree distribution is twice that of the joint
 degree matrix.
@@ -19780,6 +20167,14 @@ ACM J. Exp. Algorithmics 17, Article 3.5 (2012).
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector containing the weights of the edges. If passing a
+       <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights, i.e.
+       the matrix entries will be connection counts.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>jdm</code></em>:</span></p></td>
 <td><p>
   A pointer to an initialized matrix that will be resized. The values
@@ -19802,14 +20197,6 @@ ACM J. Exp. Algorithmics 17, Article 3.5 (2012).
        be used.
 </p></td>
 </tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  A vector containing the weights of the edges. If passing a
-       <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights, i.e.
-       the matrix entries will be connection counts.
-</p></td>
-</tr>
 </tbody>
 </table></div>
 <p>
@@ -19829,6 +20216,23 @@ ACM J. Exp. Algorithmics 17, Article 3.5 (2012).
 </table></div>
 <p>
 
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a> to count ordered vertex pairs instead of
+edges, or to obtain a normalized matrix.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: O(E), where E is the number of edges in input graph.
  
 </p>
@@ -19838,12 +20242,12 @@ Time complexity: O(E), where E is the number of edges in input graph.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="k-cores"></a>21. K-cores and k-trusses</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Structural.html#igraph_coreness">21.1. <code class="function">igraph_coreness</code> —  Finding the coreness of the vertices in a network.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_coreness">21.1. <code class="function">igraph_coreness</code> —  The coreness of the vertices in a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_trussness">21.2. <code class="function">igraph_trussness</code> —  Finding the "trussness" of the edges in a network.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_coreness"></a>21.1. <code class="function">igraph_coreness</code> —  Finding the coreness of the vertices in a network.</h3></div></div></div>
+<a name="igraph_coreness"></a>21.1. <code class="function">igraph_coreness</code> —  The coreness of the vertices in a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.23.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -21466,14 +21870,15 @@ igraph_error_t igraph_density(const igraph_t *graph, igraph_real_t *res,
 The density of a graph is simply the ratio of the actual number of its
 edges and the largest possible number of edges it could have.
 The maximum number of edges depends on interpretation: are vertices
-allowed to have a connected to themselves? This is controlled by the
+allowed to have a connection to themselves? This is controlled by the
 <em class="parameter"><code>loops</code></em> parameter.
 
 </p>
 <p>
 Note that density is ill-defined for graphs which have multiple edges
 between some pairs of vertices. Consider calling <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.7. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
-on such graphs.
+on such graphs. This function does not check whether the graph has
+parallel edges. The result it returns for such graphs is not meaningful.
 
 </p>
 <p><b>Arguments: </b>
@@ -21494,7 +21899,7 @@ on such graphs.
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
   Pointer to a real number, the result will be stored
-  here.
+  here. It must not have parallel edges.
 </p></td>
 </tr>
 <tr>
@@ -22107,9 +22512,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_degree_correlation_vector(
-    const igraph_t *graph, igraph_vector_t *knnk, const igraph_vector_t *weights,
-    igraph_neimode_t from_mode, igraph_neimode_t to_mode,
-    igraph_bool_t directed_neighbors);
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_vector_t *knnk,
+        igraph_neimode_t from_mode, igraph_neimode_t to_mode,
+        igraph_bool_t directed_neighbors);
 </pre></div>
 <p>
 </p>
@@ -22138,8 +22544,9 @@ ones.
 
 </p>
 <p>
-If P_ij is the joint degree distribution of the graph, then
-<code class="literal">k_nn(k) = sum_k j P_kj</code>.
+If P_ij is the joint degree distribution of the graph, computable with
+<a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a>, then
+<code class="literal">k_nn(k) = (sum_j j P_kj) / (sum_j P_kj)</code>.
 
 </p>
 <p>
@@ -22190,6 +22597,12 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional weight vector. If not <code class="constant">NULL</code>, weighted averages will be computed.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>knnk</code></em>:</span></p></td>
 <td><p>
   An initialized vector, the result will be written here.
@@ -22197,12 +22610,6 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
    by vertices of degree <code class="constant">d</code>. Note that in contrast to
    <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a>, <code class="literal">d=0</code> is also
    included.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  An optional weight vector. If not <code class="constant">NULL</code>, weighted averages will be computed.
 </p></td>
 </tr>
 <tr>
@@ -22228,12 +22635,26 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
    to be directed. Undirected connections are treated as reciprocal directed ones,
    i.e. both <code class="literal">u -&gt; v</code> and <code class="literal">v -&gt; u</code> will be considered.
    Ignored in undirected graphs.
-\returns Error code.</p></td>
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 </p>
 <p><b>See also: </b></p>
@@ -22245,8 +22666,10 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a> for computing the average neighbour degree of
-a set of vertices.
+  <a class="link" href="igraph-Structural.html#igraph_avg_nearest_neighbor_degree" title="26.5. igraph_avg_nearest_neighbor_degree — Average neighbor degree."><code class="function">igraph_avg_nearest_neighbor_degree()</code></a> for computing the average neighbour
+degree of a set of vertices, <a class="link" href="igraph-Structural.html#igraph_joint_degree_distribution" title="20.5. igraph_joint_degree_distribution — The joint degree distribution of a graph."><code class="function">igraph_joint_degree_distribution()</code></a> to get the
+complete joint degree distribution, and <a class="link" href="igraph-Structural.html#igraph_assortativity_degree" title="20.3. igraph_assortativity_degree — Assortativity of a graph based on vertex degree."><code class="function">igraph_assortativity_degree()</code></a>
+to compute the degree assortativity.
   </p></td>
 </tr></tbody>
 </table></div>
