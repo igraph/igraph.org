@@ -1,0 +1,33 @@
+---
+title: python-igraph 0.11.3
+date: 2023-11-20
+tags: python
+---
+
+[python-igraph](https://python.igraph.org/en/0.11.3/) 0.11.3, the third bugfix release of the 0.11 series, has arrived. The primary reason for this release is to update the C core of igraph to 0.10.8, which brings quite a few bugfixes to the Python interface. This release also fixes a bug in the Matplotlib backend with curved undirected edges. Please refer to the [changelog](https://github.com/igraph/python-igraph/releases/tag/0.11.3) for more details.
+
+The preferred way of installing the Python interface is via `pip`; typing `pip install igraph` should install a pre-compiled Python wheel on most supported platforms (Windows, Linux and macOS). The pre-compiled wheels and the source code are also available from the [Python Package Index page](https://pypi.org/project/igraph/0.11.3/).
+
+Read on for more details about the changes in version 0.11.3, including those that became possible by updating the C core to 0.10.8.
+
+<!--more-->
+
+### Added
+
+ - Added `Graph.__invalidate_cache()` for debugging and benchmarking purposes.
+
+### Changed
+
+ - The C core was updated to 0.10.8.
+ - The behaviour of the Pajek format reader and writer is now more closely aligned with the Pajek software and the reader is more tolerant of input it cannot interpret. Only those vertex and edge parameters are treated as valid which Pajek itself understands, therefore support for `size` is now dropped, and support for the `font` edge parameter is added. See http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm for more information. Invalid/unrecognized parameters are now converted to igraph attributes by the reader, but just as before, they are not output by the writer.
+ - The Pajek format writer now encodes newline and quotation mark characters in a Pajek-compatible manner (`\n` and `&#34;`, respectively).
+
+### Fixed
+
+ - Removed incorrectly added `loops=...` argument of `Graph.is_bigraphical()`.
+ - Fixed a bug in the Matplotlib graph drawing backend that filled the interior of undirected curved edges.
+ - Duplicate vertex IDs in `Graph.induced_subgraph()` no longer cause a crash.
+ - Many graph generators (Erdős-Rényi, De Bruijn, Kautz, full graph, full multipartite and citation graphs, Turán graphs) became interruptible with Ctrl-C.
+ - `Graph.subisomorphic_lad()` now returns a single null map when the pattern is the null graph.
+ - `Graph.maxflow()` now returns an error code if the source and target vertices are the same. It used to get stuck in an infinite loop in earlier versions.
+

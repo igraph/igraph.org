@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
 
-    <title>C/igraph 0.4.2</title>
+    <title>python-igraph 0.11.3</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -163,22 +163,43 @@
     <div class="col-md-8">
       <div class="bs-docs-section">
         <div class="post-header">
-          <h1>C/igraph 0.4.2</h1>
-	      <div class="post-time"><time class="text-muted">Jun 7th, 2007</time></div>
+          <h1>python-igraph 0.11.3</h1>
+	      <div class="post-time"><time class="text-muted">Nov 20th, 2023</time></div>
         </div>
 
-        <h1 id="cigraph-042">C/igraph 0.4.2</h1>
+        <p><a href="https://python.igraph.org/en/0.11.3/">python-igraph</a> 0.11.3, the third bugfix release of the 0.11 series, has arrived. The primary reason for this release is to update the C core of igraph to 0.10.8, which brings quite a few bugfixes to the Python interface. This release also fixes a bug in the Matplotlib backend with curved undirected edges. Please refer to the <a href="https://github.com/igraph/python-igraph/releases/tag/0.11.3">changelog</a> for more details.</p>
 
-<p>June 7, 2007</p>
+<p>The preferred way of installing the Python interface is via <code class="language-plaintext highlighter-rouge">pip</code>; typing <code class="language-plaintext highlighter-rouge">pip install igraph</code> should install a pre-compiled Python wheel on most supported platforms (Windows, Linux and macOS). The pre-compiled wheels and the source code are also available from the <a href="https://pypi.org/project/igraph/0.11.3/">Python Package Index page</a>.</p>
 
-<p>This is another bugfix release.</p>
+<p>Read on for more details about the changes in version 0.11.3, including those that became possible by updating the C core to 0.10.8.</p>
 
-<p>Some other bits added:</p>
+<!--more-->
+
+<h3 id="added">Added</h3>
 
 <ul>
-  <li>circular Reingold-Tilford layout generator for trees</li>
-  <li>corrected a bug, Pajek files are written properly under MS Windows now.</li>
+  <li>Added <code class="language-plaintext highlighter-rouge">Graph.__invalidate_cache()</code> for debugging and benchmarking purposes.</li>
 </ul>
+
+<h3 id="changed">Changed</h3>
+
+<ul>
+  <li>The C core was updated to 0.10.8.</li>
+  <li>The behaviour of the Pajek format reader and writer is now more closely aligned with the Pajek software and the reader is more tolerant of input it cannot interpret. Only those vertex and edge parameters are treated as valid which Pajek itself understands, therefore support for <code class="language-plaintext highlighter-rouge">size</code> is now dropped, and support for the <code class="language-plaintext highlighter-rouge">font</code> edge parameter is added. See http://mrvar.fdv.uni-lj.si/pajek/DrawEPS.htm for more information. Invalid/unrecognized parameters are now converted to igraph attributes by the reader, but just as before, they are not output by the writer.</li>
+  <li>The Pajek format writer now encodes newline and quotation mark characters in a Pajek-compatible manner (<code class="language-plaintext highlighter-rouge">\n</code> and <code class="language-plaintext highlighter-rouge">&amp;#34;</code>, respectively).</li>
+</ul>
+
+<h3 id="fixed">Fixed</h3>
+
+<ul>
+  <li>Removed incorrectly added <code class="language-plaintext highlighter-rouge">loops=...</code> argument of <code class="language-plaintext highlighter-rouge">Graph.is_bigraphical()</code>.</li>
+  <li>Fixed a bug in the Matplotlib graph drawing backend that filled the interior of undirected curved edges.</li>
+  <li>Duplicate vertex IDs in <code class="language-plaintext highlighter-rouge">Graph.induced_subgraph()</code> no longer cause a crash.</li>
+  <li>Many graph generators (Erdős-Rényi, De Bruijn, Kautz, full graph, full multipartite and citation graphs, Turán graphs) became interruptible with Ctrl-C.</li>
+  <li><code class="language-plaintext highlighter-rouge">Graph.subisomorphic_lad()</code> now returns a single null map when the pattern is the null graph.</li>
+  <li><code class="language-plaintext highlighter-rouge">Graph.maxflow()</code> now returns an error code if the source and target vertices are the same. It used to get stuck in an infinite loop in earlier versions.</li>
+</ul>
+
 
       </div>
     </div>
