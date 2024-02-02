@@ -19873,7 +19873,7 @@ number of elements. O(1) otherwise.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_init_copy">8.2. <code class="function">igraph_strvector_init_copy</code> —  Initialization by copying.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_destroy">8.3. <code class="function">igraph_strvector_destroy</code> —  Frees the memory allocated for the string vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#STR">8.4. <code class="function">STR</code> —  Indexing string vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_get">8.5. <code class="function">igraph_strvector_get</code> —  Retrieves an element of the string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_get">8.5. <code class="function">igraph_strvector_get</code> —  Retrieves an element of a string vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_set">8.6. <code class="function">igraph_strvector_set</code> —  Sets an element of the string vector from a string.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_set_len">8.7. <code class="function">igraph_strvector_set_len</code> —  Sets an element of the string vector given a buffer and its size.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_push_back">8.8. <code class="function">igraph_strvector_push_back</code> —  Adds an element to the back of a string vector.</a></span></dt>
@@ -19912,7 +19912,7 @@ always make copies of the string passed to them.
 void <span class="strong"><strong>strvector_print</strong></span>(<span class="strong"><strong>const</strong></span> igraph_strvector_t sv) {
     igraph_integer_t i, s = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; s; i++) {
-        <span class="strong"><strong>printf</strong></span>("---%s---\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#STR" title="8.4. STR — Indexing string vectors.">STR</a></strong></span>(sv, i));
+        <span class="strong"><strong>printf</strong></span>("---%s---\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of a string vector.">igraph_strvector_get</a></strong></span>(&amp;sv, i));
     }
     <span class="strong"><strong>printf</strong></span>("\n");
 }
@@ -19944,7 +19944,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>strvector_print</strong></span>(sv1);
 
     <span class="strong"><strong>printf</strong></span>("Then copy the first element over the third element:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string.">igraph_strvector_set</a></strong></span>(&amp;sv1, 2, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of the string vector.">igraph_strvector_get</a></strong></span>(&amp;sv1, 0));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string.">igraph_strvector_set</a></strong></span>(&amp;sv1, 2, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of a string vector.">igraph_strvector_get</a></strong></span>(&amp;sv1, 0));
     <span class="strong"><strong>strvector_print</strong></span>(sv1);
 
     <span class="strong"><strong>printf</strong></span>("Make a copy of the strvector and set the last element of the copy:\n");
@@ -20153,9 +20153,8 @@ depending on the memory manager.
 
 
 This is a macro that allows to query the elements of a string vector, just
-like <a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of the string vector."><code class="function">igraph_strvector_get()</code></a>, but without the overhead of a function
-call. Note this macro cannot be used to set an element. Use
-<a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string."><code class="function">igraph_strvector_set()</code></a> to set an element instead.
+like <a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of a string vector."><code class="function">igraph_strvector_get()</code></a>. Note this macro cannot be used to set an
+element. Use <a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string."><code class="function">igraph_strvector_set()</code></a> to set an element instead.
 
 </p>
 <p><b>Arguments: </b>
@@ -20198,12 +20197,20 @@ call. Note this macro cannot be used to set an element. Use
 <p>
 
 Time complexity: O(1).
- 
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.9. Please do not use this function in new
+code; use <a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of a string vector."><code class="function">igraph_strvector_get()</code></a>
+instead.</p>
+</div>
+<p> 
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_get"></a>8.5. <code class="function">igraph_strvector_get</code> —  Retrieves an element of the string vector.</h3></div></div></div>
+<a name="igraph_strvector_get"></a>8.5. <code class="function">igraph_strvector_get</code> —  Retrieves an element of a string vector.</h3></div></div></div>
 <a class="indexterm" name="id-1.8.9.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -20216,8 +20223,7 @@ const char *igraph_strvector_get(const igraph_strvector_t *sv, igraph_integer_t 
 
 
 
-Query an element of a string vector. See also the <a class="link" href="igraph-Data-structures.html#STR" title="8.4. STR — Indexing string vectors."><code class="function">STR</code></a> macro
-for an easier way.
+Query an element of a string vector. The returned string must not be modified.
 
 </p>
 <p><b>Arguments: </b>
@@ -25464,7 +25470,7 @@ Time complexity: O(log n), where n is the number of items in the tree.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	      &copy; 2003 &ndash; 2023 The igraph core team.
+	      &copy; 2003 &ndash; 2024 The igraph core team.
         &bull; Code licensed under <a href="http://www.gnu.org/licenses/gpl-2.0.html"> GNU GPL 2</a> or later,
         documentation under <a href="http://www.gnu.org/copyleft/fdl.html">GNU FDL</a>.
       </p>
