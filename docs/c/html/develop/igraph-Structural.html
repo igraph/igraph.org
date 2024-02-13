@@ -183,14 +183,14 @@ of a graph, like its diameter, the degree of the nodes, etc.</p>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="basic-properties"></a>1. Basic properties</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Structural.html#igraph_are_connected">1.1. <code class="function">igraph_are_connected</code> —  Decides whether two vertices are connected.</a></span></dt></dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Structural.html#igraph_are_adjacent">1.1. <code class="function">igraph_are_adjacent</code> —  Decides whether two vertices are adjacent.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_are_connected"></a>1.1. <code class="function">igraph_are_connected</code> —  Decides whether two vertices are connected.</h3></div></div></div>
+<a name="igraph_are_adjacent"></a>1.1. <code class="function">igraph_are_adjacent</code> —  Decides whether two vertices are adjacent.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_are_connected(const igraph_t *graph,
+igraph_error_t igraph_are_adjacent(const igraph_t *graph,
                          igraph_integer_t v1, igraph_integer_t v2,
                          igraph_bool_t *res);
 </pre></div>
@@ -285,15 +285,15 @@ igraph_error_t igraph_spanner(const igraph_t *graph, igraph_vector_int_t *spanne
 
 
 
-A spanner of a graph G = (V,E) with a stretch t is a subgraph
-H = (V,Es) such that Es is a subset of E and the distance
-between any pair of nodes in H is at most t times the distance
-in G. The returned graph is always a spanner of the
-given graph with the specified stretch. For weighted graphs the
-number of edges in the spanner is O(k * n^(1 + 1 / k)), where k is
-k = (stretch + 1) / 2,  m is the number of edges and n is the number
-of nodes in G. For unweighted graphs the number of edges is
-O(n^(1 + 1 / k) + kn).
+A spanner of a graph <code class="literal">G = (V,E)</code> with a stretch <code class="constant">t</code> is a
+subgraph <code class="literal">H = (V,Es)</code> such that <code class="constant">Es</code> is a subset of <code class="constant">E</code>
+and the distance between any pair of nodes in <code class="constant">H</code> is at most <code class="constant">t</code>
+times the distance in <code class="constant">G</code>. The returned graph is always a spanner of
+the given graph with the specified stretch. For weighted graphs the
+number of edges in the spanner is <code class="literal">O(k n^(1 + 1 / k))</code>, where
+<code class="constant">k</code> is <code class="literal">k = (t + 1) / 2</code>,  <code class="constant">m</code> is the number of edges
+and <code class="constant">n</code> is the number of nodes in <code class="constant">G</code>. For unweighted graphs the number
+of edges is <code class="literal">O(n^(1 + 1 / k) + kn)</code>.
 
 </p>
 <p>
@@ -322,20 +322,20 @@ Weighted Graphs". <a class="ulink" href="https://doi.org/10.1002/rsa.20130" targ
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        the calculated spanner will be returned here. Use
-<a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.8. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.8. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
        graph object.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>stretch</code></em>:</span></p></td>
 <td><p>
-  The stretch factor of the spanner.
+  The stretch factor <code class="constant">t</code> of the spanner.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  The edge weights or NULL.</p></td>
+  The edge weights or <code class="constant">NULL</code>.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -377,7 +377,8 @@ Weighted Graphs". <a class="ulink" href="https://doi.org/10.1002/rsa.20130" targ
 <p>
 
 Time complexity: The algorithm is a randomized Las Vegas algorithm. The expected
-                 running time is O(km) where k is the value mentioned above.
+running time is O(km) where k is the value mentioned above and m is the number
+of edges.
  
 </p>
 </div>
@@ -3411,7 +3412,9 @@ igraph_error_t igraph_get_all_shortest_paths(const igraph_t *graph,
 
 
 When there is more than one shortest path between two vertices,
-all of them will be returned.
+all of them will be returned. Every edge is considered separately,
+therefore in graphs with multi-edges, this function may produce
+a very large number of results.
 
 </p>
 <p><b>Arguments: </b>
@@ -12096,7 +12099,7 @@ the number of vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.8. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.9. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.9. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.10. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
 for the separate calculations,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for a similar measure intended
@@ -16922,14 +16925,15 @@ An undirected graph is a tree if it is connected and has no cycles.
 
 </p>
 <p>
-In the directed case, a possible additional requirement is that all
-edges are oriented away from a root (out-tree or arborescence) or all edges
+In the directed case, an additional requirement is that all edges
+are oriented away from a root (out-tree or arborescence) or all edges
 are oriented towards a root (in-tree or anti-arborescence).
 This test can be controlled using the <em class="parameter"><code>mode</code></em> parameter.
 
 </p>
 <p>
-By convention, the null graph (i.e. the graph with no vertices) is considered not to be a tree.
+By convention, the null graph (i.e. the graph with no vertices) is considered
+not to be connected, and therefore not a tree.
 
 </p>
 <p><b>Arguments: </b>
@@ -17062,25 +17066,26 @@ igraph_error_t igraph_is_forest(const igraph_t *graph, igraph_bool_t *res,
 
 
 
-An undirected graph is a forest if it has no cycles.
+An undirected graph is a forest if it has no cycles. Equivalently,
+a graph is a forest if all connected components are trees.
+
 </p>
 <p>
-
-In the directed case, a possible additional requirement is that edges in each
+In the directed case, an additional requirement is that edges in each
 tree are oriented away from the root (out-trees or arborescences) or all edges
 are oriented towards the root (in-trees or anti-arborescences).
 This test can be controlled using the <em class="parameter"><code>mode</code></em> parameter.
+
 </p>
 <p>
-
 By convention, the null graph (i.e. the graph with no vertices) is considered to be a forest.
+
 </p>
 <p>
-
 The <em class="parameter"><code>res</code></em> return value of this function is cached in the graph itself if
 <em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code> or if the graph is undirected. Calling the
 function multiple times with no modifications to the graph in between
-will return a cached value in O(1) time if the roots are not asked for.
+will return a cached value in O(1) time if the roots are not requested.
 
 </p>
 <p><b>Arguments: </b>
@@ -23483,20 +23488,109 @@ vertices and edges in the original input graph.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="structural-properties-deprecated"></a>27. Deprecated functions</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths">27.1. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_dijkstra">27.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_bellman_ford">27.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_johnson">27.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic_sparsemat">27.5. <code class="function">igraph_get_stochastic_sparsemat</code> —  Stochastic adjacency matrix of a graph (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_get_sparsemat">27.6. <code class="function">igraph_get_sparsemat</code> —  Converts an igraph graph to a sparse matrix (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_laplacian">27.7. <code class="function">igraph_laplacian</code> —  Returns the Laplacian matrix of a graph (deprecated).</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_hub_score">27.8. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_authority_score">27.9. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_are_connected">27.1. <code class="function">igraph_are_connected</code> —  Decides whether two vertices are adjacent (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths">27.2. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_dijkstra">27.3. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_bellman_ford">27.4. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_shortest_paths_johnson">27.5. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_stochastic_sparsemat">27.6. <code class="function">igraph_get_stochastic_sparsemat</code> —  Stochastic adjacency matrix of a graph (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_get_sparsemat">27.7. <code class="function">igraph_get_sparsemat</code> —  Converts an igraph graph to a sparse matrix (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_laplacian">27.8. <code class="function">igraph_laplacian</code> —  Returns the Laplacian matrix of a graph (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_hub_score">27.9. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_authority_score">27.10. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths"></a>27.1. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</h3></div></div></div>
+<a name="igraph_are_connected"></a>27.1. <code class="function">igraph_are_connected</code> —  Decides whether two vertices are adjacent (deprecated alias).</h3></div></div></div>
 <a class="indexterm" name="id-1.14.29.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_are_connected(const igraph_t *graph,
+                                   igraph_integer_t v1, igraph_integer_t v2,
+                                   igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.10. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_are_adjacent" title="1.1. igraph_are_adjacent — Decides whether two vertices are adjacent."><code class="function">igraph_are_adjacent()</code></a>
+instead.</p>
+</div>
+<p>
+Decides whether there are any edges that have <em class="parameter"><code>v1</code></em> and <em class="parameter"><code>v2</code></em>
+as endpoints. This function is of course symmetric for undirected
+graphs.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v1</code></em>:</span></p></td>
+<td><p>
+  The first vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v2</code></em>:</span></p></td>
+<td><p>
+  The second vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Boolean, <code class="constant">true</code> if there is an edge from
+        <em class="parameter"><code>v1</code></em> to <em class="parameter"><code>v2</code></em>, <code class="constant">false</code> otherwise.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The error code <code class="constant">IGRAPH_EINVVID</code> is returned if an invalid
+        vertex ID is given.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O( min(log(d1), log(d2)) ),
+d1 is the (out-)degree of <em class="parameter"><code>v1</code></em> and d2 is the (in-)degree of <em class="parameter"><code>v2</code></em>.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_shortest_paths"></a>27.2. <code class="function">igraph_shortest_paths</code> —  Length of the shortest paths between vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_shortest_paths(const igraph_t *graph,
@@ -23523,8 +23617,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_dijkstra"></a>27.2. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.3.2"></a><p>
+<a name="igraph_shortest_paths_dijkstra"></a>27.3. <code class="function">igraph_shortest_paths_dijkstra</code> —  Weighted shortest path lengths between vertices (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_shortest_paths_dijkstra(const igraph_t *graph,
@@ -23552,8 +23646,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_bellman_ford"></a>27.3. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.4.2"></a><p>
+<a name="igraph_shortest_paths_bellman_ford"></a>27.4. <code class="function">igraph_shortest_paths_bellman_ford</code> —  Weighted shortest path lengths between vertices, allowing negative weights (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_shortest_paths_bellman_ford(const igraph_t *graph,
@@ -23581,8 +23675,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_shortest_paths_johnson"></a>27.4. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.5.2"></a><p>
+<a name="igraph_shortest_paths_johnson"></a>27.5. <code class="function">igraph_shortest_paths_johnson</code> —  Weighted shortest path lengths between vertices, using Johnson's algorithm (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_shortest_paths_johnson(const igraph_t *graph,
@@ -23609,8 +23703,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_stochastic_sparsemat"></a>27.5. <code class="function">igraph_get_stochastic_sparsemat</code> —  Stochastic adjacency matrix of a graph (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.6.2"></a><p>
+<a name="igraph_get_stochastic_sparsemat"></a>27.6. <code class="function">igraph_get_stochastic_sparsemat</code> —  Stochastic adjacency matrix of a graph (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_stochastic_sparsemat(const igraph_t *graph,
@@ -23688,8 +23782,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_sparsemat"></a>27.6. <code class="function">igraph_get_sparsemat</code> —  Converts an igraph graph to a sparse matrix (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.7.2"></a><p>
+<a name="igraph_get_sparsemat"></a>27.7. <code class="function">igraph_get_sparsemat</code> —  Converts an igraph graph to a sparse matrix (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_sparsemat(const igraph_t *graph, igraph_sparsemat_t *res);
@@ -23762,8 +23856,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_laplacian"></a>27.7. <code class="function">igraph_laplacian</code> —  Returns the Laplacian matrix of a graph (deprecated).</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.8.2"></a><p>
+<a name="igraph_laplacian"></a>27.8. <code class="function">igraph_laplacian</code> —  Returns the Laplacian matrix of a graph (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_laplacian(
@@ -23864,8 +23958,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hub_score"></a>27.8. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.9.2"></a><p>
+<a name="igraph_hub_score"></a>27.9. <code class="function">igraph_hub_score</code> —  Kleinberg's hub scores.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hub_score(const igraph_t *graph, igraph_vector_t *vector,
@@ -23987,7 +24081,7 @@ the number of vertices.
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores (HITS)."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
 hub and authrotity scores efficiently at the same time,
-<a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.9. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a> for the companion measure,
+<a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.10. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a> for the companion measure,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
   </p></td>
@@ -23999,8 +24093,8 @@ hub and authrotity scores efficiently at the same time,
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_authority_score"></a>27.9. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.29.10.2"></a><p>
+<a name="igraph_authority_score"></a>27.10. <code class="function">igraph_authority_score</code> —  Kleinberg's authority scores.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.29.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_authority_score(const igraph_t *graph, igraph_vector_t *vector,
@@ -24122,7 +24216,7 @@ the number of vertices.
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_hub_and_authority_scores" title="10.13. igraph_hub_and_authority_scores — Kleinberg's hub and authority scores (HITS)."><code class="function">igraph_hub_and_authority_scores()</code></a> to compute
 hub and authrotity scores efficiently at the same time,
-<a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.8. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a> for the companion measure,
+<a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.9. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a> for the companion measure,
 <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for similar measures.
   </p></td>
