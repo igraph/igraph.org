@@ -647,11 +647,11 @@ properties based on the maximum flow.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_dominator_tree(const igraph_t *graph,
-                          igraph_integer_t root,
-                          igraph_vector_int_t *dom,
-                          igraph_t *domtree,
-                          igraph_vector_int_t *leftout,
-                          igraph_neimode_t mode);
+                                     igraph_integer_t root,
+                                     igraph_vector_int_t *dom,
+                                     igraph_t *domtree,
+                                     igraph_vector_int_t *leftout,
+                                     igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -1117,10 +1117,10 @@ Time complexity: O(|V|^3), see also the discussion for <a class="link" href="igr
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_all_st_cuts(const igraph_t *graph,
-                       igraph_vector_int_list_t *cuts,
-                       igraph_vector_int_list_t *partition1s,
-                       igraph_integer_t source,
-                       igraph_integer_t target);
+                                  igraph_vector_int_list_t *cuts,
+                                  igraph_vector_int_list_t *partition1s,
+                                  igraph_integer_t source,
+                                  igraph_integer_t target);
 </pre></div>
 <p>
 </p>
@@ -1210,11 +1210,11 @@ vertices, |E| is the number of edges, and n is the number of cuts.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_all_st_mincuts(const igraph_t *graph, igraph_real_t *value,
-                          igraph_vector_int_list_t *cuts,
-                          igraph_vector_int_list_t *partition1s,
-                          igraph_integer_t source,
-                          igraph_integer_t target,
-                          const igraph_vector_t *capacity);
+                                     igraph_vector_int_list_t *cuts,
+                                     igraph_vector_int_list_t *partition1s,
+                                     igraph_integer_t source,
+                                     igraph_integer_t target,
+                                     const igraph_vector_t *capacity);
 </pre></div>
 <p>
 </p>
@@ -1249,32 +1249,25 @@ Shier: A Paradigm for listing (s,t)-cuts in graphs, Algorithmica 15,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>value</code></em>:</span></p></td>
 <td><p>
-  Pointer to a real number, the value of the minimum cut
+  Pointer to a real number or <code class="constant">NULL</code>. The value of the minimum cut
        is stored here, unless it is a null pointer.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>cuts</code></em>:</span></p></td>
 <td><p>
-  An initialized pointer vector, the cuts are stored
-       here. It is a list of pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-       objects. Each vector will contain the IDs of the edges in
-       the cut. This argument is ignored if it is a null pointer.
-       To free all memory allocated for <code class="constant">cuts</code>, you need call
-       <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_int_destroy()</code></a> and then <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on
-       each element, before destroying the pointer vector itself.
+  Pointer to initialized list of integer vectors or <code class="constant">NULL</code>.
+       The cuts are stored here as lists of vertex IDs.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>partition1s</code></em>:</span></p></td>
 <td><p>
-  An initialized pointer vector, the list of
-       vertex sets, generating the actual edge cuts, are stored
-       here. It is a list of pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-       objects. Each vector contains a set of vertex IDs. If X is such
+  Pointer to an initialized list of integer vectors or <code class="constant">NULL</code>.
+       The list of vertex sets, generating the actual edge cuts, are stored
+       here. Each vector contains a set of vertex IDs. If X is such
        a set, then all edges going from X to the complement of X
-       form an (s,t) edge-cut in the graph. This argument is
-       ignored if it is a null pointer.
+       form an (s,t) edge-cut in the graph.
 </p></td>
 </tr>
 <tr>

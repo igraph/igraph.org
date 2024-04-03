@@ -164,6 +164,9 @@
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic">1.1. <code class="function">igraph_isomorphic</code> —  Are two graphs isomorphic?</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_subisomorphic">1.2. <code class="function">igraph_subisomorphic</code> —  Decide subgraph isomorphism.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_automorphisms">1.3. <code class="function">igraph_count_automorphisms</code> —  Number of automorphisms of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_automorphism_group">1.4. <code class="function">igraph_automorphism_group</code> —  Automorphism group generators of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_canonical_permutation">1.5. <code class="function">igraph_canonical_permutation</code> —  Canonical permutation of a graph.</a></span></dt>
 </dl></div>
 <p>igraph provides four set of functions to deal with graph
 isomorphism problems.</p>
@@ -176,7 +179,7 @@ details.)</p>
 igraph, these functions are the second set. See <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2."><code class="function">igraph_isomorphic_vf2()</code></a> and <a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_vf2" title="3.7. igraph_subisomorphic_vf2 — Decide subgraph isomorphism using VF2"><code class="function">igraph_subisomorphic_vf2()</code></a> for
 starters.</p>
 <p>Functions for the Bliss algorithm constitute the third set,
-see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.4. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.</p>
+see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.3. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.</p>
 <p>Finally, the isomorphism classes of all directed graphs with three and
 four vertices and all undirected graphs with 3-6 vertices are precomputed
 and stored in igraph, so for these small graphs there is a separate fast
@@ -233,7 +236,7 @@ Otherwise, if the <a class="link" href="igraph-Isomorphism.html#igraph_isoclass"
 
 </p></li>
 <li class="listitem"><p>
-Otherwise Bliss is used, see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.4. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.
+Otherwise Bliss is used, see <a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_bliss" title="2.3. igraph_isomorphic_bliss — Graph isomorphism via Bliss."><code class="function">igraph_isomorphic_bliss()</code></a>.
 
 </p></li>
 </ol></div>
@@ -386,6 +389,264 @@ Time complexity: exponential.
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_count_automorphisms"></a>1.3. <code class="function">igraph_count_automorphisms</code> —  Number of automorphisms of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.2.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_count_automorphisms(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_real_t *result
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function computes the number of automorphisms of a graph. Since the
+number of automorphisms may be very large, the result is returned as an
+<code class="constant">igraph_real_t</code> instead of an integer. If the number of automorphisms
+is larger than what can be represented in an <code class="constant">igraph_real_t</code> and you need
+the exact number, use <a class="link" href="igraph-Isomorphism.html#igraph_count_automorphisms_bliss" title="2.4. igraph_count_automorphisms_bliss — Number of automorphisms using Bliss."><code class="function">igraph_count_automorphisms_bliss()</code></a>, which can
+return the number as a string.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Multiple edges between the same nodes
+  are not supported and will cause an incorrect result to be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>colors</code></em>:</span></p></td>
+<td><p>
+  An optional vertex color vector for the graph. Supply a
+  null pointer is the graph is not colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_real_t</code>, the number of automorphisms
+  will be returned here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. <code class="constant">IGRAPH_EOVERFLOW</code> if the number of automorphisms is
+  too large to be represented in an <code class="constant">igraph_real_t</code> .
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: exponential, in practice it is fast for many graphs.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_automorphism_group"></a>1.4. <code class="function">igraph_automorphism_group</code> —  Automorphism group generators of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.2.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_automorphism_group(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_vector_int_list_t *generators
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function computes the generators of the automorphism group of a graph.
+The generator set may not be minimal and may depend on the specific parameters
+of the algorithm under the hood. The generators are permutations represented
+using zero-based indexing.
+
+</p>
+<p>
+The current implementation uses BLISS behind the scenes and the result may
+be dependent on the splitting heuristics. Use <a class="link" href="igraph-Isomorphism.html#igraph_automorphism_group_bliss" title="2.5. igraph_automorphism_group_bliss — Automorphism group generators using Bliss."><code class="function">igraph_automorphism_group_bliss()</code></a>
+if you want to fine-tune the splitting heuristics.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Multiple edges between the same nodes
+  are not supported and will cause an incorrect result to be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>colors</code></em>:</span></p></td>
+<td><p>
+  An optional vertex color vector for the graph. Supply a
+  null pointer is the graph is not colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>generators</code></em>:</span></p></td>
+<td><p>
+  Must be an initialized interger vector list.
+  The generators of the automorphism group will be stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: exponential, in practice it is fast for many graphs.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_canonical_permutation"></a>1.5. <code class="function">igraph_canonical_permutation</code> —  Canonical permutation of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.2.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_canonical_permutation(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_vector_int_t *labeling
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function computes the vertex permutation which transforms
+the graph into a canonical form. Two graphs have the same canonical form if
+and only if they are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
+two canonical forms.
+
+</p>
+<p>
+The current implementation uses the BLISS isomorphism algorithms with
+sensible defaults. Use <a class="link" href="igraph-Isomorphism.html#igraph_canonical_permutation_bliss" title="2.6. igraph_canonical_permutation_bliss — Canonical permutation using Bliss."><code class="function">igraph_canonical_permutation_bliss()</code></a> to fine-tune
+the parameters.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Multiple edges between the same nodes
+  are not supported and will cause an incorrect result to be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>colors</code></em>:</span></p></td>
+<td><p>
+  An optional vertex color vector for the graph. Supply a
+  null pointer is the graph is not colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>labeling</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, the result is stored here. The
+   permutation takes vertex 0 to the first element of the vector,
+   vertex 1 to the second, etc. The vector will be resized as
+   needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: exponential, in practice it is fast for many graphs.
+ 
+</p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -393,11 +654,10 @@ Time complexity: exponential.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_bliss_sh_t">2.1. <code class="function">igraph_bliss_sh_t</code> —  Splitting heuristics for Bliss.</a></span></dt>
 <dt><span class="section"><a href="igraph-Isomorphism.html#igraph_bliss_info_t">2.2. <code class="function">igraph_bliss_info_t</code> —  Information about a Bliss run.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_canonical_permutation">2.3. <code class="function">igraph_canonical_permutation</code> —  Canonical permutation using Bliss.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_bliss">2.4. <code class="function">igraph_isomorphic_bliss</code> —  Graph isomorphism via Bliss.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_automorphisms">2.5. <code class="function">igraph_count_automorphisms</code> —  Number of automorphisms using Bliss.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_automorphism_group">2.6. <code class="function">igraph_automorphism_group</code> —  Automorphism group generators using Bliss.</a></span></dt>
-<dt><span class="section"><a href="igraph-Isomorphism.html#bliss-algorithm-deprecated">2.7. Deprecated aliases</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_isomorphic_bliss">2.3. <code class="function">igraph_isomorphic_bliss</code> —  Graph isomorphism via Bliss.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_count_automorphisms_bliss">2.4. <code class="function">igraph_count_automorphisms_bliss</code> —  Number of automorphisms using Bliss.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_automorphism_group_bliss">2.5. <code class="function">igraph_automorphism_group_bliss</code> —  Automorphism group generators using Bliss.</a></span></dt>
+<dt><span class="section"><a href="igraph-Isomorphism.html#igraph_canonical_permutation_bliss">2.6. <code class="function">igraph_canonical_permutation_bliss</code> —  Canonical permutation using Bliss.</a></span></dt>
 </dl></div>
 <p>
 Bliss is a successor of the famous NAUTY algorithm and
@@ -494,7 +754,7 @@ line tool.
 <td><p><span class="term"><code class="constant">IGRAPH_BLISS_FSM</code>:</span></p></td>
 <td><p>
   Smallest maximally non-trivially
-     connected non-singletion cell.</p></td>
+     connected non-singleton cell.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -588,114 +848,8 @@ for details about the algorithm and these parameters.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_canonical_permutation"></a>2.3. <code class="function">igraph_canonical_permutation</code> —  Canonical permutation using Bliss.</h3></div></div></div>
+<a name="igraph_isomorphic_bliss"></a>2.3. <code class="function">igraph_isomorphic_bliss</code> —  Graph isomorphism via Bliss.</h3></div></div></div>
 <a class="indexterm" name="id-1.18.3.10.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_canonical_permutation(const igraph_t *graph, const igraph_vector_int_t *colors,
-                                 igraph_vector_int_t *labeling, igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-This function computes the vertex permutation which transforms
-the graph into a canonical form, using the Bliss algorithm.
-Two graphs have the same canonical form if and only if they
-are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
-two canonical forms.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  The input graph. Multiple edges between the same nodes
-  are not supported and will cause an incorrect result to be returned.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>colors</code></em>:</span></p></td>
-<td><p>
-  An optional vertex color vector for the graph. Supply a
-  null pointer is the graph is not colored.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>labeling</code></em>:</span></p></td>
-<td><p>
-  Pointer to a vector, the result is stored here. The
-   permutation takes vertex 0 to the first element of the vector,
-   vertex 1 to the second, etc. The vector will be resized as
-   needed.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>sh</code></em>:</span></p></td>
-<td><p>
-  The splitting heuristics to be used in Bliss. See <a class="link" href="igraph-Isomorphism.html#igraph_bliss_sh_t" title="2.1. igraph_bliss_sh_t — Splitting heuristics for Bliss."><code class="function">igraph_bliss_sh_t</code></a>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>info</code></em>:</span></p></td>
-<td><p>
-  If not <code class="constant">NULL</code> then information on Bliss internals is
-   stored here. The memory used by this structure must to be freed
-   when no longer needed, see <a class="link" href="igraph-Isomorphism.html#igraph_bliss_info_t" title="2.2. igraph_bliss_info_t — Information about a Bliss run."><code class="function">igraph_bliss_info_t</code></a>.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a>
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: exponential, in practice it is fast for many graphs.
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_isomorphic_bliss"></a>2.4. <code class="function">igraph_isomorphic_bliss</code> —  Graph isomorphism via Bliss.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.3.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_isomorphic_bliss(const igraph_t *graph1, const igraph_t *graph2,
@@ -719,7 +873,7 @@ details. Currently the 0.75 version of Bliss is included in igraph.
 </p>
 <p>
 Isomorphism testing is implemented by producing the canonical form
-of both graphs using <a class="link" href="igraph-Isomorphism.html#igraph_canonical_permutation" title="2.3. igraph_canonical_permutation — Canonical permutation using Bliss."><code class="function">igraph_canonical_permutation()</code></a> and
+of both graphs using <a class="link" href="igraph-Isomorphism.html#igraph_canonical_permutation_bliss" title="2.6. igraph_canonical_permutation_bliss — Canonical permutation using Bliss."><code class="function">igraph_canonical_permutation_bliss()</code></a> and
 comparing them.
 
 </p>
@@ -829,12 +983,14 @@ Time complexity: exponential, but in practice it is quite fast.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_count_automorphisms"></a>2.5. <code class="function">igraph_count_automorphisms</code> —  Number of automorphisms using Bliss.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.3.12.2"></a><p>
+<a name="igraph_count_automorphisms_bliss"></a>2.4. <code class="function">igraph_count_automorphisms_bliss</code> —  Number of automorphisms using Bliss.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.3.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_count_automorphisms(const igraph_t *graph, const igraph_vector_int_t *colors,
-                         igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
+igraph_error_t igraph_count_automorphisms_bliss(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_bliss_sh_t sh, igraph_bliss_info_t *info
+);
 </pre></div>
 <p>
 </p>
@@ -907,13 +1063,15 @@ Time complexity: exponential, in practice it is fast for many graphs.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_automorphism_group"></a>2.6. <code class="function">igraph_automorphism_group</code> —  Automorphism group generators using Bliss.</h3></div></div></div>
-<a class="indexterm" name="id-1.18.3.13.2"></a><p>
+<a name="igraph_automorphism_group_bliss"></a>2.5. <code class="function">igraph_automorphism_group_bliss</code> —  Automorphism group generators using Bliss.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.3.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_automorphism_group(
-    const igraph_t *graph, const igraph_vector_int_t *colors, igraph_vector_int_list_t *generators,
-    igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
+igraph_error_t igraph_automorphism_group_bliss(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_vector_int_list_t *generators, igraph_bliss_sh_t sh,
+    igraph_bliss_info_t *info
+);
 </pre></div>
 <p>
 </p>
@@ -952,9 +1110,8 @@ using zero-based indexing.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>generators</code></em>:</span></p></td>
 <td><p>
-  Must be an initialized pointer vector. It will
-   contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a> objects
-   representing generators of the automorphism group.
+  Must be an initialized interger vector list.
+  The generators of the automorphism group will be stored here.
 </p></td>
 </tr>
 <tr>
@@ -996,16 +1153,15 @@ Time complexity: exponential, in practice it is fast for many graphs.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="bliss-algorithm-deprecated"></a>2.7. Deprecated aliases</h3></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Isomorphism.html#igraph_automorphisms">2.7.1. <code class="function">igraph_automorphisms</code> —  Number of automorphisms using Bliss (deprecated alias).</a></span></dt></dl></div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_automorphisms"></a>2.7.1. <code class="function">igraph_automorphisms</code> —  Number of automorphisms using Bliss (deprecated alias).</h4></div></div></div>
-<a class="indexterm" name="id-1.18.3.14.2.2"></a><p>
+<a name="igraph_canonical_permutation_bliss"></a>2.6. <code class="function">igraph_canonical_permutation_bliss</code> —  Canonical permutation using Bliss.</h3></div></div></div>
+<a class="indexterm" name="id-1.18.3.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_automorphisms(const igraph_t *graph, const igraph_vector_int_t *colors,
-                                    igraph_bliss_sh_t sh, igraph_bliss_info_t *info);
+igraph_error_t igraph_canonical_permutation_bliss(
+    const igraph_t *graph, const igraph_vector_int_t *colors,
+    igraph_vector_int_t *labeling, igraph_bliss_sh_t sh,
+    igraph_bliss_info_t *info
+);
 </pre></div>
 <p>
 </p>
@@ -1013,16 +1169,96 @@ igraph_error_t igraph_automorphisms(const igraph_t *graph, const igraph_vector_i
 
 
 
+This function computes the vertex permutation which transforms
+the graph into a canonical form, using the Bliss algorithm.
+Two graphs have the same canonical form if and only if they
+are isomorphic. Use <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a> to compare
+two canonical forms.
+
 </p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>Deprecated since version 0.10.5. Please do not use this function in new
-code; use <a class="link" href="igraph-Isomorphism.html#igraph_count_automorphisms" title="2.5. igraph_count_automorphisms — Number of automorphisms using Bliss."><code class="function">igraph_count_automorphisms()</code></a>
-instead.</p>
-</div>
-<p> 
+<p><b>Arguments: </b>
 </p>
-</div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Multiple edges between the same nodes
+  are not supported and will cause an incorrect result to be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>colors</code></em>:</span></p></td>
+<td><p>
+  An optional vertex color vector for the graph. Supply a
+  null pointer is the graph is not colored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>labeling</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, the result is stored here. The
+   permutation takes vertex 0 to the first element of the vector,
+   vertex 1 to the second, etc. The vector will be resized as
+   needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sh</code></em>:</span></p></td>
+<td><p>
+  The splitting heuristics to be used in Bliss. See <a class="link" href="igraph-Isomorphism.html#igraph_bliss_sh_t" title="2.1. igraph_bliss_sh_t — Splitting heuristics for Bliss."><code class="function">igraph_bliss_sh_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>info</code></em>:</span></p></td>
+<td><p>
+  If not <code class="constant">NULL</code> then information on Bliss internals is
+   stored here. The memory used by this structure must to be freed
+   when no longer needed, see <a class="link" href="igraph-Isomorphism.html#igraph_bliss_info_t" title="2.2. igraph_bliss_info_t — Information about a Bliss run."><code class="function">igraph_bliss_info_t</code></a>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Basic.html#igraph_is_same_graph" title="5.5. igraph_is_same_graph — Are two graphs identical as labelled graphs?"><code class="function">igraph_is_same_graph()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: exponential, in practice it is fast for many graphs.
+ 
+</p>
 </div>
 </div>
 <div class="section">
@@ -1449,7 +1685,7 @@ function.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  igraph_count_automorphisms()
+  igraph_count_automorphisms_bliss()
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2559,7 +2795,7 @@ igraph_error_t igraph_subisomorphic_lad(const igraph_t *pattern, const igraph_t 
                              const igraph_vector_int_list_t *domains,
                              igraph_bool_t *iso, igraph_vector_int_t *map,
                              igraph_vector_int_list_t *maps,
-                             igraph_bool_t induced, igraph_integer_t time_limit);
+                             igraph_bool_t induced);
 </pre></div>
 <p>
 </p>
@@ -2602,11 +2838,10 @@ Isomorphism. Artificial Intelligence, 174(12-13):850-864, 2010.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>domains</code></em>:</span></p></td>
 <td><p>
-  A pointer vector, or a null pointer. If a pointer
-   vector, then it must contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
-   objects and the length of the vector must match the number of
-   vertices in the <em class="parameter"><code>pattern</code></em> graph. For each vertex, the IDs of
-   the compatible vertices in the target graph are listed.
+  An integer vector list of <code class="constant">NULL</code>. The length of each
+   vector must match the number of vertices in the <em class="parameter"><code>pattern</code></em> graph.
+   For each vertex, the IDs of the compatible vertices in the target
+   graph are listed.
 </p></td>
 </tr>
 <tr>
@@ -2740,7 +2975,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;maps, 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map,
-                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> false);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 1;
@@ -2750,7 +2985,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("---------\n");
 
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, <span class="emphasis"><em>/*domains=*/</em></span> NULL, &amp;iso, &amp;map,
-                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> true, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+                             &amp;maps, <span class="emphasis"><em>/*induced=*/</em></span> true);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 2;
@@ -2776,7 +3011,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_subisomorphic_lad" title="4.1. igraph_subisomorphic_lad — Check subgraph isomorphism with the LAD algorithm">igraph_subisomorphic_lad</a></strong></span>(&amp;pattern, &amp;target, &amp;domains, &amp;iso, &amp;map, &amp;maps,
-                             <span class="emphasis"><em>/*induced=*/</em></span> false, <span class="emphasis"><em>/*time_limit=*/</em></span> 0);
+                             <span class="emphasis"><em>/*induced=*/</em></span> false);
 
     <span class="strong"><strong>if</strong></span> (!iso) {
         <span class="strong"><strong>return</strong></span> 3;
@@ -3243,7 +3478,7 @@ igraph_error_t igraph_permute_vertices(const igraph_t *graph, igraph_t *res,
 
 This function creates a new graph from the input graph by permuting
 its vertices according to the specified mapping. Call this function
-with the output of <a class="link" href="igraph-Isomorphism.html#igraph_canonical_permutation" title="2.3. igraph_canonical_permutation — Canonical permutation using Bliss."><code class="function">igraph_canonical_permutation()</code></a> to create
+with the output of <a class="link" href="igraph-Isomorphism.html#igraph_canonical_permutation" title="1.5. igraph_canonical_permutation — Canonical permutation of a graph."><code class="function">igraph_canonical_permutation()</code></a> to create
 the canonical form of a graph.
 
 </p>

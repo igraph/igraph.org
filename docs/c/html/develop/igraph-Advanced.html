@@ -320,10 +320,9 @@ write and set up more sophisticated ones.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   If the return value of the progress handler is not
-    <code class="constant">IGRAPH_SUCCESS</code>, then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> returns the
-    error code <code class="constant">IGRAPH_INTERRUPTED</code>. The <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report progress."><code class="function">IGRAPH_PROGRESS()</code></a>
-    macro frees all memory and finishes the igraph function with
-    error code <code class="constant">IGRAPH_INTERRUPTED</code> in this case.
+    <code class="constant">IGRAPH_SUCCESS</code>, then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> returns the
+    error code from the progress handler intact. The <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report the progress of a calculation from an igraph function (macro variant)."><code class="function">IGRAPH_PROGRESS()</code></a>
+    macro also frees all allocated memory.
  
   </p></td>
 </tr></tbody>
@@ -466,13 +465,14 @@ Time complexity: O(1).
 <div class="titlepage"><div><div><h3 class="title">
 <a name="invoking-the-progress-handler"></a>2.3. Invoking the progress handler</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Advanced.html#IGRAPH_PROGRESS">2.3.1. <code class="function">IGRAPH_PROGRESS</code> —  Report progress.</a></span></dt>
-<dt><span class="section"><a href="igraph-Advanced.html#igraph_progress">2.3.2. <code class="function">igraph_progress</code> — Report progress</a></span></dt>
-<dt><span class="section"><a href="igraph-Advanced.html#igraph_progressf">2.3.3. <code class="function">igraph_progressf</code> — Report progress, printf-like version</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#IGRAPH_PROGRESS">2.3.1. <code class="function">IGRAPH_PROGRESS</code> —  Report the progress of a calculation from an igraph function (macro variant).</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#IGRAPH_PROGRESSF">2.3.2. <code class="function">IGRAPH_PROGRESSF</code> —  Report the progress of a calculation from an igraph function, printf-like (macro variant).</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#igraph_progress">2.3.3. <code class="function">igraph_progress</code> —  Report the progress of a calculation from an igraph function.</a></span></dt>
+<dt><span class="section"><a href="igraph-Advanced.html#igraph_progressf">2.3.4. <code class="function">igraph_progressf</code> —  Report the progress of a calculation from an igraph function, printf-like.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="IGRAPH_PROGRESS"></a>2.3.1. <code class="function">IGRAPH_PROGRESS</code> —  Report progress.</h4></div></div></div>
+<a name="IGRAPH_PROGRESS"></a>2.3.1. <code class="function">IGRAPH_PROGRESS</code> —  Report the progress of a calculation from an igraph function (macro variant).</h4></div></div></div>
 <a class="indexterm" name="id-1.32.3.4.2.2"></a><p>
 </p>
 <pre class="programlisting">
@@ -526,9 +526,10 @@ The standard way to report progress from an igraph function
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  If the progress handler returns with <code class="constant">IGRAPH_INTERRUPTED</code>,
-   then this macro frees up the igraph allocated memory for
-   temporary data and returns to the caller with <code class="constant">IGRAPH_INTERRUPTED</code>.
+  If the return value of the progress handler is not
+    <code class="constant">IGRAPH_SUCCESS</code>, then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> returns the
+    error code from the progress handler intact. The <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report the progress of a calculation from an igraph function (macro variant)."><code class="function">IGRAPH_PROGRESS()</code></a>
+    macro also frees all allocated memory.
  
   </p></td>
 </tr></tbody>
@@ -538,8 +539,64 @@ The standard way to report progress from an igraph function
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_progress"></a>2.3.2. <code class="function">igraph_progress</code> — Report progress</h4></div></div></div>
+<a name="IGRAPH_PROGRESSF"></a>2.3.2. <code class="function">IGRAPH_PROGRESSF</code> —  Report the progress of a calculation from an igraph function, printf-like (macro variant).</h4></div></div></div>
 <a class="indexterm" name="id-1.32.3.4.3.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_PROGRESSF(args)
+</pre>
+<p>
+</p>
+<p>
+
+
+This is the more flexible version of <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESSF" title="2.3.2. IGRAPH_PROGRESSF — Report the progress of a calculation from an igraph function, printf-like (macro variant)."><code class="function">IGRAPH_PROGRESSF()</code></a>,
+having a printf-like syntax. As this macro takes variable
+number of arguments, they must be all supplied as a single
+argument, enclosed in parentheses. <a class="link" href="igraph-Advanced.html#igraph_progressf" title="2.3.4. igraph_progressf — Report the progress of a calculation from an igraph function, printf-like."><code class="function">igraph_progressf()</code></a> is then
+called with the given arguments.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>args</code></em>:</span></p></td>
+<td><p>
+  The arguments to pass to <a class="link" href="igraph-Advanced.html#igraph_progressf" title="2.3.4. igraph_progressf — Report the progress of a calculation from an igraph function, printf-like."><code class="function">igraph_progressf()</code></a>.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  If the progress handler returns with a value other than
+       <code class="constant">IGRAPH_SUCCESS</code>, then the function that called this
+       macro returns as well, with the same error code, after
+       cleaning up all allocated memory as needed.
+ 
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_progress"></a>2.3.3. <code class="function">igraph_progress</code> —  Report the progress of a calculation from an igraph function.</h4></div></div></div>
+<a class="indexterm" name="id-1.32.3.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_progress(const char *message, igraph_real_t percent, void *data);
@@ -550,7 +607,7 @@ igraph_error_t igraph_progress(const char *message, igraph_real_t percent, void 
 
 
 
-Note that the usual way to report progress is the <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report progress."><code class="function">IGRAPH_PROGRESS</code></a>
+Note that the usual way to report progress is the <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report the progress of a calculation from an igraph function (macro variant)."><code class="function">IGRAPH_PROGRESS</code></a>
 macro, as that takes care of the return value of the progress
 handler.
 </p>
@@ -600,9 +657,8 @@ handler.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  If there is a progress handler installed and
-    it does not return <code class="constant">IGRAPH_SUCCESS</code>, then <code class="constant">IGRAPH_INTERRUPTED</code>
-    is returned.
+  Error code from the progress handler function, or <code class="constant">IGRAPH_SUCCESS</code>
+        if no progress handler function was registered.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -614,8 +670,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_progressf"></a>2.3.3. <code class="function">igraph_progressf</code> — Report progress, printf-like version</h4></div></div></div>
-<a class="indexterm" name="id-1.32.3.4.4.2"></a><p>
+<a name="igraph_progressf"></a>2.3.4. <code class="function">igraph_progressf</code> —  Report the progress of a calculation from an igraph function, printf-like.</h4></div></div></div>
+<a class="indexterm" name="id-1.32.3.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_progressf(const char *message, igraph_real_t percent, void *data,
@@ -627,9 +683,9 @@ igraph_error_t igraph_progressf(const char *message, igraph_real_t percent, void
 
 
 
-This is a more flexible version of <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a>, with
+This is a more flexible version of <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a>, with
 a printf-like template string. First the template string
-is filled with the additional arguments and then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> is called.
+is filled with the additional arguments and then <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> is called.
 
 </p>
 <p>Note that there is an upper limit for the length of
@@ -688,9 +744,8 @@ the <em class="parameter"><code>message</code></em> string, currently 1000 chara
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  If there is a progress handler installed and
-    it does not return <code class="constant">IGRAPH_SUCCESS</code>, then <code class="constant">IGRAPH_INTERRUPTED</code>
-    is returned.
+  Error code from the progress handler function, or <code class="constant">IGRAPH_SUCCESS</code>
+        if no progress handler function was registered.
 \return
   </p></td>
 </tr></tbody>
@@ -722,17 +777,17 @@ omitted.
 <a name="functions-with-progress"></a>2.5.  Writing igraph functions with progress reporting</h3></div></div></div>
 <p>
 If you want to write a function that uses igraph and supports
-progress reporting, you need to include <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a>
-calls in your function, usually via the <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report progress."><code class="function">IGRAPH_PROGRESS()</code></a>
+progress reporting, you need to include <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a>
+calls in your function, usually via the <a class="link" href="igraph-Advanced.html#IGRAPH_PROGRESS" title="2.3.1. IGRAPH_PROGRESS — Report the progress of a calculation from an igraph function (macro variant)."><code class="function">IGRAPH_PROGRESS()</code></a>
 macro.
 </p>
 <p>
-It is good practice to always include a call to <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> with a zero <em class="parameter"><code>percentage</code></em> argument, before the
+It is good practice to always include a call to <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> with a zero <em class="parameter"><code>percentage</code></em> argument, before the
 computation; and another call with 100 <em class="parameter"><code>percentage</code></em> value
 after the computation is completed.
 </p>
 <p>
-It is also good practice <span class="emphasis"><em>not</em></span> to call <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> too
+It is also good practice <span class="emphasis"><em>not</em></span> to call <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> too
 often, as this would slow down the computation. It might not be
 worth to support progress reporting in functions with linear or
 log-linear time complexity, as these are fast, even with a large
@@ -740,7 +795,7 @@ amount of data. For functions with quadratic or higher time
 complexity make sure that the time complexity of the progress
 reporting is constant or at least linear. In practice this means
 having at most O(n) progress checks and at most 100
-<a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a> calls.
+<a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a> calls.
 </p>
 </div>
 <div class="section">
@@ -767,7 +822,7 @@ whether an igraph build is thread-safe.
 <a name="about-status-handlers"></a>3.1.  Status reporting</h3></div></div></div>
 <p>
 In addition to the possibility of reporting the progress of an
-igraph computation via <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.2. igraph_progress — Report progress"><code class="function">igraph_progress()</code></a>, it is also possible
+igraph computation via <a class="link" href="igraph-Advanced.html#igraph_progress" title="2.3.3. igraph_progress — Report the progress of a calculation from an igraph function."><code class="function">igraph_progress()</code></a>, it is also possible
 to report simple status messages from within igraph functions,
 without having to judge how much of the computation was performed
 already. For this one needs to install a status handler function.
@@ -1023,8 +1078,8 @@ signal the three major steps.
 <td><p>
   If the status handler returns with a value other than
        <code class="constant">IGRAPH_SUCCESS</code>, then the function that called this
-       macro returns as well, with error code
-       <code class="constant">IGRAPH_INTERRUPTED</code>.
+       macro returns as well, with the same error code, after
+       cleaning up all allocated memory as needed.
  
   </p></td>
 </tr></tbody>
@@ -1048,8 +1103,9 @@ signal the three major steps.
 This is the more flexible version of <a class="link" href="igraph-Advanced.html#IGRAPH_STATUS" title="3.3.1. IGRAPH_STATUS — Report the status of an igraph function."><code class="function">IGRAPH_STATUS()</code></a>,
 having a printf-like syntax. As this macro takes variable
 number of arguments, they must be all supplied as a single
-argument, enclosed in parentheses. Then <a class="link" href="igraph-Advanced.html#igraph_statusf" title="3.3.4. igraph_statusf — Report status, more flexible printf-like version."><code class="function">igraph_statusf()</code></a>
-is called with the given arguments.
+argument, enclosed in parentheses. <a class="link" href="igraph-Advanced.html#igraph_statusf" title="3.3.4. igraph_statusf — Report status, more flexible printf-like version."><code class="function">igraph_statusf()</code></a> is then
+called with the given arguments.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1078,8 +1134,8 @@ is called with the given arguments.
 <td><p>
   If the status handler returns with a value other than
        <code class="constant">IGRAPH_SUCCESS</code>, then the function that called this
-       macro returns as well, with error code
-       <code class="constant">IGRAPH_INTERRUPTED</code>.
+       macro returns as well, with the same error code, after
+       cleaning up all allocated memory as needed.
  
   </p></td>
 </tr></tbody>
@@ -1105,8 +1161,8 @@ It calls the installed status handler function, if there is
 one. Otherwise it does nothing. Note that the standard way to
 report the status from an igraph function is the
 <a class="link" href="igraph-Advanced.html#IGRAPH_STATUS" title="3.3.1. IGRAPH_STATUS — Report the status of an igraph function."><code class="function">IGRAPH_STATUS</code></a> or <a class="link" href="igraph-Advanced.html#IGRAPH_STATUSF" title="3.3.2. IGRAPH_STATUSF — Report the status from an igraph function"><code class="function">IGRAPH_STATUSF</code></a> macro, as these
-take care of the termination of the calling function if the
-status handler returns with <code class="constant">IGRAPH_INTERRUPTED</code>.
+take care of cleaning up allocated memory from the calling
+function if the status handler returns with an error code.
 
 </p>
 <p><b>Arguments: </b>
@@ -1143,9 +1199,8 @@ status handler returns with <code class="constant">IGRAPH_INTERRUPTED</code>.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. If a status handler function was called
-       and it did not return with <code class="constant">IGRAPH_SUCCESS</code>, then
-       <code class="constant">IGRAPH_INTERRUPTED</code> is returned by <code class="constant">igraph_status</code>().
+  Error code from the status handler function, or <code class="constant">IGRAPH_SUCCESS</code>
+        if no status handler function was registered.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1173,6 +1228,7 @@ This is the more flexible version of <a class="link" href="igraph-Advanced.html#
 that has a syntax similar to the <code class="constant">printf</code> standard C library function.
 It substitutes the values of the additional arguments into the
 <em class="parameter"><code>message</code></em> template string and calls <a class="link" href="igraph-Advanced.html#igraph_status" title="3.3.3. igraph_status — Reports status from an igraph function."><code class="function">igraph_status()</code></a>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1216,9 +1272,8 @@ It substitutes the values of the additional arguments into the
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. If a status handler function was called
-       and it did not return with <code class="constant">IGRAPH_SUCCESS</code>, then
-       <code class="constant">IGRAPH_INTERRUPTED</code> is returned by <a class="link" href="igraph-Advanced.html#igraph_status" title="3.3.3. igraph_status — Reports status from an igraph function."><code class="function">igraph_status()</code></a>.
+  Error code from the status handler function, or <code class="constant">IGRAPH_SUCCESS</code>
+        if no status handler function was registered.
   </p></td>
 </tr></tbody>
 </table></div>

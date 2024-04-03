@@ -264,10 +264,8 @@ igraph_error_t igraph_create(igraph_t *graph, const igraph_vector_int_t *edges,
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code:
-        <code class="constant">IGRAPH_EINVEVECTOR</code>: invalid edges
-        vector (odd number of vertices).
-        <code class="constant">IGRAPH_EINVVID</code>: invalid (negative)
-        vertex ID.
+        <code class="constant">IGRAPH_EINVAL</code>: invalid edges vector (odd number of vertices).
+        <code class="constant">IGRAPH_EINVVID</code>: invalid (negative) vertex ID.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -674,9 +672,9 @@ next row is for vertex 1, etc.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code,
-        <code class="constant">IGRAPH_NONSQUARE</code>: non-square matrix.
-        <code class="constant">IGRAPH_EINVAL</code>: Negative entry was found in adjacency matrix, or an
-        odd number was found in the diagonal with <code class="constant">IGRAPH_LOOPS_TWICE</code>
+        <code class="constant">IGRAPH_EINVAL</code>: Non-square adjacency matrix, negative entry in
+        adjacency matrix, or an odd number was found in the diagonal with
+        <code class="constant">IGRAPH_LOOPS_TWICE</code>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -912,7 +910,7 @@ next row is for vertex 1, etc.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code,
-        <code class="constant">IGRAPH_NONSQUARE</code>: non-square matrix.
+        <code class="constant">IGRAPH_EINVAL</code>: non-square matrix.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2899,6 +2897,14 @@ igraph_error_t igraph_turan(igraph_t *graph,
 Turán graphs are complete multipartite graphs with the property
 that the sizes of the partitions are as close to equal as possible.
 
+</p>
+<p>
+The Turán graph with <em class="parameter"><code>n</code></em> vertices and <em class="parameter"><code>r</code></em> partitions is the densest
+graph on <em class="parameter"><code>n</code></em>  vertices that does not contain a clique of size
+<code class="literal">r+1</code>.
+
+</p>
+<p>
 This function generates undirected graphs. The null graph is
 returned when the number of vertices is zero. A complete graph is
 returned if the number of partitions is greater than the number of
@@ -6912,15 +6918,11 @@ characteristics, observed in real networks:
 </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>
-Heavy-tailed in-degree distribution.
+Heavy-tailed in- and out-degree distributions.
 
 </p></li>
 <li class="listitem"><p>
-Heavy-tailed out-degree distribution.
-
-</p></li>
-<li class="listitem"><p>
-Communities.
+Community structure.
 
 </p></li>
 <li class="listitem"><p>
@@ -7062,13 +7064,19 @@ igraph_error_t igraph_rewire(igraph_t *graph, igraph_integer_t n, igraph_rewirin
 
 
 
+This function generates a new graph based on the original one by randomly
+"rewriting" edges while preserving the original graph's degree sequence.
+The rewiring is done "in place", so no new graph will be allocated. If you
+would like to keep the original graph intact, use <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a>
+beforehand. All graph attributes will be lost.
+
 </p>
 <p>
-This function generates a new graph based on the original one by randomly
-rewiring edges while preserving the original graph's degree sequence.
-The rewiring is done "in place", so no new graph will
-be allocated. If you would like to keep the original graph intact, use
-<a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a> beforehand. All graph attributes will be lost.
+The rewiring is performed with degree-preserving edge switches:
+Two arbitrary edges are picked uniformly at random, namely
+<code class="literal">(a, b)</code> and <code class="literal">(c, d)</code>, then they are replaced
+by <code class="literal">(a, d)</code> and <code class="literal">(b, c)</code> if this preserves the
+constraints specified by <em class="parameter"><code>mode</code></em>.
 
 </p>
 <p><b>Arguments: </b>
@@ -7107,10 +7115,8 @@ be allocated. If you would like to keep the original graph intact, use
 <td><p><span class="term"><code class="constant">IGRAPH_REWIRING_SIMPLE</code></span></p></td>
 <td><p>
 
-               Simple rewiring algorithm which chooses two arbitrary edges
-               in each step (namely (a,b) and (c,d)) and substitutes them
-               with (a,d) and (c,b) if they don't exist.  The method will
-               neither destroy nor create self-loops.
+               This method does not create or destroy self-loops, and does
+               not create multi-edges.
           
 </p></td>
 </tr>
@@ -7118,8 +7124,9 @@ be allocated. If you would like to keep the original graph intact, use
 <td><p><span class="term"><code class="constant">IGRAPH_REWIRING_SIMPLE_LOOPS</code></span></p></td>
 <td><p>
 
-               Same as <code class="constant">IGRAPH_REWIRING_SIMPLE</code> but allows the creation or
-               destruction of self-loops.
+               This method allows the creation or destruction of self-loops.
+               Self-loops are created by switching edges that have a single
+               common endpoint.
         
 </p></td>
 </tr>
@@ -7156,15 +7163,6 @@ be allocated. If you would like to keep the original graph intact, use
 <td><p>
 
                Invalid rewiring mode.
-          
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_EINVAL</code></span></p></td>
-<td><p>
-
-               Graph unsuitable for rewiring (e.g. it has
-               less than 4 nodes in case of <code class="constant">IGRAPH_REWIRING_SIMPLE</code>)
           
 </p></td>
 </tr>
