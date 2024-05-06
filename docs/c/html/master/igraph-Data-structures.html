@@ -161,6 +161,7 @@
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Vector-lists">9. Lists of vectors, matrices and graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Adjlists">10. Adjacency lists</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph-Partial-prefix-sum-trees">11. Partial prefix sum trees</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Bitsets">12. Bitsets</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -4172,7 +4173,7 @@ igraph_bool_t igraph_vector_is_any_nan(const igraph_vector_t *v);
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  1 if any element is NaN, 0 otherwise.
+  True if any element is NaN, false otherwise.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8048,7 +8049,7 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.8.4.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
- const igraph_matrix_t *igraph_matrix_view_from_vector(
+const igraph_matrix_t *igraph_matrix_view_from_vector(
     const igraph_matrix_t *m, const igraph_vector_t *v,
     igraph_integer_t nrow
 );
@@ -25475,6 +25476,1527 @@ igraph_error_t igraph_psumtree_update(igraph_psumtree_t *t, igraph_integer_t idx
 Time complexity: O(log n), where n is the number of items in the tree.
  
 </p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph-Bitsets"></a>12. Bitsets</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_t">12.1.  About <span class="type">igraph_bitset_t</span> objects</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-constructors-and-destructors">12.2.  Constructors and
+destructors</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-accessing-elements">12.3.  Accessing elements</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-operations">12.4. Bitset operations</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-properties">12.5. Bitset properties</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-resizing-operations">12.6. Resizing operations</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_bitset_t"></a>12.1.  About <span class="type">igraph_bitset_t</span> objects</h3></div></div></div>
+<p>The <span class="type">igraph_bitset_t</span> data type is a simple and efficient
+interface to arrays containing boolean values. It is similar to
+the <span class="type">bitset</span> template in the C++ standard library, although the main
+difference being the C++ version's size is initialized at compile time.</p>
+<p>The <span class="type">igraph_bitset_t</span> type and use O(n/w) space
+to store n elements, where w is the bit width of <span class="type">igraph_integer_t</span>,
+the integer type used throughout the library (either 32 or 64).
+Sometimes they use more, this is because bitsets can
+shrink, but even if they shrink, the current implementation does not free a
+single bit of memory.</p>
+<p>The elements in an <span class="type">igraph_bitset_t</span> object and its variants are
+indexed from zero, we follow the usual C convention here. Bitsets are indexed
+from right to left, meaning index 0 is the least significant bit and index n-1
+is the most significant bit.</p>
+<p>The elements of a bitset always occupy a single block of
+memory, the starting address of this memory block can be queried
+with the <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR()</code></a> macro. This way, bitset objects can be used
+with standard mathematical libraries, like the GNU Scientific
+Library.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-constructors-and-destructors"></a>12.2.  Constructors and
+destructors</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_init">12.2.1. <code class="function">igraph_bitset_init</code> —  Initializes a bitset object (constructor).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_init_copy">12.2.2. <code class="function">igraph_bitset_init_copy</code> —  Initializes a bitset from another bitset object (constructor).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_destroy">12.2.3. <code class="function">igraph_bitset_destroy</code> —  Destroys a bitset object.</a></span></dt>
+</dl></div>
+<p><span class="type">igraph_bitset_t</span> objects have to be initialized before using
+them, this is analogous to calling a constructor on them. There are two
+<span class="type">igraph_bitset_t</span> constructors, for your convenience.
+<a class="link" href="igraph-Data-structures.html#igraph_bitset_init" title="12.2.1. igraph_bitset_init — Initializes a bitset object (constructor)."><code class="function">igraph_bitset_init()</code></a> is the basic constructor, it
+creates a bitset of the given length, filled with zeros.
+<a class="link" href="igraph-Data-structures.html#igraph_bitset_init_copy" title="12.2.2. igraph_bitset_init_copy — Initializes a bitset from another bitset object (constructor)."><code class="function">igraph_bitset_init_copy()</code></a> creates a new identical copy
+of an already existing and initialized bitset.</p>
+<p>If a <span class="type">igraph_bitset_t</span> object is not needed any more, it
+should be destroyed to free its allocated memory by calling the
+<span class="type">igraph_bitset_t</span> destructor, <a class="link" href="igraph-Data-structures.html#igraph_bitset_destroy" title="12.2.3. igraph_bitset_destroy — Destroys a bitset object."><code class="function">igraph_bitset_destroy()</code></a>.</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_init"></a>12.2.1. <code class="function">igraph_bitset_init</code> —  Initializes a bitset object (constructor).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bitset_init(igraph_bitset_t *bitset, igraph_integer_t size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p>
+Every bitset needs to be initialized before it can be used, and
+there are a number of initialization functions or otherwise called
+constructors. This function constructs a bitset of the given size and
+initializes each entry to 0.
+
+</p>
+<p>
+Every bitset object initialized by this function should be
+destroyed (ie. the memory allocated for it should be freed) when it
+is not needed anymore, the <a class="link" href="igraph-Data-structures.html#igraph_bitset_destroy" title="12.2.3. igraph_bitset_destroy — Destroys a bitset object."><code class="function">igraph_bitset_destroy()</code></a> function is
+responsible for this.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  Pointer to a not yet initialized bitset object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
+<td><p>
+  The size of the bitset.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  error code:
+      <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, the amount of
+<span class="quote">“<span class="quote">time</span>”</span> required to allocate
+O(n/w) elements,
+n is the number of elements.
+w is the word size of the machine (32 or 64).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_init_copy"></a>12.2.2. <code class="function">igraph_bitset_init_copy</code> —  Initializes a bitset from another bitset object (constructor).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bitset_init_copy(igraph_bitset_t *dest, const igraph_bitset_t *src);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p>
+
+The contents of the existing bitset object will be copied to
+the new one.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  Pointer to a not yet initialized bitset object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em>:</span></p></td>
+<td><p>
+  The original bitset object to copy.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, usually
+O(n/w),
+n is the size of the bitset,
+w is the word size of the machine (32 or 64).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_destroy"></a>12.2.3. <code class="function">igraph_bitset_destroy</code> —  Destroys a bitset object.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_bitset_destroy(igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p>
+All bitsets initialized by <a class="link" href="igraph-Data-structures.html#igraph_bitset_init" title="12.2.1. igraph_bitset_init — Initializes a bitset object (constructor)."><code class="function">igraph_bitset_init()</code></a> should be properly
+destroyed by this function. A destroyed bitset needs to be
+reinitialized by <a class="link" href="igraph-Data-structures.html#igraph_bitset_init" title="12.2.1. igraph_bitset_init — Initializes a bitset object (constructor)."><code class="function">igraph_bitset_init()</code></a> or
+another constructor.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  Pointer to the (previously initialized) bitset object to
+       destroy.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: operating system dependent.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-accessing-elements"></a>12.3.  Accessing elements</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_MASK">12.3.1. <code class="function">IGRAPH_BIT_MASK</code> —  Computes mask used to access a specific bit of an integer.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_SLOT">12.3.2. <code class="function">IGRAPH_BIT_SLOT</code> —  Computes index used to access a specific slot of a bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_SET">12.3.3. <code class="function">IGRAPH_BIT_SET</code> —  Sets a specific bit in a bitset to 1 without altering other bits.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_CLEAR">12.3.4. <code class="function">IGRAPH_BIT_CLEAR</code> —  Sets a specific bit in a bitset to 0 without altering other bits.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_TEST">12.3.5. <code class="function">IGRAPH_BIT_TEST</code> —  Tests whether a bit is set in a bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#IGRAPH_BIT_NSLOTS">12.3.6. <code class="function">IGRAPH_BIT_NSLOTS</code> —  Computes the number of slots required to store a specified number of bits.</a></span></dt>
+</dl></div>
+<p>The simplest way to access an element of a bitset is
+to use the <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_TEST" title="12.3.5. IGRAPH_BIT_TEST — Tests whether a bit is set in a bitset."><code class="function">IGRAPH_BIT_TEST()</code></a>, <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_SET" title="12.3.3. IGRAPH_BIT_SET — Sets a specific bit in a bitset to 1 without altering other bits."><code class="function">IGRAPH_BIT_SET()</code></a> and <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_CLEAR" title="12.3.4. IGRAPH_BIT_CLEAR — Sets a specific bit in a bitset to 0 without altering other bits."><code class="function">IGRAPH_BIT_CLEAR()</code></a> macros.
+</p>
+<p>There are a few other macros which allow manual manipulation of bitsets.
+Those are <a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector."><code class="function">VECTOR()</code></a>, <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_SLOT" title="12.3.2. IGRAPH_BIT_SLOT — Computes index used to access a specific slot of a bitset."><code class="function">IGRAPH_BIT_SLOT()</code></a>, <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_MASK" title="12.3.1. IGRAPH_BIT_MASK — Computes mask used to access a specific bit of an integer."><code class="function">IGRAPH_BIT_MASK()</code></a> and
+<a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_NSLOTS" title="12.3.6. IGRAPH_BIT_NSLOTS — Computes the number of slots required to store a specified number of bits."><code class="function">IGRAPH_BIT_NSLOTS()</code></a>.</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_MASK"></a>12.3.1. <code class="function">IGRAPH_BIT_MASK</code> —  Computes mask used to access a specific bit of an integer.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.4.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_MASK(b)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Used in combination with <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_SLOT" title="12.3.2. IGRAPH_BIT_SLOT — Computes index used to access a specific slot of a bitset."><code class="function">IGRAPH_BIT_SLOT()</code></a> to access an element of a bitset.
+
+Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_MASK(10) </pre></div>
+<p>
+to obtain an integer where only the 11th least significant bit is set.
+
+Note that passing negative values here results in undefined behaviour.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  The only bit index that should have its bit set.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_SLOT"></a>12.3.2. <code class="function">IGRAPH_BIT_SLOT</code> —  Computes index used to access a specific slot of a bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.5.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_SLOT(b)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Used in combination with <a class="link" href="igraph-Data-structures.html#IGRAPH_BIT_MASK" title="12.3.1. IGRAPH_BIT_MASK — Computes mask used to access a specific bit of an integer."><code class="function">IGRAPH_BIT_MASK</code></a> to access an element of a bitset.
+
+Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_SLOT(70) </pre></div>
+<p>
+will return 1 if using 64-bit words or 2 if using 32-bit words.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  The bit index whose slot should be determined.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_SET"></a>12.3.3. <code class="function">IGRAPH_BIT_SET</code> —  Sets a specific bit in a bitset to 1 without altering other bits.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.6.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_SET(a, b)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_SET(bitset, 3) </pre></div>
+<p>
+will set the fourth least significant bit in the bitset to 1.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>a</code></em>:</span></p></td>
+<td><p>
+  The bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  The bit index that should have its bit set to 1 after the operation.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_CLEAR"></a>12.3.4. <code class="function">IGRAPH_BIT_CLEAR</code> —  Sets a specific bit in a bitset to 0 without altering other bits.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.7.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_CLEAR(a, b)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_CLEAR(bitset, 4) </pre></div>
+<p>
+will set the fifth least significant bit in the bitset to 0.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>a</code></em>:</span></p></td>
+<td><p>
+  The bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  The bit index that should have its bit set to 0 after the operation.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_TEST"></a>12.3.5. <code class="function">IGRAPH_BIT_TEST</code> —  Tests whether a bit is set in a bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.8.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_TEST(a, b)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns 0 if the bit at the specified bit index is not set,
+otherwise returns a non-zero value.
+
+Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_TEST(bitset, 7) </pre></div>
+<p>
+will test the eighth least significant bit in the bitset.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>a</code></em>:</span></p></td>
+<td><p>
+  The bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
+<td><p>
+  The bit index that should have its bit tested.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_BIT_NSLOTS"></a>12.3.6. <code class="function">IGRAPH_BIT_NSLOTS</code> —  Computes the number of slots required to store a specified number of bits.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.4.9.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_BIT_NSLOTS(nb)
+</pre>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_NSLOTS(70) </pre></div>
+<p>
+will return 2 if using 64-bit words and 3 if using 32-bit words.
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_BIT_NSLOTS(128) </pre></div>
+<p>
+will return 2 if using 64-bit words and 4 if using 32-bit words.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>nb</code></em>:</span></p></td>
+<td><p>
+  The specified number of bits.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-operations"></a>12.4. Bitset operations</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_or">12.4.1. <code class="function">igraph_bitset_or</code> —  Bitwise OR of two bitsets.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_and">12.4.2. <code class="function">igraph_bitset_and</code> —  Bitwise AND of two bitsets.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_xor">12.4.3. <code class="function">igraph_bitset_xor</code> —  Bitwise XOR of two bitsets.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_not">12.4.4. <code class="function">igraph_bitset_not</code> —  Bitwise negation of a bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_popcount">12.4.5. <code class="function">igraph_bitset_popcount</code> —  The population count of the bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_countl_zero">12.4.6. <code class="function">igraph_bitset_countl_zero</code> —  The number of leading zeros in the bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_countl_one">12.4.7. <code class="function">igraph_bitset_countl_one</code> —  The number of leading ones in the bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_countr_zero">12.4.8. <code class="function">igraph_bitset_countr_zero</code> —  The number of trailing zeros in the bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_countr_one">12.4.9. <code class="function">igraph_bitset_countr_one</code> —  The number of trailing ones in the bitset.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_or"></a>12.4.1. <code class="function">igraph_bitset_or</code> —  Bitwise OR of two bitsets.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_bitset_or(igraph_bitset_t *dest,
+                      const igraph_bitset_t *src1, const igraph_bitset_t *src2);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Applies a bitwise or to the contents of two bitsets and stores it in an
+already initialized bitset. The destination bitset may be equal to one
+(or even both) of the sources. When working with bitsets, it is common
+that those created are of the same size fixed size. Therefore, this
+function does not check the sizes of the bitsets passed to it, the caller
+must do so if necessary.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  The bitset object where the result is stored
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src1</code></em>:</span></p></td>
+<td><p>
+  A bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src2</code></em>:</span></p></td>
+<td><p>
+  A bitset</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_and"></a>12.4.2. <code class="function">igraph_bitset_and</code> —  Bitwise AND of two bitsets.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_bitset_and(igraph_bitset_t *dest, const igraph_bitset_t *src1, const igraph_bitset_t *src2);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Applies a bitwise and to the contents of two bitsets and stores it in an
+already initialized bitset. The destination bitset may be equal to one
+(or even both) of the sources. When working with bitsets, it is common
+that those created are of the same size fixed size. Therefore, this
+function does not check the sizes of the bitsets passed to it, the caller
+must do so if necessary.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  The bitset object where the result is stored
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src1</code></em>:</span></p></td>
+<td><p>
+  A bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src2</code></em>:</span></p></td>
+<td><p>
+  A bitset</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_xor"></a>12.4.3. <code class="function">igraph_bitset_xor</code> —  Bitwise XOR of two bitsets.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_bitset_xor(igraph_bitset_t *dest,
+                       const igraph_bitset_t *src1, const igraph_bitset_t *src2);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Applies a bitwise xor to the contents of two bitsets and stores it in
+an already initialized bitset. The destination bitset may be equal to
+one (or even both) of the sources. When working with bitsets, it is common
+that those created are of the same size fixed size. Therefore, this
+function does not check the sizes of the bitsets passed to it, the caller
+must do so if necessary.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  The bitset object where the result is stored
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src1</code></em>:</span></p></td>
+<td><p>
+  A bitset
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src2</code></em>:</span></p></td>
+<td><p>
+  A bitset</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_not"></a>12.4.4. <code class="function">igraph_bitset_not</code> —  Bitwise negation of a bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_bitset_not(igraph_bitset_t *dest, const igraph_bitset_t *src);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Applies a bitwise not to the contents of a bitset and stores it in an
+already initialized bitset. The destination bitset may be equal to the
+source. When working with bitsets, it is common that those created are
+of the same size fixed size. Therefore, this function does not check the
+sizes of the bitsets passed to it, the caller must do so if necessary.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  The bitset object where the result is stored
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em>:</span></p></td>
+<td><p>
+  A bitset</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_popcount"></a>12.4.5. <code class="function">igraph_bitset_popcount</code> —  The population count of the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_popcount(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns the number of set bits, also called the population count,
+of the bitset.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The population count of the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_countl_zero"></a>12.4.6. <code class="function">igraph_bitset_countl_zero</code> —  The number of leading zeros in the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_countl_zero(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns the number of leading (starting at the most significant bit)
+zeros in the bitset before the first one is encountered. If the bitset
+is all zeros, then its size is returned.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The number of leading zeros in the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_countl_one"></a>12.4.7. <code class="function">igraph_bitset_countl_one</code> —  The number of leading ones in the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_countl_one(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns the number of leading ones (starting at the most significant bit)
+in the bitset before the first zero is encountered.
+If the bitset is all ones, then its size is returned.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The number of leading ones in the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_countr_zero"></a>12.4.8. <code class="function">igraph_bitset_countr_zero</code> —  The number of trailing zeros in the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_countr_zero(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns the number of trailing (starting at the least significant bit)
+zeros in the bitset before the first one is encountered.
+If the bitset is all zeros, then its size is returned.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The number of trailing zeros in the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_countr_one"></a>12.4.9. <code class="function">igraph_bitset_countr_one</code> —  The number of trailing ones in the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.5.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_countr_one(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Returns the number of trailing ones (starting at the least significant bit)
+in the bitset before the first zero is encountered.
+If the bitset is all ones, then its size is returned.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The number of trailing ones in the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n/w).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-properties"></a>12.5. Bitset properties</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_size">12.5.1. <code class="function">igraph_bitset_size</code> —  Returns the length of the bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_capacity">12.5.2. <code class="function">igraph_bitset_capacity</code> —  Returns the allocated capacity of the bitset.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_size"></a>12.5.1. <code class="function">igraph_bitset_size</code> —  Returns the length of the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.6.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_size(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The size of the bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_capacity"></a>12.5.2. <code class="function">igraph_bitset_capacity</code> —  Returns the allocated capacity of the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.6.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_integer_t igraph_bitset_capacity(const igraph_bitset_t *bitset);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>Note that this might be different from the size of the bitset (as
+queried by <a class="link" href="igraph-Data-structures.html#igraph_bitset_size" title="12.5.1. igraph_bitset_size — Returns the length of the bitset."><code class="function">igraph_bitset_size()</code></a>), and specifies how many elements
+the bitset can hold, without reallocation.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  Pointer to the (previously initialized) bitset object
+         to query.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The allocated capacity.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_bitset_size" title="12.5.1. igraph_bitset_size — Returns the length of the bitset."><code class="function">igraph_bitset_size()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-resizing-operations"></a>12.6. Resizing operations</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_reserve">12.6.1. <code class="function">igraph_bitset_reserve</code> —  Reserves memory for a bitset.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_resize">12.6.2. <code class="function">igraph_bitset_resize</code> —  Resizes the bitset.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_reserve"></a>12.6.1. <code class="function">igraph_bitset_reserve</code> —  Reserves memory for a bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.7.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bitset_reserve(igraph_bitset_t *bitset, igraph_integer_t capacity);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p>
+<span class="command"><strong>igraph</strong></span> bitsets are flexible, they can grow and
+shrink. Growing
+however occasionally needs the data in the bitset to be copied.
+In order to avoid this, you can call this function to reserve space for
+future growth of the bitset.
+
+</p>
+<p>
+Note that this function does <span class="emphasis"><em>not</em></span> change the size of the
+bitset. Let us see a small example to clarify things: if you
+reserve space for 100 elements and the size of your
+bitset was (and still is) 60, then you can surely add additional 40
+elements to your bitset before it will be copied.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>capacity</code></em>:</span></p></td>
+<td><p>
+  The new <span class="emphasis"><em>allocated</em></span> size of the bitset.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, should be around
+O(n/w),
+n is the new allocated size of the bitset,
+w is the word size of the machine (32 or 64).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_resize"></a>12.6.2. <code class="function">igraph_bitset_resize</code> —  Resizes the bitset.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.7.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bitset_resize(igraph_bitset_t *bitset, igraph_integer_t new_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p>
+Note that this function does not free any memory, just sets the
+size of the bitset to the given one. It may, on the other hand,
+allocate more memory if the new size is larger than the previous
+one. In this case the newly appeared elements in the bitset are
+set to zero.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bitset</code></em>:</span></p></td>
+<td><p>
+  The bitset object
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>new_size</code></em>:</span></p></td>
+<td><p>
+  The new size of the bitset.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code,
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough
+        memory. Note that this function <span class="emphasis"><em>never</em></span> returns an error
+        if the bitset is made smaller.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Data-structures.html#igraph_bitset_reserve" title="12.6.1. igraph_bitset_reserve — Reserves memory for a bitset."><code class="function">igraph_bitset_reserve()</code></a> for allocating memory for future
+extensions of a bitset.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1) if the new
+size is smaller, operating system dependent if it is larger. In the
+latter case it is usually around
+O(n/w),
+n is the new size of the bitset,
+w is the word size of the machine (32 or 64).
+ 
+</p>
+</div>
 </div>
 </div>
 </div>

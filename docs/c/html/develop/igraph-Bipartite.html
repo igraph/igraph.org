@@ -186,7 +186,7 @@ to them.</p>
 <a name="create-two-mode-networks"></a>2. Create two-mode networks</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_create_bipartite">2.1. <code class="function">igraph_create_bipartite</code> —  Create a bipartite graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_full_bipartite">2.2. <code class="function">igraph_full_bipartite</code> —  Create a full bipartite network.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_full_bipartite">2.2. <code class="function">igraph_full_bipartite</code> —  Creates a complete bipartite graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnm">2.3. <code class="function">igraph_bipartite_game_gnm</code> —  Generate a random bipartite graph with a fixed number of edges.</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnp">2.4. <code class="function">igraph_bipartite_game_gnp</code> —  Generates a random bipartite graph with a fixed connection probability.</a></span></dt>
 </dl></div>
@@ -311,7 +311,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_full_bipartite"></a>2.2. <code class="function">igraph_full_bipartite</code> —  Create a full bipartite network.</h3></div></div></div>
+<a name="igraph_full_bipartite"></a>2.2. <code class="function">igraph_full_bipartite</code> —  Creates a complete bipartite graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.31.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -335,10 +335,10 @@ movie is connected to all participating actors, etc.
 </p>
 <p>
 igraph does not have direct support for bipartite networks, at
-least not at the C language level. In other words the igraph_t
+least not at the C language level. In other words the <span class="type">igraph_t</span>
 structure does not contain information about the vertex types.
 The C functions for bipartite networks usually have an additional
-input argument to graph, called <code class="constant">types</code>, a boolean vector giving
+input argument to graph, called <em class="parameter"><code>types</code></em>, a boolean vector giving
 the vertex types.
 
 </p>
@@ -359,7 +359,7 @@ to them.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  Pointer to an igraph_t object, the graph will be
+  Pointer to an uninitialized graph object, the graph will be
   created here.
 </p></td>
 </tr>
@@ -428,7 +428,8 @@ edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (directed or undirected, with or without loops)."><code class="function">igraph_full()</code></a> for non-bipartite full graphs.
+  <a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (complete graph)."><code class="function">igraph_full()</code></a> for non-bipartite complete graphs,
+<a class="link" href="igraph-Generators.html#igraph_full_multipartite" title="1.19. igraph_full_multipartite — Creates a full multipartite graph."><code class="function">igraph_full_multipartite()</code></a> for complete multipartite graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -697,7 +698,8 @@ edges.
 <a name="bipartite-adjacency-matrices"></a>3. Bipartite adjacency matrices</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_biadjacency">3.1. <code class="function">igraph_biadjacency</code> —  Creates a bipartite graph from a bipartite adjacency matrix.</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_biadjacency">3.2. <code class="function">igraph_get_biadjacency</code> —  Convert a bipartite graph into a bipartite adjacency matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_weighted_biadjacency">3.2. <code class="function">igraph_weighted_biadjacency</code> —  Creates a bipartite graph from a weighted bipartite adjacency matrix.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_biadjacency">3.3. <code class="function">igraph_get_biadjacency</code> —  Converts a bipartite graph into a bipartite adjacency matrix.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -706,10 +708,12 @@ edges.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_biadjacency(
-    igraph_t *graph, igraph_vector_bool_t *types,
-    const igraph_matrix_t *input, igraph_bool_t directed,
-    igraph_neimode_t mode, igraph_bool_t multiple
-);
+        igraph_t *graph,
+        igraph_vector_bool_t *types,
+        const igraph_matrix_t *biadjmatrix,
+        igraph_bool_t directed,
+        igraph_neimode_t mode,
+        igraph_bool_t multiple);
 </pre></div>
 <p>
 </p>
@@ -725,16 +729,13 @@ edges between the two corresponding vertices.
 
 </p>
 <p>
-Note that this function can operate in two modes, depending on the
+This function can operate in two modes, depending on the
 <em class="parameter"><code>multiple</code></em> argument. If it is <code class="constant">false</code>, then a single edge is
-created for every non-zero element in the bipartite adjacency matrix. If <em class="parameter"><code>multiple</code></em> is <code class="constant">true</code>, then the matrix elements are rounded up
-to the closest non-negative integer to get the number of edges to
-create between a pair of vertices.
-
-</p>
-<p>
-This function does not create multiple edges if <em class="parameter"><code>multiple</code></em> is
-<code class="constant">false</code>, but might create some if it is <code class="constant">true</code>.
+created for every non-zero element in the bipartite adjacency matrix. If
+<em class="parameter"><code>multiple</code></em> is <code class="constant">true</code>, then as many edges are created between two
+vertices as the corresponding matrix element. When <em class="parameter"><code>multiple</code></em>
+is set to <code class="constant">true</code>, matrix elements should be whole numbers.
+Otherwise their fractional part will be discarded.
 
 </p>
 <p><b>Arguments: </b>
@@ -760,7 +761,7 @@ This function does not create multiple edges if <em class="parameter"><code>mult
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>input</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>biadjmatrix</code></em>:</span></p></td>
 <td><p>
   The bipartite adjacency matrix that serves as an input
   to this function.
@@ -779,13 +780,16 @@ This function does not create multiple edges if <em class="parameter"><code>mult
   Specifies the direction of the edges in a directed
   graph. If <code class="constant">IGRAPH_OUT</code>, then edges point from vertices
   of the first kind (corresponding to rows) to vertices of the
-  second kind (corresponding to columns); if <code class="constant">IGRAPH_IN</code>, then the opposite direction is realized; if <code class="constant">IGRAPH_ALL</code>, then mutual edges will be created.
+  second kind (corresponding to columns); if <code class="constant">IGRAPH_IN</code>,
+  then the opposite direction is realized; if <code class="constant">IGRAPH_ALL</code>,
+  then mutual edges will be created.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
 <td><p>
-  How to interpret the matrix elements. See details above.
+  Whether to interpret matrix entries as edge multiplicities,
+  see details above.
 </p></td>
 </tr>
 </tbody>
@@ -813,21 +817,29 @@ Time complexity: O(n*m), the size of the bipartite adjacency matrix.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_biadjacency"></a>3.2. <code class="function">igraph_get_biadjacency</code> —  Convert a bipartite graph into a bipartite adjacency matrix.</h3></div></div></div>
+<a name="igraph_weighted_biadjacency"></a>3.2. <code class="function">igraph_weighted_biadjacency</code> —  Creates a bipartite graph from a weighted bipartite adjacency matrix.</h3></div></div></div>
 <a class="indexterm" name="id-1.31.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_get_biadjacency(
-    const igraph_t *graph, const igraph_vector_bool_t *types,
-    igraph_matrix_t *res, igraph_vector_int_t *row_ids,
-    igraph_vector_int_t *col_ids
-);
+igraph_error_t igraph_weighted_biadjacency(
+        igraph_t *graph,
+        igraph_vector_bool_t *types,
+        igraph_vector_t *weights,
+        const igraph_matrix_t *biadjmatrix,
+        igraph_bool_t directed,
+        igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
 <p>
 
 
+
+A bipartite (or two-mode) graph contains two types of vertices and
+edges always connect vertices of different types. A bipartite adjacency
+matrix is an <span class="emphasis"><em>n</em></span> x <span class="emphasis"><em>m</em></span> matrix, <span class="emphasis"><em>n</em></span> and <span class="emphasis"><em>m</em></span> are the number of vertices
+of the two types, respectively. Nonzero elements in the matrix denote
+edges between the two corresponding vertices.
 
 </p>
 <p><b>Arguments: </b>
@@ -841,41 +853,46 @@ igraph_error_t igraph_get_biadjacency(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph, edge directions are ignored.
+  Pointer to an uninitialized graph object.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
 <td><p>
-  Boolean vector containing the vertex types. All vertices
-  in one part of the graph should have type 0, the others type 1.
+  Pointer to an initialized boolean vector, or a null
+  pointer. If not a null pointer, then the vertex types are stored
+  here. It is resized as needed.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized matrix, the result is stored
-  here. An element of the matrix gives the number of edges
-  (irrespectively of their direction) between the two corresponding
-  vertices. The rows will correspond to vertices with type 0,
-  the columns correspond to vertices with type 1.
+  Pointer to an initialized vector, the weights will be stored here.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>row_ids</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>biadjmatrix</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized vector or a null
-  pointer. If not a null pointer, then the vertex IDs (in the
-  graph) corresponding to the rows of the result matrix are stored
-  here.
+  The bipartite adjacency matrix that serves as an input
+  to this function.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>col_ids</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized vector or a null
-  pointer. If not a null pointer, then the vertex IDs corresponding
-  to the columns of the result matrix are stored here.
+  Specifies whether to create an undirected or a directed
+  graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies the direction of the edges in a directed
+  graph. If <code class="constant">IGRAPH_OUT</code>, then edges point from vertices
+  of the first kind (corresponding to rows) to vertices of the
+  second kind (corresponding to columns); if <code class="constant">IGRAPH_IN</code>,
+  then the opposite direction is realized; if <code class="constant">IGRAPH_ALL</code>,
+  then mutual edges will be created.
 </p></td>
 </tr>
 </tbody>
@@ -897,8 +914,117 @@ igraph_error_t igraph_get_biadjacency(
 </table></div>
 <p>
 
-Time complexity: O(n*m), n and m are number of vertices of the two
-different kind.
+Time complexity: O(n*m), the size of the bipartite adjacency matrix.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_get_biadjacency"></a>3.3. <code class="function">igraph_get_biadjacency</code> —  Converts a bipartite graph into a bipartite adjacency matrix.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.4.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_get_biadjacency(
+    const igraph_t *graph, const igraph_vector_bool_t *types,
+    const igraph_vector_t *weights,
+    igraph_matrix_t *res, igraph_vector_int_t *row_ids,
+    igraph_vector_int_t *col_ids
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+In a bipartite adjacency matrix <code class="constant">A</code>, element <code class="literal">A_ij</code>
+gives the number of edges between the <code class="literal">i</code>th vertex of the
+first partition and the <code class="literal">j</code>th vertex of the second partition.
+
+</p>
+<p>
+If the graph contains edges within the same partition, this function
+issues a warning.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, edge directions are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  Boolean vector containing the vertex types. Vertices belonging
+  to the first partition have type <code class="constant">false</code>, the one in the second
+  partition type <code class="constant">true</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  A vector specifying a weight for each edge or <code class="constant">NULL</code>.
+  If <code class="constant">NULL</code>, all edges are assumed to have weight 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix, the result is stored
+  here. An element of the matrix gives the number of edges
+  (irrespectively of their direction), or sum of edge weights,
+  between the two corresponding vertices. The rows will correspond
+  to vertices with type <code class="constant">false</code>, the columns correspond to vertices
+  with type <code class="constant">true</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>row_ids</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector or <code class="constant">NULL</code>.
+  If not a null pointer, then the IDs of vertices with type <code class="constant">false</code>
+  are stored here, with the same ordering as the rows of the
+  biadjacency matrix.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>col_ids</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector or <code class="constant">NULL</code>.
+  If not a null pointer, then the IDs of vertices with type <code class="constant">true</code>
+  are stored here, with the same ordering as the columns of the
+  biadjacency matrix.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E|) where |E| is the number of edges.
 
 </p>
 <p><b>See also: </b></p>
@@ -1284,11 +1410,7 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="deprecated-bipartite"></a>6. Deprecated functions</h2></div></div></div>
-<div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game">6.1. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_incidence">6.2. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Bipartite.html#igraph_get_incidence">6.3. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</a></span></dt>
-</dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game">6.1. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_game"></a>6.1. <code class="function">igraph_bipartite_game</code> —  Generate a bipartite random graph (similar to Erdős-Rényi).</h3></div></div></div>
@@ -1458,62 +1580,6 @@ This function is deprecated; use <a class="link" href="igraph-Bipartite.html#igr
 Time complexity: O(|V|+|E|), linear in the number of vertices and
 edges.
  
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_incidence"></a>6.2. <code class="function">igraph_incidence</code> —  Creates a bipartite graph from a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
-<a class="indexterm" name="id-1.31.7.3.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_incidence(
-    igraph_t *graph, igraph_vector_bool_t *types,
-    const igraph_matrix_t *incidence, igraph_bool_t directed,
-    igraph_neimode_t mode, igraph_bool_t multiple
-);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>Deprecated since version 0.10.5. Please do not use this function in new
-code; use <a class="link" href="igraph-Bipartite.html#igraph_biadjacency" title="3.1. igraph_biadjacency — Creates a bipartite graph from a bipartite adjacency matrix."><code class="function">igraph_biadjacency()</code></a>
-instead.</p>
-</div>
-<p> 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_get_incidence"></a>6.3. <code class="function">igraph_get_incidence</code> —  Convert a bipartite graph into a bipartite adjacency matrix (deprecated alias).</h3></div></div></div>
-<a class="indexterm" name="id-1.31.7.4.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_get_incidence(const igraph_t *graph,
-                         const igraph_vector_bool_t *types,
-                         igraph_matrix_t *res,
-                         igraph_vector_int_t *row_ids,
-                         igraph_vector_int_t *col_ids);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>Deprecated since version 0.10.5. Please do not use this function in new
-code; use <a class="link" href="igraph-Bipartite.html#igraph_get_biadjacency" title="3.2. igraph_get_biadjacency — Convert a bipartite graph into a bipartite adjacency matrix."><code class="function">igraph_get_biadjacency()</code></a>
-instead.</p>
-</div>
-<p> 
 </p>
 </div>
 </div>

@@ -8616,20 +8616,23 @@ induced subgraphs from vertices given as a parameter.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="graph-components"></a>8. Graph components</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Structural.html#igraph_subcomponent">8.1. <code class="function">igraph_subcomponent</code> —  The vertices in the same component as a given vertex.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_subcomponent">8.1. <code class="function">igraph_subcomponent</code> —  The vertices reachable from a given vertex.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_connected_components">8.2. <code class="function">igraph_connected_components</code> —  Calculates the (weakly or strongly) connected components in a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_clusters">8.3. <code class="function">igraph_clusters</code> —  Calculates the (weakly or strongly) connected components in a graph (deprecated alias).</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_is_connected">8.4. <code class="function">igraph_is_connected</code> —  Decides whether the graph is (weakly or strongly) connected.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_decompose">8.5. <code class="function">igraph_decompose</code> —  Decomposes a graph into connected components.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_decompose_destroy">8.6. <code class="function">igraph_decompose_destroy</code> —  Frees the contents of a pointer vector holding graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_biconnected_components">8.7. <code class="function">igraph_biconnected_components</code> —  Calculates biconnected components.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_articulation_points">8.8. <code class="function">igraph_articulation_points</code> —  Finds the articulation points in a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_bridges">8.9. <code class="function">igraph_bridges</code> —  Finds all bridges in a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Structural.html#igraph_is_biconnected">8.10. <code class="function">igraph_is_biconnected</code> —  Checks whether a graph is biconnected.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_reachability">8.7. <code class="function">igraph_reachability</code> —  Calculates which vertices are reachable from each vertex in the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_count_reachable">8.8. <code class="function">igraph_count_reachable</code> —  The number of vertices reachable from each vertex in the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_transitive_closure">8.9. <code class="function">igraph_transitive_closure</code> —  Computes the transitive closure of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_biconnected_components">8.10. <code class="function">igraph_biconnected_components</code> —  Calculates biconnected components.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_articulation_points">8.11. <code class="function">igraph_articulation_points</code> —  Finds the articulation points in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_bridges">8.12. <code class="function">igraph_bridges</code> —  Finds all bridges in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_is_biconnected">8.13. <code class="function">igraph_is_biconnected</code> —  Checks whether a graph is biconnected.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_subcomponent"></a>8.1. <code class="function">igraph_subcomponent</code> —  The vertices in the same component as a given vertex.</h3></div></div></div>
+<a name="igraph_subcomponent"></a>8.1. <code class="function">igraph_subcomponent</code> —  The vertices reachable from a given vertex.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.10.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -8644,6 +8647,10 @@ igraph_error_t igraph_subcomponent(
 
 
 
+
+This function returns the set of vertices reachable from a specified
+vertex. In undirected graphs, this is simple the set of vertices within
+the same component.
 
 </p>
 <p><b>Arguments: </b>
@@ -8663,8 +8670,8 @@ igraph_error_t igraph_subcomponent(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  The result, vector with the IDs of the vertices in the
-       same component.
+  The result, vector with the IDs of the vertices reachable
+       from <em class="parameter"><code>vertex</code></em>.
 </p></td>
 </tr>
 <tr>
@@ -8792,7 +8799,9 @@ edges in the graph.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.4. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices."><code class="function">igraph_induced_subgraph()</code></a> if you want a graph object consisting only
-a given set of vertices and the edges between them.
+a given set of vertices and the edges between them;
+<a class="link" href="igraph-Structural.html#igraph_reachability" title="8.7. igraph_reachability — Calculates which vertices are reachable from each vertex in the graph."><code class="function">igraph_reachability()</code></a> to efficiently compute the reachable set from <span class="emphasis"><em>all</em></span>
+vertices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8818,6 +8827,10 @@ igraph_error_t igraph_connected_components(
 
 
 
+When computing strongly connected components, the components will be
+indexed in topological order. In other words, vertex <code class="constant">v</code> is reachable
+from vertex <code class="constant">u</code> precisely when <code class="literal">membership[u] &lt;= membership[v]</code>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -8836,38 +8849,62 @@ igraph_error_t igraph_connected_components(
 <tr>
 <td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
 <td><p>
-  First half of the result will be stored here. For
-       every vertex the id of its component is given. The vector
-       has to be preinitialized and will be resized. Alternatively
-       this argument can be <code class="constant">NULL</code>, in which case it is ignored.
+  For every vertex the ID of its component is given.
+   The vector has to be preinitialized and will be resized as needed.
+   Alternatively this argument can be <code class="constant">NULL</code>, in which case it is ignored.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>csize</code></em>:</span></p></td>
 <td><p>
-  The second half of the result. For every component it
-       gives its size, the order is defined by the component ids.
-       The vector has to be preinitialized and will be resized.
-       Alternatively this argument can be <code class="constant">NULL</code>, in which
-       case it is ignored.
+  For every component it gives its size, the order being defined
+   by the component IDs. The vector must be preinitialized and will be
+   resized as needed. Alternatively this argument can be <code class="constant">NULL</code>, in which
+   case it is ignored.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>no</code></em>:</span></p></td>
 <td><p>
   Pointer to an integer, if not <code class="constant">NULL</code> then the number of
-       components will be stored here.
+   components will be stored here.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
-<td><p>
+<td>
+<p>
   For directed graph this specifies whether to calculate
-       weakly or strongly connected components. Possible values:
-       <code class="constant">IGRAPH_WEAK</code>,
-       <code class="constant">IGRAPH_STRONG</code>. This argument is
-       ignored for undirected graphs.
+   weakly or strongly connected components. Possible values:
+   </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_WEAK</code></span></p></td>
+<td><p>
+
+      Compute weakly connected components, i.e. ignore edge directions.
+   
 </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_STRONG</code></span></p></td>
+<td><p>
+
+      Compute strongly connnected components, i.e. considr edge directions.
+   
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+   This parameter is ignored for undirected graphs.
+</p>
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -8882,17 +8919,14 @@ igraph_error_t igraph_connected_components(
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code:
-        <code class="constant">IGRAPH_EINVAL</code>: invalid mode argument.
+  Error code.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
-Time complexity: O(|V|+|E|),
-|V| and
-|E| are the number of vertices and
-edges in the graph.
+Time complexity: O(|V|+|E|), where |V| and |E| are the number of vertices
+and edges in the graph.
  
 </p>
 </div>
@@ -9223,8 +9257,337 @@ code.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_biconnected_components"></a>8.7. <code class="function">igraph_biconnected_components</code> —  Calculates biconnected components.</h3></div></div></div>
+<a name="igraph_reachability"></a>8.7. <code class="function">igraph_reachability</code> —  Calculates which vertices are reachable from each vertex in the graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.14.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_reachability(
+        const igraph_t *graph,
+        igraph_vector_int_t *membership,
+        igraph_vector_int_t *csize,
+        igraph_integer_t *no_of_components,
+        igraph_bitset_list_t *reach,
+        igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The resulting list will contain one bitset for each strongly connected component.
+The bitset for component i will have its j-th bit set, if vertex j is reachable
+from some vertex in component i in 0 or more steps.
+In particular, a vertex is always reachable from itself.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object to analyze.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer vector. For every vertex,
+   the ID of its component is given. The vector will be resized as needed.
+   This parameter must not be <code class="constant">NULL</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>csize</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer vector or <code class="constant">NULL</code>. For every component, it
+   gives its size (vertex count), the order being defined by the component
+   IDs. The vector will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no_of_components</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer or <code class="constant">NULL</code>. The number of
+   components will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reach</code></em>:</span></p></td>
+<td><p>
+  A list of bitsets representing the result. It will be resized
+   as needed. <code class="literal">reach[membership[u]][v]</code> is set to <code class="constant">true</code> if
+   vertex <code class="constant">v</code> is reachable from vertex <code class="constant">u</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  In directed graphs, controls the treatment of edge directions.
+   Ignored in undirected graphs. With <code class="constant">IGRAPH_OUT</code>, reachability is computed
+   by traversing edges along their direction. With <code class="constant">IGRAPH_IN</code>, edges are
+   traversed opposite to their direction. With <code class="constant">IGRAPH_ALL</code>, edge directions
+   are ignored and the graph is treated as undirected.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory
+        to perform the operation.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a> to find the connnected components
+of a graph; <a class="link" href="igraph-Structural.html#igraph_count_reachable" title="8.8. igraph_count_reachable — The number of vertices reachable from each vertex in the graph."><code class="function">igraph_count_reachable()</code></a> to count how many vertices
+are reachable from each vertex; <a class="link" href="igraph-Structural.html#igraph_subcomponent" title="8.1. igraph_subcomponent — The vertices reachable from a given vertex."><code class="function">igraph_subcomponent()</code></a> to find
+which vertices are rechable from a single vertex.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|C||V|/w + |V| + |E|), where
+|C| is the number of strongly connected components (at most |V|),
+|V| is the number of vertices, and
+|E| is the number of edges respectively,
+and w is the bit width of <span class="type">igraph_integer_t</span>, typically the
+word size of the machine (32 or 64).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_count_reachable"></a>8.8. <code class="function">igraph_count_reachable</code> —  The number of vertices reachable from each vertex in the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_count_reachable(const igraph_t *graph,
+                                      igraph_vector_int_t *counts,
+                                      igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p></p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object to analyze.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>counts</code></em>:</span></p></td>
+<td><p>
+  Integer vector. <code class="literal">counts[v]</code> will store the number
+   of vertices reachable from vertex <code class="constant">v</code>, including <code class="constant">v</code> itself.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  In directed graphs, controls the treatment of edge directions.
+   Ignored in undirected graphs. With <code class="constant">IGRAPH_OUT</code>, reachability is computed
+   by traversing edges along their direction. With <code class="constant">IGRAPH_IN</code>, edges are
+   traversed opposite to their direction. With <code class="constant">IGRAPH_ALL</code>, edge directions
+   are ignored and the graph is treated as undirected.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory
+        to perform the operation.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, <a class="link" href="igraph-Structural.html#igraph_transitive_closure" title="8.9. igraph_transitive_closure — Computes the transitive closure of a graph."><code class="function">igraph_transitive_closure()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|C||V|/w + |V| + |E|), where
+|C| is the number of strongly connected components (at most |V|),
+|V| is the number of vertices, and
+|E| is the number of edges respectively,
+and w is the bit width of <span class="type">igraph_integer_t</span>, typically the
+word size of the machine (32 or 64).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_transitive_closure"></a>8.9. <code class="function">igraph_transitive_closure</code> —  Computes the transitive closure of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_transitive_closure(const igraph_t *graph, igraph_t *closure);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The resulting graph will have an edge from vertex <code class="constant">i</code> to vertex <code class="constant">j</code>
+if <code class="constant">j</code> is reachable from <code class="constant">i</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object to analyze.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>closure</code></em>:</span></p></td>
+<td><p>
+  The resulting graph representing the transitive closure.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory
+        to perform the operation.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, <a class="link" href="igraph-Structural.html#igraph_count_reachable" title="8.8. igraph_count_reachable — The number of vertices reachable from each vertex in the graph."><code class="function">igraph_count_reachable()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|^2 + |E|), where
+|V| is the number of vertices, and
+|E| is the number of edges, respectively.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_biconnected_components"></a>8.10. <code class="function">igraph_biconnected_components</code> —  Calculates biconnected components.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_biconnected_components(const igraph_t *graph,
@@ -9263,7 +9626,7 @@ igraph does not consider components containing a single vertex only as
 being biconnected. Isolated vertices will not be part of any of the
 biconnected components. This means that checking whether there is a single
 biconnected component is not sufficient for determining if a graph is
-biconnected. Use <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.10. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a> for this purpose.
+biconnected. Use <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.13. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a> for this purpose.
 
 </p>
 <p><b>Arguments: </b>
@@ -9357,7 +9720,7 @@ vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.8. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.10. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a>,
+  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.11. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.13. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>.
   </p></td>
 </tr></tbody>
@@ -9367,7 +9730,7 @@ vertices.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.10.8.13.1"></a><p class="title"><b>Example 13.16.  File <code class="code">examples/simple/igraph_biconnected_components.c</code></b></p>
+<a name="id-1.14.10.11.13.1"></a><p class="title"><b>Example 13.16.  File <code class="code">examples/simple/igraph_biconnected_components.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
@@ -9393,7 +9756,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;result, 0);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 7, 0, 0, 1, 1, 2, 2, 3, 3, 0, 2, 4, 4, 5, 2, 5, -1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, 0, 0, &amp;result, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, 0, 0, &amp;result, 0);
     <span class="strong"><strong>if</strong></span> (no != 2 || no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result)) {
         <span class="strong"><strong>return</strong></span> 1;
     }
@@ -9402,7 +9765,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
     <span class="strong"><strong>igraph_vector_int_list_clear</strong></span>(&amp;result);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, 0, &amp;result, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, 0, &amp;result, 0, 0);
     <span class="strong"><strong>if</strong></span> (no != 2 || no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
@@ -9411,7 +9774,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     }
     <span class="strong"><strong>igraph_vector_int_list_clear</strong></span>(&amp;result);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, &amp;result, 0, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components.">igraph_biconnected_components</a></strong></span>(&amp;g, &amp;no, &amp;result, 0, 0, 0);
     <span class="strong"><strong>if</strong></span> (no != 2 || no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result)) {
         <span class="strong"><strong>return</strong></span> 3;
     }
@@ -9435,8 +9798,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_articulation_points"></a>8.8. <code class="function">igraph_articulation_points</code> —  Finds the articulation points in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.10.9.2"></a><p>
+<a name="igraph_articulation_points"></a>8.11. <code class="function">igraph_articulation_points</code> —  Finds the articulation points in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_articulation_points(const igraph_t *graph, igraph_vector_int_t *res);
@@ -9454,7 +9817,7 @@ the number of (weakly) connected components in the graph.
 <p>
 Note that a graph without any articulation points is not necessarily
 biconnected. Counterexamples are the two-vertex complete graph as well
-as empty graphs. Use <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.10. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a> to check whether
+as empty graphs. Use <a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.13. igraph_is_biconnected — Checks whether a graph is biconnected."><code class="function">igraph_is_biconnected()</code></a> to check whether
 a graph is biconnected.
 
 </p>
@@ -9510,8 +9873,8 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>, <a class="link" href="igraph-Bipartite.html#igraph_is_bipartite" title="5.1. igraph_is_bipartite — Check whether a graph is bipartite."><code class="function">igraph_is_bipartite()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, <a class="link" href="igraph-Structural.html#igraph_bridges" title="8.9. igraph_bridges — Finds all bridges in a graph."><code class="function">igraph_bridges()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>, <a class="link" href="igraph-Bipartite.html#igraph_is_bipartite" title="5.1. igraph_is_bipartite — Check whether a graph is bipartite."><code class="function">igraph_is_bipartite()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, <a class="link" href="igraph-Structural.html#igraph_bridges" title="8.12. igraph_bridges — Finds all bridges in a graph."><code class="function">igraph_bridges()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9521,8 +9884,8 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_bridges"></a>8.9. <code class="function">igraph_bridges</code> —  Finds all bridges in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.10.10.2"></a><p>
+<a name="igraph_bridges"></a>8.12. <code class="function">igraph_bridges</code> —  Finds all bridges in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bridges(const igraph_t *graph, igraph_vector_int_t *bridges);
@@ -9589,7 +9952,7 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.8. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>,
+  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.11. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>,
 <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>
   </p></td>
 </tr></tbody>
@@ -9600,8 +9963,8 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_biconnected"></a>8.10. <code class="function">igraph_is_biconnected</code> —  Checks whether a graph is biconnected.</h3></div></div></div>
-<a class="indexterm" name="id-1.14.10.11.2"></a><p>
+<a name="igraph_is_biconnected"></a>8.13. <code class="function">igraph_is_biconnected</code> —  Checks whether a graph is biconnected.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.10.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_biconnected(const igraph_t *graph, igraph_bool_t *res);
@@ -9683,7 +10046,7 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.8. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.7. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_articulation_points" title="8.11. igraph_articulation_points — Finds the articulation points in a graph."><code class="function">igraph_articulation_points()</code></a>, <a class="link" href="igraph-Structural.html#igraph_biconnected_components" title="8.10. igraph_biconnected_components — Calculates biconnected components."><code class="function">igraph_biconnected_components()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9692,7 +10055,7 @@ Time complexity: O(|V|+|E|), linear in the number of vertices and edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.10.11.14.1"></a><p class="title"><b>Example 13.17.  File <code class="code">examples/simple/igraph_is_biconnected.c</code></b></p>
+<a name="id-1.14.10.14.14.1"></a><p class="title"><b>Example 13.17.  File <code class="code">examples/simple/igraph_is_biconnected.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -9703,7 +10066,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_bool_t result;
 
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 7, 0, 0, 1, 1, 2, 2, 3, 3, 0, 2, 4, 4, 5, 2, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.10. igraph_is_biconnected — Checks whether a graph is biconnected.">igraph_is_biconnected</a></strong></span>(&amp;g, &amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_biconnected" title="8.13. igraph_is_biconnected — Checks whether a graph is biconnected.">igraph_is_biconnected</a></strong></span>(&amp;g, &amp;result);
     <span class="strong"><strong>printf</strong></span>("Graph is%sbiconnected.\n", result ? " " : " not ");
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -11662,6 +12025,7 @@ exactly the vertex degree.
 <td><p>
   Gives whether to count only outgoing (<code class="constant">IGRAPH_OUT</code>),
   incoming (<code class="constant">IGRAPH_IN</code>) edges or both (<code class="constant">IGRAPH_ALL</code>).
+  This parameter is ignored for undirected graphs.
 </p></td>
 </tr>
 <tr>
@@ -11979,8 +12343,8 @@ is its transposed.
 </p>
 <p>
 If vector <code class="constant">h</code> and <code class="constant">a</code> contain hub and authority scores, then the two
-scores are related by <code class="literal">h = Aa</code> and <code class="literal">a = Ah</code>.
-When the principal eigenvalue of <code class="literal">A A^T</code> is dengenerate, there
+scores are related by <code class="literal">h = Aa</code> and <code class="literal">a = A^T h</code>.
+When the principal eigenvalue of <code class="literal">A A^T</code> is degenerate, there
 is no unique solution to the hub- and authority-score problem.
 igraph guarantees that the scores that are returned are matching, i.e. are
 related by these formulas, even in this situation.
@@ -12095,9 +12459,7 @@ the number of vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_hub_score" title="27.9. igraph_hub_score — Kleinberg's hub scores."><code class="function">igraph_hub_score()</code></a>, <a class="link" href="igraph-Structural.html#igraph_authority_score" title="27.10. igraph_authority_score — Kleinberg's authority scores."><code class="function">igraph_authority_score()</code></a>
-for the separate calculations,
-<a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>,
+  <a class="link" href="igraph-Structural.html#igraph_pagerank" title="10.6. igraph_pagerank — Calculates the Google PageRank for the specified vertices."><code class="function">igraph_pagerank()</code></a>, <a class="link" href="igraph-Structural.html#igraph_personalized_pagerank" title="10.7. igraph_personalized_pagerank — Calculates the personalized Google PageRank for the specified vertices."><code class="function">igraph_personalized_pagerank()</code></a>;
 <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality()</code></a> for a similar measure intended
 for undirected graphs.
   </p></td>
@@ -17391,7 +17753,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph.">igraph_transitivity_undirected</a></strong></span>(&amp;g, &amp;res, IGRAPH_TRANSITIVITY_NAN);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
