@@ -2739,7 +2739,6 @@ graph layout algorithm as well.
 
 </p>
 <p>
-
 The general UMAP workflow is to start from vectors, compute a sparse distance
 graph that only contains edges between simiar points (e.g. a k-nearest neighbors
 graph), and then convert these distances into exponentially decaying weights
@@ -2749,14 +2748,13 @@ all weights will be set to 1.
 
 </p>
 <p>
-
 If you are trying to use this function to embed high-dimensional vectors, you should
 first compute a k-nearest neighbors graph between your vectors and compute the
 associated distances, and then call this function on that graph. If you already
 have a distance graph, or you have a graph with no distances, you can call this
 function directly. If you already have a graph with meaningful weights
 associated to each edge, you can also call this function, but set the argument
-distances_are_weights to true. To compute weights from distances
+<em class="parameter"><code>distances_are_weights</code></em> to true. To compute weights from distances
 without computing the layout, see <a class="link" href="igraph-Layout.html#igraph_layout_umap_compute_weights" title="2.6. igraph_layout_umap_compute_weights — Compute weights for a UMAP layout starting from distances."><code class="function">igraph_layout_umap_compute_weights()</code></a>.
 
 </p>
@@ -2765,7 +2763,9 @@ References:
 
 </p>
 <p>
-Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
+Leland McInnes, John Healy, and James Melville:
+UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction (2020)
+<a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -2793,8 +2793,8 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <tr>
 <td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
 <td><p>
-  Logical, if true the supplied values in the <em class="parameter"><code>res</code></em> argument are used
-  as an initial layout, if false a random initial layout is used.
+  Logical, if <code class="constant">true</code> the supplied values in the <em class="parameter"><code>res</code></em> argument are
+  used as an initial layout, if <code class="constant">false</code> a random initial layout is used.
 </p></td>
 </tr>
 <tr>
@@ -2823,7 +2823,7 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <td><p><span class="term"><em class="parameter"><code>distances_are_weights</code></em>:</span></p></td>
 <td><p>
   Whether to use precomputed weights. If
-  true, the "distances" vector contains precomputed weights. If false (the
+  true, the <em class="parameter"><code>distances</code></em> vector contains precomputed weights. If <code class="constant">false</code> (the
   typical use case), this function will compute weights from distances and
   then use them to compute the layout.
 </p></td>
@@ -2842,6 +2842,22 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_umap_3d" title="3.6. igraph_layout_umap_3d — 3D layout using UMAP."><code class="function">igraph_layout_umap_3d()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2880,7 +2896,6 @@ for more information.
 
 </p>
 <p>
-
 An early step in UMAP is to compute exponentially decaying "weights" from the
 distance graph. Connectivities can also be viewed as edge weights that quantify
 similarity between two vertices. This function computes weights from the
@@ -2889,12 +2904,13 @@ distance graph. To compute the layout from precomputed weights, call
 
 </p>
 <p>
-
 While the distance graph can be directed (e.g. in a k-nearest neighbors, it is
-clear *who* you are a neighbor of), the weights are usually undirected. Whenever two
-vertices are doubly connected in the distance graph, the resulting weight W is set as:
+clear <span class="emphasis"><em>whom</em></span> you are a neighbor of), the weights are usually undirected. Whenever two
+vertices are doubly connected in the distance graph, the resulting weight <code class="constant">W</code> is set as:
 
-W = W1 + W2 - W1 * W2
+</p>
+<p>
+<code class="literal">W = W1 + W2 - W1 * W2</code>
 
 Because UMAP weights are interpreted as probabilities, this is just the probability
 that either edge is present, without double counting. It is called "fuzzy union" in
@@ -2907,7 +2923,6 @@ as 0, so that it will be skipped in the UMAP gradient descent later on.
 
 </p>
 <p>
-
 Technical note: For each vertex, this function computes its scale factor (sigma),
 its connectivity correction (rho), and finally the weights themselves.
 
@@ -2917,7 +2932,9 @@ References:
 
 </p>
 <p>
-Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
+Leland McInnes, John Healy, and James Melville:
+UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction (2020)
+<a class="ulink" href="https://arxiv.org/abs/1802.03426" target="_top">https://arxiv.org/abs/1802.03426</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -2953,13 +2970,12 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
   less information. Therefore, whenever two edges between the same vertices and opposite
   direction are present in the input graph, only one of the weights is set and the other
   is fixed to zero. That format is accepted by <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a>, which skips
-  all zero-weight edges from the layout optimization.</p></td>
+  all zero-weight edges from the layout optimization.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
-
 </p>
 <p><b>Returns: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -2971,6 +2987,22 @@ Leland McInnes, John Healy, and James Melville. <a class="ulink" href="https://a
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a>, <a class="link" href="igraph-Layout.html#igraph_layout_umap_3d" title="3.6. igraph_layout_umap_3d — 3D layout using UMAP."><code class="function">igraph_layout_umap_3d()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3559,10 +3591,7 @@ igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
 We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
-<p></p>
-<p>
-
-This is the 3D version of the UMAP algorithm
+<p>This is the 3D version of the UMAP algorithm
 (see <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a> for the 2D version).
 
 </p>
@@ -3624,7 +3653,7 @@ This is the 3D version of the UMAP algorithm
 <td><p>
   Whether to use precomputed weights. If <code class="constant">false</code> (the
   typical use case), this function will compute weights from distances and
-  then use them to compute the layout.  If <code class="constant">true</code>, the "distances" vector contains
+  then use them to compute the layout.  If <code class="constant">true</code>, the <em class="parameter"><code>distances</code></em> vector contains
   precomputed weights, including possibly some weights equal to zero that are
   inconsequential for the layout optimization.
 </p></td>
@@ -3643,6 +3672,22 @@ This is the 3D version of the UMAP algorithm
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_umap" title="2.5. igraph_layout_umap — Layout using Uniform Manifold Approximation and Projection (UMAP)."><code class="function">igraph_layout_umap()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>

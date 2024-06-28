@@ -270,7 +270,7 @@ This is the type of the error handler functions.
 <a class="indexterm" name="id-1.6.3.8.2"></a><p>
 </p>
 <pre class="programlisting">
-igraph_error_handler_t igraph_error_handler_abort;
+IGRAPH_FUNCATTR_NORETURN igraph_error_handler_t igraph_error_handler_abort;
 </pre>
 <p>
 </p>
@@ -494,135 +494,11 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_PROD</code>:</span></p></td>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK</code>:</span></p></td>
 <td><p>
-  Matrix-vector product failed (not used any more).
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NPOS</code>:</span></p></td>
-<td><p>
-  N must be positive.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVNPOS</code>:</span></p></td>
-<td><p>
-  NEV must be positive.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NCVSMALL</code>:</span></p></td>
-<td><p>
-  NCV must be bigger.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NONPOSI</code>:</span></p></td>
-<td><p>
-  Maximum number of iterations should be positive.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WHICHINV</code>:</span></p></td>
-<td><p>
-  Invalid WHICH parameter.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_BMATINV</code>:</span></p></td>
-<td><p>
-  Invalid BMAT parameter.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WORKLSMALL</code>:</span></p></td>
-<td><p>
-  WORKL is too small.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_TRIDERR</code>:</span></p></td>
-<td><p>
-  LAPACK error in tridiagonal eigenvalue calculation.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ZEROSTART</code>:</span></p></td>
-<td><p>
-  Starting vector is zero.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEINV</code>:</span></p></td>
-<td><p>
-  MODE is invalid.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEBMAT</code>:</span></p></td>
-<td><p>
-  MODE and BMAT are not compatible.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ISHIFT</code>:</span></p></td>
-<td><p>
-  ISHIFT must be 0 or 1.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVBE</code>:</span></p></td>
-<td><p>
-  NEV and WHICH='BE' are incompatible.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NOFACT</code>:</span></p></td>
-<td><p>
-  Could not build an Arnoldi factorization.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_FAILED</code>:</span></p></td>
-<td><p>
-  No eigenvalues to sufficient accuracy.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNY</code>:</span></p></td>
-<td><p>
-  HOWMNY is invalid.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNYS</code>:</span></p></td>
-<td><p>
-  HOWMNY='S' is not implemented.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_EVDIFF</code>:</span></p></td>
-<td><p>
-  Different number of converged Ritz values.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_SHUR</code>:</span></p></td>
-<td><p>
-  Error from calculation of a real Schur form.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_LAPACK</code>:</span></p></td>
-<td><p>
-  LAPACK (dtrevc) error for calculating eigenvectors.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_UNKNOWN</code>:</span></p></td>
-<td><p>
-  Unknown ARPACK error.
+  An error happened inside a calculation implemented
+  in ARPACK. The calculation involved is most likely an eigenvector-related
+  calculation.
 </p></td>
 </tr>
 <tr>
@@ -1844,6 +1720,79 @@ For some functions these mechanisms are simply not flexible
 enough. These functions should define their own error handlers and
 restore the error handler before they return.
 </p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.6.6.5.5"></a><p class="title"><b>Example 5.1.  File <code class="code">examples/simple/igraph_contract_vertices.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+<span class="emphasis"><em>/* Create the condensation of a directed graph.</em></span>
+<span class="emphasis"><em> * See </em></span>https://en.wikipedia.org/wiki/Strongly_connected_component<span class="emphasis"><em>#Definitions</em></span>
+<span class="emphasis"><em> * This example demonstrates how to write a basic igraph function, complete</em></span>
+<span class="emphasis"><em> * with error handling. */</em></span>
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>condensation</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph, igraph_t *cond) {
+    igraph_vector_int_t membership;
+
+    <span class="emphasis"><em>/* Data structures such as vector must be initialized in igraph before use. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0));
+
+    <span class="emphasis"><em>/* Adding the initialized vector to the "finally" stack ensures that it will</em></span>
+<span class="emphasis"><em>     * be automatically destroyed if an error occurs. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(igraph_vector_int_destroy, &amp;membership);
+
+    <span class="emphasis"><em>/* Functions that return an error code can be wrapped in IGRAPH_CHECK to pass that error</em></span>
+<span class="emphasis"><em>     * up to the caller. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph.">igraph_connected_components</a></strong></span>(graph, &amp;membership, <span class="emphasis"><em>/* csize */</em></span> NULL, <span class="emphasis"><em>/* no */</em></span> NULL, IGRAPH_STRONG));
+
+    <span class="emphasis"><em>/* To compute the condensation, we simply contract strongly connected components.</em></span>
+<span class="emphasis"><em>     * Since igraph_contract_vertices() modifies graphs in-place, we make a copy first. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
+
+    <span class="emphasis"><em>/* Since we are not done creating the condensation yet, we add 'cond' to the</em></span>
+<span class="emphasis"><em>     * "finally" stack, so that it will be destroyed if an error occurs. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
+
+    <span class="emphasis"><em>/* Contract strongly connected components. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_contract_vertices" title="3.2. igraph_contract_vertices — Replace multiple vertices with a single one.">igraph_contract_vertices</a></strong></span>(cond, &amp;membership, NULL));
+
+    <span class="emphasis"><em>/* igraph_contract_vertices() preserves all edges, some of which become</em></span>
+<span class="emphasis"><em>     * parallel edges or self-loops after the contraction. We simplify these. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
+
+    <span class="emphasis"><em>/* Data structures that are no longer needed must be explicitly destroyed.</em></span>
+<span class="emphasis"><em>     * If they were added to the "finally" stack, they must be removed explicitly,</em></span>
+<span class="emphasis"><em>     * in the opposite order to how they were added. IGRAPH_FINALLY_CLEAN removes</em></span>
+<span class="emphasis"><em>     * the indicated number of entries from the "finally" stack. We remove</em></span>
+<span class="emphasis"><em>     * 'membership' because it was destroyed, and 'cond' because the responsibility</em></span>
+<span class="emphasis"><em>     * to destroy it is now with the caller. */</em></span>
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects.">IGRAPH_FINALLY_CLEAN</a></strong></span>(2);
+
+    <span class="strong"><strong>return</strong></span> IGRAPH_SUCCESS; <span class="emphasis"><em>/* return with no error */</em></span>
+}
+
+int <span class="strong"><strong>main</strong></span>(void) {
+    igraph_t graph, cond;
+
+    <span class="emphasis"><em>/* Create a random directed graph with mean degree 2 and compute its condensation. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE);
+    <span class="strong"><strong>condensation</strong></span>(&amp;graph, &amp;cond);
+
+    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;cond, stdout);
+
+    <span class="emphasis"><em>/* Destroy data structures that are no longer needed. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -1986,7 +1935,7 @@ error handler would either call <code class="literal">abort()</code> or <code cl
 <a class="indexterm" name="id-1.6.6.6.7.2"></a><p>
 </p>
 <pre class="programlisting">
-igraph_fatal_handler_t igraph_fatal_handler_abort;
+IGRAPH_FUNCATTR_NORETURN igraph_fatal_handler_t igraph_fatal_handler_abort;
 </pre>
 <p>
 </p>
