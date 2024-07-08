@@ -1820,7 +1820,7 @@ Ars Mathematica Contemporanea, vol. 22, issue 1, p. #P1.01 (2021).
 <td><p><span class="term"><code class="constant">IGRAPH_FLOYD_WARSHALL_AUTOMATIC</code></span></p></td>
 <td><p>
 
-         tried to select the best performing variant for the current graph;
+         tries to select the best performing variant for the current graph;
          presently this option always uses the "Tree" method.
        
 </p></td>
@@ -2575,11 +2575,11 @@ vertices and |E| is the number of edges
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.3. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you only need the path length but
+  <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.3. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you only need the path lengths but
 not the paths themselves; <a class="link" href="igraph-Structural.html#igraph_get_shortest_paths" title="3.8. igraph_get_shortest_paths — Shortest paths from a vertex."><code class="function">igraph_get_shortest_paths()</code></a> if all edge
 weights are equal; <a class="link" href="igraph-Structural.html#igraph_get_all_shortest_paths" title="3.16. igraph_get_all_shortest_paths — All shortest paths (geodesics) from a vertex."><code class="function">igraph_get_all_shortest_paths()</code></a> to find all
 shortest paths between (source, target) pairs;
-<a class="link" href="igraph-Structural.html#igraph_get_shortest_paths_bellman_ford" title="3.12. igraph_get_shortest_paths_bellman_ford — Weighted shortest paths from a vertex, allowing negative weights."><code class="function">igraph_get_shortest_paths_bellman_ford()</code></a> if some edge weighted are
+<a class="link" href="igraph-Structural.html#igraph_get_shortest_paths_bellman_ford" title="3.12. igraph_get_shortest_paths_bellman_ford — Weighted shortest paths from a vertex, allowing negative weights."><code class="function">igraph_get_shortest_paths_bellman_ford()</code></a> if some edge weights are
 negative.
   </p></td>
 </tr></tbody>
@@ -3786,7 +3786,7 @@ vertices and |E| is the number of edges
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_distances_dijkstra" title="3.3. igraph_distances_dijkstra — Weighted shortest path lengths between vertices."><code class="function">igraph_distances_dijkstra()</code></a> if you only need the path
-length but not the paths themselves, <a class="link" href="igraph-Structural.html#igraph_get_all_shortest_paths" title="3.16. igraph_get_all_shortest_paths — All shortest paths (geodesics) from a vertex."><code class="function">igraph_get_all_shortest_paths()</code></a>
+lengths but not the paths themselves, <a class="link" href="igraph-Structural.html#igraph_get_all_shortest_paths" title="3.16. igraph_get_all_shortest_paths — All shortest paths (geodesics) from a vertex."><code class="function">igraph_get_all_shortest_paths()</code></a>
 if all edge weights are equal.
   </p></td>
 </tr></tbody>
@@ -9182,8 +9182,8 @@ graph, except when there is only a single component in the original graph.
   The maximum number of components to return. The
    first <em class="parameter"><code>maxcompno</code></em> components will be returned (which hold at
    least <em class="parameter"><code>minelements</code></em> vertices, see the next parameter), the
-   others will be ignored. Supply -1 here if you don't want to limit
-   the number of components.
+   others will be ignored. Supply <code class="literal">-1</code> here if you don't
+   want to limit the number of components.
 </p></td>
 </tr>
 <tr>
@@ -9191,7 +9191,7 @@ graph, except when there is only a single component in the original graph.
 <td><p>
   The minimum number of vertices a component
    should contain in order to place it in the <em class="parameter"><code>components</code></em>
-   vector. Eg. supply 2 here to ignore isolated vertices.
+   vector. For example, supplying 2 here ignored isolated vertices.
 </p></td>
 </tr>
 </tbody>
@@ -16896,10 +16896,12 @@ number of edges in the graph.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
-    igraph_t graph, tree;
+    igraph_t graph;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> eb;
     igraph_vector_int_t edges;
+
+    <span class="emphasis"><em>/* Create the vector where the tree edges will be stored. */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
@@ -16908,17 +16910,17 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_edge_betweenness" title="10.4. igraph_edge_betweenness — Betweenness centrality of the edges.">igraph_edge_betweenness</a></strong></span>(&amp;graph, &amp;eb, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*weights=*/</em></span> NULL);
 
-    <span class="emphasis"><em>/* Compute and output a minimum weight spanning tree using edge betweenness</em></span>
-<span class="emphasis"><em>     * values as weights. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree_prim" title="15.3. igraph_minimum_spanning_tree_prim — Calculates one minimum spanning tree of a weighted graph.">igraph_minimum_spanning_tree_prim</a></strong></span>(&amp;graph, &amp;tree, &amp;eb);
-    <span class="strong"><strong>printf</strong></span>("Minimum spanning tree:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;tree, stdout);
+    <span class="emphasis"><em>/* Use Prim's algorithm to compute the edges that belong to the minimum weight</em></span>
+<span class="emphasis"><em>     * spanning tree, using edge betweenness values as edge weights. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph.">igraph_minimum_spanning_tree</a></strong></span>(&amp;graph, &amp;edges, &amp;eb);
+    <span class="strong"><strong>printf</strong></span>("Minimum spanning tree edges:\n");
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edges);
 
     <span class="emphasis"><em>/* A maximum spanning tree can be computed by first negating the weights. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_scale" title="2.8.2. igraph_vector_scale — Multiplies all elements of a vector by a constant.">igraph_vector_scale</a></strong></span>(&amp;eb, -1);
 
-    <span class="emphasis"><em>/* Compute and output the edges that belong to the maximum weight spanning tree. */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
+    <span class="emphasis"><em>/* Compute and output the edges that belong to the maximum weight spanning tree,</em></span>
+<span class="emphasis"><em>     * letting igraph automatically select the most suitable algorithm. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph.">igraph_minimum_spanning_tree</a></strong></span>(&amp;graph, &amp;edges, &amp;eb);
     <span class="strong"><strong>printf</strong></span>("\nMaximum spanning tree edges:\n");
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edges);
@@ -16931,10 +16933,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("\nTotal maximum spanning tree weight: %g\n", total_tree_weight);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;tree);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;eb);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -16963,6 +16964,14 @@ igraph_error_t igraph_minimum_spanning_tree_unweighted(const igraph_t *graph,
 
 
 
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.14. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph."><code class="function">igraph_minimum_spanning_tree()</code></a>
+instead.</p>
+</div>
+<p>
 If the graph has more minimum spanning trees (this is always the
 case, except if it is a forest) this implementation returns only
 the same one.
@@ -17063,6 +17072,14 @@ igraph_error_t igraph_minimum_spanning_tree_prim(const igraph_t *graph, igraph_t
 
 
 
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.14. Please do not use this function in new
+code; use <a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph."><code class="function">igraph_minimum_spanning_tree()</code></a>
+instead.</p>
+</div>
+<p>
 Finds a spanning tree or spanning forest for which the sum of edge
 weights is the smallest. This function uses Prim's method for carrying
 out the computation.
@@ -17164,15 +17181,17 @@ graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.17.4.13.1"></a><p class="title"><b>Example 13.32.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
+<a name="id-1.14.17.4.15.1"></a><p class="title"><b>Example 13.32.  File <code class="code">examples/simple/igraph_minimum_spanning_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
-    igraph_t graph, tree;
+    igraph_t graph;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> eb;
     igraph_vector_int_t edges;
+
+    <span class="emphasis"><em>/* Create the vector where the tree edges will be stored. */</em></span>
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
@@ -17181,17 +17200,17 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_edge_betweenness" title="10.4. igraph_edge_betweenness — Betweenness centrality of the edges.">igraph_edge_betweenness</a></strong></span>(&amp;graph, &amp;eb, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*weights=*/</em></span> NULL);
 
-    <span class="emphasis"><em>/* Compute and output a minimum weight spanning tree using edge betweenness</em></span>
-<span class="emphasis"><em>     * values as weights. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree_prim" title="15.3. igraph_minimum_spanning_tree_prim — Calculates one minimum spanning tree of a weighted graph.">igraph_minimum_spanning_tree_prim</a></strong></span>(&amp;graph, &amp;tree, &amp;eb);
-    <span class="strong"><strong>printf</strong></span>("Minimum spanning tree:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;tree, stdout);
+    <span class="emphasis"><em>/* Use Prim's algorithm to compute the edges that belong to the minimum weight</em></span>
+<span class="emphasis"><em>     * spanning tree, using edge betweenness values as edge weights. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph.">igraph_minimum_spanning_tree</a></strong></span>(&amp;graph, &amp;edges, &amp;eb);
+    <span class="strong"><strong>printf</strong></span>("Minimum spanning tree edges:\n");
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edges);
 
     <span class="emphasis"><em>/* A maximum spanning tree can be computed by first negating the weights. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_scale" title="2.8.2. igraph_vector_scale — Multiplies all elements of a vector by a constant.">igraph_vector_scale</a></strong></span>(&amp;eb, -1);
 
-    <span class="emphasis"><em>/* Compute and output the edges that belong to the maximum weight spanning tree. */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
+    <span class="emphasis"><em>/* Compute and output the edges that belong to the maximum weight spanning tree,</em></span>
+<span class="emphasis"><em>     * letting igraph automatically select the most suitable algorithm. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_minimum_spanning_tree" title="15.1. igraph_minimum_spanning_tree — Calculates one minimum spanning tree of a graph.">igraph_minimum_spanning_tree</a></strong></span>(&amp;graph, &amp;edges, &amp;eb);
     <span class="strong"><strong>printf</strong></span>("\nMaximum spanning tree edges:\n");
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edges);
@@ -17204,10 +17223,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("\nTotal maximum spanning tree weight: %g\n", total_tree_weight);
 
     <span class="emphasis"><em>/* Clean up */</em></span>
-    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;tree);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;eb);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -19017,7 +19035,7 @@ are used according to the <em class="parameter"><code>mode</code></em> parameter
 <tr>
 <td><p><span class="term"><code class="constant">IGRAPH_LAPLACIAN_SYMMETRIC</code>:</span></p></td>
 <td><p>
-  Symmetric normalized Laplacian, <code class="literal">L = I - D^(-1/2) A D^(-1/2)</code>.
+  Symmetrically normalized Laplacian, <code class="literal">L = I - D^(-1/2) A D^(-1/2)</code>.
 </p></td>
 </tr>
 <tr>
@@ -19140,7 +19158,7 @@ Time complexity: O(|V|+|E|).
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_loop(const igraph_t *graph, igraph_vector_bool_t *res,
-                   igraph_es_t es);
+                              igraph_es_t es);
 </pre></div>
 <p>
 </p>
@@ -19148,7 +19166,7 @@ igraph_error_t igraph_is_loop(const igraph_t *graph, igraph_vector_bool_t *res,
 
 
 
-A loop edge is an edge from a vertex to itself.
+A loop edge, also called a self-loop, is an edge from a vertex to itself.
 
 </p>
 <p><b>Arguments: </b>
@@ -19507,7 +19525,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_multiple(const igraph_t *graph, igraph_vector_bool_t *res,
-                       igraph_es_t es);
+                                  igraph_es_t es);
 </pre></div>
 <p>
 </p>
@@ -19581,7 +19599,8 @@ appearances of the multiple edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.6. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_count_multiple_1" title="19.8. igraph_count_multiple_1 — The multiplicity of a single edge in a graph."><code class="function">igraph_count_multiple_1()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.6. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19803,7 +19822,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <a class="indexterm" name="id-1.14.21.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_count_multiple(const igraph_t *graph, igraph_vector_int_t *res, igraph_es_t es);
+igraph_error_t igraph_count_multiple(const igraph_t *graph, igraph_vector_int_t *res,
+                                     igraph_es_t es);
 </pre></div>
 <p>
 </p>
@@ -19894,7 +19914,8 @@ tail of the edges.
 <a class="indexterm" name="id-1.14.21.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_count_multiple_1(const igraph_t *graph, igraph_integer_t *res, igraph_integer_t eid);
+igraph_error_t igraph_count_multiple_1(const igraph_t *graph, igraph_integer_t *res,
+                                       igraph_integer_t eid);
 </pre></div>
 <p>
 </p>
@@ -23089,7 +23110,8 @@ Time complexity: O(|V|+|E|), linear.
 <a class="indexterm" name="id-1.14.28.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_is_mutual(const igraph_t *graph, igraph_vector_bool_t *res, igraph_es_t es, igraph_bool_t loops);
+igraph_error_t igraph_is_mutual(const igraph_t *graph, igraph_vector_bool_t *res,
+                                igraph_es_t es, igraph_bool_t loops);
 </pre></div>
 <p>
 </p>
@@ -23179,7 +23201,8 @@ supplied edges. An upper limit of the time complexity is O(n log(|E|)),
 <a class="indexterm" name="id-1.14.28.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_has_mutual(const igraph_t *graph, igraph_bool_t *res, igraph_bool_t loops);
+igraph_error_t igraph_has_mutual(const igraph_t *graph, igraph_bool_t *res,
+                                 igraph_bool_t loops);
 </pre></div>
 <p>
 </p>
