@@ -150,23 +150,137 @@
 <div class="titlepage"><div><div><h1 class="title">
 <a name="igraph-Cycles"></a>Chapter 14. Graph cycles</h1></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.2">1. Eulerian cycles and paths</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.3">2. Cycle bases</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.2">1. Finding cycles</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.3">2. Eulerian cycles and paths</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.4">3. Cycle bases</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id-1.15.2"></a>1. Eulerian cycles and paths</h2></div></div></div>
+<a name="id-1.15.2"></a>1. Finding cycles</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Cycles.html#igraph_find_cycle">1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_find_cycle"></a>1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_find_cycle(const igraph_t *graph,
+                                 igraph_vector_int_t *vertices,
+                                 igraph_vector_int_t *edges,
+                                 igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function returns a cycle of the graph, if there is one. If the graph
+is acyclic, it returns empty vectors.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertices</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer vector. If a cycle is found, its
+   vertices will be stored here. Otherwise the vector will be empty.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
+<td><p>
+  Pointer to an integer vector. If a cycle is found, its
+   edges will be stored here. Otherwise the vector will be empty.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  A constant specifying how edge directions are
+       considered in directed graphs. Valid modes are:
+       <code class="constant">IGRAPH_OUT</code>, follows edge directions;
+       <code class="constant">IGRAPH_IN</code>, follows the opposite directions; and
+       <code class="constant">IGRAPH_ALL</code>, ignores edge directions. This argument is
+       ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), where |V| and |E| are the number of
+vertices and edges in the original input graph.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Structural.html#igraph_is_acyclic" title="26.14. igraph_is_acyclic — Checks whether a graph is acyclic or not."><code class="function">igraph_is_acyclic()</code></a> to determine if a graph is acyclic,
+without returning a specific cycle.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="id-1.15.3"></a>2. Eulerian cycles and paths</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">2.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">2.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">2.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</a></span></dt>
 </dl></div>
 <p>These functions calculate whether an Eulerian path or cycle exists
 and if so, can find them.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_eulerian"></a>1.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.3.2"></a><p>
+<a name="igraph_is_eulerian"></a>2.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_eulerian(const igraph_t *graph, igraph_bool_t *has_path, igraph_bool_t *has_cycle);
@@ -237,8 +351,8 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_eulerian_cycle"></a>1.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.4.2"></a><p>
+<a name="igraph_eulerian_cycle"></a>2.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_eulerian_cycle(
@@ -348,8 +462,8 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_eulerian_path"></a>1.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.5.2"></a><p>
+<a name="igraph_eulerian_path"></a>2.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_eulerian_path(
@@ -459,15 +573,15 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id-1.15.3"></a>2. Cycle bases</h2></div></div></div>
+<a name="id-1.15.4"></a>3. Cycle bases</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_fundamental_cycles">2.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_minimum_cycle_basis">2.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_fundamental_cycles">3.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_minimum_cycle_basis">3.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_fundamental_cycles"></a>2.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.3.2.2"></a><p>
+<a name="igraph_fundamental_cycles"></a>3.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_fundamental_cycles(const igraph_t *graph,
@@ -566,8 +680,8 @@ Time complexity: O(|V| + |E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_minimum_cycle_basis"></a>2.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.3.3.2"></a><p>
+<a name="igraph_minimum_cycle_basis"></a>3.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_minimum_cycle_basis(const igraph_t *graph,

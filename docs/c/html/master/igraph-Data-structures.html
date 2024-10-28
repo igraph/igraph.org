@@ -1543,8 +1543,10 @@ Time complexity: O(1).
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_swap_elements">2.7.1. <code class="function">igraph_vector_swap_elements</code> —  Swap two elements in a vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_reverse">2.7.2. <code class="function">igraph_vector_reverse</code> —  Reverse the elements of a vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_shuffle">2.7.3. <code class="function">igraph_vector_shuffle</code> —  Shuffles a vector in-place using the Fisher-Yates method.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_permute">2.7.4. <code class="function">igraph_vector_permute</code> —  Permutes the elements of a vector in place according to an index vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_reverse_section">2.7.3. <code class="function">igraph_vector_reverse_section</code> —  Reverse the elements in a section of a vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_rotate_left">2.7.4. <code class="function">igraph_vector_rotate_left</code> —  Rotates the elements of a vector to the left.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_shuffle">2.7.5. <code class="function">igraph_vector_shuffle</code> —  Shuffles a vector in-place using the Fisher-Yates method.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_permute">2.7.6. <code class="function">igraph_vector_permute</code> —  Permutes the elements of a vector in place according to an index vector.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -1629,6 +1631,7 @@ igraph_error_t igraph_vector_reverse(igraph_vector_t *v);
 
 The first element will be last, the last element will be
 first, etc.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -1661,14 +1664,144 @@ first, etc.
 </table></div>
 <p>
 
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_vector_reverse_section() to reverse only a section of a vector.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: O(n), the number of elements.
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_shuffle"></a>2.7.3. <code class="function">igraph_vector_shuffle</code> —  Shuffles a vector in-place using the Fisher-Yates method.</h4></div></div></div>
+<a name="igraph_vector_reverse_section"></a>2.7.3. <code class="function">igraph_vector_reverse_section</code> —  Reverse the elements in a section of a vector.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.8.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_reverse_section(igraph_vector_t *v, igraph_integer_t from, igraph_integer_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The input vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  Index of the first element to include in the reversal.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  Index of the first element <span class="emphasis"><em>not</em></span> to include in the reversal.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_vector_reverse() to reverse the entire vector.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(to - from), the number of elements to reverse.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_rotate_left"></a>2.7.4. <code class="function">igraph_vector_rotate_left</code> —  Rotates the elements of a vector to the left.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.8.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_vector_rotate_left(igraph_vector_t *v, igraph_integer_t n);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Rotates the elements of a vector to the left by the given number of steps.
+Element index <em class="parameter"><code>n</code></em> will have index 0 after the rotation.
+For example, rotating <code class="literal">(0, 1, 2, 3, 4, 5)</code> by 2 yields
+<code class="literal">(2, 3, 4, 5, 0, 1)</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p>
+  The input vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p>
+  The number of steps to rotate by. Passing a negative value rotates
+   to the right.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(n), the number of elements.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_shuffle"></a>2.7.5. <code class="function">igraph_vector_shuffle</code> —  Shuffles a vector in-place using the Fisher-Yates method.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.8.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_shuffle(igraph_vector_t *v);
@@ -1759,7 +1892,7 @@ References:
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.8.4.10.2"></a><p class="title"><b>Example 7.1.  File <code class="code">examples/simple/igraph_fisher_yates_shuffle.c</code></b></p>
+<a name="id-1.8.3.8.6.10.2"></a><p class="title"><b>Example 7.1.  File <code class="code">examples/simple/igraph_fisher_yates_shuffle.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1784,14 +1917,14 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42); <span class="emphasis"><em>/* make tests deterministic */</em></span>
     k = <span class="strong"><strong>R_INTEGER</strong></span>(-1000, 1000);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[0] = k;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.5. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[0] != k) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     d = <span class="strong"><strong>R_UNIF</strong></span>(-1000.0, 1000.0);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[0] = d;
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.5. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[0] != d) {
         <span class="strong"><strong>return</strong></span> 2;
     }
@@ -1820,7 +1953,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v)[i] = k;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.5. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
     <span class="emphasis"><em>/* must have same length */</em></span>
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — The size of the vector.">igraph_vector_size</a></strong></span>(&amp;v) != n) {
         <span class="strong"><strong>return</strong></span> 3;
@@ -1839,7 +1972,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* empty sequence */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.3. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_shuffle" title="2.7.5. igraph_vector_shuffle — Shuffles a vector in-place using the Fisher-Yates method.">igraph_vector_shuffle</a></strong></span>(&amp;v);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;v);
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -1855,8 +1988,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_permute"></a>2.7.4. <code class="function">igraph_vector_permute</code> —  Permutes the elements of a vector in place according to an index vector.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.8.5.2"></a><p>
+<a name="igraph_vector_permute"></a>2.7.6. <code class="function">igraph_vector_permute</code> —  Permutes the elements of a vector in place according to an index vector.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.8.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_permute(igraph_vector_t *v, const igraph_vector_int_t *index);
@@ -1883,8 +2016,8 @@ index vector.
 </p>
 <p>
 The index vector that this function takes is compatible with the index vector
-returned from <a class="link" href="igraph-Data-structures.html#igraph_vector_qsort_ind" title="2.15.3. igraph_vector_qsort_ind — Returns a permutation of indices that sorts a vector."><code class="function">igraph_vector_qsort_ind()</code></a>; passing in the index vector
-from <a class="link" href="igraph-Data-structures.html#igraph_vector_qsort_ind" title="2.15.3. igraph_vector_qsort_ind — Returns a permutation of indices that sorts a vector."><code class="function">igraph_vector_qsort_ind()</code></a> will sort the original vector.
+returned from <a class="link" href="igraph-Data-structures.html#igraph_vector_sort_ind" title="2.15.3. igraph_vector_sort_ind — Returns a permutation of indices that sorts a vector."><code class="function">igraph_vector_sort_ind()</code></a>; passing in the index vector
+from <a class="link" href="igraph-Data-structures.html#igraph_vector_sort_ind" title="2.15.3. igraph_vector_sort_ind — Returns a permutation of indices that sorts a vector."><code class="function">igraph_vector_sort_ind()</code></a> will sort the original vector.
 
 </p>
 <p>
@@ -2376,11 +2509,12 @@ Time complexity: O(n), where n is the number of elements in the vector.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_g">2.9.4. <code class="function">igraph_vector_all_g</code> —  Are all elements greater?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_le">2.9.5. <code class="function">igraph_vector_all_le</code> —  Are all elements less or equal?</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_all_ge">2.9.6. <code class="function">igraph_vector_all_ge</code> —  Are all elements greater or equal?</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_zapsmall">2.9.7. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.8. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped">2.9.9. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.10. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped">2.9.11. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_is_equal">2.9.7. <code class="function">igraph_vector_is_equal</code> —  Are all elements equal?</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_zapsmall">2.9.8. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp">2.9.9. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped">2.9.10. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp">2.9.11. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped">2.9.12. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -2766,8 +2900,72 @@ Time complexity: O(n), the length of the vectors.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_zapsmall"></a>2.9.7. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</h4></div></div></div>
+<a name="igraph_vector_is_equal"></a>2.9.7. <code class="function">igraph_vector_is_equal</code> —  Are all elements equal?</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_bool_t igraph_vector_is_equal(const igraph_vector_t *lhs,
+                                     const igraph_vector_t *rhs);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+This is an alias of <a class="link" href="igraph-Data-structures.html#igraph_vector_all_e" title="2.9.1. igraph_vector_all_e — Are all elements equal?"><code class="function">igraph_vector_all_e()</code></a> with a more intuitive name.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lhs</code></em>:</span></p></td>
+<td><p>
+  The first vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rhs</code></em>:</span></p></td>
+<td><p>
+  The second vector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  True if the elements in the <em class="parameter"><code>lhs</code></em> are all
+   equal to the corresponding elements in <em class="parameter"><code>rhs</code></em>. Returns
+   false if the lengths of the vectors don't match.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n), the length of the vectors.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_zapsmall"></a>2.9.8. <code class="function">igraph_vector_zapsmall</code> —  Replaces small elements of a vector by exact zeros.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vector_zapsmall(igraph_vector_t *v, igraph_real_t tol);
@@ -2846,8 +3044,8 @@ perform comparisons with relative tolerances.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_lex_cmp"></a>2.9.8. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.9.2"></a><p>
+<a name="igraph_vector_lex_cmp"></a>2.9.9. <code class="function">igraph_vector_lex_cmp</code> —  Lexicographical comparison of two vectors (type-safe variant).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_lex_cmp(
@@ -2917,8 +3115,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.9. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> for an untyped variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.10. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.10. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.11. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> to compare vectors starting from
     the last element.
   </p></td>
 </tr></tbody>
@@ -2930,7 +3128,7 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.10.9.11.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
+<a name="id-1.8.3.10.10.11.1"></a><p class="title"><b>Example 7.2.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -2983,8 +3181,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_lex_cmp_untyped"></a>2.9.9. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.10.2"></a><p>
+<a name="igraph_vector_lex_cmp_untyped"></a>2.9.10. <code class="function">igraph_vector_lex_cmp_untyped</code> —  Lexicographical comparison of two vectors (non-type-safe).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_lex_cmp_untyped(const void *lhs, const void *rhs);
@@ -3054,8 +3252,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.8. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> for a type-safe variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.11. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.9. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> for a type-safe variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.12. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> to compare vectors starting from
     the last element.
   </p></td>
 </tr></tbody>
@@ -3068,8 +3266,8 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_colex_cmp"></a>2.9.10. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.11.2"></a><p>
+<a name="igraph_vector_colex_cmp"></a>2.9.11. <code class="function">igraph_vector_colex_cmp</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_colex_cmp(
@@ -3142,8 +3340,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.11. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> for an untyped variant of this
-    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.8. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp_untyped" title="2.9.12. igraph_vector_colex_cmp_untyped — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp_untyped()</code></a> for an untyped variant of this
+    function, or <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp" title="2.9.9. igraph_vector_lex_cmp — Lexicographical comparison of two vectors (type-safe variant)."><code class="function">igraph_vector_lex_cmp()</code></a> to compare vectors starting from
     the first element.
   </p></td>
 </tr></tbody>
@@ -3155,7 +3353,7 @@ Time complexity: O(n), the number of elements in the smaller vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.8.3.10.11.11.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
+<a name="id-1.8.3.10.12.11.1"></a><p class="title"><b>Example 7.3.  File <code class="code">examples/simple/igraph_vector_int_list_sort.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -3208,8 +3406,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_colex_cmp_untyped"></a>2.9.11. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
-<a class="indexterm" name="id-1.8.3.10.12.2"></a><p>
+<a name="igraph_vector_colex_cmp_untyped"></a>2.9.12. <code class="function">igraph_vector_colex_cmp_untyped</code> —  Colexicographical comparison of two vectors.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.10.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_vector_colex_cmp_untyped(const void *lhs, const void *rhs);
@@ -3282,8 +3480,8 @@ This function is typically used together with <a class="link" href="igraph-Data-
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.10. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> for a type-safe variant of this
-    function, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.9. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> to compare vectors starting from
+  <a class="link" href="igraph-Data-structures.html#igraph_vector_colex_cmp" title="2.9.11. igraph_vector_colex_cmp — Colexicographical comparison of two vectors."><code class="function">igraph_vector_colex_cmp()</code></a> for a type-safe variant of this
+    function, <a class="link" href="igraph-Data-structures.html#igraph_vector_lex_cmp_untyped" title="2.9.10. igraph_vector_lex_cmp_untyped — Lexicographical comparison of two vectors (non-type-safe)."><code class="function">igraph_vector_lex_cmp_untyped()</code></a> to compare vectors starting from
     the first element.
   </p></td>
 </tr></tbody>
@@ -4244,7 +4442,7 @@ Time complexity: O(n), the number of elements.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_search">2.12.2. <code class="function">igraph_vector_search</code> —  Searches in a vector from a given position.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_binsearch">2.12.3. <code class="function">igraph_vector_binsearch</code> —  Finds an element by binary searching a sorted vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_binsearch_slice">2.12.4. <code class="function">igraph_vector_binsearch_slice</code> —  Finds an element by binary searching a sorted slice of a vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_binsearch2">2.12.5. <code class="function">igraph_vector_binsearch2</code> —  Binary search, without returning the index.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_contains_sorted">2.12.5. <code class="function">igraph_vector_contains_sorted</code> —  Binary search in a sorted vector.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -4253,7 +4451,7 @@ Time complexity: O(n), the number of elements.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_vector_contains(const igraph_vector_t *v,
-        igraph_real_t e);
+        igraph_real_t what);
 </pre></div>
 <p>
 </p>
@@ -4263,6 +4461,7 @@ igraph_bool_t igraph_vector_contains(const igraph_vector_t *v,
 
 Check whether the supplied element is included in the vector, by
 linear search.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -4279,7 +4478,7 @@ linear search.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>e</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>what</code></em>:</span></p></td>
 <td><p>
   The element to look for.
 </p></td>
@@ -4561,12 +4760,11 @@ n is the number of elements in the slice of <em class="parameter"><code>v</code>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_binsearch2"></a>2.12.5. <code class="function">igraph_vector_binsearch2</code> —  Binary search, without returning the index.</h4></div></div></div>
+<a name="igraph_vector_contains_sorted"></a>2.12.5. <code class="function">igraph_vector_contains_sorted</code> —  Binary search in a sorted vector.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.13.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_bool_t igraph_vector_binsearch2(const igraph_vector_t *v,
-        igraph_real_t what);
+igraph_bool_t igraph_vector_contains_sorted(const igraph_vector_t *v, igraph_real_t what);
 </pre></div>
 <p>
 </p>
@@ -4575,9 +4773,8 @@ igraph_bool_t igraph_vector_binsearch2(const igraph_vector_t *v,
 
 
 
-</p>
-<p>
 It is assumed that the vector is sorted.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -5598,7 +5795,7 @@ igraph_error_t igraph_vector_complex_zapsmall(igraph_vector_complex_t *v, igraph
 
 
 
-Similarly to <a class="link" href="igraph-Data-structures.html#igraph_vector_zapsmall" title="2.9.7. igraph_vector_zapsmall — Replaces small elements of a vector by exact zeros."><code class="function">igraph_vector_zapsmall()</code></a>, small elements will be replaced
+Similarly to <a class="link" href="igraph-Data-structures.html#igraph_vector_zapsmall" title="2.9.8. igraph_vector_zapsmall — Replaces small elements of a vector by exact zeros."><code class="function">igraph_vector_zapsmall()</code></a>, small elements will be replaced
 by zeros. The operation is performed separately on the real and imaginary
 parts of the numbers. This way, complex numbers with a large real part and
 tiny imaginary part will effectively be transformed to real numbers.
@@ -5675,7 +5872,7 @@ tolerances.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_sort">2.15.1. <code class="function">igraph_vector_sort</code> —  Sorts the elements of the vector into ascending order.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_reverse_sort">2.15.2. <code class="function">igraph_vector_reverse_sort</code> —  Sorts the elements of the vector into descending order.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_qsort_ind">2.15.3. <code class="function">igraph_vector_qsort_ind</code> —  Returns a permutation of indices that sorts a vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_sort_ind">2.15.3. <code class="function">igraph_vector_sort_ind</code> —  Returns a permutation of indices that sorts a vector.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -5761,12 +5958,14 @@ O(n log n) for n elements.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_vector_qsort_ind"></a>2.15.3. <code class="function">igraph_vector_qsort_ind</code> —  Returns a permutation of indices that sorts a vector.</h4></div></div></div>
+<a name="igraph_vector_sort_ind"></a>2.15.3. <code class="function">igraph_vector_sort_ind</code> —  Returns a permutation of indices that sorts a vector.</h4></div></div></div>
 <a class="indexterm" name="id-1.8.3.16.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vector_qsort_ind(const igraph_vector_t *v,
-        igraph_vector_int_t *inds, igraph_order_t order);
+igraph_error_t igraph_vector_sort_ind(
+        const igraph_vector_t *v,
+        igraph_vector_int_t *inds,
+        igraph_order_t order);
 </pre></div>
 <p>
 </p>
@@ -6332,7 +6531,7 @@ void igraph_vector_ptr_free_all(igraph_vector_ptr_t* v);
 
 If an item destructor is set for this pointer vector, this function will
 first call the destructor on all elements of the vector and then
-free all the elements using <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>. If an item destructor is not set,
+free all the elements using <a class="link" href="igraph-Memory.html#igraph_free" title="2.4. igraph_free — Deallocates memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>. If an item destructor is not set,
 the elements will simply be freed.
 
 </p>
@@ -6471,7 +6670,7 @@ void igraph_vector_ptr_clear(igraph_vector_ptr_t* v);
 <p>
 This function resizes a pointer to vector to zero length. Note that
 the pointed objects are <span class="emphasis"><em>not</em></span> deallocated, you should call
-<a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on them, or make sure that their allocated memory is freed
+<a class="link" href="igraph-Memory.html#igraph_free" title="2.4. igraph_free — Deallocates memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> on them, or make sure that their allocated memory is freed
 in some other way, you'll get memory leaks otherwise. If you have
 set up an item destructor earlier, the destructor will be called
 on every element.
@@ -7202,6 +7401,8 @@ expects <code class="constant">void</code>*
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_init_seq">2.18.4. <code class="function">igraph_vector_init_seq</code> —  Initializes a vector with a sequence, inclusive endpoints (deprecated).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_copy">2.18.5. <code class="function">igraph_vector_ptr_copy</code> —  Initializes a pointer vector from another one (deprecated alias).</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_ptr_e">2.18.6. <code class="function">igraph_vector_ptr_e</code> —  Access an element of a pointer vector (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_qsort_ind">2.18.7. <code class="function">igraph_vector_qsort_ind</code> —  Returns a permutation of indices that sorts a vector (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_vector_binsearch2">2.18.8. <code class="function">igraph_vector_binsearch2</code> —  Binary search, without returning the index.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -7454,6 +7655,57 @@ void *igraph_vector_ptr_e(const igraph_vector_ptr_t* v, igraph_integer_t pos);
 <h3 class="title">Warning</h3>
 <p>Deprecated since version 0.10.0. Please do not use this function in new
 code; use <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_get" title="2.17.11. igraph_vector_ptr_get — Access an element of a pointer vector."><code class="function">igraph_vector_ptr_get()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_qsort_ind"></a>2.18.7. <code class="function">igraph_vector_qsort_ind</code> —  Returns a permutation of indices that sorts a vector (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.19.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vector_qsort_ind(const igraph_vector_t *v,
+                                                 igraph_vector_int_t *inds, igraph_order_t order);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.14. Please do not use this function in new
+code; use <a class="link" href="igraph-Data-structures.html#igraph_vector_sort_ind" title="2.15.3. igraph_vector_sort_ind — Returns a permutation of indices that sorts a vector."><code class="function">igraph_vector_sort_ind()</code></a>
+instead.</p>
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_vector_binsearch2"></a>2.18.8. <code class="function">igraph_vector_binsearch2</code> —  Binary search, without returning the index.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.3.19.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_bool_t igraph_vector_binsearch2(const igraph_vector_t *v,
+                                                  igraph_real_t what);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.14. Please do not use this function in new
+code; use <a class="link" href="igraph-Data-structures.html#igraph_vector_contains_sorted" title="2.12.5. igraph_vector_contains_sorted — Binary search in a sorted vector."><code class="function">igraph_vector_contains_sorted()</code></a>
 instead.</p>
 </div>
 <p> 
@@ -13897,7 +14149,7 @@ it must be located between positions <code class="literal">p[k]</code> and <code
 </p>
 <p>
 Do not call <a class="link" href="igraph-Data-structures.html#igraph_sparsemat_destroy" title="4.2.6. igraph_sparsemat_destroy — Deallocates memory used by a sparse matrix."><code class="function">igraph_sparsemat_destroy()</code></a> on a sparse matrix created with
-this function. Instead, <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> must be called on the <code class="constant">cs</code>
+this function. Instead, <a class="link" href="igraph-Memory.html#igraph_free" title="2.4. igraph_free — Deallocates memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a> must be called on the <code class="constant">cs</code>
 field of <em class="parameter"><code>A</code></em> to free the storage allocated by this function.
 
 </p>
@@ -14897,6 +15149,7 @@ igraph_integer_t igraph_sparsemat_count_nonzerotol(igraph_sparsemat_t *A,
 
 
 Count the number of matrix entries that are closer to zero than <em class="parameter"><code>tol</code></em>.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -14913,9 +15166,9 @@ Count the number of matrix entries that are closer to zero than <em class="param
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>Real</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>The</code></em>:</span></p></td>
 <td><p>
-  scalar, the tolerance.
+  tolerance for zero comparisons.
 </p></td>
 </tr>
 </tbody>
@@ -15424,7 +15677,8 @@ igraph_error_t igraph_sparsemat_scale(igraph_sparsemat_t *A, igraph_real_t by);
 
 
 
-Multiplies all elements of a sparse matrix, by the given scalar.
+Multiplies all elements of a sparse matrix, by the given factor.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -15648,14 +15902,14 @@ igraph_error_t igraph_sparsemat_add(const igraph_sparsemat_t *A,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>alpha</code></em>:</span></p></td>
 <td><p>
-  Real scalar, <em class="parameter"><code>A</code></em> is multiplied by <em class="parameter"><code>alpha</code></em> before the
+  Real value, <em class="parameter"><code>A</code></em> is multiplied by <em class="parameter"><code>alpha</code></em> before the
    addition.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
 <td><p>
-  Real scalar, <em class="parameter"><code>B</code></em> is multiplied by <em class="parameter"><code>beta</code></em> before the
+  Real value, <em class="parameter"><code>B</code></em> is multiplied by <em class="parameter"><code>beta</code></em> before the
    addition.
 </p></td>
 </tr>
@@ -17902,8 +18156,7 @@ edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Boolean scalar, whether to create a directed
-   graph.
+  Whether to create a directed graph.
 </p></td>
 </tr>
 </tbody>
@@ -17970,9 +18223,9 @@ igraph_error_t igraph_matrix_as_sparsemat(igraph_sparsemat_t *res,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
 <td><p>
-  Real scalar, the tolerance. Values closer than <em class="parameter"><code>tol</code></em> to
-   zero are considered as zero, and will not be included in the
-   sparse matrix.
+  The tolerance for zero comparisons. Values closer than
+   <em class="parameter"><code>tol</code></em> to zero are considered as zero, and will not be included
+   in the sparse matrix.
 </p></td>
 </tr>
 </tbody>
@@ -20071,17 +20324,18 @@ number of elements. O(1) otherwise.
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_set_len">8.7. <code class="function">igraph_strvector_set_len</code> —  Sets an element of the string vector given a buffer and its size.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_push_back">8.8. <code class="function">igraph_strvector_push_back</code> —  Adds an element to the back of a string vector.</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_push_back_len">8.9. <code class="function">igraph_strvector_push_back_len</code> —  Adds a string of the given length to the back of a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_remove">8.10. <code class="function">igraph_strvector_remove</code> —  Removes a single element from a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_remove_section">8.11. <code class="function">igraph_strvector_remove_section</code> —  Removes a section from a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_append">8.12. <code class="function">igraph_strvector_append</code> —  Concatenates two string vectors.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_merge">8.13. <code class="function">igraph_strvector_merge</code> —  Moves the contents of a string vector to the end of another.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_clear">8.14. <code class="function">igraph_strvector_clear</code> —  Removes all elements from a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_resize">8.15. <code class="function">igraph_strvector_resize</code> —  Resizes a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_reserve">8.16. <code class="function">igraph_strvector_reserve</code> —  Reserves memory for a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_resize_min">8.17. <code class="function">igraph_strvector_resize_min</code> —  Deallocates the unused memory of a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_size">8.18. <code class="function">igraph_strvector_size</code> —  Returns the size of a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_capacity">8.19. <code class="function">igraph_strvector_capacity</code> —  Returns the capacity of a string vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Strvector-deprecated">8.20. Deprecated functions</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_swap_elements">8.10. <code class="function">igraph_strvector_swap_elements</code> —  Swap two elements in a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_remove">8.11. <code class="function">igraph_strvector_remove</code> —  Removes a single element from a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_remove_section">8.12. <code class="function">igraph_strvector_remove_section</code> —  Removes a section from a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_append">8.13. <code class="function">igraph_strvector_append</code> —  Concatenates two string vectors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_merge">8.14. <code class="function">igraph_strvector_merge</code> —  Moves the contents of a string vector to the end of another.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_clear">8.15. <code class="function">igraph_strvector_clear</code> —  Removes all elements from a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_resize">8.16. <code class="function">igraph_strvector_resize</code> —  Resizes a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_reserve">8.17. <code class="function">igraph_strvector_reserve</code> —  Reserves memory for a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_resize_min">8.18. <code class="function">igraph_strvector_resize_min</code> —  Deallocates the unused memory of a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_size">8.19. <code class="function">igraph_strvector_size</code> —  Returns the size of a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_capacity">8.20. <code class="function">igraph_strvector_capacity</code> —  Returns the capacity of a string vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph-Strvector-deprecated">8.21. Deprecated functions</a></span></dt>
 </dl></div>
 <p>
 The <span class="type">igraph_strvector_t</span> type is a vector of null-terminated
@@ -20103,7 +20357,7 @@ always make copies of the string passed to them.
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 void <span class="strong"><strong>strvector_print</strong></span>(<span class="strong"><strong>const</strong></span> igraph_strvector_t sv) {
-    igraph_integer_t i, s = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv);
+    igraph_integer_t i, s = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.19. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; s; i++) {
         <span class="strong"><strong>printf</strong></span>("---%s---\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_get" title="8.5. igraph_strvector_get — Retrieves an element of a string vector.">igraph_strvector_get</a></strong></span>(&amp;sv, i));
     }
@@ -20125,12 +20379,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>strvector_print</strong></span>(sv1);
 
     <span class="strong"><strong>printf</strong></span>("strvector size after first removing one element, and then the rest:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_remove" title="8.10. igraph_strvector_remove — Removes a single element from a string vector.">igraph_strvector_remove</a></strong></span>(&amp;sv1, 4);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_remove_section" title="8.11. igraph_strvector_remove_section — Removes a section from a string vector.">igraph_strvector_remove_section</a></strong></span>(&amp;sv1, 0, 4);
-    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "\n\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv1));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_remove" title="8.11. igraph_strvector_remove — Removes a single element from a string vector.">igraph_strvector_remove</a></strong></span>(&amp;sv1, 4);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_remove_section" title="8.12. igraph_strvector_remove_section — Removes a section from a string vector.">igraph_strvector_remove_section</a></strong></span>(&amp;sv1, 0, 4);
+    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "\n\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.19. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv1));
 
     <span class="strong"><strong>printf</strong></span>("Resize to three elements, and set them:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_resize" title="8.15. igraph_strvector_resize — Resizes a string vector.">igraph_strvector_resize</a></strong></span>(&amp;sv1, 3);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_resize" title="8.16. igraph_strvector_resize — Resizes a string vector.">igraph_strvector_resize</a></strong></span>(&amp;sv1, 3);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string.">igraph_strvector_set</a></strong></span>(&amp;sv1, 0, "zero");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string.">igraph_strvector_set</a></strong></span>(&amp;sv1, 1, "one");
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_set" title="8.6. igraph_strvector_set — Sets an element of the string vector from a string.">igraph_strvector_set</a></strong></span>(&amp;sv1, 2, "two");
@@ -20146,7 +20400,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>strvector_print</strong></span>(sv2);
 
     <span class="strong"><strong>printf</strong></span>("Append the copy to the strvector:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.12. igraph_strvector_append — Concatenates two string vectors.">igraph_strvector_append</a></strong></span>(&amp;sv1, &amp;sv2);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.13. igraph_strvector_append — Concatenates two string vectors.">igraph_strvector_append</a></strong></span>(&amp;sv1, &amp;sv2);
     <span class="strong"><strong>strvector_print</strong></span>(sv1);
 
     <span class="strong"><strong>printf</strong></span>("Add two strings at the end:\n");
@@ -20156,8 +20410,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Frees the memory allocated for the string vector.">igraph_strvector_destroy</a></strong></span>(&amp;sv1);
 
     <span class="strong"><strong>printf</strong></span>("strvector size after clearing it:\n");
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_clear" title="8.14. igraph_strvector_clear — Removes all elements from a string vector.">igraph_strvector_clear</a></strong></span>(&amp;sv2);
-    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv2));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_clear" title="8.15. igraph_strvector_clear — Removes all elements from a string vector.">igraph_strvector_clear</a></strong></span>(&amp;sv2);
+    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.19. igraph_strvector_size — Returns the size of a string vector.">igraph_strvector_size</a></strong></span>(&amp;sv2));
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_strvector_destroy" title="8.3. igraph_strvector_destroy — Frees the memory allocated for the string vector.">igraph_strvector_destroy</a></strong></span>(&amp;sv2);
 
@@ -20723,8 +20977,59 @@ length of the new string.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_remove"></a>8.10. <code class="function">igraph_strvector_remove</code> —  Removes a single element from a string vector.</h3></div></div></div>
+<a name="igraph_strvector_swap_elements"></a>8.10. <code class="function">igraph_strvector_swap_elements</code> —  Swap two elements in a string vector.</h3></div></div></div>
 <a class="indexterm" name="id-1.8.9.14.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_strvector_swap_elements(igraph_strvector_t *sv, igraph_integer_t i, igraph_integer_t j);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Note that currently no range checking is performed.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sv</code></em>:</span></p></td>
+<td><p>
+  The string vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>i</code></em>:</span></p></td>
+<td><p>
+  Index of the first element.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>j</code></em>:</span></p></td>
+<td><p>
+  Index of the second element (may be the same as the first one).</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_strvector_remove"></a>8.11. <code class="function">igraph_strvector_remove</code> —  Removes a single element from a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_strvector_remove(igraph_strvector_t *sv, igraph_integer_t elem);
@@ -20768,8 +21073,8 @@ Time complexity: O(n), the length of the string.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_remove_section"></a>8.11. <code class="function">igraph_strvector_remove_section</code> —  Removes a section from a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.15.2"></a><p>
+<a name="igraph_strvector_remove_section"></a>8.12. <code class="function">igraph_strvector_remove_section</code> —  Removes a section from a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_strvector_remove_section(
@@ -20819,8 +21124,8 @@ This function removes the range <code class="literal">[from, to)</code> from the
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_append"></a>8.12. <code class="function">igraph_strvector_append</code> —  Concatenates two string vectors.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.16.2"></a><p>
+<a name="igraph_strvector_append"></a>8.13. <code class="function">igraph_strvector_append</code> —  Concatenates two string vectors.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.17.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_append(igraph_strvector_t *to,
@@ -20834,7 +21139,7 @@ igraph_error_t igraph_strvector_append(igraph_strvector_t *to,
 
 Appends the contents of the <em class="parameter"><code>from</code></em> vector to the <em class="parameter"><code>to</code></em> vector.
 If the <em class="parameter"><code>from</code></em> vector is no longer needed after this operation,
-use <a class="link" href="igraph-Data-structures.html#igraph_strvector_merge" title="8.13. igraph_strvector_merge — Moves the contents of a string vector to the end of another."><code class="function">igraph_strvector_merge()</code></a> for better performance.
+use <a class="link" href="igraph-Data-structures.html#igraph_strvector_merge" title="8.14. igraph_strvector_merge — Moves the contents of a string vector to the end of another."><code class="function">igraph_strvector_merge()</code></a> for better performance.
 
 </p>
 <p><b>Arguments: </b>
@@ -20886,7 +21191,7 @@ use <a class="link" href="igraph-Data-structures.html#igraph_strvector_merge" ti
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_strvector_merge" title="8.13. igraph_strvector_merge — Moves the contents of a string vector to the end of another."><code class="function">igraph_strvector_merge()</code></a>
+  <a class="link" href="igraph-Data-structures.html#igraph_strvector_merge" title="8.14. igraph_strvector_merge — Moves the contents of a string vector to the end of another."><code class="function">igraph_strvector_merge()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -20900,8 +21205,8 @@ string vector.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_merge"></a>8.13. <code class="function">igraph_strvector_merge</code> —  Moves the contents of a string vector to the end of another.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.17.2"></a><p>
+<a name="igraph_strvector_merge"></a>8.14. <code class="function">igraph_strvector_merge</code> —  Moves the contents of a string vector to the end of another.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_merge(igraph_strvector_t *to, igraph_strvector_t *from);
@@ -20916,7 +21221,7 @@ igraph_error_t igraph_strvector_merge(igraph_strvector_t *to, igraph_strvector_t
 Transfers the contents of the <em class="parameter"><code>from</code></em> vector to the end of <em class="parameter"><code>to</code></em>, clearing
 <em class="parameter"><code>from</code></em> in the process. If this operation fails, both vectors are left intact.
 This function does not copy or reallocate individual strings, therefore it
-performs better than <a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.12. igraph_strvector_append — Concatenates two string vectors."><code class="function">igraph_strvector_append()</code></a>.
+performs better than <a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.13. igraph_strvector_append — Concatenates two string vectors."><code class="function">igraph_strvector_append()</code></a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -20968,7 +21273,7 @@ performs better than <a class="link" href="igraph-Data-structures.html#igraph_st
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.12. igraph_strvector_append — Concatenates two string vectors."><code class="function">igraph_strvector_append()</code></a>
+  <a class="link" href="igraph-Data-structures.html#igraph_strvector_append" title="8.13. igraph_strvector_append — Concatenates two string vectors."><code class="function">igraph_strvector_append()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -20981,8 +21286,8 @@ Time complexity: O(l2) if <em class="parameter"><code>to</code></em> has suffici
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_clear"></a>8.14. <code class="function">igraph_strvector_clear</code> —  Removes all elements from a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.18.2"></a><p>
+<a name="igraph_strvector_clear"></a>8.15. <code class="function">igraph_strvector_clear</code> —  Removes all elements from a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.19.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_strvector_clear(igraph_strvector_t *sv);
@@ -21019,8 +21324,8 @@ depending on the memory manager.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_resize"></a>8.15. <code class="function">igraph_strvector_resize</code> —  Resizes a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.19.2"></a><p>
+<a name="igraph_strvector_resize"></a>8.16. <code class="function">igraph_strvector_resize</code> —  Resizes a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.20.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_resize(igraph_strvector_t *sv, igraph_integer_t newsize);
@@ -21083,8 +21388,8 @@ smaller, maybe less, depending on memory management.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_reserve"></a>8.16. <code class="function">igraph_strvector_reserve</code> —  Reserves memory for a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.20.2"></a><p>
+<a name="igraph_strvector_reserve"></a>8.17. <code class="function">igraph_strvector_reserve</code> —  Reserves memory for a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.21.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_reserve(igraph_strvector_t *sv, igraph_integer_t capacity);
@@ -21159,8 +21464,8 @@ O(n), n is the new allocated size of the vector.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_resize_min"></a>8.17. <code class="function">igraph_strvector_resize_min</code> —  Deallocates the unused memory of a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.21.2"></a><p>
+<a name="igraph_strvector_resize_min"></a>8.18. <code class="function">igraph_strvector_resize_min</code> —  Deallocates the unused memory of a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.22.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_strvector_resize_min(igraph_strvector_t *sv);
@@ -21173,8 +21478,8 @@ void igraph_strvector_resize_min(igraph_strvector_t *sv);
 
 
 This function attempts to deallocate the unused reserved storage
-of a string vector. If it succeeds, <a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.18. igraph_strvector_size — Returns the size of a string vector."><code class="function">igraph_strvector_size()</code></a> and
-<a class="link" href="igraph-Data-structures.html#igraph_strvector_capacity" title="8.19. igraph_strvector_capacity — Returns the capacity of a string vector."><code class="function">igraph_strvector_capacity()</code></a> will be the same. The data in the
+of a string vector. If it succeeds, <a class="link" href="igraph-Data-structures.html#igraph_strvector_size" title="8.19. igraph_strvector_size — Returns the size of a string vector."><code class="function">igraph_strvector_size()</code></a> and
+<a class="link" href="igraph-Data-structures.html#igraph_strvector_capacity" title="8.20. igraph_strvector_capacity — Returns the capacity of a string vector."><code class="function">igraph_strvector_capacity()</code></a> will be the same. The data in the
 string vector is always preserved, even if deallocation is not successful.
 
 </p>
@@ -21200,8 +21505,8 @@ Time complexity: Operating system dependent, at most O(n).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_size"></a>8.18. <code class="function">igraph_strvector_size</code> —  Returns the size of a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.22.2"></a><p>
+<a name="igraph_strvector_size"></a>8.19. <code class="function">igraph_strvector_size</code> —  Returns the size of a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.23.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_strvector_size(const igraph_strvector_t *sv);
@@ -21251,8 +21556,8 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_strvector_capacity"></a>8.19. <code class="function">igraph_strvector_capacity</code> —  Returns the capacity of a string vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.8.9.23.2"></a><p>
+<a name="igraph_strvector_capacity"></a>8.20. <code class="function">igraph_strvector_capacity</code> —  Returns the capacity of a string vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.8.9.24.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_strvector_capacity(const igraph_strvector_t *sv);
@@ -21302,16 +21607,16 @@ Time complexity: O(1).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph-Strvector-deprecated"></a>8.20. Deprecated functions</h3></div></div></div>
+<a name="igraph-Strvector-deprecated"></a>8.21. Deprecated functions</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_copy">8.20.1. <code class="function">igraph_strvector_copy</code> —  Initialization by copying (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_add">8.20.2. <code class="function">igraph_strvector_add</code> —  Adds an element to the back of a string vector (deprecated alias).</a></span></dt>
-<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_set2">8.20.3. <code class="function">igraph_strvector_set2</code> —  Sets an element of the string vector given a buffer and its size (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_copy">8.21.1. <code class="function">igraph_strvector_copy</code> —  Initialization by copying (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_add">8.21.2. <code class="function">igraph_strvector_add</code> —  Adds an element to the back of a string vector (deprecated alias).</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#igraph_strvector_set2">8.21.3. <code class="function">igraph_strvector_set2</code> —  Sets an element of the string vector given a buffer and its size (deprecated alias).</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_strvector_copy"></a>8.20.1. <code class="function">igraph_strvector_copy</code> —  Initialization by copying (deprecated alias).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.9.24.2.2"></a><p>
+<a name="igraph_strvector_copy"></a>8.21.1. <code class="function">igraph_strvector_copy</code> —  Initialization by copying (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.9.25.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_copy(igraph_strvector_t *to,
@@ -21336,8 +21641,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_strvector_add"></a>8.20.2. <code class="function">igraph_strvector_add</code> —  Adds an element to the back of a string vector (deprecated alias).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.9.24.3.2"></a><p>
+<a name="igraph_strvector_add"></a>8.21.2. <code class="function">igraph_strvector_add</code> —  Adds an element to the back of a string vector (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.9.25.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_add(igraph_strvector_t *sv, const char *value);
@@ -21361,8 +21666,8 @@ instead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="igraph_strvector_set2"></a>8.20.3. <code class="function">igraph_strvector_set2</code> —  Sets an element of the string vector given a buffer and its size (deprecated alias).</h4></div></div></div>
-<a class="indexterm" name="id-1.8.9.24.4.2"></a><p>
+<a name="igraph_strvector_set2"></a>8.21.3. <code class="function">igraph_strvector_set2</code> —  Sets an element of the string vector given a buffer and its size (deprecated alias).</h4></div></div></div>
+<a class="indexterm" name="id-1.8.9.25.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_set2(
@@ -25754,6 +26059,7 @@ destructors</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#bitset-operations">12.4. Bitset operations</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#bitset-properties">12.5. Bitset properties</a></span></dt>
 <dt><span class="section"><a href="igraph-Data-structures.html#bitset-resizing-operations">12.6. Resizing operations</a></span></dt>
+<dt><span class="section"><a href="igraph-Data-structures.html#bitset-copying">12.7. Copying bitsets</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -27622,6 +27928,83 @@ size is smaller, operating system dependent if it is larger. In the
 latter case it is usually around
 O(n/w),
 n is the new size of the bitset,
+w is the word size of the machine (32 or 64).
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bitset-copying"></a>12.7. Copying bitsets</h3></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Data-structures.html#igraph_bitset_update">12.7.1. <code class="function">igraph_bitset_update</code> —  Update a bitset from another one.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_bitset_update"></a>12.7.1. <code class="function">igraph_bitset_update</code> —  Update a bitset from another one.</h4></div></div></div>
+<a class="indexterm" name="id-1.8.13.8.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bitset_update(igraph_bitset_t *dest, const igraph_bitset_t *src);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The size and contents of <em class="parameter"><code>dest</code></em> will be identical to that of <em class="parameter"><code>src</code></em>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dest</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized bitset object. This will be updated.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>src</code></em>:</span></p></td>
+<td><p>
+  The bitset to update from.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code> if there is not enough memory.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: operating system dependent, usually
+O(n/w),
+n is the size of the bitset,
 w is the word size of the machine (32 or 64).
  
 </p>

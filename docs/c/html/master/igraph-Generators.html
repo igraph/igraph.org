@@ -1292,7 +1292,7 @@ number of vertices in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a>, <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_wheel" title="1.9. igraph_wheel — Creates a wheel graph, a union of a star and a cycle graph."><code class="function">igraph_wheel()</code></a>, <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a>, <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>
 for creating other regular structures.
   </p></td>
 </tr></tbody>
@@ -1719,6 +1719,25 @@ in a lattice of size <code class="literal">(n_1, n_2, ..., n_d)</code> will be
 </table></div>
 <p>
 
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Generators.html#igraph_hypercube" title="1.10. igraph_hypercube — The n-dimensional hypercube graph."><code class="function">igraph_hypercube()</code></a> to create a hypercube graph; <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>
+to create a cycle graph or path graph; <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a>
+and <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a> to create other types of lattices;
+<a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a> to create a Bethe lattice.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: If <em class="parameter"><code>nei</code></em> is less than two then it is O(|V|+|E|) (as
 far as I remember), |V| and |E| are the number of vertices
 and edges in the generated graph. Otherwise it is O(|V|*d^k+|E|), d
@@ -1733,8 +1752,8 @@ is the average degree of the graph, k is the <em class="parameter"><code>nei</co
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_triangular_lattice(
-    igraph_t *graph, const igraph_vector_int_t *dims, igraph_bool_t directed,
-    igraph_bool_t mutual);
+        igraph_t *graph, const igraph_vector_int_t *dims,
+        igraph_bool_t directed, igraph_bool_t mutual);
 </pre></div>
 <p>
 </p>
@@ -1749,17 +1768,19 @@ igraph_error_t igraph_triangular_lattice(
 We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
-<p>Creates a triangular lattice whose vertices have the form (i, j) for non-negative integers i and j
-and (i, j) is generally connected with (i + 1, j), (i, j + 1), and (i - 1, j + 1).
-The function constructs a planar dual of the graph constructed by <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a>.
-In particular, there a one-to-one correspondence between the vertices in the constructed graph
-and the cycles of length 6 in the graph constructed by <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a>
+<p>Creates a triangular lattice whose vertices have the form (i, j) for non-negative
+integers i and j and (i, j) is generally connected with (i + 1, j), (i, j + 1),
+and (i - 1, j + 1). The function constructs a planar dual of the graph
+constructed by <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a>. In particular, there a one-to-one
+correspondence between the vertices in the constructed graph and the cycles of
+length 6 in the graph constructed by <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a>
 with the same <em class="parameter"><code>dims</code></em> parameter.
 
 </p>
 <p>
-The vertices of the resulting graph are ordered lexicographically with the 2nd coordinate being
-more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
+The vertices of the resulting graph are ordered lexicographically with the 2nd
+coordinate being more significant, e.g., (i, j) &lt; (i + 1, j) and
+(i + 1, j) &lt; (i, j + 1)
 
 </p>
 <p><b>Arguments: </b>
@@ -1779,32 +1800,30 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dims</code></em>:</span></p></td>
 <td><p>
-  Integer vector, defines the shape of the lattice. (Below the "edge length"s are in terms of graph theoretical path lengths.)
-       If <em class="parameter"><code>dims</code></em> is of length 1, the resulting lattice has a triangular shape
-       where each side of the triangle contains <code class="literal">dims[0]</code> vertices.
-       If <em class="parameter"><code>dims</code></em> is of length 2, the resulting lattice has a
-       "quasi rectangular" shape with the sides containing <code class="literal">dims[0]</code> and
-       <code class="literal">dims[1]</code> vertices, respectively.
-       If <em class="parameter"><code>dims</code></em> is of length 3, the resulting lattice has a hexagonal shape
-       where the sides of the hexagon contain <code class="literal">dims[0]</code>, <code class="literal">dims[1]</code> and
-       <code class="literal">dims[2]</code> vertices.
-       All coordinates must be non-negative.
+  Integer vector, defines the shape of the lattice.
+   If <em class="parameter"><code>dims</code></em> is of length 1, the resulting lattice has a triangular shape
+   where each side of the triangle contains <code class="literal">dims[0]</code> vertices.
+   If <em class="parameter"><code>dims</code></em> is of length 2, the resulting lattice has a
+   "quasi rectangular" shape with the sides containing <code class="literal">dims[0]</code> and
+   <code class="literal">dims[1]</code> vertices, respectively.
+   If <em class="parameter"><code>dims</code></em> is of length 3, the resulting lattice has a hexagonal shape
+   where the sides of the hexagon contain <code class="literal">dims[0]</code>, <code class="literal">dims[1]</code>
+   and <code class="literal">dims[2]</code> vertices. All dimensions must be non-negative.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to create a directed graph.
-       If the <code class="constant">mutual</code> argument is not set to true,
-       edges will be directed from lower-index vertices towards
-       higher-index ones.
+   If the <code class="constant">mutual</code> argument is not set to true, edges will be directed from
+   lower-index vertices towards higher-index ones.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mutual</code></em>:</span></p></td>
 <td><p>
   Boolean, if the graph is directed this gives whether
-       to create all connections as mutual.
+   to create all connections as mutual.
 </p></td>
 </tr>
 </tbody>
@@ -1821,13 +1840,14 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code:
-        <code class="constant">IGRAPH_EINVAL</code>: The size of <em class="parameter"><code>dims</code></em> must be either 1, 2, or 3 with all the components
-        at least 1.
-
+   <code class="constant">IGRAPH_EINVAL</code>: The size of <em class="parameter"><code>dims</code></em> must be either 1, 2, or 3 with all
+   the components at least 1.
   </p></td>
 </tr></tbody>
 </table></div>
-<p></p>
+<p>
+
+</p>
 <p><b>See also: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -1837,7 +1857,8 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a> for creating a triangular lattice.
+  <a class="link" href="igraph-Generators.html#igraph_hexagonal_lattice" title="1.13. igraph_hexagonal_lattice — A hexagonal lattice with the given shape."><code class="function">igraph_hexagonal_lattice()</code></a> and <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> for creating
+other types of lattices; <a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a> to create a Bethe lattice.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1855,9 +1876,8 @@ Time complexity:  O(|V|), where |V| is the number of vertices in the generated g
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hexagonal_lattice(
-    igraph_t *graph, const igraph_vector_int_t *dims, igraph_bool_t directed,
-    igraph_bool_t mutual
-);
+        igraph_t *graph, const igraph_vector_int_t *dims,
+        igraph_bool_t directed, igraph_bool_t mutual);
 </pre></div>
 <p>
 </p>
@@ -1872,17 +1892,19 @@ igraph_error_t igraph_hexagonal_lattice(
 We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
-<p>Creates a hexagonal lattice whose vertices have the form (i, j) for non-negative integers i and j
-and (i, j) is generally connected with (i + 1, j), and if i is odd also with (i - 1, j + 1).
-The function constructs a planar dual of the graph constructed by <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a>.
-In particular, there a one-to-one correspondence between the cycles of length 6 in the constructed graph
-and the vertices of the graph constructed by <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a> function
+<p>Creates a hexagonal lattice whose vertices have the form (i, j) for non-negative
+integers i and j and (i, j) is generally connected with (i + 1, j), and if i is
+odd also with (i - 1, j + 1). The function constructs a planar dual of the graph
+constructed by <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a>. In particular, there a one-to-one
+correspondence between the cycles of length 6 in the constructed graph and the
+vertices of the graph constructed by <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a> function
 with the same <em class="parameter"><code>dims</code></em> parameter.
 
 </p>
 <p>
-The vertices of the resulting graph are ordered lexicographically with the 2nd coordinate being
-more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
+The vertices of the resulting graph are ordered lexicographically with the 2nd
+coordinate being more significant, e.g., (i, j) &lt; (i + 1, j) and
+(i + 1, j) &lt; (i, j + 1)
 
 </p>
 <p><b>Arguments: </b>
@@ -1902,32 +1924,30 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <tr>
 <td><p><span class="term"><em class="parameter"><code>dims</code></em>:</span></p></td>
 <td><p>
-  Integer vector, defines the shape of the lattice. (Below the "edge length"s are in terms of graph theoretical path lengths.)
-       If <em class="parameter"><code>dims</code></em> is of length 1, the resulting lattice has a triangular shape
-       where each side of the triangle contains <code class="literal">dims[0]</code> vertices.
-       If <em class="parameter"><code>dims</code></em> is of length 2, the resulting lattice has a
-       "quasi rectangular" shape with the sides containing <code class="literal">dims[0]</code> and
-       <code class="literal">dims[1]</code> vertices, respectively.
-       If <em class="parameter"><code>dims</code></em> is of length 3, the resulting lattice has a hexagonal shape
-       where the sides of the hexagon contain <code class="literal">dims[0]</code>, <code class="literal">dims[1]</code> and
-       <code class="literal">dims[2]</code> vertices.
-       All coordinates must be non-negative.
+  Integer vector, defines the shape of the lattice.
+  If <em class="parameter"><code>dims</code></em> is of length 1, the resulting lattice has a triangular shape
+  where each side of the triangle contains <code class="literal">dims[0]</code> vertices.
+  If <em class="parameter"><code>dims</code></em> is of length 2, the resulting lattice has a "quasi rectangular"
+  shape with the sides containing <code class="literal">dims[0]</code> and <code class="literal">dims[1]</code>
+  vertices, respectively. If <em class="parameter"><code>dims</code></em> is of length 3, the resulting lattice has
+  a hexagonal shape where the sides of the hexagon contain <code class="literal">dims[0]</code>,
+  <code class="literal">dims[1]</code> and <code class="literal">dims[2]</code> vertices. All coordinates must
+  be non-negative.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
   Boolean, whether to create a directed graph.
-       If the <code class="constant">mutual</code> argument is not set to true,
-       edges will be directed from lower-index vertices towards
-       higher-index ones.
+  If the <code class="constant">mutual</code> argument is not set to true, edges will be directed from
+  lower-index vertices towards higher-index ones.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mutual</code></em>:</span></p></td>
 <td><p>
-  Boolean, if the graph is directed this gives whether
-       to create all connections as mutual.
+  Boolean, if the graph is directed this gives whether to create
+  all connections as mutual.
 </p></td>
 </tr>
 </tbody>
@@ -1944,13 +1964,14 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code:
-        <code class="constant">IGRAPH_EINVAL</code>: The size of <em class="parameter"><code>dims</code></em> must be either 1, 2, or 3 with all the components
-        at least 1.
-
+  <code class="constant">IGRAPH_EINVAL</code>: The size of <em class="parameter"><code>dims</code></em> must be either 1, 2, or 3 with all
+  the components at least 1.
   </p></td>
 </tr></tbody>
 </table></div>
-<p></p>
+<p>
+
+</p>
 <p><b>See also: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -1960,14 +1981,14 @@ more significant, e.g., (i, j) &lt; (i + 1, j) and (i + 1, j) &lt; (i, j + 1)
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a> for creating a triangular lattice.
+  <a class="link" href="igraph-Generators.html#igraph_triangular_lattice" title="1.12. igraph_triangular_lattice — A triangular lattice with the given shape."><code class="function">igraph_triangular_lattice()</code></a> and <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> for creating
+other types of lattices; ; <a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a> to create a Bethe lattice.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
 Time complexity:  O(|V|), where |V| is the number of vertices in the generated graph.
-
  
 </p>
 </div>
@@ -2073,7 +2094,8 @@ Time complexity: O(|V|), the number of vertices in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> for generating more general lattices.
+  <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> for generating more general
+(periodic or non-periodic) lattices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2258,7 +2280,9 @@ number of vertices plus the number of edges in the graph.
   <a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_symmetric_tree" title="1.16. igraph_symmetric_tree — Creates a symmetric tree with the specified number of branches at each level."><code class="function">igraph_symmetric_tree()</code></a> and <a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center."><code class="function">igraph_star()</code></a>
 for creating other regular structures; <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.28. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a> and
 <a class="link" href="igraph-Generators.html#igraph_tree_from_parent_vector" title="1.18. igraph_tree_from_parent_vector — Constructs a tree or forest from a vector encoding the parent of each vertex."><code class="function">igraph_tree_from_parent_vector()</code></a> for creating arbitrary trees;
-<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.30. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees.
+<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.30. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees;
+<a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> with <code class="constant">IGRAPH_REALIZE_DEGSEQ_SMALLEST</code>
+to create a tree with given degrees.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3432,6 +3456,7 @@ Connectedness matters: construction and exact random sampling of connected netwo
          connected graph, regardless of whether multi-edges are allowed,
          provided that a connected realization exists (see Horvát and Modes,
          2021, as well as <a class="ulink" href="http://szhorvat.net/pelican/hh-connected-graphs.html" target="_top">http://szhorvat.net/pelican/hh-connected-graphs.html</a>).
+         This method can be used to construct a tree from its degrees.
          In the directed case it tends to generate weakly connected graphs,
          but this is not guaranteed.
          
@@ -4274,8 +4299,9 @@ the shifts should be performed. See
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  See <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a> for a similar function using a
-vector_t instead of the variable length argument list.
+  See <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a> for a similar function using an
+<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> instead of the variable length argument list;
+<a class="link" href="igraph-Generators.html#igraph_circulant" title="1.32. igraph_circulant — Creates a circulant graph."><code class="function">igraph_circulant()</code></a> to create circulant graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -4976,13 +5002,14 @@ multi-edges or self-loops.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_generalized_petersen" title="1.33. igraph_generalized_petersen — Creates a Generalized Petersen graph."><code class="function">igraph_generalized_petersen()</code></a>, <a class="link" href="igraph-Generators.html#igraph_extended_chordal_ring" title="1.34. igraph_extended_chordal_ring — Create an extended chordal ring."><code class="function">igraph_extended_chordal_ring()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_generalized_petersen" title="1.33. igraph_generalized_petersen — Creates a Generalized Petersen graph."><code class="function">igraph_generalized_petersen()</code></a>,
+<a class="link" href="igraph-Generators.html#igraph_extended_chordal_ring" title="1.34. igraph_extended_chordal_ring — Create an extended chordal ring."><code class="function">igraph_extended_chordal_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
-Time complexity: O(|V||shifts|), the number of vertices in the graph times the number
+Time complexity: O(|V| |shifts|), the number of vertices in the graph times the number
 of shifts.
  
 </p>
@@ -5195,7 +5222,8 @@ the reverse endpoints.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a>.
+  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a>,
+<a class="link" href="igraph-Generators.html#igraph_circulant" title="1.32. igraph_circulant — Creates a circulant graph."><code class="function">igraph_circulant()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -6163,8 +6191,9 @@ Reference:
 </p>
 <p>
 Duncan J Watts and Steven H Strogatz:
-Collective dynamics of <span class="quote">“<span class="quote">small world</span>”</span> networks, Nature
-393, 440-442, 1998.
+Collective dynamics of <span class="quote">“<span class="quote">small world</span>”</span> networks,
+Nature 393, 440-442, 1998.
+<a class="ulink" href="https://doi.org/10.1038/30918" target="_top">https://doi.org/10.1038/30918</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -7317,7 +7346,7 @@ undirected, then the expected degrees with and without self-loops are
 <p>
 A limitation of the original Chung-Lu model is that when some of the
 weights are large, the formula for <code class="constant">p_ij</code> yields values larger than 1.
-Chung and Lu's original paper exludes the use of such weights. When
+Chung and Lu's original paper excludes the use of such weights. When
 <code class="literal">p_ij &gt; 1</code>, this function simply issues a warning and creates
 a connection between <code class="constant">i</code> and <code class="constant">j</code>. However, in this case the expected degrees
 will no longer relate to the weights in the manner stated above. Thus the
@@ -7338,8 +7367,8 @@ to a maximum entropy model (i.e. exponential random graph model) with
 a constraint on expected degrees; see Park and Newman (2004), Section B,
 setting <code class="literal">exp(-Theta_ij) = w_i w_j / S</code>. This model is also
 discussed by Britton, Deijfen and Martin-Löf (2006). By virtue of being
-a degree-constrained maximum entropy model, it graphs with the same degree
-sequence are produced with the same probability.
+a degree-constrained maximum entropy model, it produces graphs with the
+same degree sequence with the same probability.
 A third variant can be requested with <code class="constant">IGRAPH_CHUNG_LU_NR</code>, and uses
 <code class="literal">p_ij = 1 - exp(-q_ij)</code>. This is the underlying simple graph
 of a multigraph model introduced by Norros and Reittu (2006).
@@ -9851,7 +9880,7 @@ given simple graph and shuffling its vertices.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>corr</code></em>:</span></p></td>
 <td><p>
-  A scalar in the unit interval [0,1], the target Pearson
+  A value in the unit interval [0,1], the target Pearson
        correlation between the adjacency matrices of the original and the
        generated graph (the adjacency matrix being used as a vector).
 </p></td>
@@ -9859,9 +9888,8 @@ given simple graph and shuffling its vertices.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
 <td><p>
-  A numeric scalar, the probability of an edge between two
-       vertices, it must in the open (0,1) interval. Typically,
-       the density of <em class="parameter"><code>old_graph</code></em>.
+  The probability of an edge between two vertices. It must in the
+       open (0,1) interval. Typically, the density of <em class="parameter"><code>old_graph</code></em>.
 </p></td>
 </tr>
 <tr>

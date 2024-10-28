@@ -5230,8 +5230,8 @@ components. Isolated vertices have eccentricity zero.
 </table></div>
 <p>
 
-Time complexity: O(v*(|V|+|E|)), where |V| is the number of
-vertices, |E| is the number of edges and v is the number of
+Time complexity: O(|S| (|V|+|E|)), where |V| is the number of
+vertices, |E| is the number of edges and |S| is the number of
 vertices for which eccentricity is calculated.
 
 </p>
@@ -5961,7 +5961,7 @@ is in.
 </table></div>
 <p>
 
-Time complexity: O(|V||E|)), where |V| is the number of
+Time complexity: O(|V| |E|)), where |V| is the number of
 vertices and |E| is the number of edges.
 
 </p>
@@ -6108,7 +6108,7 @@ If the graph has no vertices, <code class="constant">IGRAPH_NAN</code> is return
 </table></div>
 <p>
 
-Time complexity: O(|V||E|*log|E|), |V| is the number of vertices,
+Time complexity: O(|V| |E| log|E|), |V| is the number of vertices,
 |E| is the number of edges.
 
 </p>
@@ -8895,7 +8895,7 @@ from vertex <code class="constant">u</code> precisely when <code class="literal"
 <td><p><span class="term"><code class="constant">IGRAPH_STRONG</code></span></p></td>
 <td><p>
 
-      Compute strongly connnected components, i.e. considr edge directions.
+      Compute strongly connnected components, i.e. consider edge directions.
    
 </p></td>
 </tr>
@@ -9191,7 +9191,7 @@ graph, except when there is only a single component in the original graph.
 <td><p>
   The minimum number of vertices a component
    should contain in order to place it in the <em class="parameter"><code>components</code></em>
-   vector. For example, supplying 2 here ignored isolated vertices.
+   vector. For example, supplying 2 here ignores isolated vertices.
 </p></td>
 </tr>
 </tbody>
@@ -10987,6 +10987,16 @@ vertices, the value of these geodesics are weighted by one over the
 number of geodesics.
 
 </p>
+<p>
+Reference:
+
+</p>
+<p>
+Ulrik Brandes: A faster algorithm for betweenness centrality.
+The Journal of Mathematical Sociology, 25(2), 163–177 (2001).
+<a class="ulink" href="https://doi.org/10.1080/0022250X.2001.9990249" target="_top">https://doi.org/10.1080/0022250X.2001.9990249</a>
+
+</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -11102,6 +11112,16 @@ The betweenness centrality of an edge is the number of geodesics
 going through it. If there are more than one geodesics between two
 vertices, the value of these geodesics are weighted by one over the
 number of geodesics.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Ulrik Brandes: A faster algorithm for betweenness centrality.
+The Journal of Mathematical Sociology, 25(2), 163–177 (2001).
+<a class="ulink" href="https://doi.org/10.1080/0022250X.2001.9990249" target="_top">https://doi.org/10.1080/0022250X.2001.9990249</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -12099,7 +12119,7 @@ exactly the vertex degree.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  A logical scalar, whether to count loop edges as well.
+  Boolean, whether to count loop edges as well.
 </p></td>
 </tr>
 <tr>
@@ -12206,6 +12226,7 @@ to the sum of centralities of vertices pointing to it.
 Eigenvector centrality is meaningful only for (strongly) connected graphs.
 Undirected graphs that are not connected should be decomposed into connected
 components, and the eigenvector centrality calculated for each separately.
+The scores between components will not be comparable.
 This function does not verify that the graph is connected. If it is not,
 in the undirected case the scores of all but one component will be zeros.
 
@@ -12213,10 +12234,10 @@ in the undirected case the scores of all but one component will be zeros.
 <p>
 Also note that the adjacency matrix of a directed acyclic graph or the
 adjacency matrix of an empty graph does not possess positive eigenvalues,
-therefore the eigenvector centrality is not defined for these graphs.
-igraph will return an eigenvalue of zero in such cases. The eigenvector
-centralities will all be equal for an empty graph and will all be zeros
-for a directed acyclic graph. Such pathological cases can be detected
+therefore the eigenvector centrality is not meaningful for these graphs.
+igraph will return an eigenvalue of zero in such cases. The returned
+eigenvector centralities will all be equal for vertices with zero out-degree,
+and zeros for other vertices. Such pathological cases can be detected
 by asking igraph to calculate the eigenvalue as well (using the <em class="parameter"><code>value</code></em>
 parameter, see below) and checking whether the eigenvalue is very close
 to zero.
@@ -13056,7 +13077,8 @@ cutoffs in a way that depends on the graph structure.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Other centrality types: <a class="link" href="igraph-Structural.html#igraph_closeness" title="10.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a>, <a class="link" href="igraph-Structural.html#igraph_betweenness" title="10.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_harmonic_centrality" title="10.2. igraph_harmonic_centrality — Harmonic centrality for some vertices."><code class="function">igraph_harmonic_centrality()</code></a> to calculate the exact harmonic centrality.
+Other centrality types: <a class="link" href="igraph-Structural.html#igraph_closeness" title="10.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a>, <a class="link" href="igraph-Structural.html#igraph_betweenness" title="10.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -13589,7 +13611,7 @@ igraph_real_t igraph_centralization(const igraph_vector_t *scores,
 
 For a centrality score defined on the vertices of a graph, it is
 possible to define a graph level centralization index, by
-calculating the sum of the deviation from the maximum centrality
+calculating the sum of the deviations from the maximum centrality
 score. Consequently, the higher the centralization index of the
 graph, the more centralized the structure is.
 
@@ -13602,16 +13624,25 @@ of the most centralized structure with the same number of vertices.
 
 </p>
 <p>
-For most centrality indices the most centralized
-structure is the star graph, a single center connected to all other
-nodes in the network. There are some variation depending on whether
-the graph is directed or not, whether loop edges are allowed, etc.
+For most centrality indices, the most centralized structure is the
+star graph, a single center connected to all other nodes in the network.
+There is some variation depending on whether the graph is directed or not,
+whether loop edges are allowed, etc.
 
 </p>
 <p>
 This function simply calculates the graph level index, if the node
 level scores and the theoretical maximum are given. It is called by
-all the measure-specific centralization functions.
+all the measure-specific centralization functions. It uses the calculation
+
+</p>
+<p>
+<code class="literal">C = sum_v ((max_u c_u) - c_v)</code>
+
+</p>
+<p>
+where <code class="constant">c</code> are the centrality scores passed in <em class="parameter"><code>scores</code></em>. If <em class="parameter"><code>normalized</code></em>
+is <code class="constant">true</code>, then <code class="literal">C/theoretical_max</code> is returned.
 
 </p>
 <p><b>Arguments: </b>
@@ -13684,7 +13715,7 @@ Time complexity: O(n), the length of the score vector.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.15.2.13.1"></a><p class="title"><b>Example 13.21.  File <code class="code">examples/simple/centralization.c</code></b></p>
+<a name="id-1.14.15.2.15.1"></a><p class="title"><b>Example 13.21.  File <code class="code">examples/simple/centralization.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -14137,6 +14168,20 @@ This function calculates the eigenvector centrality of the vertices
 by passing its arguments to <a class="link" href="igraph-Structural.html#igraph_eigenvector_centrality" title="10.12. igraph_eigenvector_centrality — Eigenvector centrality of the vertices."><code class="function">igraph_eigenvector_centrality</code></a>);
 and it calculates the graph level centralization index based on the
 results by calling <a class="link" href="igraph-Structural.html#igraph_centralization" title="13.1. igraph_centralization — Calculate the centralization score from the node level scores."><code class="function">igraph_centralization()</code></a>.
+
+</p>
+<p>
+Note that vertex-level eigenvector centrality scores do not have
+a natural scale. As with any eigenvector, their interpretation is
+invariant to scaling by a constant factor. However, due to how
+graph-level <span class="emphasis"><em>centralization</em></span> is defined, its value depends on the
+specific scale/normalization used for vertex-level scores. Which of
+two graphs will have a higher eigenvector <span class="emphasis"><em>centralization</em></span> depends
+on the choice of normalization for centralities. This function makes
+the specific choice of scaling vertex-level centrality scores by their
+maximum (i.e. it uses the ∞-norm). Other normalization choices, such
+as the 1-norm or 2-norm are not currently implemented.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -14169,8 +14214,8 @@ results by calling <a class="link" href="igraph-Structural.html#igraph_centraliz
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
 <td><p>
-  If not zero then the result will be scaled, such that
-    the absolute value of the maximum centrality is one.
+  This parameter is deprecated and ignored since igraph 0.10.14.
+    Vertex-level centrality scores are always scaled to have a maximum of one.
 </p></td>
 </tr>
 <tr>
@@ -14271,16 +14316,16 @@ based on vertex degree.
 </p>
 <p>
 There are two ways to call this function, the first is to supply a
-graph as the <code class="literal">graph</code> argument, and then the number of
+graph as the <em class="parameter"><code>graph</code></em> argument, and then the number of
 vertices is taken from this object, and its directedness is
-considered as well. The <code class="literal">nodes</code> argument is ignored in
-this case. The <code class="literal">mode</code> argument is also ignored if the
+considered as well. The <em class="parameter"><code>nodes</code></em> argument is ignored in
+this case. The <em class="parameter"><code>mode</code></em> argument is also ignored if the
 supplied graph is undirected.
 
 </p>
 <p>
-The other way is to supply a null pointer as the <code class="literal">graph</code>
-argument. In this case the <code class="literal">nodes</code> and <code class="literal">mode</code>
+The other way is to supply a null pointer as the <em class="parameter"><code>graph</code></em>
+argument. In this case the <em class="parameter"><code>nodes</code></em> and <em class="parameter"><code>mode</code></em>
 arguments are considered.
 
 </p>
@@ -14309,23 +14354,23 @@ in-star or the out-star.
 <td><p><span class="term"><em class="parameter"><code>nodes</code></em>:</span></p></td>
 <td><p>
   The number of nodes. This is ignored if the
-    <code class="literal">graph</code> argument is not a null pointer.
+    <em class="parameter"><code>graph</code></em> argument is not a null pointer.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
   Constant, whether the calculation is based on in-degree
-    (<code class="literal">IGRAPH_IN</code>), out-degree (<code class="literal">IGRAPH_OUT</code>)
-    or total degree (<code class="literal">IGRAPH_ALL</code>). This is ignored if
-    the <code class="literal">graph</code> argument is not a null pointer and the
+    (<code class="constant">IGRAPH_IN</code>), out-degree (<code class="constant">IGRAPH_OUT</code>)
+    or total degree (<code class="constant">IGRAPH_ALL</code>). This is ignored if
+    the <em class="parameter"><code>graph</code></em> argument is not a null pointer and the
     given graph is undirected.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Boolean scalar, whether to consider loop edges in the
+  Boolean, whether to consider loop edges in the
     calculation.
 </p></td>
 </tr>
@@ -14397,16 +14442,16 @@ based on vertex betweenness.
 </p>
 <p>
 There are two ways to call this function, the first is to supply a
-graph as the <code class="literal">graph</code> argument, and then the number of
+graph as the <em class="parameter"><code>graph</code></em> argument, and then the number of
 vertices is taken from this object, and its directedness is
-considered as well. The <code class="literal">nodes</code> argument is ignored in
-this case. The <code class="literal">directed</code> argument is also ignored if the
+considered as well. The <em class="parameter"><code>nodes</code></em> argument is ignored in
+this case. The <em class="parameter"><code>directed</code></em> argument is also ignored if the
 supplied graph is undirected.
 
 </p>
 <p>
-The other way is to supply a null pointer as the <code class="literal">graph</code>
-argument. In this case the <code class="literal">nodes</code> and <code class="literal">directed</code>
+The other way is to supply a null pointer as the <em class="parameter"><code>graph</code></em>
+argument. In this case the <em class="parameter"><code>nodes</code></em> and <em class="parameter"><code>directed</code></em>
 arguments are considered.
 
 </p>
@@ -14433,15 +14478,15 @@ The most centralized structure is the star.
 <td><p><span class="term"><em class="parameter"><code>nodes</code></em>:</span></p></td>
 <td><p>
   The number of nodes. This is ignored if the
-    <code class="literal">graph</code> argument is not a null pointer.
+    <em class="parameter"><code>graph</code></em> argument is not a null pointer.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Boolean scalar, whether to use directed paths in
+  Boolean, whether to use directed paths in
     the betweenness calculation. This argument is ignored if
-    <code class="literal">graph</code> is not a null pointer and it is undirected.
+    <em class="parameter"><code>graph</code></em> is not a null pointer and it is undirected.
 </p></td>
 </tr>
 <tr>
@@ -14512,21 +14557,22 @@ based on vertex closeness.
 </p>
 <p>
 There are two ways to call this function, the first is to supply a
-graph as the <code class="literal">graph</code> argument, and then the number of
+graph as the <em class="parameter"><code>graph</code></em> argument, and then the number of
 vertices is taken from this object, and its directedness is
-considered as well. The <code class="literal">nodes</code> argument is ignored in
-this case. The <code class="literal">mode</code> argument is also ignored if the
+considered as well. The <em class="parameter"><code>nodes</code></em> argument is ignored in
+this case. The <em class="parameter"><code>mode</code></em> argument is also ignored if the
 supplied graph is undirected.
 
 </p>
 <p>
-The other way is to supply a null pointer as the <code class="literal">graph</code>
-argument. In this case the <code class="literal">nodes</code> and <code class="literal">mode</code>
+The other way is to supply a null pointer as the <em class="parameter"><code>graph</code></em>
+argument. In this case the <em class="parameter"><code>nodes</code></em> and <em class="parameter"><code>mode</code></em>
 arguments are considered.
 
 </p>
 <p>
 The most centralized structure is the star.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -14547,17 +14593,16 @@ The most centralized structure is the star.
 <td><p><span class="term"><em class="parameter"><code>nodes</code></em>:</span></p></td>
 <td><p>
   The number of nodes. This is ignored if the
-    <code class="literal">graph</code> argument is not a null pointer.
+    <em class="parameter"><code>graph</code></em> argument is not a null pointer.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
-  Constant, specifies what kinf of distances to consider
-    to calculate closeness. See the <code class="literal">mode</code> argument of
+  Constant, specifies what kind of distances to consider
+    to calculate closeness. See the <em class="parameter"><code>mode</code></em> argument of
     <a class="link" href="igraph-Structural.html#igraph_closeness" title="10.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a> for details. This argument is ignored
-    if <code class="literal">graph</code> is not a null pointer and it is
-    undirected.
+    if <em class="parameter"><code>graph</code></em> is not a null pointer and it is undirected.
 </p></td>
 </tr>
 <tr>
@@ -14630,22 +14675,41 @@ based on vertex eigenvector centrality.
 </p>
 <p>
 There are two ways to call this function, the first is to supply a
-graph as the <code class="literal">graph</code> argument, and then the number of
+graph as the <em class="parameter"><code>graph</code></em> argument, and then the number of
 vertices is taken from this object, and its directedness is
-considered as well. The <code class="literal">nodes</code> argument is ignored in
-this case. The <code class="literal">directed</code> argument is also ignored if the
+considered as well. The <em class="parameter"><code>nodes</code></em> argument is ignored in
+this case. The <em class="parameter"><code>directed</code></em> argument is also ignored if the
 supplied graph is undirected.
 
 </p>
 <p>
-The other way is to supply a null pointer as the <code class="literal">graph</code>
-argument. In this case the <code class="literal">nodes</code> and <code class="literal">directed</code>
+The other way is to supply a null pointer as the <em class="parameter"><code>graph</code></em>
+argument. In this case the <em class="parameter"><code>nodes</code></em> and <em class="parameter"><code>directed</code></em>
 arguments are considered.
 
 </p>
 <p>
-The most centralized directed structure is the in-star. The most
-centralized undirected structure is the graph with a single edge.
+The most centralized directed structure is assumed to bethe in-star.
+The most centralized undirected structure is assumed to be the graph
+with a single edge. igraph continues to implement these choices for
+historical reason. Keep in mind that neither of these two structures
+is connected, which makes their use debatable in the context of
+eigenvector centrality calculations. Eigenvector centrality is not
+uniquely defined for disconnected structures.
+
+</p>
+<p>
+Note that vertex-level eigenvector centrality scores do not have
+a natural scale. As with any eigenvector, their interpretation is
+invariant to scaling by a constant factor. However, due to how
+graph-level <span class="emphasis"><em>centralization</em></span> is defined, its value depends on the
+specific scale/normalization used for vertex-level scores. Moreover,
+which of two graphs will have a higher eigenvector <span class="emphasis"><em>centralization</em></span>
+also depends on the choice of normalization for centralities. This
+function makes the specific choice of scaling vertex-level centrality
+scores by their maximum (i.e. it uses the ∞-norm). Other normalization
+choices, such as the 1-norm or 2-norm are not currently implemented.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -14666,21 +14730,22 @@ centralized undirected structure is the graph with a single edge.
 <td><p><span class="term"><em class="parameter"><code>nodes</code></em>:</span></p></td>
 <td><p>
   The number of nodes. This is ignored if the
-    <code class="literal">graph</code> argument is not a null pointer.
+    <em class="parameter"><code>graph</code></em> argument is not a null pointer.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Boolean scalar, whether to consider edge
+  Boolean, whether to consider edge
     directions. This argument is ignored if
-    <code class="literal">graph</code> is not a null pointer and it is undirected.
+    <em class="parameter"><code>graph</code></em> is not a null pointer and it is undirected.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>scale</code></em>:</span></p></td>
 <td><p>
-  Whether to rescale the node-level centrality scores to
+  This parameter is deprecated and ignored since igraph 0.10.14.
+    Vertex-level centrality scores are always assumed to be scaled to
     have a maximum of one.
 </p></td>
 </tr>
@@ -21262,6 +21327,7 @@ Time complexity: It should be O(|E|^1.5) according to the reference.
 <dt><span class="section"><a href="igraph-Structural.html#igraph_is_dag">22.1. <code class="function">igraph_is_dag</code> —  Checks whether a graph is a directed acyclic graph (DAG).</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_topological_sorting">22.2. <code class="function">igraph_topological_sorting</code> —  Calculate a possible topological sorting of the graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Structural.html#igraph_feedback_arc_set">22.3. <code class="function">igraph_feedback_arc_set</code> —  Feedback arc set of a graph using exact or heuristic methods.</a></span></dt>
+<dt><span class="section"><a href="igraph-Structural.html#igraph_feedback_vertex_set">22.4. <code class="function">igraph_feedback_vertex_set</code> —  Feedback vertex set of a graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -21500,8 +21566,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <a class="indexterm" name="id-1.14.24.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_feedback_arc_set(const igraph_t *graph, igraph_vector_int_t *result,
-                            const igraph_vector_t *weights, igraph_fas_algorithm_t algo);
+igraph_error_t igraph_feedback_arc_set(
+        const igraph_t *graph,
+        igraph_vector_int_t *result,
+        const igraph_vector_t *weights,
+        igraph_fas_algorithm_t algo);
 </pre></div>
 <p>
 </p>
@@ -21512,15 +21581,33 @@ igraph_error_t igraph_feedback_arc_set(const igraph_t *graph, igraph_vector_int_
 
 A feedback arc set is a set of edges whose removal makes the graph acyclic.
 We are usually interested in <span class="emphasis"><em>minimum</em></span> feedback arc sets, i.e. sets of edges
-whose total weight is minimal among all the feedback arc sets.
+whose total weight is the smallest among all the feedback arc sets.
 
 </p>
 <p>
-For undirected graphs, the problem is simple: one has to find a maximum weight
+For undirected graphs, the solution is simple: one has to find a maximum weight
 spanning tree and then remove all the edges not in the spanning tree. For directed
-graphs, this is an NP-hard problem, and various heuristics are usually used to
-find an approximate solution to the problem. This function implements a few of
-these heuristics.
+graphs, this is an NP-complete problem, and various heuristics are usually used to
+find an approximate solution to the problem. This function implements both exact
+methods and heuristics, selectable with the <em class="parameter"><code>algo</code></em> parameter.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Eades P, Lin X and Smyth WF:
+A fast and effective heuristic for the feedback arc set problem.
+Information Processing Letters 47(6), pp 319-323 (1993).
+<a class="ulink" href="https://doi.org/10.1016/0020-0190(93)90079-O" target="_top">https://doi.org/10.1016/0020-0190(93)90079-O</a>
+
+</p>
+<p>
+Baharev A, Hermann S, Arnold N and Tobias A:
+An Exact Method for the Minimum Feedback Arc Set Problem.
+ACM Journal of Experimental Algorithmics 26, 1–28 (2021).
+<a class="ulink" href="https://doi.org/10.1145/3446429" target="_top">https://doi.org/10.1145/3446429</a>.
 
 </p>
 <p><b>Arguments: </b>
@@ -21540,13 +21627,13 @@ these heuristics.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
 <td><p>
-  An initialized vector, the result will be returned here.
+  An initialized vector, the result will be written here.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  Weight vector or NULL if no weights are specified.
+  Weight vector or <code class="constant">NULL</code> if no weights are specified.
 </p></td>
 </tr>
 <tr>
@@ -21566,8 +21653,46 @@ these heuristics.
 <td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP</code></span></p></td>
 <td><p>
 
-         Finds a <span class="emphasis"><em>minimum</em></span> feedback arc set using integer programming (IP).
-         The complexity of this algorithm is exponential of course.
+         Finds a <span class="emphasis"><em>minimum</em></span> feedback arc set using integer programming (IP),
+         automatically selecting the best method of this type (currently
+         always <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code>). The complexity is of course
+         at least exponential.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP_CG</code></span></p></td>
+<td><p>
+
+         This is an integer programming approach based on a minimum set cover
+         formulation and using incremental constraint generation (CG), added
+         in igraph 0.10.14. We minimize <code class="literal">sum_e w_e b_e</code> subject to
+         the constraints <code class="literal">sum_e c_e b_e &gt;= 1</code> for all cycles <code class="constant">c</code>.
+         Here <code class="constant">w_e</code> is the weight of edge <code class="constant">e</code>, <code class="constant">b_e</code> is a binary variable
+         (0 or 1) indicating whether edge <code class="constant">e</code> is in the feedback set,
+         and <code class="constant">c_e</code> is a binary coefficient indicating whether edge <code class="constant">e</code>
+         is in cycle <code class="constant">c</code>. The constraint expresses the requirement that all
+         cycles must intersect with (be broken by) the edge set represented
+         by <code class="constant">b</code>. Since there are a very large number of cycles in the graph,
+         constraints are generated incrementally, iteratively adding some cycles
+         that do not intersect with the current edge set <code class="constant">b</code>, then solving for
+         <code class="constant">b</code> again, until finally no unbroken cycles remain. This approach is
+         similar to that described by Baharev et al (though with a simpler
+         cycle generation scheme), and to what is implemented by SageMath's.
+         <code class="constant">feedback_edge_set</code> function.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP_TI</code></span></p></td>
+<td><p>
+
+         This is another integer programming approach based on finding a
+         maximum (largest weight) edge set that adheres to a topological
+         order. It uses the common formulation through triangle inequalities
+         (TI), see Section 3.1 of Baharev et al (2021) for an overview. This
+         method was used before igraph 0.10.14, and is typically much slower
+         than <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code>.
        
 </p></td>
 </tr>
@@ -21577,10 +21702,7 @@ these heuristics.
 
          Finds a feedback arc set using the heuristic of Eades, Lin and
          Smyth (1993). This is guaranteed to be smaller than |E|/2 - |V|/6,
-         and it is linear in the number of edges (i.e. O(|E|)).
-         For more details, see Eades P, Lin X and Smyth WF: A fast and effective
-         heuristic for the feedback arc set problem. In: Proc Inf Process Lett
-         319-323, 1993.
+         and it is linear in the number of edges (i.e. O(|E|)) to compute.
        
 </p></td>
 </tr>
@@ -21614,7 +21736,7 @@ these heuristics.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.24.4.9.1"></a><p class="title"><b>Example 13.46.  File <code class="code">examples/simple/igraph_feedback_arc_set.c</code></b></p>
+<a name="id-1.14.24.4.12.1"></a><p class="title"><b>Example 13.46.  File <code class="code">examples/simple/igraph_feedback_arc_set.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
@@ -21694,7 +21816,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.24.4.9.2"></a><p class="title"><b>Example 13.47.  File <code class="code">examples/simple/igraph_feedback_arc_set_ip.c</code></b></p>
+<a name="id-1.14.24.4.12.2"></a><p class="title"><b>Example 13.47.  File <code class="code">examples/simple/igraph_feedback_arc_set_ip.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
@@ -21804,6 +21926,110 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <br class="example-break">
 </div>
 <p>
+Time complexity: depends on <em class="parameter"><code>algo</code></em>, see the time complexities there.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_feedback_vertex_set"></a>22.4. <code class="function">igraph_feedback_vertex_set</code> —  Feedback vertex set of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.14.24.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_feedback_vertex_set(
+    const igraph_t *graph, igraph_vector_int_t *result,
+    const igraph_vector_t *vertex_weights, igraph_fvs_algorithm_t algo);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>A feedback vertex set is a set of vertices whose removal makes the graph
+acyclic. Finding a <span class="emphasis"><em>minimum</em></span> feedback vertex set is an NP-complete
+problem, both on directed and undirected graphs.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the result will be written here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
+<td><p>
+  Vertex weight vector or <code class="constant">NULL</code> if no weights are specified.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>algo</code></em>:</span></p></td>
+<td>
+<p>
+  Algorithm to use. Possible values:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FVS_EXACT_IP</code></span></p></td>
+<td><p>
+
+        Finds a <span class="emphasis"><em>miniumum</em></span> feedback vertex set using integer programming
+        (IP). The complexity is of course at least exponential. Currently
+        this method uses an approach analogous to that of the
+        <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code> algorithm of <a class="link" href="igraph-Structural.html#igraph_feedback_arc_set" title="22.3. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods."><code class="function">igraph_feedback_arc_set()</code></a>.
+       
+</p></td>
+</tr></tbody>
+</table></div>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: depends on <em class="parameter"><code>algo</code></em>, see the time complexities there.
  
 </p>
@@ -23031,11 +23257,14 @@ Claxton: Network Diversity and Economic Development, Science 328,
 </p>
 <p>
 It is simply the (normalized) Shannon entropy of the
-incident edges' weights. D(i)=H(i)/log(k[i]), and
-H(i) = -sum(p[i,j] log(p[i,j]), j=1..k[i]),
-where p[i,j]=w[i,j]/sum(w[i,l], l=1..k[i]),  k[i] is the (total)
-degree of vertex i, and w[i,j] is the weight of the edge(s) between
-vertex i and j. The diversity of isolated vertices will be NaN
+incident edges' weights.
+<code class="literal">D(i) = H(i) / log(k[i])</code>,
+and
+<code class="literal">H(i) = -sum(p[i,j] log(p[i,j]), j=1..k[i])</code>,
+where <code class="literal">p[i,j] = w[i,j] / sum(w[i,l], l=1..k[i])</code>,
+<code class="literal">k[i]</code> is the (total) degree of vertex <code class="constant">i</code>,
+and <code class="literal">w[i,j]</code> is the weight of the edge(s) between
+vertex <code class="constant">i</code> and <code class="constant">j</code>. The diversity of isolated vertices will be NaN
 (not-a-number), while that of vertices with a single connection
 will be zero.
 
@@ -24307,6 +24536,23 @@ This function checks whether a graph is acyclic or not.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a cycle that demonstrates
+that the graph is not acyclic.
   </p></td>
 </tr></tbody>
 </table></div>
