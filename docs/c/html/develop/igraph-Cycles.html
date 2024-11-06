@@ -157,7 +157,12 @@
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="id-1.15.2"></a>1. Finding cycles</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Cycles.html#igraph_find_cycle">1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</a></span></dt></dl></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_find_cycle">1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_simple_cycles">1.2. <code class="function">igraph_simple_cycles</code> —  Finds all simple cycles.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_simple_cycles_callback">1.3. <code class="function">igraph_simple_cycles_callback</code> —  Finds all simple cycles (callback version).</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_cycle_handler_t">1.4. <code class="function">igraph_cycle_handler_t</code> —  Type of cycle handler functions.</a></span></dt>
+</dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_find_cycle"></a>1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</h3></div></div></div>
@@ -264,6 +269,343 @@ without returning a specific cycle.
 </table></div>
 <p>
  
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_simple_cycles"></a>1.2. <code class="function">igraph_simple_cycles</code> —  Finds all simple cycles.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_simple_cycles(
+        const igraph_t *graph,
+        igraph_vector_int_list_t *vertices,
+        igraph_vector_int_list_t *edges,
+        igraph_neimode_t mode,
+        igraph_integer_t min_cycle_length,
+        igraph_integer_t max_cycle_length);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function searches for all simple cycles using Johnson's cycle
+detection algorithm, and stores them in the provided vector lists.
+A simple cycle is a cycle (i.e. closed path) without repeated vertices.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Johnson DB: Finding all the elementary circuits of a directed graph.
+SIAM J. Comput. 4(1):77-84.
+<a class="ulink" href="https://doi.org/10.1137/0204007" target="_top">https://doi.org/10.1137/0204007</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to search for cycles in.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertices</code></em>:</span></p></td>
+<td><p>
+  The vertex IDs of each cycle will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
+<td><p>
+  The edge IDs of each cycle will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  A constant specifying how edge directions are
+  considered in directed graphs. Valid modes are:
+  <code class="constant">IGRAPH_OUT</code>, follows edge directions;
+  <code class="constant">IGRAPH_IN</code>, follows the opposite directions; and
+  <code class="constant">IGRAPH_ALL</code>, ignores edge directions. This argument is
+  ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_cycle_length</code></em>:</span></p></td>
+<td><p>
+  Limit the minimum length of cycles to search for.
+  Pass a negative value to search for all cycles.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_cycle_length</code></em>:</span></p></td>
+<td><p>
+  Limit the maximum length of cycles to search for.
+  Pass a negative value to search for all cycles.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cycles.html#igraph_simple_cycles" title="1.2. igraph_simple_cycles — Finds all simple cycles."><code class="function">igraph_simple_cycles()</code></a> to call a function for each found cycle;
+<a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a single cycle;
+<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="3.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and igraph_minimum_cycle_basis()
+to find a cycle basis, a compact representation of the cycle structure
+of the graph.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_simple_cycles_callback"></a>1.3. <code class="function">igraph_simple_cycles_callback</code> —  Finds all simple cycles (callback version).</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_simple_cycles_callback(
+        const igraph_t *graph,
+        igraph_neimode_t mode,
+        igraph_integer_t min_cycle_length,
+        igraph_integer_t max_cycle_length,
+        igraph_cycle_handler_t *callback,
+        void *arg);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function searches for all simple cycles using Johnson's cycle
+detection algorithm, and calls a function for each.
+A simple cycle is a cycle (i.e. closed path) without repeated vertices.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Johnson DB: Finding all the elementary circuits of a directed graph.
+SIAM J. Comput. 4(1):77-84.
+<a class="ulink" href="https://doi.org/10.1137/0204007" target="_top">https://doi.org/10.1137/0204007</a>
+
+See also: <a class="link" href="igraph-Cycles.html#igraph_simple_cycles_callback" title="1.3. igraph_simple_cycles_callback — Finds all simple cycles (callback version)."><code class="function">igraph_simple_cycles_callback()</code></a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to search for
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  A constant specifying how edge directions are
+  considered in directed graphs. Valid modes are:
+  <code class="constant">IGRAPH_OUT</code>, follows edge directions;
+  <code class="constant">IGRAPH_IN</code>, follows the opposite directions; and
+  <code class="constant">IGRAPH_ALL</code>, ignores edge directions. This argument is
+  ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_cycle_length</code></em>:</span></p></td>
+<td><p>
+  Limit the minimum length of cycles to search for.
+  Pass a negative value to search for all cycles.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_cycle_length</code></em>:</span></p></td>
+<td><p>
+  Limit the maximum length of cycles to search for.
+  Pass a negative value to search for all cycles.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>callback</code></em>:</span></p></td>
+<td><p>
+  A function to call for each cycle that is found.
+  See also <a class="link" href="igraph-Cycles.html#igraph_cycle_handler_t" title="1.4. igraph_cycle_handler_t — Type of cycle handler functions."><code class="function">igraph_cycle_handler_t</code></a>
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  This parameter will be passed to <em class="parameter"><code>callback</code></em>.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cycles.html#igraph_simple_cycles" title="1.2. igraph_simple_cycles — Finds all simple cycles."><code class="function">igraph_simple_cycles()</code></a> to store the found cycles;
+<a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a single cycle;
+<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="3.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and igraph_minimum_cycle_basis()
+to find a cycle basis, a compact representation of the cycle structure
+of the graph.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_cycle_handler_t"></a>1.4. <code class="function">igraph_cycle_handler_t</code> —  Type of cycle handler functions.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.5.2"></a><pre class="programlisting">
+typedef igraph_error_t igraph_cycle_handler_t(
+        const igraph_vector_int_t *vertices,
+        const igraph_vector_int_t *edges,
+        void *arg);
+</pre>
+<p>
+
+
+Callback type, called by <a class="link" href="igraph-Cycles.html#igraph_simple_cycles_callback" title="1.3. igraph_simple_cycles_callback — Finds all simple cycles (callback version)."><code class="function">igraph_simple_cycles_callback()</code></a> when
+a cycle is found.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertices</code></em>:</span></p></td>
+<td><p>
+  The vertices of the current cycle. Must not be modified.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
+<td><p>
+  The edges of the current cycle. Must not be modified.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  The extra parameter passed to <a class="link" href="igraph-Cycles.html#igraph_simple_cycles_callback" title="1.3. igraph_simple_cycles_callback — Finds all simple cycles (callback version)."><code class="function">igraph_simple_cycles_callback()</code></a>
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code; <code class="constant">IGRAPH_SUCCESS</code> to continue the search or
+  <code class="constant">IGRAPH_STOP</code> to stop the search without signaling an error.
+ 
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 </p>
 </div>
 </div>
