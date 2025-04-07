@@ -170,7 +170,7 @@ references provide a good introduction to the topic of community detection:
 S. Fortunato:
 "Community Detection in Graphs".
 Physics Reports 486, no. 3–5 (2010): 75–174.
-<a class="ulink" href="https://doi.org/16/j.physrep.2009.11.002" target="_top">https://doi.org/16/j.physrep.2009.11.002</a>.
+<a class="ulink" href="https://doi.org/10.1016/j.physrep.2009.11.002" target="_top">https://doi.org/10.1016/j.physrep.2009.11.002</a>.
 </p>
 <p>
 S. Fortunato and D. Hric:
@@ -495,9 +495,10 @@ matrix and degrees are used.
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_optimal_modularity(const igraph_t *graph,
-                                        igraph_real_t *modularity,
-                                        igraph_vector_int_t *membership,
-                                        const igraph_vector_t *weights);
+                                                   const igraph_vector_t *weights,
+                                                   const igraph_real_t resolution,
+                                                   igraph_real_t *modularity,
+                                                   igraph_vector_int_t *membership);
 </pre></div>
 <p>
 </p>
@@ -541,6 +542,22 @@ with a couple of hundred vertices might be possible.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Vector giving the weights of the edges. If it is
+       <code class="constant">NULL</code> then each edge is supposed to have the same weight.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>resolution</code></em>:</span></p></td>
+<td><p>
+  Resolution parameter. Must be greater than or equal to 0.
+       Lower values favor fewer, larger communities; higher values favor more,
+       smaller communities. Set it to 1 to use the classical definition of
+       modularity.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>modularity</code></em>:</span></p></td>
 <td><p>
   Pointer to a real number, or a null pointer.
@@ -554,13 +571,6 @@ with a couple of hundred vertices might be possible.
   Pointer to a vector, or a null pointer. If not a
        null pointer, then the membership vector of the optimal
        community structure is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  Vector giving the weights of the edges. If it is
-       <code class="constant">NULL</code> then each edge is supposed to have the same weight.
 </p></td>
 </tr>
 </tbody>
@@ -609,88 +619,38 @@ Time complexity: exponential in the number of vertices.
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
-void <span class="strong"><strong>prepare_weights_vector</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a>* weights, <span class="strong"><strong>const</strong></span> igraph_t* graph) {
-    igraph_integer_t i, n = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(graph);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_resize" title="2.13.3. igraph_vector_resize — Resize the vector.">igraph_vector_resize</a></strong></span>(weights, n);
-    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*weights)[i] = i % 5;
-    }
-}
-
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
-
-    igraph_vector_int_t v;
-    igraph_integer_t edges[] = { 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8,
-                              0, 10, 0, 11, 0, 12, 0, 13, 0, 17, 0, 19, 0, 21, 0, 31,
-                              1, 2, 1, 3, 1, 7, 1, 13, 1, 17, 1, 19, 1, 21, 1, 30,
-                              2, 3, 2, 7, 2, 27, 2, 28, 2, 32, 2, 9, 2, 8, 2, 13,
-                              3, 7, 3, 12, 3, 13, 4, 6, 4, 10, 5, 6, 5, 10, 5, 16,
-                              6, 16, 8, 30, 8, 32, 8, 33, 9, 33, 13, 33, 14, 32, 14, 33,
-                              15, 32, 15, 33, 18, 32, 18, 33, 19, 33, 20, 32, 20, 33,
-                              22, 32, 22, 33, 23, 25, 23, 27, 23, 32, 23, 33, 23, 29,
-                              24, 25, 24, 27, 24, 31, 25, 31, 26, 29, 26, 33, 27, 33,
-                              28, 31, 28, 33, 29, 32, 29, 33, 30, 32, 30, 33, 31, 32, 31, 33,
-                              32, 33
-                            };
-
     igraph_vector_int_t membership;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
     igraph_real_t modularity;
-    igraph_bool_t simple;
-    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> retval;
+    <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a> *handler;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> errcode;
 
-    <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;v, edges, <span class="strong"><strong>sizeof</strong></span>(edges) / <span class="strong"><strong>sizeof</strong></span>(edges[0]));
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;graph, &amp;v, 0, IGRAPH_UNDIRECTED);
-
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 0);
-
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;graph, &amp;simple);
-    <span class="strong"><strong>if</strong></span> (!simple) {
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 9, IGRAPH_UNDIRECTED,
+                 0, 3, 0, 4, 0, 1, 0, 2, 0, 5, 0, 6, 1, 3, 3, 5, 4, 7, 7, 8, 2, 4, 1, 2, 6, 8,
+                 -1);
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_printignore" title="2.4. igraph_error_handler_printignore — Print and ignore errors.">igraph_error_handler_printignore</a>);
+    <span class="emphasis"><em>/* Temporarily ignore errors so we can check if the functionality is available. */</em></span>
+    handler = <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_printignore" title="2.4. igraph_error_handler_printignore — Print and ignore errors.">igraph_error_handler_printignore</a>);
 
-    <span class="emphasis"><em>/* Zachary karate club, unweighted */</em></span>
-    retval = <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_optimal_modularity" title="1.3. igraph_community_optimal_modularity — Calculate the community structure with the highest modularity value.">igraph_community_optimal_modularity</a></strong></span>(&amp;graph, &amp;modularity,
-             &amp;membership, 0);
-    <span class="strong"><strong>if</strong></span> (retval == IGRAPH_UNIMPLEMENTED) {
+    errcode = <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_optimal_modularity" title="1.3. igraph_community_optimal_modularity — Calculate the community structure with the highest modularity value.">igraph_community_optimal_modularity</a></strong></span>(&amp;graph, NULL, 1, &amp;modularity, &amp;membership);
+    <span class="strong"><strong>if</strong></span> (errcode == IGRAPH_UNIMPLEMENTED) {
+        <span class="emphasis"><em>/* igraph was not build with GLPK; functionality unavailable, so we quit */</em></span>
         <span class="strong"><strong>return</strong></span> 77;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(modularity - 0.4197896) &gt; 0.0000001) {
-        <span class="strong"><strong>return</strong></span> 2;
-    }
-    <span class="emphasis"><em>/* Zachary karate club, weighted */</em></span>
-    <span class="strong"><strong>prepare_weights_vector</strong></span>(&amp;weights, &amp;graph);
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_optimal_modularity" title="1.3. igraph_community_optimal_modularity — Calculate the community structure with the highest modularity value.">igraph_community_optimal_modularity</a></strong></span>(&amp;graph, &amp;modularity,
-                                        &amp;membership, &amp;weights);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(modularity - 0.5115767) &gt; 0.0000001) {
-        <span class="strong"><strong>return</strong></span> 4;
-    }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
-    <span class="emphasis"><em>/* simple graph with loop edges, unweighted */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 6, IGRAPH_UNDIRECTED,
-                 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 0, 0, 0, 2, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_optimal_modularity" title="1.3. igraph_community_optimal_modularity — Calculate the community structure with the highest modularity value.">igraph_community_optimal_modularity</a></strong></span>(&amp;graph, &amp;modularity,
-                                        &amp;membership, 0);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(modularity - 0.28125) &gt; 0.00001) {
-        <span class="strong"><strong>return</strong></span> 3;
-    }
-    <span class="emphasis"><em>/* simple graph with loop edges, weighted */</em></span>
-    <span class="strong"><strong>prepare_weights_vector</strong></span>(&amp;weights, &amp;graph);
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_optimal_modularity" title="1.3. igraph_community_optimal_modularity — Calculate the community structure with the highest modularity value.">igraph_community_optimal_modularity</a></strong></span>(&amp;graph, &amp;modularity,
-                                        &amp;membership, &amp;weights);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>fabs</strong></span>(modularity - 0.36686) &gt; 0.00001) {
-        <span class="strong"><strong>return</strong></span> 5;
-    }
+    <span class="emphasis"><em>/* Restore the previous error handler. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(handler);
+
+    <span class="strong"><strong>printf</strong></span>("Highest possible modularity: %g\n", modularity);
+    <span class="strong"><strong>printf</strong></span>("Membership: ");
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
+
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -4189,7 +4149,7 @@ Time complexity: TODO.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	      &copy; 2003 &ndash; 2024 The igraph core team.
+	      &copy; 2003 &ndash; 2025 The igraph core team.
         &bull; Code licensed under <a href="http://www.gnu.org/licenses/gpl-2.0.html"> GNU GPL 2</a> or later,
         documentation under <a href="http://www.gnu.org/copyleft/fdl.html">GNU FDL</a>.
       </p>

@@ -339,7 +339,10 @@ form a clique. An empty set and singleton set are considered to be a clique.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cliques.html#igraph_is_complete" title="1.1. igraph_is_complete — Decides whether the graph is complete."><code class="function">igraph_is_complete()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_is_independent_vertex_set" title="3.1. igraph_is_independent_vertex_set — Does a set of vertices form an independent set?"><code class="function">igraph_is_independent_vertex_set()</code></a>
+  <a class="link" href="igraph-Cliques.html#igraph_is_complete" title="1.1. igraph_is_complete — Decides whether the graph is complete."><code class="function">igraph_is_complete()</code></a> to test if a graph is complete;
+<a class="link" href="igraph-Cliques.html#igraph_is_independent_vertex_set" title="3.1. igraph_is_independent_vertex_set — Does a set of vertices form an independent set?"><code class="function">igraph_is_independent_vertex_set()</code></a> to test for independent vertex sets;
+<a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.3. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a> and
+<a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.7. igraph_largest_cliques — Finds the largest clique(s) in a graph."><code class="function">igraph_largest_cliques()</code></a> to find cliques.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -975,29 +978,32 @@ igraph_error_t igraph_maximal_cliques(
 
 
 
-</p>
-<p>
-A maximal clique is a clique which can't be extended any more by
-adding a new vertex to it.
+This function lists maximal cliques within a size range, ignoring edge
+directions. A clique is a subset of vertices in which all vertex pairs are
+connected. A <span class="emphasis"><em>maximal</em></span> clique is a clique which is not a strict subset
+of any larger clique.
 
 </p>
 <p>
-If you are only interested in the size of the largest clique in the
-graph, use <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.14. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a> instead.
+No guarantees are given about the order in which cliques are returned.
 
 </p>
 <p>
-The current implementation uses a modified Bron-Kerbosch
-algorithm to find the maximal cliques, see: David Eppstein,
-Maarten Löffler, Darren Strash: Listing All Maximal Cliques in
-Sparse Graphs in Near-Optimal Time. Algorithms and Computation,
-Lecture Notes in Computer Science Volume 6506, 2010, pp 403-414.
+The current implementation uses a modified Bron-Kerbosch algorithm due to
+Eppstein, Löffler and Strash.
 
 </p>
-<p>The implementation of this function changed between
-igraph 0.5 and 0.6 and also between 0.6 and 0.7, so the order of
-the cliques and the order of vertices within the cliques will
-almost surely be different between these three versions.
+<p>
+Reference:
+
+</p>
+<p>
+David Eppstein, Maarten Löffler, Darren Strash:
+Listing All Maximal Cliques in Sparse Graphs in Near-Optimal Time.
+Algorithms and Computation, Lecture Notes in Computer Science,
+volume 6506, pp 403-414 (2010).
+<a class="ulink" href="https://doi.org/10.1007/978-3-642-17517-6_36" target="_top">https://doi.org/10.1007/978-3-642-17517-6_36</a>
+<a class="ulink" href="https://arxiv.org/abs/1006.5440" target="_top">https://arxiv.org/abs/1006.5440</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -1011,7 +1017,7 @@ almost surely be different between these three versions.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1065,7 +1071,10 @@ almost surely be different between these three versions.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.4. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph."><code class="function">igraph_maximal_independent_vertex_sets()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.14. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.4. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph."><code class="function">igraph_maximal_independent_vertex_sets()</code></a> to find maximal
+independent sets, which are cliques of the complement graph;
+<a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.14. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a> to find the size of the largest clique;
+<a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.3. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a> to find all cliques.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1135,11 +1144,7 @@ igraph_error_t igraph_maximal_cliques_count(const igraph_t *graph,
 
 
 
-The current implementation uses a modified Bron-Kerbosch
-algorithm to find the maximal cliques, see: David Eppstein,
-Maarten Löffler, Darren Strash: Listing All Maximal Cliques in
-Sparse Graphs in Near-Optimal Time. Algorithms and Computation,
-Lecture Notes in Computer Science Volume 6506, 2010, pp 403-414.
+See <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a> for details.
 
 </p>
 <p><b>Arguments: </b>
@@ -1153,7 +1158,7 @@ Lecture Notes in Computer Science Volume 6506, 2010, pp 403-414.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1276,15 +1281,9 @@ igraph_error_t igraph_maximal_cliques_file(const igraph_t *graph,
 
 
 
-This function enumerates all maximal cliques and writes them to file.
-
-</p>
-<p>
-
-Edge directions are ignored.
-
-</p>
-<p>
+This function enumerates all maximal cliques within a size range
+and writes them to file. See <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a> for
+details
 
 </p>
 <p><b>Arguments: </b>
@@ -1298,7 +1297,7 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1381,11 +1380,8 @@ igraph_error_t igraph_maximal_cliques_subset(
 
 
 This function enumerates all maximal cliques for a subset of initial
-vertices and writes them to file.
-
-</p>
-<p>
-Edge directions are ignored.
+vertices and writes them to file. See <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>
+for details.
 
 </p>
 <p><b>Arguments: </b>
@@ -1399,21 +1395,21 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>subset</code></em>:</span></p></td>
 <td><p>
   Pointer to an <code class="constant">igraph_vector_int_t</code> containing the
-  subset of initial vertices
+  subset of initial vertices.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
   Pointer to a list of integer vectors; the cliques will be
-  stored here
+  stored here.
 </p></td>
 </tr>
 <tr>
@@ -1503,15 +1499,7 @@ igraph_error_t igraph_maximal_cliques_hist(const igraph_t *graph,
 
 
 This function counts how many maximal cliques of each size are present in
-the graph. Size-1 maximal cliques are simply isolated vertices.
-
-</p>
-<p>
-
-Edge directions are ignored.
-
-</p>
-<p>
+the graph. Maximal cliques of size one are simply isolated vertices.
 
 </p>
 <p><b>Arguments: </b>
@@ -1525,7 +1513,7 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1580,7 +1568,7 @@ For cliques smaller than <em class="parameter"><code>min_size</code></em>, zero 
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_clique_size_hist" title="1.4. igraph_clique_size_hist — Counts cliques of each size in the graph."><code class="function">igraph_clique_size_hist()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1616,10 +1604,6 @@ copy of the vector using <a class="link" href="igraph-Data-structures.html#igrap
 hold on to it.
 
 </p>
-<p>
-Edge directions are ignored.
-
-</p>
 <p><b>Arguments: </b>
 </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -1631,7 +1615,7 @@ Edge directions are ignored.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph.
+  The input graph. Edge directions are ignored.
 </p></td>
 </tr>
 <tr>
@@ -1690,7 +1674,7 @@ See also <a class="link" href="igraph-Cliques.html#igraph_clique_handler_t" titl
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.8. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.5. igraph_cliques_callback — Calls a function for each clique in the graph."><code class="function">igraph_cliques_callback()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2147,7 +2131,7 @@ We reserve the right to change the function signature without changing the
 major version of igraph. Use it at your own risk.</p>
 </div>
 <p>Tests if no pairs within a set of vertices are adjacenct, i.e. whether they
-form a an independent set. An empty set and singleton set are both considered
+form an independent set. An empty set and singleton set are both considered
 to be an independent set.
 
 </p>
@@ -2206,7 +2190,9 @@ to be an independent set.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cliques.html#igraph_is_clique" title="1.2. igraph_is_clique — Does a set of vertices form a clique?"><code class="function">igraph_is_clique()</code></a>
+  <a class="link" href="igraph-Cliques.html#igraph_is_clique" title="1.2. igraph_is_clique — Does a set of vertices form a clique?"><code class="function">igraph_is_clique()</code></a> to test for cliques; <a class="link" href="igraph-Cliques.html#igraph_independent_vertex_sets" title="3.2. igraph_independent_vertex_sets — Finds all independent vertex sets in a graph."><code class="function">igraph_independent_vertex_sets()</code></a>,
+<a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.4. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph."><code class="function">igraph_maximal_independent_vertex_sets()</code></a> and
+<a class="link" href="igraph-Cliques.html#igraph_largest_independent_vertex_sets" title="3.3. igraph_largest_independent_vertex_sets — Finds the largest independent vertex set(s) in a graph."><code class="function">igraph_largest_independent_vertex_sets()</code></a> to find independent vertex sets.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2679,7 +2665,7 @@ Time complexity: TODO.
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	      &copy; 2003 &ndash; 2024 The igraph core team.
+	      &copy; 2003 &ndash; 2025 The igraph core team.
         &bull; Code licensed under <a href="http://www.gnu.org/licenses/gpl-2.0.html"> GNU GPL 2</a> or later,
         documentation under <a href="http://www.gnu.org/copyleft/fdl.html">GNU FDL</a>.
       </p>

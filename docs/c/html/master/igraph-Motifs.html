@@ -154,6 +154,7 @@
 <dt><span class="section"><a href="igraph-Motifs.html#igraph_triad_census">2. <code class="function">igraph_triad_census</code> —  Triad census, as defined by Davis and Leinhardt.</a></span></dt>
 <dt><span class="section"><a href="igraph-Motifs.html#finding-triangles">3. Finding triangles</a></span></dt>
 <dt><span class="section"><a href="igraph-Motifs.html#graph-motifs">4. Graph motifs</a></span></dt>
+<dt><span class="section"><a href="igraph-Motifs.html#deprecated-motifs">5. Deprecated functions</a></span></dt>
 </dl></div>
 <p>
 This section deals with functions which find small induced subgraphs in a
@@ -512,16 +513,17 @@ Time complexity: TODO.
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="finding-triangles"></a>3. Finding triangles</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Motifs.html#igraph_adjacent_triangles">3.1. <code class="function">igraph_adjacent_triangles</code> —  Count the number of triangles a vertex is part of.</a></span></dt>
-<dt><span class="section"><a href="igraph-Motifs.html#igraph_list_triangles">3.2. <code class="function">igraph_list_triangles</code> —  Find all triangles in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Motifs.html#igraph_count_adjacent_triangles">3.1. <code class="function">igraph_count_adjacent_triangles</code> —  Count the number of triangles a vertex is part of.</a></span></dt>
+<dt><span class="section"><a href="igraph-Motifs.html#igraph_count_triangles">3.2. <code class="function">igraph_count_triangles</code> —  Counts triangles in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Motifs.html#igraph_list_triangles">3.3. <code class="function">igraph_list_triangles</code> —  Find all triangles in a graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_adjacent_triangles"></a>3.1. <code class="function">igraph_adjacent_triangles</code> —  Count the number of triangles a vertex is part of.</h3></div></div></div>
+<a name="igraph_count_adjacent_triangles"></a>3.1. <code class="function">igraph_count_adjacent_triangles</code> —  Count the number of triangles a vertex is part of.</h3></div></div></div>
 <a class="indexterm" name="id-1.20.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_adjacent_triangles(const igraph_t *graph,
+igraph_error_t igraph_count_adjacent_triangles(const igraph_t *graph,
                               igraph_vector_t *res,
                               const igraph_vs_t vids);
 </pre></div>
@@ -587,7 +589,8 @@ igraph_error_t igraph_adjacent_triangles(const igraph_t *graph,
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.2. igraph_list_triangles — Find all triangles in a graph."><code class="function">igraph_list_triangles()</code></a> to list them.
+  <a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.3. igraph_list_triangles — Find all triangles in a graph."><code class="function">igraph_list_triangles()</code></a> to list triangles,
+<a class="link" href="igraph-Motifs.html#igraph_count_triangles" title="3.2. igraph_count_triangles — Counts triangles in a graph."><code class="function">igraph_count_triangles()</code></a> to count all triangles at once.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -600,8 +603,91 @@ queried vertices, n is their number.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_list_triangles"></a>3.2. <code class="function">igraph_list_triangles</code> —  Find all triangles in a graph.</h3></div></div></div>
+<a name="igraph_count_triangles"></a>3.2. <code class="function">igraph_count_triangles</code> —  Counts triangles in a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.20.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_count_triangles(const igraph_t *graph, igraph_real_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+This function computes the total number of triangles, i.e. fully connected
+vertex triples, in a graph. Edge directions, edge multiplicities, and self-loops
+are ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object. Edge directions and multiplicites are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a real variable, the result will be stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory for
+        temporary data.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.3. igraph_list_triangles — Find all triangles in a graph."><code class="function">igraph_list_triangles()</code></a>, <a class="link" href="igraph-Motifs.html#igraph_count_adjacent_triangles" title="3.1. igraph_count_adjacent_triangles — Count the number of triangles a vertex is part of."><code class="function">igraph_count_adjacent_triangles()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph."><code class="function">igraph_transitivity_undirected()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|*d^2), |V| is the number of vertices in
+the graph, d is the average node degree.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_list_triangles"></a>3.3. <code class="function">igraph_list_triangles</code> —  Find all triangles in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.20.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_list_triangles(const igraph_t *graph,
@@ -674,9 +760,10 @@ matrix (see the example).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph."><code class="function">igraph_transitivity_undirected()</code></a> to count the triangles,
-<a class="link" href="igraph-Motifs.html#igraph_adjacent_triangles" title="3.1. igraph_adjacent_triangles — Count the number of triangles a vertex is part of."><code class="function">igraph_adjacent_triangles()</code></a> to count the triangles a vertex
-participates in.
+  <a class="link" href="igraph-Motifs.html#igraph_count_triangles" title="3.2. igraph_count_triangles — Counts triangles in a graph."><code class="function">igraph_count_triangles()</code></a> to count the triangles,
+<a class="link" href="igraph-Motifs.html#igraph_adjacent_triangles" title="5.1. igraph_adjacent_triangles — Count the number of triangles a vertex is part of (deprecated alias)."><code class="function">igraph_adjacent_triangles()</code></a> to count the triangles a vertex
+participates in, <a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph."><code class="function">igraph_transitivity_undirected()</code></a> to compute
+the global clustering coefficient.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -688,7 +775,7 @@ of vertices.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.20.5.3.11.1"></a><p class="title"><b>Example 19.1.  File <code class="code">examples/simple/igraph_list_triangles.c</code></b></p>
+<a name="id-1.20.5.4.11.1"></a><p class="title"><b>Example 19.1.  File <code class="code">examples/simple/igraph_list_triangles.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -701,7 +788,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong>printf</strong></span>("Triangles in a full graph of 5 vertices:\n");
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.2. igraph_list_triangles — Find all triangles in a graph.">igraph_list_triangles</a></strong></span>(&amp;g, &amp;v);
+    <span class="strong"><strong><a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.3. igraph_list_triangles — Find all triangles in a graph.">igraph_list_triangles</a></strong></span>(&amp;g, &amp;v);
     <span class="strong"><strong>igraph_matrix_int_view_from_vector</strong></span>(&amp;result, &amp;v, <span class="emphasis"><em>/* nrow = */</em></span> 3);
     <span class="strong"><strong>igraph_matrix_int_print</strong></span>(&amp;result);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
@@ -1421,6 +1508,102 @@ the following arguments:
 </p>
 </div>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="deprecated-motifs"></a>5. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Motifs.html#igraph_adjacent_triangles">5.1. <code class="function">igraph_adjacent_triangles</code> —  Count the number of triangles a vertex is part of (deprecated alias).</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_adjacent_triangles"></a>5.1. <code class="function">igraph_adjacent_triangles</code> —  Count the number of triangles a vertex is part of (deprecated alias).</h3></div></div></div>
+<a class="indexterm" name="id-1.20.7.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_adjacent_triangles(const igraph_t *graph,
+                                         igraph_vector_t *res,
+                                         const igraph_vs_t vids);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.15. Please do not use this function in new
+code; use <a class="link" href="igraph-Motifs.html#igraph_count_adjacent_triangles" title="3.1. igraph_count_adjacent_triangles — Count the number of triangles a vertex is part of."><code class="function">igraph_count_adjacent_triangles()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Edge directions and multiplicities are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Initiliazed vector, the results are stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
+<td><p>
+  The vertices to perform the calculation for.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error mode.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Motifs.html#igraph_list_triangles" title="3.3. igraph_list_triangles — Find all triangles in a graph."><code class="function">igraph_list_triangles()</code></a> to list them.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d^2 n), d is the average vertex degree of the
+queried vertices, n is their number.
+ 
+</p>
+</div>
+</div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
 <td align="left"><a accesskey="p" href="igraph-Coloring.html"><b>← Chapter 18. Graph coloring</b></a></td>
@@ -1438,7 +1621,7 @@ the following arguments:
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	      &copy; 2003 &ndash; 2024 The igraph core team.
+	      &copy; 2003 &ndash; 2025 The igraph core team.
         &bull; Code licensed under <a href="http://www.gnu.org/licenses/gpl-2.0.html"> GNU GPL 2</a> or later,
         documentation under <a href="http://www.gnu.org/copyleft/fdl.html">GNU FDL</a>.
       </p>

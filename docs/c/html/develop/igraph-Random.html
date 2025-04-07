@@ -520,7 +520,7 @@ Note that this number is only for informational purposes; it returns the
 maximum possible integer that can be generated with the RNG with a single
 call to its internals. It is derived directly from the number of random
 <span class="emphasis"><em>bits</em></span> that the RNG can generate in a single round. When this is smaller
-than what would be needed by other RNG functions like <a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval."><code class="function">igraph_rng_get_integer()</code></a>,
+than what would be needed by other RNG functions like <a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.2. igraph_rng_get_integer — Generate an integer random number from an interval."><code class="function">igraph_rng_get_integer()</code></a>,
 igraph will call the RNG multiple times to generate more random bits.
 
 </p>
@@ -616,20 +616,72 @@ Time complexity: O(1).
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="generating-random-numbers"></a>4. Generating random numbers</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_integer">4.1. <code class="function">igraph_rng_get_integer</code> —  Generate an integer random number from an interval.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_unif01">4.2. <code class="function">igraph_rng_get_unif01</code> —  Samples uniformly from the unit interval.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_unif">4.3. <code class="function">igraph_rng_get_unif</code> —  Samples real numbers from a given interval.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_normal">4.4. <code class="function">igraph_rng_get_normal</code> —  Samples from a normal distribution.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_exp">4.5. <code class="function">igraph_rng_get_exp</code> —  Samples from an exponential distribution.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_gamma">4.6. <code class="function">igraph_rng_get_gamma</code> —  Samples from a gamma distribution.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_binom">4.7. <code class="function">igraph_rng_get_binom</code> —  Samples from a binomial distribution.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_geom">4.8. <code class="function">igraph_rng_get_geom</code> —  Samples from a geometric distribution.</a></span></dt>
-<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_pois">4.9. <code class="function">igraph_rng_get_pois</code> —  Samples from a Poisson distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_bool">4.1. <code class="function">igraph_rng_get_bool</code> —  Generate a random boolean.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_integer">4.2. <code class="function">igraph_rng_get_integer</code> —  Generate an integer random number from an interval.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_unif01">4.3. <code class="function">igraph_rng_get_unif01</code> —  Samples uniformly from the unit interval.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_unif">4.4. <code class="function">igraph_rng_get_unif</code> —  Samples real numbers from a given interval.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_normal">4.5. <code class="function">igraph_rng_get_normal</code> —  Samples from a normal distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_exp">4.6. <code class="function">igraph_rng_get_exp</code> —  Samples from an exponential distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_gamma">4.7. <code class="function">igraph_rng_get_gamma</code> —  Samples from a gamma distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_binom">4.8. <code class="function">igraph_rng_get_binom</code> —  Samples from a binomial distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_geom">4.9. <code class="function">igraph_rng_get_geom</code> —  Samples from a geometric distribution.</a></span></dt>
+<dt><span class="section"><a href="igraph-Random.html#igraph_rng_get_pois">4.10. <code class="function">igraph_rng_get_pois</code> —  Samples from a Poisson distribution.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_integer"></a>4.1. <code class="function">igraph_rng_get_integer</code> —  Generate an integer random number from an interval.</h3></div></div></div>
+<a name="igraph_rng_get_bool"></a>4.1. <code class="function">igraph_rng_get_bool</code> —  Generate a random boolean.</h3></div></div></div>
 <a class="indexterm" name="id-1.9.5.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_bool_t igraph_rng_get_bool(igraph_rng_t *rng);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Use this function only when a single random boolean, i.e. a single bit
+is needed at a time. It is not efficient for generating multiple bits.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>rng</code></em>:</span></p></td>
+<td><p>
+  Pointer to the RNG to use for the generation. Use <a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator."><code class="function">igraph_rng_default()</code></a> here to use the default igraph RNG.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The generated bit, as a truth value.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_rng_get_integer"></a>4.2. <code class="function">igraph_rng_get_integer</code> —  Generate an integer random number from an interval.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_integer_t igraph_rng_get_integer(
@@ -641,6 +693,8 @@ igraph_integer_t igraph_rng_get_integer(
 <p>
 
 
+
+Generate uniformly distributed integers from the interval <code class="literal">[l, h]</code>.
 
 </p>
 <p><b>Arguments: </b>
@@ -667,7 +721,7 @@ igraph_integer_t igraph_rng_get_integer(
 <td><p><span class="term"><em class="parameter"><code>h</code></em>:</span></p></td>
 <td><p>
   Upper limit, inclusive, it can be negative as well, but it
-       should be at least <code class="literal">l</code>.
+       must be at least <code class="literal">l</code>.
 </p></td>
 </tr>
 </tbody>
@@ -689,15 +743,15 @@ igraph_integer_t igraph_rng_get_integer(
 </table></div>
 <p>
 
-Time complexity: O(log2(h-l) / bits) where bits is the value of
+Time complexity: O(log2(h-l+1) / bits) where bits is the value of
 <a class="link" href="igraph-Random.html#igraph_rng_bits" title="3.4. igraph_rng_bits — The number of random bits that a random number generator can produces in a single round."><code class="function">igraph_rng_bits</code></a>(rng).
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_unif01"></a>4.2. <code class="function">igraph_rng_get_unif01</code> —  Samples uniformly from the unit interval.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.3.2"></a><p>
+<a name="igraph_rng_get_unif01"></a>4.3. <code class="function">igraph_rng_get_unif01</code> —  Samples uniformly from the unit interval.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_unif01(igraph_rng_t *rng);
@@ -750,8 +804,8 @@ Time complexity: depends on the type of the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_unif"></a>4.3. <code class="function">igraph_rng_get_unif</code> —  Samples real numbers from a given interval.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.4.2"></a><p>
+<a name="igraph_rng_get_unif"></a>4.4. <code class="function">igraph_rng_get_unif</code> —  Samples real numbers from a given interval.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_unif(igraph_rng_t *rng,
@@ -820,8 +874,8 @@ Time complexity: depends on the type of the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_normal"></a>4.4. <code class="function">igraph_rng_get_normal</code> —  Samples from a normal distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.5.2"></a><p>
+<a name="igraph_rng_get_normal"></a>4.5. <code class="function">igraph_rng_get_normal</code> —  Samples from a normal distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_normal(igraph_rng_t *rng,
@@ -893,8 +947,8 @@ Time complexity: depends on the type of the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_exp"></a>4.5. <code class="function">igraph_rng_get_exp</code> —  Samples from an exponential distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.6.2"></a><p>
+<a name="igraph_rng_get_exp"></a>4.6. <code class="function">igraph_rng_get_exp</code> —  Samples from an exponential distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_exp(igraph_rng_t *rng, igraph_real_t rate);
@@ -959,8 +1013,8 @@ Time complexity: depends on the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_gamma"></a>4.6. <code class="function">igraph_rng_get_gamma</code> —  Samples from a gamma distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.7.2"></a><p>
+<a name="igraph_rng_get_gamma"></a>4.7. <code class="function">igraph_rng_get_gamma</code> —  Samples from a gamma distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_gamma(igraph_rng_t *rng, igraph_real_t shape,
@@ -1032,8 +1086,8 @@ Time complexity: depends on the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_binom"></a>4.7. <code class="function">igraph_rng_get_binom</code> —  Samples from a binomial distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.8.2"></a><p>
+<a name="igraph_rng_get_binom"></a>4.8. <code class="function">igraph_rng_get_binom</code> —  Samples from a binomial distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_binom(igraph_rng_t *rng, igraph_integer_t n, igraph_real_t p);
@@ -1104,8 +1158,8 @@ Time complexity: depends on the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_geom"></a>4.8. <code class="function">igraph_rng_get_geom</code> —  Samples from a geometric distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.9.2"></a><p>
+<a name="igraph_rng_get_geom"></a>4.9. <code class="function">igraph_rng_get_geom</code> —  Samples from a geometric distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_geom(igraph_rng_t *rng, igraph_real_t p);
@@ -1171,8 +1225,8 @@ Time complexity: depends on the RNG.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rng_get_pois"></a>4.9. <code class="function">igraph_rng_get_pois</code> —  Samples from a Poisson distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.9.5.10.2"></a><p>
+<a name="igraph_rng_get_pois"></a>4.10. <code class="function">igraph_rng_get_pois</code> —  Samples from a Poisson distribution.</h3></div></div></div>
+<a class="indexterm" name="id-1.9.5.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_real_t igraph_rng_get_pois(igraph_rng_t *rng, igraph_real_t rate);
@@ -1490,8 +1544,8 @@ destroyed, so no memory is deallocated.
 <p>
 igraph also provides functions to set up multiple random number
 generators, using the <a class="link" href="igraph-Random.html#igraph_rng_init" title="3.1. igraph_rng_init — Initializes a random number generator."><code class="function">igraph_rng_init()</code></a> function, and then
-generating random numbers from them, e.g. with <a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.1. igraph_rng_get_integer — Generate an integer random number from an interval."><code class="function">igraph_rng_get_integer()</code></a>
-and/or <a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.3. igraph_rng_get_unif — Samples real numbers from a given interval."><code class="function">igraph_rng_get_unif()</code></a> calls.
+generating random numbers from them, e.g. with <a class="link" href="igraph-Random.html#igraph_rng_get_integer" title="4.2. igraph_rng_get_integer — Generate an integer random number from an interval."><code class="function">igraph_rng_get_integer()</code></a>
+and/or <a class="link" href="igraph-Random.html#igraph_rng_get_unif" title="4.4. igraph_rng_get_unif — Samples real numbers from a given interval."><code class="function">igraph_rng_get_unif()</code></a> calls.
 </p>
 <p>
 Note that initializing a new random number generator is
@@ -1568,7 +1622,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <div id="footer"><div class="container-fluid">
       <p class="text-muted credit">
-	      &copy; 2003 &ndash; 2024 The igraph core team.
+	      &copy; 2003 &ndash; 2025 The igraph core team.
         &bull; Code licensed under <a href="http://www.gnu.org/licenses/gpl-2.0.html"> GNU GPL 2</a> or later,
         documentation under <a href="http://www.gnu.org/copyleft/fdl.html">GNU FDL</a>.
       </p>
