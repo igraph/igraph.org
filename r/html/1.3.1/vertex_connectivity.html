@@ -1,0 +1,150 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>vertex_connectivity {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Vertex connectivity.</h2>
+
+<h3>Description</h3>
+
+<p>The vertex connectivity of a graph or two vertices, this is recently also
+called group cohesion.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>vertex_connectivity(graph, source = NULL, target = NULL, checks = TRUE)
+
+## S3 method for class 'igraph'
+cohesion(x, checks = TRUE, ...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph, x</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>source</code></td>
+<td>
+<p>The id of the source vertex, for <code>vertex_connectivity</code> it
+can be <code>NULL</code>, see details below.</p>
+</td></tr>
+<tr valign="top"><td><code>target</code></td>
+<td>
+<p>The id of the target vertex, for <code>vertex_connectivity</code> it
+can be <code>NULL</code>, see details below.</p>
+</td></tr>
+<tr valign="top"><td><code>checks</code></td>
+<td>
+<p>Logical constant. Whether to check that the graph is connected
+and also the degree of the vertices. If the graph is not (strongly)
+connected then the connectivity is obviously zero. Otherwise if the minimum
+degree is one then the vertex connectivity is also one. It is a good idea to
+perform these checks, as they can be done quickly compared to the
+connectivity calculation itself.  They were suggested by Peter McMahan,
+thanks Peter.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The vertex connectivity of two vertices (<code>source</code> and <code>target</code>) in
+a directed graph is the minimum number of vertices needed to remove from the
+graph to eliminate all (directed) paths from <code>source</code> to <code>target</code>.
+<code>vertex_connectivity</code> calculates this quantity if both the
+<code>source</code> and <code>target</code> arguments are given and they're not
+<code>NULL</code>.
+</p>
+<p>The vertex connectivity of a graph is the minimum vertex connectivity of all
+(ordered) pairs of vertices in the graph. In other words this is the minimum
+number of vertices needed to remove to make the graph not strongly
+connected. (If the graph is not strongly connected then this is zero.)
+<code>vertex_connectivity</code> calculates this quantity if neither the
+<code>source</code> nor <code>target</code> arguments are given. (Ie. they are both
+<code>NULL</code>.)
+</p>
+<p>A set of vertex disjoint directed paths from <code>source</code> to <code>vertex</code>
+is a set of directed paths between them whose vertices do not contain common
+vertices (apart from <code>source</code> and <code>target</code>). The maximum number of
+vertex disjoint paths between two vertices is the same as their vertex
+connectivity in most cases (if the two vertices are not connected by an
+edge).
+</p>
+<p>The cohesion of a graph (as defined by White and Harary, see references), is
+the vertex connectivity of the graph. This is calculated by
+<code>cohesion</code>.
+</p>
+<p>These three functions essentially calculate the same measure(s), more
+precisely <code>vertex_connectivity</code> is the most general, the other two are
+included only for the ease of using more descriptive function names.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A scalar real value.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>White, Douglas R and Frank Harary 2001. The Cohesiveness of
+Blocks In Social Networks: Node Connectivity and Conditional Density.
+<em>Sociological Methodology</em> 31 (1) : 305-359.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="max_flow.html">max_flow</a></code>, <code><a href="edge_connectivity.html">edge_connectivity</a></code>,
+<code><a href="edge_disjoint_paths.html">edge_disjoint_paths</a></code>, <code><a href="adhesion.html">adhesion</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+g &lt;- barabasi.game(100, m=1)
+g &lt;- delete_edges(g, E(g)[ 100 %--% 1 ])
+g2 &lt;- barabasi.game(100, m=5)
+g2 &lt;- delete_edges(g2, E(g2)[ 100 %--% 1])
+vertex_connectivity(g, 100, 1)
+vertex_connectivity(g2, 100, 1)
+vertex_disjoint_paths(g2, 100, 1)
+
+g &lt;- sample_gnp(50, 5/50)
+g &lt;- as.directed(g)
+g &lt;- induced_subgraph(g, subcomponent(g, 1))
+cohesion(g)
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

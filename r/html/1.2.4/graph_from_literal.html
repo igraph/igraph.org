@@ -1,0 +1,176 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.4
+---
+
+
+{% raw %}
+
+
+<h2>Creating (small) graphs via a simple interface</h2>
+
+<h3>Description</h3>
+
+<p>This function is useful if you want to create a small (named) graph
+quickly, it works for both directed and undirected graphs.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+graph_from_literal(..., simplify = TRUE)
+
+from_literal(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>For <code>graph_from_literal</code> the formulae giving the
+structure of the graph, see details below. For <code>from_literal</code>
+all arguments are passed to <code>graph_from_literal</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>Logical scalar, whether to call <code><a href="simplify.html">simplify</a></code>
+on the created graph. By default the graph is simplified, loop and
+multiple edges are removed.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>graph_from_literal</code> is very handy for creating small graphs quickly.
+You need to supply one or more R expressions giving the structure of
+the graph. The expressions consist of vertex names and edge
+operators. An edge operator is a sequence of &lsquo;<code>-</code>&rsquo; and
+&lsquo;<code>+</code>&rsquo; characters, the former is for the edges and the
+latter is used for arrow heads. The edges can be arbitrarily long,
+ie. you may use as many &lsquo;<code>-</code>&rsquo; characters to &ldquo;draw&rdquo;
+them as you like.
+</p>
+<p>If all edge operators consist of only &lsquo;<code>-</code>&rsquo; characters
+then the graph will be undirected, whereas a single &lsquo;<code>+</code>&rsquo;
+character implies a directed graph.
+</p>
+<p>Let us see some simple examples. Without arguments the function
+creates an empty graph:
+</p>
+<pre>  graph_from_literal()
+</pre>
+<p>A simple undirected graph with two vertices called &lsquo;A&rsquo; and
+&lsquo;B&rsquo; and one edge only:
+</p>
+<pre>  graph_from_literal(A-B)
+</pre>
+<p>Remember that the length of the edges does not matter, so we could
+have written the following, this creates the same graph:
+</p>
+<pre>  graph_from_literal( A-----B )
+</pre>
+<p>If you have many disconnected components in the graph, separate them
+with commas. You can also give isolate vertices.
+</p>
+<pre>  graph_from_literal( A--B, C--D, E--F, G--H, I, J, K )
+</pre>
+<p>The &lsquo;<code>:</code>&rsquo; operator can be used to define vertex sets. If
+an edge operator connects two vertex sets then every vertex from the
+first set will be connected to every vertex in the second set. The
+following form creates a full graph, including loop edges:
+</p>
+<pre>  graph_from_literal( A:B:C:D -- A:B:C:D )
+</pre>
+<p>In directed graphs, edges will be created only if the edge operator
+includes a arrow head (&lsquo;+&rsquo;) <em>at the end</em> of the edge:
+</p>
+<pre>  graph_from_literal( A -+ B -+ C )
+  graph_from_literal( A +- B -+ C )
+  graph_from_literal( A +- B -- C )
+</pre>
+<p>Thus in the third example no edge is created between vertices <code>B</code>
+and <code>C</code>.
+</p>
+<p>Mutual edges can be also created with a simple edge operator:
+</p>
+<pre>  graph_from_literal( A +-+ B +---+ C ++ D + E)
+</pre>
+<p>Note again that the length of the edge operators is arbitrary,
+&lsquo;<code>+</code>&rsquo;, &lsquo;<code>++</code>&rsquo; and &lsquo;<code>+-----+</code>&rsquo; have
+exactly the same meaning.
+</p>
+<p>If the vertex names include spaces or other special characters then
+you need to quote them:
+</p>
+<pre>  graph_from_literal( "this is" +- "a silly" -+ "graph here" )
+</pre>
+<p>You can include any character in the vertex names this way, even
+&lsquo;+&rsquo; and &lsquo;-&rsquo; characters.
+</p>
+<p>See more examples below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An igraph graph
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other determimistic constructors: <code><a href="graph_from_atlas.html">graph_from_atlas</a></code>,
+<code><a href="graph_from_edgelist.html">graph_from_edgelist</a></code>,
+<code><a href="make_chordal_ring.html">make_chordal_ring</a></code>,
+<code><a href="make_empty_graph.html">make_empty_graph</a></code>,
+<code><a href="make_full_citation_graph.html">make_full_citation_graph</a></code>,
+<code><a href="make_full_graph.html">make_full_graph</a></code>, <code><a href="make_graph.html">make_graph</a></code>,
+<code><a href="make_lattice.html">make_lattice</a></code>, <code><a href="make_ring.html">make_ring</a></code>,
+<code><a href="make_star.html">make_star</a></code>, <code><a href="make_tree.html">make_tree</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# A simple undirected graph
+g &lt;- graph_from_literal( Alice-Bob-Cecil-Alice, Daniel-Cecil-Eugene,
+                     Cecil-Gordon )
+g
+
+# Another undirected graph, ":" notation
+g2 &lt;- graph_from_literal( Alice-Bob:Cecil:Daniel, Cecil:Daniel-Eugene:Gordon )
+g2
+
+# A directed graph
+g3 &lt;- graph_from_literal( Alice +-+ Bob --+ Cecil +-- Daniel,
+                     Eugene --+ Gordon:Helen )
+g3
+
+# A graph with isolate vertices
+g4 &lt;- graph_from_literal( Alice -- Bob -- Daniel, Cecil:Gordon, Helen )
+g4
+V(g4)$name
+
+# "Arrows" can be arbitrarily long
+g5 &lt;- graph_from_literal( Alice +---------+ Bob )
+g5
+
+# Special vertex names
+g6 &lt;- graph_from_literal( "+" -- "-", "*" -- "/", "%%" -- "%/%" )
+g6
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4 <a href="index.html">Index</a>]</div>
+{% endraw %}

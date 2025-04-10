@@ -1,0 +1,156 @@
+---
+layout: default
+title: Erdős-Rényi Graph
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.0 documentation" href="../index.html" />
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.0
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../index.html" title="Parent: igraph 0.10.0 documentation" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-home"></i> igraph 0.10.0 documentation
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Erdős-Rényi Graph
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Erdős-Rényi Graph</a></li>
+</ul>
+ -->
+        
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-erdos-renyi-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="erdos-renyi-graph">
+<span id="tutorials-random"></span><span id="sphx-glr-tutorials-erdos-renyi-py"></span><h1>Erdős-Rényi Graph<a class="headerlink" href="#erdos-renyi-graph" title="Permalink to this heading">¶</a></h1>
+<p>This example demonstrates how to generate <a class="reference external" href="https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model">Erdős–Rényi graphs</a> using <a class="reference external" href="../api/igraph.GraphBase.html#Erdos_Renyi" title="(in &quot;igraph&quot; v0.10.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">igraph.GraphBase.Erdos_Renyi()</span></code></a>. There are two variants of graphs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Erdos_Renyi(n,</span> <span class="pre">p)</span></code> will generate a graph from the so-called <span class="math notranslate nohighlight">\(G(n,p)\)</span> model where each edge between any two pair of nodes has an independent probability <code class="docutils literal notranslate"><span class="pre">p</span></code> of existing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Erdos_Renyi(n,</span> <span class="pre">m)</span></code> will pick a graph uniformly at random out of all graphs with <code class="docutils literal notranslate"><span class="pre">n</span></code> nodes and <code class="docutils literal notranslate"><span class="pre">m</span></code> edges. This is referred to as the <span class="math notranslate nohighlight">\(G(n,m)\)</span> model.</p></li>
+</ul>
+<p>We generate two graphs of each, so we can confirm that our graph generator is truly random.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">random</span>
+</pre></div>
+</div>
+<p>First, we set a random seed for reproducibility</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we generate two <span class="math notranslate nohighlight">\(G(n,p)\)</span> Erdős–Rényi graphs with identical parameters:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g1</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Erdos_Renyi</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">g2</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Erdos_Renyi</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For comparison, we also generate two <span class="math notranslate nohighlight">\(G(n,m)\)</span> Erdős–Rényi graphs with a fixed number
+of edges:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g3</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Erdos_Renyi</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">g4</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Erdos_Renyi</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can print out summaries of each graph to verify their randomness</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ig</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">g1</span><span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">g3</span><span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">g4</span><span class="p">)</span>
+
+<span class="c1"># IGRAPH U--- 15 18 --</span>
+<span class="c1"># IGRAPH U--- 15 21 --</span>
+<span class="c1"># IGRAPH U--- 20 35 --</span>
+<span class="c1"># IGRAPH U--- 20 35 --</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">IGRAPH</span> <span class="n">U</span><span class="o">---</span> <span class="mi">15</span> <span class="mi">23</span> <span class="o">--</span>
+<span class="n">IGRAPH</span> <span class="n">U</span><span class="o">---</span> <span class="mi">15</span> <span class="mi">28</span> <span class="o">--</span>
+<span class="n">IGRAPH</span> <span class="n">U</span><span class="o">---</span> <span class="mi">20</span> <span class="mi">35</span> <span class="o">--</span>
+<span class="n">IGRAPH</span> <span class="n">U</span><span class="o">---</span> <span class="mi">20</span> <span class="mi">35</span> <span class="o">--</span>
+</pre></div>
+</div>
+<p>Finally, we can plot the graphs to illustrate their structures and
+differences:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Probability</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g1</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span>
+<span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g2</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span>
+<span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+<span class="c1"># N edges</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g3</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.15</span>
+<span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g4</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.15</span>
+<span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;N. edges&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.071 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-erdos-renyi-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/b438976968d9cea7b775361a0531520c/erdos_renyi.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">erdos_renyi.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/25d5caa797264a1f03d19440ae76dc03/erdos_renyi.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">erdos_renyi.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

@@ -1,0 +1,175 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.4
+---
+
+
+{% raw %}
+
+
+<h2>Transitivity of a graph</h2>
+
+<h3>Description</h3>
+
+<p>Transitivity measures the probability that the adjacent vertices of a vertex
+are connected. This is sometimes also called the clustering coefficient.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+transitivity(graph, type = c("undirected", "global", "globalundirected",
+  "localundirected", "local", "average", "localaverage",
+  "localaverageundirected", "barrat", "weighted"), vids = NULL,
+  weights = NULL, isolates = c("NaN", "zero"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to analyze.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>The type of the transitivity to calculate. Possible values:
+</p>
+ <dl>
+<dt>&quot;global&quot;</dt><dd><p>The global transitivity of an undirected
+graph (directed graphs are considered as undirected ones as well). This is
+simply the ratio of the triangles and the connected triples in the graph.
+For directed graph the direction of the edges is ignored. </p>
+</dd>
+<dt>&quot;local&quot;</dt><dd><p>The local transitivity of an undirected graph, this is
+calculated for each vertex given in the <code>vids</code> argument. The local
+transitivity of a vertex is the ratio of the triangles connected to the
+vertex and the triples centered on the vertex. For directed graph the
+direction of the edges is ignored. </p>
+</dd> <dt>&quot;undirected&quot;</dt><dd><p>This is the
+same as <code>global</code>.</p>
+</dd> <dt>&quot;globalundirected&quot;</dt><dd><p>This is the same as
+<code>global</code>.</p>
+</dd> <dt>&quot;localundirected&quot;</dt><dd><p>This is the same as
+<code>local</code>.</p>
+</dd> <dt>&quot;barrat&quot;</dt><dd><p>The weighted transitivity as defined A.
+Barrat. See details below.</p>
+</dd> <dt>&quot;weighted&quot;</dt><dd><p>The same as
+<code>barrat</code>.</p>
+</dd> </dl>
+</td></tr>
+<tr valign="top"><td><code>vids</code></td>
+<td>
+<p>The vertex ids for the local transitivity will be calculated.
+This will be ignored for global transitivity types.  The default value is
+<code>NULL</code>, in this case all vertices are considered. It is slightly faster
+to supply <code>NULL</code> here than <code>V(graph)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>Optional weights for weighted transitivity. It is ignored for
+other transitivity measures. If it is <code>NULL</code> (the default) and the
+graph has a <code>weight</code> edge attribute, then it is used automatically.</p>
+</td></tr>
+<tr valign="top"><td><code>isolates</code></td>
+<td>
+<p>Character scalar, defines how to treat vertices with degree
+zero and one. If it is &lsquo;<code>NaN</code>&rsquo; then they local transitivity is
+reported as <code>NaN</code> and they are not included in the averaging, for the
+transitivity types that calculate an average. If there are no vertices with
+degree two or higher, then the averaging will still result <code>NaN</code>. If it
+is &lsquo;<code>zero</code>&rsquo;, then we report 0 transitivity for them, and they
+are included in the averaging, if an average is calculated.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note that there are essentially two classes of transitivity measures, one is
+a vertex-level, the other a graph level property.
+</p>
+<p>There are several generalizations of transitivity to weighted graphs, here
+we use the definition by A. Barrat, this is a local vertex-level quantity,
+its formula is
+</p>
+<p style="text-align: center;"><i>
+weighted C_i = 1/s_i 1/(k_i-1) sum( (w_ij+w_ih)/2 a_ij a_ih a_jh, j, h)</i></p>
+
+<p><i>s_i</i> is the strength of vertex <i>i</i>, see
+<code><a href="strength.html">strength</a></code>, <i>a_ij</i> are elements of the
+adjacency matrix, <i>k_i</i> is the vertex degree, <i>w_ij</i>
+are the weights.
+</p>
+<p>This formula gives back the normal not-weighted local transitivity if all
+the edge weights are the same.
+</p>
+<p>The <code>barrat</code> type of transitivity does not work for graphs with
+multiple and/or loop edges. If you want to calculate it for a directed
+graph, call <code><a href="as.undirected.html">as.undirected</a></code> with the <code>collapse</code> mode first.
+</p>
+
+
+<h3>Value</h3>
+
+<p>For &lsquo;<code>global</code>&rsquo; a single number, or <code>NaN</code> if there
+are no connected triples in the graph.
+</p>
+<p>For &lsquo;<code>local</code>&rsquo; a vector of transitivity scores, one for each
+vertex in &lsquo;<code>vids</code>&rsquo;.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Wasserman, S., and Faust, K. (1994). <em>Social Network
+Analysis: Methods and Applications.</em> Cambridge: Cambridge University Press.
+</p>
+<p>Alain Barrat, Marc Barthelemy, Romualdo Pastor-Satorras, Alessandro
+Vespignani: The architecture of complex weighted networks, Proc. Natl. Acad.
+Sci. USA 101, 3747 (2004)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- make_ring(10)
+transitivity(g)
+g2 &lt;- sample_gnp(1000, 10/1000)
+transitivity(g2)   # this is about 10/1000
+
+# Weighted version, the figure from the Barrat paper
+gw &lt;- graph_from_literal(A-B:C:D:E, B-C:D, C-D)
+E(gw)$weight &lt;- 1
+E(gw)[ V(gw)[name == "A"] %--% V(gw)[name == "E" ] ]$weight &lt;- 5
+transitivity(gw, vids="A", type="local")
+transitivity(gw, vids="A", type="weighted")
+
+# Weighted reduces to "local" if weights are the same
+gw2 &lt;- sample_gnp(1000, 10/1000)
+E(gw2)$weight &lt;- 1
+t1 &lt;- transitivity(gw2, type="local")
+t2 &lt;- transitivity(gw2, type="weighted")
+all(is.na(t1) == is.na(t2))
+all(na.omit(t1 == t2))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4 <a href="index.html">Index</a>]</div>
+{% endraw %}

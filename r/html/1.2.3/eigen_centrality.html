@@ -1,0 +1,150 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Find Eigenvector Centrality Scores of Network Positions</h2>
+
+<h3>Description</h3>
+
+<p><code>eigen_centrality</code> takes a graph (<code>graph</code>) and returns the
+eigenvector centralities of positions <code>v</code> within it
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+eigen_centrality(graph, directed = FALSE, scale = TRUE,
+  weights = NULL, options = arpack_defaults)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>Graph to be analyzed.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Logical scalar, whether to consider direction of the edges
+in directed graphs. It is ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>Logical scalar, whether to scale the result to have a maximum
+score of one. If no scaling is used then the result vector has unit length
+in the Euclidean norm.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>A numerical vector or <code>NULL</code>. This argument can be used
+to give edge weights for calculating the weighted eigenvector centrality of
+vertices. If this is <code>NULL</code> and the graph has a <code>weight</code> edge
+attribute then that is used. If <code>weights</code> is a numerical vector then it
+used, even if the graph has a <code>weights</code> edge attribute. If this is
+<code>NA</code>, then no edge weights are used (even if the graph has a
+<code>weight</code> edge attribute. Note that if there are negative edge weights
+and the direction of the edges is considered, then the eigenvector might be
+complex. In this case only the real part is reported.
+This function interprets weights as connection strength. Higher
+weights spread the centrality better.</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>A named list, to override some ARPACK options. See
+<code><a href="arpack.html">arpack</a></code> for details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Eigenvector centrality scores correspond to the values of the first
+eigenvector of the graph adjacency matrix; these scores may, in turn, be
+interpreted as arising from a reciprocal process in which the centrality of
+each actor is proportional to the sum of the centralities of those actors to
+whom he or she is connected.  In general, vertices with high eigenvector
+centralities are those which are connected to many other vertices which are,
+in turn, connected to many others (and so on).  (The perceptive may realize
+that this implies that the largest values will be obtained by individuals in
+large cliques (or high-density substructures).  This is also intelligible
+from an algebraic point of view, with the first eigenvector being closely
+related to the best rank-1 approximation of the adjacency matrix (a
+relationship which is easy to see in the special case of a diagonalizable
+symmetric real matrix via the <i>$S &Lambda; S^{-1}$</i>
+decomposition).)
+</p>
+<p>From igraph version 0.5 this function uses ARPACK for the underlying
+computation, see <code><a href="arpack.html">arpack</a></code> for more about ARPACK in igraph.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A named list with components: </p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>vector</code></td>
+<td>
+<p>A vector containing the
+centrality scores.</p>
+</td></tr> <tr valign="top"><td><code>value</code></td>
+<td>
+<p>The eigenvalue corresponding to the
+calculated eigenvector, i.e. the centrality scores.</p>
+</td></tr> <tr valign="top"><td><code>options</code></td>
+<td>
+<p>A named
+list, information about the underlying ARPACK computation. See
+<code><a href="arpack.html">arpack</a></code> for the details.  </p>
+</td></tr>
+</table>
+
+
+<h3>WARNING </h3>
+
+<p><code>eigen_centrality</code> will not symmetrize your data
+before extracting eigenvectors; don't send this routine asymmetric matrices
+unless you really mean to do so.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a> and Carter T. Butts
+(<a href="http://www.faculty.uci.edu/profile.cfm?faculty_id=5057">http://www.faculty.uci.edu/profile.cfm?faculty_id=5057</a>) for the
+manual page.
+</p>
+
+
+<h3>References</h3>
+
+<p>Bonacich, P.  (1987).  Power and Centrality: A Family of
+Measures. <em>American Journal of Sociology</em>, 92, 1170-1182.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+#Generate some test data
+g &lt;- make_ring(10, directed=FALSE)
+#Compute eigenvector centrality scores
+eigen_centrality(g)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

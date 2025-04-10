@@ -1,0 +1,160 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>How igraph functions handle attributes when the graph changes</h2>
+
+<h3>Description</h3>
+
+<p>Many times, when the structure of a graph is modified, vertices/edges map of
+the original graph map to vertices/edges in the newly created (modified)
+graph. For example <code><a href="simplify.html">simplify</a></code> maps multiple edges to single
+edges. igraph provides a flexible mechanism to specify what to do with the
+vertex/edge attributes in these cases.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The functions that support the combination of attributes have one or two
+extra arguments called <code>vertex.attr.comb</code> and/or <code>edge.attr.comb</code>
+that specify how to perform the mapping of the attributes. E.g.
+<code><a href="contract.html">contract</a></code> contracts many vertices into a single one, the
+attributes of the vertices can be combined and stores as the vertex
+attributes of the new graph.
+</p>
+<p>The specification of the combination of (vertex or edge) attributes can be
+given as </p>
+
+<ol>
+<li><p> a character scalar,
+</p>
+</li>
+<li><p> a function object or
+</p>
+</li>
+<li><p> a list of character scalars and/or function objects.
+</p>
+</li></ol>
+
+<p>If it is a character scalar, then it refers to one of the predefined
+combinations, see their list below.
+</p>
+<p>If it is a function, then the given function is expected to perform the
+combination. It will be called once for each new vertex/edge in the graph,
+with a single argument: the attribute values of the vertices that map to
+that single vertex.
+</p>
+<p>The third option, a list can be used to specify different combination
+methods for different attributes. A named entry of the list corresponds to
+the attribute with the same name. An unnamed entry (i.e. if the name is the
+empty string) of the list specifies the default combination method. I.e.
+</p>
+<pre>list(weight="sum", "ignore")</pre><p> specifies that the weight of the
+new edge should be sum of the weights of the corresponding edges in the old
+graph; and that the rest of the attributes should be ignored (=dropped).
+</p>
+
+
+<h3>Predefined combination functions</h3>
+
+<p>The following combination
+behaviors are predefined: </p>
+ <dl>
+<dt>&quot;ignore&quot;</dt><dd><p>The attribute is
+ignored and dropped.</p>
+</dd> <dt>&quot;sum&quot;</dt><dd><p>The sum of the attributes is
+calculated. This does not work for character attributes and works for
+complex attributes only if they have a <code>sum</code> generic defined. (E.g. it
+works for sparse matrices from the <code>Matrix</code> package, because they have
+a <code>sum</code> method.)</p>
+</dd> <dt>&quot;prod&quot;</dt><dd><p>The product of the attributes is
+calculated. This does not work for character attributes and works for
+complex attributes only if they have a <code>prod</code> function defined.</p>
+</dd>
+<dt>&quot;min&quot;</dt><dd><p>The minimum of the attributes is calculated and returned.
+For character and complex attributes the standard R <code>min</code> function is
+used.</p>
+</dd> <dt>&quot;max&quot;</dt><dd><p>The maximum of the attributes is calculated and
+returned. For character and complex attributes the standard R <code>max</code>
+function is used.</p>
+</dd> <dt>&quot;random&quot;</dt><dd><p>Chooses one of the supplied
+attribute values, uniformly randomly. For character and complex attributes
+this is implemented by calling <code>sample</code>.</p>
+</dd> <dt>&quot;first&quot;</dt><dd><p>Always
+chooses the first attribute value. It is implemented by calling the
+<code>head</code> function.</p>
+</dd> <dt>&quot;last&quot;</dt><dd><p>Always chooses the last attribute
+value. It is implemented by calling the <code>tail</code> function.</p>
+</dd>
+<dt>&quot;mean&quot;</dt><dd><p>The mean of the attributes is calculated and returned.
+For character and complex attributes this simply calls the <code>mean</code>
+function.</p>
+</dd> <dt>&quot;median&quot;</dt><dd><p>The median of the attributes is selected.
+Calls the R <code>median</code> function for all attribute types.</p>
+</dd>
+<dt>&quot;concat&quot;</dt><dd><p>Concatenate the attributes, using the <code>c</code>
+function. This results almost always a complex attribute.</p>
+</dd> </dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="graph_attr.html">graph_attr</a></code>, <code><a href="vertex_attr.html">vertex_attr</a></code>,
+<code><a href="edge_attr.html">edge_attr</a></code> on how to use graph/vertex/edge attributes in
+general. <code><a href="igraph_options.html">igraph_options</a></code> on igraph parameters.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- graph( c(1,2, 1,2, 1,2, 2,3, 3,4) )
+E(g)$weight &lt;- 1:5
+
+## print attribute values with the graph
+igraph_options(print.graph.attributes=TRUE)
+igraph_options(print.vertex.attributes=TRUE)
+igraph_options(print.edge.attributes=TRUE)
+
+## new attribute is the sum of the old ones
+simplify(g, edge.attr.comb="sum")
+
+## collect attributes into a string
+simplify(g, edge.attr.comb=toString)
+
+## concatenate them into a vector, this creates a complex
+## attribute
+simplify(g, edge.attr.comb="concat")
+
+E(g)$name &lt;- letters[seq_len(ecount(g))]
+
+## both attributes are collected into strings
+simplify(g, edge.attr.comb=toString)
+
+## harmonic average of weights, names are dropped
+simplify(g, edge.attr.comb=list(weight=function(x) length(x)/sum(1/x),
+                                name="ignore"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

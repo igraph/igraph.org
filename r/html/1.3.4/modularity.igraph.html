@@ -1,0 +1,162 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.4
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>modularity.igraph {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Modularity of a community structure of a graph</h2>
+
+<h3>Description</h3>
+
+<p>This function calculates how modular is a given division of a graph into
+subgraphs.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>## S3 method for class 'igraph'
+modularity(x, membership, weights = NULL, resolution = 1, directed = TRUE, ...)
+
+modularity_matrix(
+  graph,
+  membership,
+  weights = NULL,
+  resolution = 1,
+  directed = TRUE
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>x, graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>membership</code></td>
+<td>
+<p>Numeric vector, one value for each vertex, the membership
+vector of the community structure.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>If not <code>NULL</code> then a numeric vector giving edge weights.</p>
+</td></tr>
+<tr valign="top"><td><code>resolution</code></td>
+<td>
+<p>The resolution parameter. Must be greater than or equal to
+0. Set it to 1 to use the classical definition of modularity.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Whether to use the directed or undirected version of
+modularity. Ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments, none currently.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>modularity</code> calculates the modularity of a graph with respect to the
+given <code>membership</code> vector.
+</p>
+<p>The modularity of a graph with respect to some division (or vertex types)
+measures how good the division is, or how separated are the different vertex
+types from each other. It defined as </p>
+<p style="text-align: center;"><code class="reqn">Q=\frac{1}{2m} \sum_{i,j}
+(A_{ij}-\gamma\frac{k_ik_j}{2m})\delta(c_i,c_j),</code>
+</p>
+<p> here <code class="reqn">m</code> is the number of edges, <code class="reqn">A_{ij}</code>
+is the element of the <code class="reqn">A</code> adjacency matrix in row <code class="reqn">i</code> and column
+<code class="reqn">j</code>, <code class="reqn">k_i</code> is the degree of <code class="reqn">i</code>, <code class="reqn">k_j</code> is the degree
+of <code class="reqn">j</code>, <code class="reqn">c_i</code> is the type (or component) of <code class="reqn">i</code>,
+<code class="reqn">c_j</code> that of <code class="reqn">j</code>, the sum goes over all <code class="reqn">i</code> and <code class="reqn">j</code>
+pairs of vertices, and <code class="reqn">\delta(x,y)</code> is 1 if <code class="reqn">x=y</code> and 0
+otherwise.
+</p>
+<p>The resolution parameter <code class="reqn">\gamma</code> allows weighting the random
+null model, which might be useful when finding partitions with a high
+modularity. Maximizing modularity with higher values of the resolution
+parameter typically results in more, smaller clusters when finding
+partitions with a high modularity. Lower values typically results in fewer,
+larger clusters. The original definition of modularity is retrieved when
+setting <code class="reqn">\gamma</code> to 1.
+</p>
+<p>If edge weights are given, then these are considered as the element of the
+<code class="reqn">A</code> adjacency matrix, and <code class="reqn">k_i</code> is the sum of weights of
+adjacent edges for vertex <code class="reqn">i</code>.
+</p>
+<p><code>modularity_matrix</code> calculates the modularity matrix. This is a dense matrix,
+and it is defined as the difference of the adjacency matrix and the
+configuration model null model matrix. In other words element
+<code class="reqn">M_{ij}</code> is given as <code class="reqn">A_{ij}-d_i
+d_j/(2m)</code>, where <code class="reqn">A_{ij}</code> is the (possibly
+weighted) adjacency matrix, <code class="reqn">d_i</code> is the degree of vertex <code class="reqn">i</code>,
+and <code class="reqn">m</code> is the number of edges (or the total weights in the graph, if it
+is weighed).
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>modularity</code> a numeric scalar, the modularity score of the
+given configuration.
+</p>
+<p>For <code>modularity_matrix</code> a numeric square matrix, its order is the number of
+vertices in the graph.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Clauset, A.; Newman, M. E. J. &amp; Moore, C. Finding community
+structure in very large networks, <em>Physical Review E</em> 2004, 70, 066111
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cluster_walktrap.html">cluster_walktrap</a></code>,
+<code><a href="cluster_edge_betweenness.html">cluster_edge_betweenness</a></code>,
+<code><a href="cluster_fast_greedy.html">cluster_fast_greedy</a></code>, <code><a href="cluster_spinglass.html">cluster_spinglass</a></code>,
+<code><a href="cluster_louvain.html">cluster_louvain</a></code> and <code><a href="cluster_leiden.html">cluster_leiden</a></code> for
+various community detection methods.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+g &lt;- make_full_graph(5) %du% make_full_graph(5) %du% make_full_graph(5)
+g &lt;- add_edges(g, c(1,6, 1,11, 6, 11))
+wtc &lt;- cluster_walktrap(g)
+modularity(wtc)
+modularity(g, membership(wtc))
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.4 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

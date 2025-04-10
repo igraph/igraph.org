@@ -1,0 +1,169 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.7
+---
+
+
+{% raw %}
+
+
+<h2>Semi-Projectors</h2>
+
+<h3>Description</h3>
+
+<p>A function to compute the <i>L</i> and <i>R</i> semi-projectors for a given
+partition of the vertices.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+scg_semi_proj(
+  groups,
+  mtype = c("symmetric", "laplacian", "stochastic"),
+  p = NULL,
+  norm = c("row", "col"),
+  sparse = igraph_opt("sparsematrices")
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>groups</code></td>
+<td>
+<p>A vector of <code>nrow(X)</code> or <code>vcount(X)</code> integers giving
+the group label of every vertex in the partition.</p>
+</td></tr>
+<tr valign="top"><td><code>mtype</code></td>
+<td>
+<p>The type of semi-projectors. For now &ldquo;symmetric&rdquo;,
+&ldquo;laplacian&rdquo; and &ldquo;stochastic&rdquo; are available.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>A probability vector of length <code>length(gr)</code>. <code>p</code> is the
+stationary probability distribution of a Markov chain when <code>mtype</code> =
+&ldquo;stochastic&rdquo;. This parameter is ignored in all other cases.</p>
+</td></tr>
+<tr valign="top"><td><code>norm</code></td>
+<td>
+<p>Either &ldquo;row&rdquo; or &ldquo;col&rdquo;. If set to &ldquo;row&rdquo; the
+rows of the Laplacian matrix sum up to zero and the rows of the stochastic
+sum up to one; otherwise it is the columns.</p>
+</td></tr>
+<tr valign="top"><td><code>sparse</code></td>
+<td>
+<p>Logical scalar, whether to return sparse matrices.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The three types of semi-projectors are defined as follows.  Let
+<i>gamma(j)</i> label the group of vertex <i>j</i> in a partition
+of all the vertices.
+</p>
+<p>The symmetric semi-projectors are defined as </p>
+<p style="text-align: center;"><i>
+delta[alpha,gamma(j)],</i></p>
+<p style="text-align: center;"><i>
+R[alpha,j] = 1/sqrt(|alpha|) delta[alpha,gamma(j)],</i></p>
+<p> the (row) Laplacian
+semi-projectors as </p>
+<p style="text-align: center;"><i>
+1/|alpha| delta[alpha,gamma(j)] and R[alpha,j] =
+delta[alpha,gamma(j)],</i></p>
+<p style="text-align: center;"><i>
+and R[alpha,j] = delta[alpha,gamma(j)],</i></p>
+<p> and the (row) stochastic
+semi-projectors as </p>
+<p style="text-align: center;"><i>
+p[1][j] / sum(p[1][k]; k in gamma(j)) delta[alpha,gamma(j)] and R[alpha,j] =
+delta[alpha,gamma(j)],</i></p>
+<p style="text-align: center;"><i>
+/ sum(p[1][k]; k in gamma(j)) delta[alpha,gamma(j)] and R[alpha,j] =
+delta[alpha,gamma(j)],</i></p>
+<p> where <i>p[1]</i> is the (left) eigenvector
+associated with the one-eigenvalue of the stochastic matrix. <i>L</i> and
+<i>R</i> are defined in a symmetric way when <code>norm = col</code>. All these
+semi-projectors verify various properties described in the reference.
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>L</code></td>
+<td>
+<p>The semi-projector <i>L</i>.</p>
+</td></tr> <tr valign="top"><td><code>R</code></td>
+<td>
+<p>The semi-projector
+<i>R</i>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>David Morton de Lachapelle,
+<a href="http://people.epfl.ch/david.morton">http://people.epfl.ch/david.morton</a>.
+</p>
+
+
+<h3>References</h3>
+
+<p>D. Morton de Lachapelle, D. Gfeller, and P. De Los Rios,
+Shrinking Matrices while Preserving their Eigenpairs with Application to the
+Spectral Coarse Graining of Graphs. Submitted to <em>SIAM Journal on
+Matrix Analysis and Applications</em>, 2008.
+<a href="http://people.epfl.ch/david.morton">http://people.epfl.ch/david.morton</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="scg-method.html">scg-method</a> for a detailed introduction. <code><a href="scg.html">scg</a></code>,
+<code><a href="scg_eps.html">scg_eps</a></code>, <code><a href="scg_group.html">scg_group</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+library(Matrix)
+# compute the semi-projectors and projector for the partition
+# provided by a community detection method
+g &lt;- sample_pa(20, m = 1.5, directed = FALSE)
+eb &lt;- cluster_edge_betweenness(g)
+memb &lt;- membership(eb)
+lr &lt;- scg_semi_proj(memb)
+#In the symmetric case L = R
+tcrossprod(lr$R)  # same as lr$R %*% t(lr$R)
+P &lt;- crossprod(lr$R)  # same as t(lr$R) %*% lr$R
+#P is an orthogonal projector
+isSymmetric(P)
+sum( (P %*% P-P)^2 )
+
+## use L and R to coarse-grain the graph Laplacian
+lr &lt;- scg_semi_proj(memb, mtype="laplacian")
+L &lt;- laplacian_matrix(g)
+Lt &lt;- lr$L %*% L %*% t(lr$R)
+## or better lr$L %*% tcrossprod(L,lr$R)
+rowSums(Lt)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.7 <a href="index.html">Index</a>]</div>
+{% endraw %}

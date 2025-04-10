@@ -1,0 +1,130 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.0
+---
+
+
+{% raw %}
+
+
+<h2>Match Graphs given a seeding of vertex correspondences</h2>
+
+<h3>Description</h3>
+
+<p>Given two adjacency matrices <code>A</code> and <code>B</code> of the same size, match
+the two graphs with the help of <code>m</code> seed vertex pairs which correspond
+to the first <code>m</code> rows (and columns) of the adjacency matrices.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+match_vertices(A, B, m, start, iteration)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>A</code></td>
+<td>
+<p>a numeric matrix, the adjacency matrix of the first graph</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>a numeric matrix, the adjacency matrix of the second graph</p>
+</td></tr>
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>The number of seeds. The first <code>m</code> vertices of both graphs are
+matched.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>a numeric matrix, the permutation matrix estimate is
+initialized with <code>start</code></p>
+</td></tr>
+<tr valign="top"><td><code>iteration</code></td>
+<td>
+<p>The number of iterations for the Frank-Wolfe algorithm</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The approximate graph matching problem is to find a bijection between the
+vertices of two graphs , such that the number of edge disagreements between
+the corresponding vertex pairs is minimized. For seeded graph matching, part
+of the bijection that consist of known correspondences (the seeds) is known
+and the problem task is to complete the bijection by estimating the
+permutation matrix that permutes the rows and columns of the adjacency
+matrix of the second graph.
+</p>
+<p>It is assumed that for the two supplied adjacency matrices <code>A</code> and
+<code>B</code>, both of size <i>n*n</i>, the first <i>m</i> rows(and
+columns) of <code>A</code> and <code>B</code> correspond to the same vertices in both
+graphs. That is, the <i>n*n</i> permutation matrix that defines
+the bijection is <i>I_{m} \bigoplus P</i> for a <i>(n-m)*(n-m)</i> permutation matrix <i>P</i> and <i>m</i> times <i>m</i>
+identity matrix <i>I_{m}</i>. The function <code>match_vertices</code> estimates
+the permutation matrix <i>P</i> via an optimization algorithm based on the
+Frank-Wolfe algorithm.
+</p>
+<p>See references for further details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric matrix which is the permutation matrix that determines the
+bijection between the graphs of <code>A</code> and <code>B</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Vince Lyzinski <a href="http://www.ams.jhu.edu/~lyzinski/">http://www.ams.jhu.edu/~lyzinski/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Vogelstein, J. T., Conroy, J. M., Podrazik, L. J., Kratzer, S.
+G., Harley, E. T., Fishkind, D. E.,Vogelstein, R. J., Priebe, C. E. (2011).
+Fast Approximate Quadratic Programming for Large (Brain) Graph Matching.
+Online: <a href="https://arxiv.org/abs/1112.5507">https://arxiv.org/abs/1112.5507</a>
+</p>
+<p>Fishkind, D. E., Adali, S., Priebe, C. E. (2012). Seeded Graph Matching
+Online: <a href="https://arxiv.org/abs/1209.0367">https://arxiv.org/abs/1209.0367</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sample_correlated_gnp.html">sample_correlated_gnp</a></code>,<code><a href="sample_correlated_gnp_pair.html">sample_correlated_gnp_pair</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+ #require(Matrix)
+ g1 &lt;- erdos.renyi.game(10, .1)
+ randperm &lt;- c(1:3, 3+sample(7))
+ g2 &lt;- sample_correlated_gnp(g1, corr=1, p=g1$p, permutation=randperm)
+ A  &lt;- as.matrix(get.adjacency(g1))
+ B  &lt;- as.matrix(get.adjacency(g2))
+ P  &lt;-match_vertices (A, B, m=3, start=diag(rep(1, nrow(A)-3)), 20)
+ P
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.0 <a href="index.html">Index</a>]</div>
+{% endraw %}

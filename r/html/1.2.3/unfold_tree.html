@@ -1,0 +1,99 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Convert a general graph into a forest</h2>
+
+<h3>Description</h3>
+
+<p>Perform a breadth-first search on a graph and convert it into a tree or
+forest by replicating vertices that were found more than once.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+unfold_tree(graph, mode = c("all", "out", "in", "total"), roots)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, it can be either directed or undirected.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>Character string, defined the types of the paths used for the
+breadth-first search. &ldquo;out&rdquo; follows the outgoing, &ldquo;in&rdquo; the
+incoming edges, &ldquo;all&rdquo; and &ldquo;total&rdquo; both of them. This argument
+is ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>roots</code></td>
+<td>
+<p>A vector giving the vertices from which the breadth-first
+search is performed. Typically it contains one vertex per component.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A forest is a graph, whose components are trees.
+</p>
+<p>The <code>roots</code> vector can be calculated by simply doing a topological sort
+in all components of the graph, see the examples below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with two components: </p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>tree</code></td>
+<td>
+<p>The result, an <code>igraph</code>
+object, a tree or a forest.</p>
+</td></tr> <tr valign="top"><td><code>vertex_index</code></td>
+<td>
+<p>A numeric vector, it gives
+a mapping from the vertices of the new graph to the vertices of the old
+graph.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- make_tree(10) %du% make_tree(10)
+V(g)$id &lt;- seq_len(vcount(g))-1
+roots &lt;- sapply(decompose(g), function(x) {
+            V(x)$id[ topo_sort(x)[1]+1 ] })
+tree &lt;- unfold_tree(g, roots=roots)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

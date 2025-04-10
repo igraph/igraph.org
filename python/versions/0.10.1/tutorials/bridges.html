@@ -1,0 +1,152 @@
+---
+layout: default
+title: Bridges
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.1 documentation" href="../index.html" />
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.1
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../index.html" title="Parent: igraph 0.10.1 documentation" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-home"></i> igraph 0.10.1 documentation
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Bridges
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Bridges</a><ul>
+<li><a class="reference internal" href="#advanced-cutting-effect">Advanced: Cutting Effect</a></li>
+</ul>
+</li>
+</ul>
+ -->
+        
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-bridges-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="bridges">
+<span id="tutorials-bridges"></span><span id="sphx-glr-tutorials-bridges-py"></span><h1>Bridges<a class="headerlink" href="#bridges" title="Permalink to this heading">¶</a></h1>
+<p>This example shows how to compute and visualize the <a class="reference external" href="https://en.wikipedia.org/wiki/Bridge_(graph_theory)">bridges</a> in a graph using <a class="reference external" href="../api/igraph.GraphBase.html#bridges" title="(in &quot;igraph&quot; v0.10.1)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">igraph.GraphBase.bridges()</span></code></a>. For an example on articulation points instead, see <a class="reference internal" href="articulation_points/articulation_points.html#tutorials-articulation-points"><span class="std std-ref">Articulation Points</span></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<p>Let’s start with a simple example. We begin by constructing a graph that
+includes a few bridges:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span> <span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">11</span> <span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>Then we can use a function to actually find the bridges, i.e. the edges that
+connect different parts of the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bridges</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">bridges</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We set a separate color for those edges, to emphasize then in a plot:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.2</span>
+</pre></div>
+</div>
+<p>Finally, we plot the graph using that emphasis:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">vcount</span><span class="p">())</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="advanced-cutting-effect">
+<h2>Advanced: Cutting Effect<a class="headerlink" href="#advanced-cutting-effect" title="Permalink to this heading">¶</a></h2>
+<p>Bridges are edges that when removed, will separate the graph into more components then they started with. To emphasise the removal of edges from the graph, we can add small “x” effect to each of the bridges by using edge labels.</p>
+<p>As before, we begin by constructing the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span> <span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">11</span> <span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>We then find and set the color for the bridges, but this time we also set a
+label for those edges:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bridges</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">bridges</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.2</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span>
+</pre></div>
+</div>
+<p>Finally, we can plot the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">vcount</span><span class="p">()),</span>
+    <span class="n">edge_background</span><span class="o">=</span><span class="s2">&quot;#FFF0&quot;</span><span class="p">,</span>    <span class="c1"># transparent background color</span>
+    <span class="n">edge_align_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>      <span class="c1"># make sure labels are aligned with the edge</span>
+    <span class="n">edge_label</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span>
+    <span class="n">edge_label_color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.070 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-bridges-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/bae7aba824f72e4b23fc8060976ad889/bridges.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">bridges.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/0e3dd42ffedbd9a3484b540044bcfdc6/bridges.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">bridges.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

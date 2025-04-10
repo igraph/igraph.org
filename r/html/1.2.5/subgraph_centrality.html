@@ -1,0 +1,98 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Find subgraph centrality scores of network positions</h2>
+
+<h3>Description</h3>
+
+<p>Subgraph centrality of a vertex measures the number of subgraphs a vertex
+participates in, weighting them according to their size.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+subgraph_centrality(graph, diag = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, it should be undirected, but the
+implementation does not check this currently.</p>
+</td></tr>
+<tr valign="top"><td><code>diag</code></td>
+<td>
+<p>Boolean scalar, whether to include the diagonal of the adjacency
+matrix in the analysis. Giving <code>FALSE</code> here effectively eliminates the
+loops edges from the graph before the calculation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The subgraph centrality of a vertex is defined as the number of closed loops
+originating at the vertex, where longer loops are exponentially
+downweighted.
+</p>
+<p>Currently the calculation is performed by explicitly calculating all
+eigenvalues and eigenvectors of the adjacency matrix of the graph. This
+effectively means that the measure can only be calculated for small graphs.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric vector, the subgraph centrality scores of the vertices.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a> based on the Matlab
+code by Ernesto Estrada
+</p>
+
+
+<h3>References</h3>
+
+<p>Ernesto Estrada, Juan A. Rodriguez-Velazquez: Subgraph
+centrality in Complex Networks. <em>Physical Review E</em> 71, 056103 (2005).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="eigen_centrality.html">eigen_centrality</a></code>, <code><a href="page_rank.html">page_rank</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- sample_pa(100, m=4, dir=FALSE)
+sc &lt;- subgraph_centrality(g)
+cor(degree(g), sc)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

@@ -1,0 +1,179 @@
+---
+layout: default
+title: Online user actions
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.0 documentation" href="../index.html" />
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.0
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../index.html" title="Parent: igraph 0.10.0 documentation" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-home"></i> igraph 0.10.0 documentation
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Online user actions
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Online user actions</a></li>
+</ul>
+ -->
+        
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-tutorials-online-user-actions-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="online-user-actions">
+<span id="tutorials-online-user-actions"></span><span id="sphx-glr-tutorials-online-user-actions-py"></span><h1>Online user actions<a class="headerlink" href="#online-user-actions" title="Permalink to this heading">¶</a></h1>
+<p>This example reproduces a typical data science situation in an internet company. We start from a pandas DataFrame with online user actions, for instance for an online text editor: the user can create a page, edit it, or delete it. We want to construct and visualize a graph of the users highlighting collaborations on the same page/project.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;/Users/tamas/dev/igraph/igraph.org/_build/python/doc/examples_sphinx-gallery/online_user_actions.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">13</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="ne">ModuleNotFoundError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="s1">&#39;pandas&#39;</span>
+</pre></div>
+</div>
+<p>Let’s start by preparing some toy data representing online users. Each row
+indicates a certain action taken by a user (e.g. click on a button within a
+website). Actual user data usually come with time stamp, but that’s not
+essential for this example.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">action_dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;2r09ej221sk2k5&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;789dsadafj32jj&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;oi32ncwosap399&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;4r4320dkqpdokk&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;320eljl3lk3239&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;3203ejew332323&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;3203ejew332323&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;40m11919332msa&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private2&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;40m11919332msa&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private2&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;anotherGreatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;2r09ej221sk2k5&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;anotherGreatProject&#39;</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;project&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The goal of this example is to check when two users worked on the same page.
+We choose to use a weighted adjacency matrix for this, i.e. a table with rows
+and columns indexes by the users that has nonzero entries whenever folks
+collaborate. First, let’s get the users and prepare an empty matrix:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">users</span> <span class="o">=</span> <span class="n">action_dataframe</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">adjacency_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, let’s iterate over all projects one by one, and add all collaborations:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">project</span><span class="p">,</span> <span class="n">project_data</span> <span class="ow">in</span> <span class="n">action_dataframe</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;project&#39;</span><span class="p">):</span>
+    <span class="n">project_users</span> <span class="o">=</span> <span class="n">project_data</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">user1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">project_users</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">user2</span> <span class="ow">in</span> <span class="n">project_users</span><span class="p">[:</span><span class="n">i1</span><span class="p">]:</span>
+            <span class="n">adjacency_matrix</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">user1</span><span class="p">,</span> <span class="n">user2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>There are many ways to achieve the above matrix, so don’t be surprised if you
+came up with another algorithm ;-) Now it’s time to make the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Weighted_Adjacency</span><span class="p">(</span><span class="n">adjacency_matrix</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;plus&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can take a look at the graph via plotting functions. We can first make a
+layout:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then we can prepare vertex sizes based on their closeness to other vertices</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vertex_size</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">closeness</span><span class="p">()</span>
+<span class="n">vertex_size</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="mf">0.05</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertex_size</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Finally, we can plot the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="n">vertex_size</span><span class="p">,</span>
+    <span class="n">edge_width</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Loops indicate “self-collaborations”, which are not very meaningful. To
+filter out loops without losing the edge weights, we can use:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">combine_edges</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="n">vertex_size</span><span class="p">,</span>
+    <span class="n">edge_width</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.001 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-online-user-actions-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/d26d373ee3cda71ff9571e6ac3291311/online_user_actions.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">online_user_actions.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/937b9a86f4f37eae9f32f34396051b1f/online_user_actions.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">online_user_actions.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

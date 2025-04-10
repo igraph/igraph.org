@@ -1,0 +1,157 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.5
+---
+
+
+{% raw %}
+
+<table style="width: 100%;"><tr><td>sample_pref {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Trait-based random generation</h2>
+
+<h3>Description</h3>
+
+<p>Generation of random graphs based on different vertex types.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>sample_pref(
+  nodes,
+  types,
+  type.dist = rep(1, types),
+  fixed.sizes = FALSE,
+  pref.matrix = matrix(1, types, types),
+  directed = FALSE,
+  loops = FALSE
+)
+
+pref(...)
+
+sample_asym_pref(
+  nodes,
+  types,
+  type.dist.matrix = matrix(1, types, types),
+  pref.matrix = matrix(1, types, types),
+  loops = FALSE
+)
+
+asym_pref(...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>nodes</code></td>
+<td>
+<p>The number of vertices in the graphs.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>types</code></td>
+<td>
+<p>The number of different vertex types.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>type.dist</code></td>
+<td>
+<p>The distribution of the vertex types, a numeric vector of
+length &lsquo;types&rsquo; containing non-negative numbers. The vector will be
+normed to obtain probabilities.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>fixed.sizes</code></td>
+<td>
+<p>Fix the number of vertices with a given vertex type
+label. The <code>type.dist</code> argument gives the group sizes (i.e. number of
+vertices with the different labels) in this case.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>pref.matrix</code></td>
+<td>
+<p>A square matrix giving the preferences of the vertex
+types. The matrix has &lsquo;types&rsquo; rows and columns.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>directed</code></td>
+<td>
+<p>Logical constant, whether to create a directed graph.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>loops</code></td>
+<td>
+<p>Logical constant, whether self-loops are allowed in the graph.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>...</code></td>
+<td>
+<p>Passed to the constructor, <code>sample_pref</code> or
+<code>sample_asym_pref</code>.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>type.dist.matrix</code></td>
+<td>
+<p>The joint distribution of the in- and out-vertex
+types.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Both models generate random graphs with given vertex types. For
+<code>sample_pref</code> the probability that two vertices will be connected
+depends on their type and is given by the &lsquo;pref.matrix&rsquo; argument.
+This matrix should be symmetric to make sense but this is not checked. The
+distribution of the different vertex types is given by the
+&lsquo;type.dist&rsquo; vector.
+</p>
+<p>For <code>sample_asym_pref</code> each vertex has an in-type and an
+out-type and a directed graph is created. The probability that a directed
+edge is realized from a vertex with a given out-type to a vertex with a
+given in-type is given in the &lsquo;pref.matrix&rsquo; argument, which can be
+asymmetric. The joint distribution for the in- and out-types is given in the
+&lsquo;type.dist.matrix&rsquo; argument.
+</p>
+<p>The types of the generated vertices can be retrieved from the
+<code>type</code> vertex attribute for <code>sample_pref</code> and from the
+<code>intype</code> and <code>outtype</code> vertex attribute for <code>sample_asym_pref</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An igraph graph.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a> and Gabor Csardi
+<a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a> for the R interface
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sample_traits.html">sample_traits</a></code>.
+<code><a href="sample_traits_callaway.html">sample_traits_callaway</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+pf &lt;- matrix( c(1, 0, 0, 1), nrow=2)
+g &lt;- sample_pref(20, 2, pref.matrix=pf)
+## Not run: tkplot(g, layout=layout_with_fr)
+
+pf &lt;- matrix( c(0, 1, 0, 0), nrow=2)
+g &lt;- sample_asym_pref(20, 2, pref.matrix=pf)
+## Not run: tkplot(g, layout=layout_in_circle)
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.5 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

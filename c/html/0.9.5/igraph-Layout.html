@@ -1,0 +1,3065 @@
+---
+layout: c-manual
+title: igraph Reference Manual
+mainheader: igraph Reference Manual
+lead: For using the igraph C library
+vmenu: true
+doctype: html/
+langversion: 0.9.5
+---
+
+{% raw %}
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Motifs.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Foreign.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Layout"></a>Chapter 20. Generating layouts for graph drawing</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Layout.html#two-d-layout-generators">1. 2D layout generators</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#three-d-layout-generators">2. 3D layout generators</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#merging-layouts">3. Merging layouts</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="two-d-layout-generators"></a>1. 2D layout generators</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random">1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniform randomly on a plane.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_circle">1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle, in the order of vertex ids.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_star">1.3. <code class="function">igraph_layout_star</code> —  Generates a star-like layout.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid">1.4. <code class="function">igraph_layout_grid</code> —  Places the vertices on a regular grid on the plane.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_graphopt">1.5. <code class="function">igraph_layout_graphopt</code> —  Optimizes vertex layout via the graphopt algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_bipartite">1.6. <code class="function">igraph_layout_bipartite</code> — Simple layout for bipartite graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#drl-layout-generator">1.7. The DrL layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold">1.8. <code class="function">igraph_layout_fruchterman_reingold</code> —  Places the vertices on a plane according to the Fruchterman-Reingold algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai">1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according the Kamada-Kawai algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_gem">1.10. <code class="function">igraph_layout_gem</code> — The GEM layout algorithm, as described in Arne Frick, Andreas Ludwig,</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_davidson_harel">1.11. <code class="function">igraph_layout_davidson_harel</code> — Davidson-Harel layout algorithm</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_mds">1.12. <code class="function">igraph_layout_mds</code> —  Place the vertices on a plane using multidimensional scaling.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_lgl">1.13. <code class="function">igraph_layout_lgl</code> —  Force based layout algorithm for large graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_reingold_tilford">1.14. <code class="function">igraph_layout_reingold_tilford</code> —  Reingold-Tilford layout for tree graphs</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_reingold_tilford_circular">1.15. <code class="function">igraph_layout_reingold_tilford_circular</code> —  Circular Reingold-Tilford layout for trees</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sugiyama">1.16. <code class="function">igraph_layout_sugiyama</code> —  Sugiyama layout algorithm for layered directed acyclic graphs.</a></span></dt>
+</dl></div>
+<p>Layout generator functions (or at least most of them) try to place the
+vertices and edges of a graph on a 2D plane or in 3D space in a way
+which visually pleases the human eye.</p>
+<p>They take a graph object and a number of parameters as arguments
+and return an <span class="type">igraph_matrix_t</span>, in which each row gives the
+coordinates of a vertex.</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_random"></a>1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniform randomly on a plane.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_random(const igraph_t *graph, igraph_matrix_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. The current implementation always returns with
+success.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|), the
+number of vertices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_circle"></a>1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle, in the order of vertex ids.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_circle(const igraph_t *graph, igraph_matrix_t *res,
+                         igraph_vs_t order);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>order</code></em>:</span></p></td>
+<td><p>
+  The order of the vertices on the circle. The vertices
+       not included here, will be placed at (0,0). Supply
+       <a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version)."><code class="function">igraph_vss_all()</code></a> here for all vertices, in the order of
+       their vertex ids.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|), the
+number of vertices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_star"></a>1.3. <code class="function">igraph_layout_star</code> —  Generates a star-like layout.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_star(const igraph_t *graph, igraph_matrix_t *res,
+                       igraph_integer_t center, const igraph_vector_t *order);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Its edges are ignored by this function.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>center</code></em>:</span></p></td>
+<td><p>
+  The id of the vertex to put in the center.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>order</code></em>:</span></p></td>
+<td><p>
+  A numeric vector giving the order of the vertices
+     (including the center vertex!). If a null pointer, then the
+     vertices are placed in increasing vertex id order.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|), linear in the number of vertices.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_circle" title="1.2. igraph_layout_circle — Places the vertices uniformly on a circle, in the order of vertex ids."><code class="function">igraph_layout_circle()</code></a> and other layout generators.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_grid"></a>1.4. <code class="function">igraph_layout_grid</code> —  Places the vertices on a regular grid on the plane.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_grid(const igraph_t *graph, igraph_matrix_t *res, long int width);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>width</code></em>:</span></p></td>
+<td><p>
+  The number of vertices in a single row of the grid.
+       When zero or negative, the width of the grid will be the
+       square root of the number of vertices, rounded up if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. The current implementation always returns with
+        success.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|), the number of vertices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_graphopt"></a>1.5. <code class="function">igraph_layout_graphopt</code> —  Optimizes vertex layout via the graphopt algorithm.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_graphopt(const igraph_t *graph, igraph_matrix_t *res,
+                           igraph_integer_t niter,
+                           igraph_real_t node_charge, igraph_real_t node_mass,
+                           igraph_real_t spring_length,
+                           igraph_real_t spring_constant,
+                           igraph_real_t max_sa_movement,
+                           igraph_bool_t use_seed);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This is a port of the graphopt layout algorithm by Michael Schmuhl.
+graphopt version 0.4.1 was rewritten in C and the support for
+layers was removed (might be added later) and a code was a bit
+reorganized to avoid some unnecessary steps is the node charge (see below)
+is zero.
+
+</p>
+<p>
+Graphopt uses physical analogies for defining attracting and repelling
+forces among the vertices and then the physical system is simulated
+until it reaches an equilibrium. (There is no simulated annealing or
+anything like that, so a stable fixed point is not guaranteed.)
+
+</p>
+<p>
+See also <a class="ulink" href="http://www.schmuhl.org/graphopt/" target="_top">http://www.schmuhl.org/graphopt/</a> for the original graphopt.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix, the result will be stored here
+   and its initial contents are used as the starting point of the simulation
+   if the <em class="parameter"><code>use_seed</code></em> argument is true. Note that in this case the
+   matrix should have the proper size, otherwise a warning is issued and
+   the supplied values are ignored. If no starting positions are given
+   (or they are invalid) then a random starting position is used.
+   The matrix will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>niter</code></em>:</span></p></td>
+<td><p>
+  Integer constant, the number of iterations to perform.
+   Should be a couple of hundred in general. If you have a large graph
+   then you might want to only do a few iterations and then check the
+   result. If it is not good enough you can feed it in again in
+   the <em class="parameter"><code>res</code></em> argument. The original graphopt default is 500.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node_charge</code></em>:</span></p></td>
+<td><p>
+  The charge of the vertices, used to calculate electric
+   repulsion. The original graphopt default is 0.001.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>node_mass</code></em>:</span></p></td>
+<td><p>
+  The mass of the vertices, used for the spring forces.
+   The original graphopt defaults to 30.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>spring_length</code></em>:</span></p></td>
+<td><p>
+  The length of the springs.
+   The original graphopt defaults to zero.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>spring_constant</code></em>:</span></p></td>
+<td><p>
+  The spring constant, the original graphopt defaults
+   to one.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_sa_movement</code></em>:</span></p></td>
+<td><p>
+  Real constant, it gives the maximum amount of movement
+   allowed in a single step along a single axis. The original graphopt
+   default is 5.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical scalar, whether to use the positions in <em class="parameter"><code>res</code></em> as
+   a starting configuration. See also <em class="parameter"><code>res</code></em> above.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n (|V|^2+|E|) ), n is the number of iterations,
+|V| is the number of vertices, |E| the number
+of edges. If <em class="parameter"><code>node_charge</code></em> is zero then it is only O(n|E|).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_bipartite"></a>1.6. <code class="function">igraph_layout_bipartite</code> — Simple layout for bipartite graphs.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_bipartite(const igraph_t *graph,
+                            const igraph_vector_bool_t *types,
+                            igraph_matrix_t *res, igraph_real_t hgap,
+                            igraph_real_t vgap, long int maxiter);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The layout is created by first placing the vertices in two rows,
+according to their types. Then the positions within the rows are
+optimized to minimize edge crossings, by calling <a class="link" href="igraph-Layout.html#igraph_layout_sugiyama" title="1.16. igraph_layout_sugiyama — Sugiyama layout algorithm for layered directed acyclic graphs."><code class="function">igraph_layout_sugiyama()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  A boolean vector containing ones and zeros, the vertex
+    types. Its length must match the number of vertices in the graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix, the result, the x and
+    y coordinates are stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hgap</code></em>:</span></p></td>
+<td><p>
+  The preferred minimum horizontal gap between vertices
+    in the same layer (i.e. vertices of the same type).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vgap</code></em>:</span></p></td>
+<td><p>
+  The distance between layers.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  Maximum number of iterations in the crossing
+    minimization stage. 100 is a reasonable default; if you feel
+    that you have too many edge crossings, increase this.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_sugiyama" title="1.16. igraph_layout_sugiyama — Sugiyama layout algorithm for layered directed acyclic graphs."><code class="function">igraph_layout_sugiyama()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="drl-layout-generator"></a>1.7. The DrL layout generator</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_drl_options_t">1.7.1. <code class="function">igraph_layout_drl_options_t</code> — Parameters for the DrL layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_drl_default_t">1.7.2. <code class="function">igraph_layout_drl_default_t</code> — Predefined parameter templates for the DrL layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_drl_options_init">1.7.3. <code class="function">igraph_layout_drl_options_init</code> — Initialize parameters for the DrL layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_drl">1.7.4. <code class="function">igraph_layout_drl</code> — The DrL layout generator</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_drl_3d">1.7.5. <code class="function">igraph_layout_drl_3d</code> — The DrL layout generator, 3d version.</a></span></dt>
+</dl></div>
+<p>
+DrL is a sophisticated layout generator developed and implemented by
+Shawn Martin et al. As of October 2012 the original DrL homepage is
+unfortunately not available. You can read more about this algorithm
+in the following technical report: Martin, S., Brown, W.M.,
+Klavans, R., Boyack, K.W., DrL: Distributed Recursive (Graph)
+Layout. SAND Reports, 2008. 2936: p. 1-10.
+</p>
+<p>
+Only a subset of the complete DrL functionality is
+included in igraph, parallel runs and recursive, multi-level
+layouting is not supported.
+</p>
+<p>
+The parameters of the layout are stored in an <a class="link" href="igraph-Layout.html#igraph_layout_drl_options_t" title="1.7.1. igraph_layout_drl_options_t — Parameters for the DrL layout generator"><code class="function">igraph_layout_drl_options_t</code></a> structure, this can be initialized by
+calling the function <a class="link" href="igraph-Layout.html#igraph_layout_drl_options_init" title="1.7.3. igraph_layout_drl_options_init — Initialize parameters for the DrL layout generator"><code class="function">igraph_layout_drl_options_init()</code></a>.
+The fields of this structure can then be adjusted by hand if needed.
+The layout is calculated by an <a class="link" href="igraph-Layout.html#igraph_layout_drl" title="1.7.4. igraph_layout_drl — The DrL layout generator"><code class="function">igraph_layout_drl()</code></a> call.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_layout_drl_options_t"></a>1.7.1. <code class="function">igraph_layout_drl_options_t</code> — Parameters for the DrL layout generator</h4></div></div></div>
+<a class="indexterm" name="id-1.21.2.10.5.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef struct igraph_layout_drl_options_t {
+    igraph_real_t    edge_cut;
+    igraph_integer_t init_iterations;
+    igraph_real_t    init_temperature;
+    igraph_real_t    init_attraction;
+    igraph_real_t    init_damping_mult;
+    igraph_integer_t liquid_iterations;
+    igraph_real_t    liquid_temperature;
+    igraph_real_t    liquid_attraction;
+    igraph_real_t    liquid_damping_mult;
+    igraph_integer_t expansion_iterations;
+    igraph_real_t    expansion_temperature;
+    igraph_real_t    expansion_attraction;
+    igraph_real_t    expansion_damping_mult;
+    igraph_integer_t cooldown_iterations;
+    igraph_real_t    cooldown_temperature;
+    igraph_real_t    cooldown_attraction;
+    igraph_real_t    cooldown_damping_mult;
+    igraph_integer_t crunch_iterations;
+    igraph_real_t    crunch_temperature;
+    igraph_real_t    crunch_attraction;
+    igraph_real_t    crunch_damping_mult;
+    igraph_integer_t simmer_iterations;
+    igraph_real_t    simmer_temperature;
+    igraph_real_t    simmer_attraction;
+    igraph_real_t    simmer_damping_mult;
+} igraph_layout_drl_options_t;
+</pre>
+<p>
+</p>
+<p>
+</p>
+<p></p>
+<p><b>Values: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">edge_cut</code>:</span></p></td>
+<td><p>
+  The edge cutting parameter.
+   Edge cutting is done in the late stages of the
+   algorithm in order to achieve less dense layouts.  Edges are cut
+   if there is a lot of stress on them (a large value in the
+   objective function sum).  The edge cutting parameter is a value
+   between 0 and 1 with 0 representing no edge cutting and 1
+   representing maximal edge cutting. The default value is 32/40.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">init_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations, initial phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">init_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature, initial phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">init_attraction</code>:</span></p></td>
+<td><p>
+  Attraction, initial phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">init_damping_mult</code>:</span></p></td>
+<td><p>
+  Damping factor, initial phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">liquid_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations in the liquid phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">liquid_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature in the liquid phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">liquid_attraction</code>:</span></p></td>
+<td><p>
+  Attraction in the liquid phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">liquid_damping_mult</code>:</span></p></td>
+<td><p>
+  Multiplicatie damping factor, liquid phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">expansion_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations in the expansion phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">expansion_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature in the expansion phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">expansion_attraction</code>:</span></p></td>
+<td><p>
+  Attraction, expansion phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">expansion_damping_mult</code>:</span></p></td>
+<td><p>
+  Damping factor, expansion phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">cooldown_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations in the cooldown phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">cooldown_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature in the cooldown phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">cooldown_attraction</code>:</span></p></td>
+<td><p>
+  Attraction in the cooldown phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">cooldown_damping_mult</code>:</span></p></td>
+<td><p>
+  Damping fact int the cooldown phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">crunch_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations in the crunch phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">crunch_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature in the crunch phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">crunch_attraction</code>:</span></p></td>
+<td><p>
+  Attraction in the crunch phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">crunch_damping_mult</code>:</span></p></td>
+<td><p>
+  Damping factor in the crunch phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">simmer_iterations</code>:</span></p></td>
+<td><p>
+  Number of iterations in the simmer phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">simmer_temperature</code>:</span></p></td>
+<td><p>
+  Start temperature in te simmer phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">simmer_attraction</code>:</span></p></td>
+<td><p>
+  Attraction in the simmer phase.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">simmer_damping_mult</code>:</span></p></td>
+<td><p>
+  Multiplicative damping factor in the simmer phase.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_layout_drl_default_t"></a>1.7.2. <code class="function">igraph_layout_drl_default_t</code> — Predefined parameter templates for the DrL layout generator</h4></div></div></div>
+<a class="indexterm" name="id-1.21.2.10.6.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef enum { IGRAPH_LAYOUT_DRL_DEFAULT = 0,
+               IGRAPH_LAYOUT_DRL_COARSEN,
+               IGRAPH_LAYOUT_DRL_COARSEST,
+               IGRAPH_LAYOUT_DRL_REFINE,
+               IGRAPH_LAYOUT_DRL_FINAL
+             } igraph_layout_drl_default_t;
+</pre>
+<p>
+</p>
+<p>
+
+
+These constants can be used to initialize a set of DrL parameters.
+These can then be modified according to the user's needs.
+</p>
+<p><b>Values: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LAYOUT_DRL_DEFAULT</code>:</span></p></td>
+<td><p>
+  The deafult parameters.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LAYOUT_DRL_COARSEN</code>:</span></p></td>
+<td><p>
+  Slightly modified parameters to
+     get a coarser layout.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LAYOUT_DRL_COARSEST</code>:</span></p></td>
+<td><p>
+  An even coarser layout.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LAYOUT_DRL_REFINE</code>:</span></p></td>
+<td><p>
+  Refine an already calculated layout.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LAYOUT_DRL_FINAL</code>:</span></p></td>
+<td><p>
+  Finalize an already refined layout.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_layout_drl_options_init"></a>1.7.3. <code class="function">igraph_layout_drl_options_init</code> — Initialize parameters for the DrL layout generator</h4></div></div></div>
+<a class="indexterm" name="id-1.21.2.10.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_drl_options_init(igraph_layout_drl_options_t *options,
+                                   igraph_layout_drl_default_t templ);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function can be used to initialize the struct holding the
+parameters for the DrL layout generator. There are a number of
+predefined templates available, it is a good idea to start from one
+of these by modifying some parameters.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
+<td><p>
+  The struct to initialize.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>templ</code></em>:</span></p></td>
+<td><p>
+  The template to use. Currently the following templates
+    are supplied: <code class="constant">IGRAPH_LAYOUT_DRL_DEFAULT</code>, <code class="constant">IGRAPH_LAYOUT_DRL_COARSEN</code>, <code class="constant">IGRAPH_LAYOUT_DRL_COARSEST</code>,
+    <code class="constant">IGRAPH_LAYOUT_DRL_REFINE</code> and <code class="constant">IGRAPH_LAYOUT_DRL_FINAL</code>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_layout_drl"></a>1.7.4. <code class="function">igraph_layout_drl</code> — The DrL layout generator</h4></div></div></div>
+<a class="indexterm" name="id-1.21.2.10.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_drl(const igraph_t *graph, igraph_matrix_t *res,
+                      igraph_bool_t use_seed,
+                      igraph_layout_drl_options_t *options,
+                      const igraph_vector_t *weights,
+                      const igraph_vector_bool_t *fixed);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function implements the force-directed DrL layout generator.
+Please see more in the following technical report: Martin, S.,
+Brown, W.M., Klavans, R., Boyack, K.W., DrL: Distributed Recursive
+(Graph) Layout. SAND Reports, 2008. 2936: p. 1-10.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical scalar, if true, then the coordinates
+   supplied in the <em class="parameter"><code>res</code></em> argument are used as starting points.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a matrix, the result layout is stored
+   here. It will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
+<td><p>
+  The parameters to pass to the layout generator.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Edge weights, pointer to a vector. If this is a null
+   pointer then every edge will have the same weight.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>fixed</code></em>:</span></p></td>
+<td><p>
+  Pointer to a logical vector, or a null pointer. Originally,
+   this argument was used in the DrL algorithm to keep the nodes marked
+   with this argument as fixed; fixed nodes would then keep their
+   positions in the initial stages of the algorithm. However, due to how
+   the DrL code imported into igraph is organized, it seems that the
+   argument does not do anything and we are not sure whether this is a
+   bug or a feature in DrL. We are leaving the argument here in order not
+   to break the API, but note that at the present stage it has no effect.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: ???.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_layout_drl_3d"></a>1.7.5. <code class="function">igraph_layout_drl_3d</code> — The DrL layout generator, 3d version.</h4></div></div></div>
+<a class="indexterm" name="id-1.21.2.10.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_drl_3d(const igraph_t *graph, igraph_matrix_t *res,
+                         igraph_bool_t use_seed,
+                         igraph_layout_drl_options_t *options,
+                         const igraph_vector_t *weights,
+                         const igraph_vector_bool_t *fixed);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function implements the force-directed DrL layout generator.
+Please see more in the technical report: Martin, S., Brown, W.M.,
+Klavans, R., Boyack, K.W., DrL: Distributed Recursive (Graph)
+Layout. SAND Reports, 2008. 2936: p. 1-10.
+
+</p>
+<p> This function uses a modified DrL generator that does
+the layout in three dimensions.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical scalar, if true, then the coordinates
+   supplied in the <em class="parameter"><code>res</code></em> argument are used as starting points.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a matrix, the result layout is stored
+   here. It will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>options</code></em>:</span></p></td>
+<td><p>
+  The parameters to pass to the layout generator.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Edge weights, pointer to a vector. If this is a null
+   pointer then every edge will have the same weight.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>fixed</code></em>:</span></p></td>
+<td><p>
+  Pointer to a logical vector, or a null pointer. This
+   can be used to fix the position of some vertices. Vertices for
+   which it is true will not be moved, but stay at the coordinates
+   given in the <em class="parameter"><code>res</code></em> matrix. This argument is ignored if it is a
+   null pointer or if use_seed is false.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: ???.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_drl" title="1.7.4. igraph_layout_drl — The DrL layout generator"><code class="function">igraph_layout_drl()</code></a> for the standard 2d version.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_fruchterman_reingold"></a>1.8. <code class="function">igraph_layout_fruchterman_reingold</code> —  Places the vertices on a plane according to the Fruchterman-Reingold algorithm.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_fruchterman_reingold(const igraph_t *graph,
+                                       igraph_matrix_t *res,
+                                       igraph_bool_t use_seed,
+                                       igraph_integer_t niter,
+                                       igraph_real_t start_temp,
+                                       igraph_layout_grid_t grid,
+                                       const igraph_vector_t *weight,
+                                       const igraph_vector_t *minx,
+                                       const igraph_vector_t *maxx,
+                                       const igraph_vector_t *miny,
+                                       const igraph_vector_t *maxy);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This is a force-directed layout, see Fruchterman, T.M.J. and
+Reingold, E.M.: Graph Drawing by Force-directed Placement.
+Software -- Practice and Experience, 21/11, 1129--1164,
+1991.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical, if true the supplied values in the
+       <em class="parameter"><code>res</code></em> argument are used as an initial layout, if
+       false a random initial layout is used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>niter</code></em>:</span></p></td>
+<td><p>
+  The number of iterations to do. A reasonable
+       default value is 500.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>start_temp</code></em>:</span></p></td>
+<td><p>
+  Start temperature. This is the maximum amount
+       of movement allowed along one axis, within one step, for a
+       vertex. Currently it is decreased linearly to zero during
+       the iteration.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>grid</code></em>:</span></p></td>
+<td><p>
+  Whether to use the (fast but less accurate) grid based
+       version of the algorithm. Possible values: <code class="constant">IGRAPH_LAYOUT_GRID</code>, <code class="constant">IGRAPH_LAYOUT_NOGRID</code>, <code class="constant">IGRAPH_LAYOUT_AUTOGRID</code>. The last one uses the grid based
+       version only for large graphs, currently the ones with
+       more than 1000 vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector containing edge weights,
+       the attraction along the edges will be multiplied by these.
+       It will be ignored if it is a null-pointer.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minx</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">x</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxx</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minx</code></em>, but the maximum <span class="quote">“<span class="quote">x</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>miny</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">y</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxy</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>miny</code></em>, but the maximum <span class="quote">“<span class="quote">y</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|^2) in each
+iteration, |V| is the number of
+vertices in the graph.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_kamada_kawai"></a>1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according the Kamada-Kawai algorithm.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.12.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_kamada_kawai(const igraph_t *graph, igraph_matrix_t *res,
+                               igraph_bool_t use_seed, igraph_integer_t maxiter,
+                               igraph_real_t epsilon, igraph_real_t kkconst,
+                               const igraph_vector_t *weights,
+                               const igraph_vector_t *minx, const igraph_vector_t *maxx,
+                               const igraph_vector_t *miny, const igraph_vector_t *maxy);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This is a force directed layout, see  Kamada, T. and Kawai, S.: An
+Algorithm for Drawing General Undirected Graphs. Information
+Processing Letters, 31/1, 7--15, 1989.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result (x-positions in column zero and
+       y-positions in column one) and will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to use the values supplied in the
+       <em class="parameter"><code>res</code></em> argument as the initial configuration. If zero and there
+       are any limits on the X or Y coordinates, then a random initial
+       configuration is used. Otherwise the vertices are placed on a
+       circle of radius 1 as the initial configuration.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  The maximum number of iterations to perform. A reasonable
+       default value is at least ten (or more) times the number of
+       vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>epsilon</code></em>:</span></p></td>
+<td><p>
+  Stop the iteration, if the maximum delta value of the
+       algorithm is smaller than still. It is safe to leave it at zero,
+       and then <em class="parameter"><code>maxiter</code></em> iterations are performed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>kkconst</code></em>:</span></p></td>
+<td><p>
+  The Kamada-Kawai vertex attraction constant.
+       Typical value: number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Edge weights, larger values will result longer edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minx</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">x</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxx</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minx</code></em>, but the maximum <span class="quote">“<span class="quote">x</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>miny</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">y</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxy</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>miny</code></em>, but the maximum <span class="quote">“<span class="quote">y</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|) for each iteration, after an O(|V|^2
+log|V|) initialization step. |V| is the number of vertices in the
+graph.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_gem"></a>1.10. <code class="function">igraph_layout_gem</code> — The GEM layout algorithm, as described in Arne Frick, Andreas Ludwig,</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.13.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_gem(const igraph_t *graph, igraph_matrix_t *res,
+                      igraph_bool_t use_seed, igraph_integer_t maxiter,
+                      igraph_real_t temp_max, igraph_real_t temp_min,
+                      igraph_real_t temp_init);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Heiko Mehldau: A Fast Adaptive Layout Algorithm for Undirected Graphs,
+Proc. Graph Drawing 1994, LNCS 894, pp. 388-403, 1995.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. Edge directions are ignored in
+       directed graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  The result is stored here. If the <em class="parameter"><code>use_seed</code></em> argument
+       is true (non-zero), then this matrix is also used as the
+       starting point of the algorithm.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to use the supplied coordinates in
+       <em class="parameter"><code>res</code></em> as the starting point. If false (zero), then a
+       uniform random starting point is used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  The maximum number of iterations to
+       perform. Updating a single vertex counts as an iteration.
+       A reasonable default is 40 * n * n, where n is the number of
+       vertices. The original paper suggests 4 * n * n, but this
+       usually only works if the other parameters are set up carefully.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>temp_max</code></em>:</span></p></td>
+<td><p>
+  The maximum allowed local temperature. A reasonable
+       default is the number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>temp_min</code></em>:</span></p></td>
+<td><p>
+  The global temperature at which the algorithm
+       terminates (even before reaching <em class="parameter"><code>maxiter</code></em> iterations). A
+       reasonable default is 1/10.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>temp_init</code></em>:</span></p></td>
+<td><p>
+  Initial local temperature of all vertices. A
+       reasonable default is the square root of the number of
+       vertices.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(t * n * (n+e)), where n is the number of vertices,
+e is the number of edges and t is the number of time steps
+performed.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_davidson_harel"></a>1.11. <code class="function">igraph_layout_davidson_harel</code> — Davidson-Harel layout algorithm</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.14.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_davidson_harel(const igraph_t *graph, igraph_matrix_t *res,
+                                 igraph_bool_t use_seed, igraph_integer_t maxiter,
+                                 igraph_integer_t fineiter, igraph_real_t cool_fact,
+                                 igraph_real_t weight_node_dist, igraph_real_t weight_border,
+                                 igraph_real_t weight_edge_lengths,
+                                 igraph_real_t weight_edge_crossings,
+                                 igraph_real_t weight_node_edge_dist);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function implements the algorithm by Davidson and Harel,
+see Ron Davidson, David Harel: Drawing Graphs Nicely Using
+Simulated Annealing. ACM Transactions on Graphics 15(4),
+pp. 301-331, 1996.
+
+</p>
+<p>
+The algorithm uses simulated annealing and a sophisticated
+energy function, which is unfortunately hard to parameterize
+for different graphs. The original publication did not disclose any
+parameter values, and the ones below were determined by
+experimentation.
+
+</p>
+<p>
+The algorithm consists of two phases, an annealing phase, and a
+fine-tuning phase. There is no simulated annealing in the second
+phase.
+
+</p>
+<p>
+Our implementation tries to follow the original publication, as
+much as possible. The only major difference is that coordinates are
+explicitly kept within the bounds of the rectangle of the layout.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph, edge directions are ignored.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  A matrix, the result is stored here. It can be used to
+    supply start coordinates, see <em class="parameter"><code>use_seed</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to use the supplied <em class="parameter"><code>res</code></em> as
+    start coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  The maximum number of annealing iterations. A
+    reasonable value for smaller graphs is 10.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>fineiter</code></em>:</span></p></td>
+<td><p>
+  The number of fine tuning iterations. A reasonable
+    value is max(10, log2(n)) where n is the number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cool_fact</code></em>:</span></p></td>
+<td><p>
+  Cooling factor. A reasonable value is 0.75.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight_node_dist</code></em>:</span></p></td>
+<td><p>
+  Weight for the node-node distances
+    component of the energy function. Reasonable value: 1.0.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight_border</code></em>:</span></p></td>
+<td><p>
+  Weight for the distance from the border
+    component of the energy function. It can be set to zero, if
+    vertices are allowed to sit on the border.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight_edge_lengths</code></em>:</span></p></td>
+<td><p>
+  Weight for the edge length component
+    of the energy function, a reasonable value is the density of
+    the graph divided by 10.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight_edge_crossings</code></em>:</span></p></td>
+<td><p>
+  Weight for the edge crossing component
+    of the energy function, a reasonable default is 1 minus the
+    square root of the density of the graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight_node_edge_dist</code></em>:</span></p></td>
+<td><p>
+  Weight for the node-edge distance
+    component of the energy function. A reasonable value is
+    1 minus the density, divided by 5.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: one first phase iteration has time complexity
+O(n^2+m^2), one fine tuning iteration has time complexity O(mn).
+Time complexity might be smaller if some of the weights of the
+components of the energy function are set to zero.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_mds"></a>1.12. <code class="function">igraph_layout_mds</code> —  Place the vertices on a plane using multidimensional scaling.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.15.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_mds(const igraph_t* graph, igraph_matrix_t *res,
+                      const igraph_matrix_t *dist, long int dim);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This layout requires a distance matrix, where the intersection of
+row i and column j specifies the desired distance between vertex i
+and vertex j. The algorithm will try to place the vertices in a
+space having a given number of dimensions in a way that approximates
+the distance relations prescribed in the distance matrix. igraph
+uses the classical multidimensional scaling by Torgerson; for more
+details, see Cox &amp; Cox: Multidimensional Scaling (1994), Chapman
+and Hall, London.
+
+</p>
+<p>
+If the input graph is disconnected, igraph will decompose it
+first into its subgraphs, lay out the subgraphs one by one
+using the appropriate submatrices of the distance matrix, and
+then merge the layouts using <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="3.1. igraph_layout_merge_dla — Merge multiple layouts by using a DLA algorithm"><code class="function">igraph_layout_merge_dla</code></a>.
+Since <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="3.1. igraph_layout_merge_dla — Merge multiple layouts by using a DLA algorithm"><code class="function">igraph_layout_merge_dla</code></a> works for 2D layouts only,
+you cannot run the MDS layout on disconnected graphs for
+more than two dimensions.
+
+</p>
+<p>
+Warning: if the graph is symmetric to the exchange of two vertices
+(as is the case with leaves of a tree connecting to the same parent),
+classical multidimensional scaling may assign the same coordinates to
+these vertices.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dist</code></em>:</span></p></td>
+<td><p>
+  The distance matrix. It must be symmetric and this
+       function does not check whether the matrix is indeed
+       symmetric. Results are unspecified if you pass a non-symmetric
+       matrix here. You can set this parameter to null; in this
+       case, the shortest path lengths between vertices will be
+       used as distances.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>dim</code></em>:</span></p></td>
+<td><p>
+  The number of dimensions in the embedding space. For
+       2D layouts, supply 2 here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.6.
+
+</p>
+<p>
+Time complexity: usually around O(|V|^2 dim).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_lgl"></a>1.13. <code class="function">igraph_layout_lgl</code> —  Force based layout algorithm for large graphs.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.16.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_lgl(const igraph_t *graph, igraph_matrix_t *res,
+                      igraph_integer_t maxit, igraph_real_t maxdelta,
+                      igraph_real_t area, igraph_real_t coolexp,
+                      igraph_real_t repulserad, igraph_real_t cellsize,
+                      igraph_integer_t proot);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This is a layout generator similar to the Large Graph Layout
+algorithm and program
+(<a class="ulink" href="http://lgl.sourceforge.net/" target="_top">http://lgl.sourceforge.net/</a>). But unlike LGL, this
+version uses a Fruchterman-Reingold style simulated annealing
+algorithm for placing the vertices. The speedup is achieved by
+placing the vertices on a grid and calculating the repulsion only
+for vertices which are closer to each other than a limit.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The (initialized) graph object to place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object to hold the
+  result. It will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxit</code></em>:</span></p></td>
+<td><p>
+  The maximum number of cooling iterations to perform
+  for each layout step. A reasonable default is 150.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxdelta</code></em>:</span></p></td>
+<td><p>
+  The maximum length of the move allowed for a vertex
+  in a single iteration. A reasonable default is the number of
+  vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>area</code></em>:</span></p></td>
+<td><p>
+  This parameter gives the area of the square on which
+  the vertices will be placed. A reasonable default value is the
+  number of vertices squared.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>coolexp</code></em>:</span></p></td>
+<td><p>
+  The cooling exponent. A reasonable default value is
+  1.5.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>repulserad</code></em>:</span></p></td>
+<td><p>
+  Determines the radius at which vertex-vertex
+  repulsion cancels out attraction of adjacent vertices. A
+  reasonable default value is <em class="parameter"><code>area</code></em> times the number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cellsize</code></em>:</span></p></td>
+<td><p>
+  The size of the grid cells, one side of the
+  square. A reasonable default value is the fourth root of
+  <em class="parameter"><code>area</code></em> (or the square root of the number of vertices if <em class="parameter"><code>area</code></em>
+  is also left at its default value).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>proot</code></em>:</span></p></td>
+<td><p>
+  The root vertex, this is placed first, its neighbors
+  in the first iteration, second neighbors in the second, etc. If
+  negative then a random vertex is chosen.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2.</p>
+<p>
+
+Time complexity: ideally O(dia*maxit*(|V|+|E|)), |V| is the number
+of vertices,
+dia is the diameter of the graph, worst case complexity is still
+O(dia*maxit*(|V|^2+|E|)), this is the case when all vertices happen to be
+in the same grid cell.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_reingold_tilford"></a>1.14. <code class="function">igraph_layout_reingold_tilford</code> —  Reingold-Tilford layout for tree graphs</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.17.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_reingold_tilford(const igraph_t *graph,
+                                   igraph_matrix_t *res,
+                                   igraph_neimode_t mode,
+                                   const igraph_vector_t *roots,
+                                   const igraph_vector_t *rootlevel);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Arranges the nodes in a tree where the given node is used as the root.
+The tree is directed downwards and the parents are centered above its
+children. For the exact algorithm, see:
+
+</p>
+<p>
+Reingold, E and Tilford, J: Tidier drawing of trees.
+IEEE Trans. Softw. Eng., SE-7(2):223--228, 1981.
+<a class="ulink" href="https://doi.org/10.1109/TSE.1981.234519" target="_top">https://doi.org/10.1109/TSE.1981.234519</a>
+
+</p>
+<p>
+If the given graph is not a tree, a breadth-first search is executed
+first to obtain a possible spanning tree.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  The result, the coordinates in a matrix. The parameter
+  should point to an initialized matrix object and will be resized.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies which edges to consider when building the tree.
+  If it is <code class="constant">IGRAPH_OUT</code> then only the outgoing, if it is <code class="constant">IGRAPH_IN</code>
+  then only the incoming edges of a parent are considered. If it is
+  <code class="constant">IGRAPH_ALL</code> then all edges are used (this was the behavior in
+  igraph 0.5 and before). This parameter also influences how the root
+  vertices are calculated, if they are not given. See the <em class="parameter"><code>roots</code></em> parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>roots</code></em>:</span></p></td>
+<td><p>
+  The index of the root vertex or root vertices. The set of roots
+  should be specified so that all vertices of the graph are reachable from them.
+  Simply put, in the udirected case, one root should be given from each
+  connected component. If <em class="parameter"><code>roots</code></em> is <code class="constant">NULL</code> or a pointer to an empty vector,
+  then the roots will be selected automatically. Currently, automatic root
+  selection prefers low ecccentricity vertices in graphs with fewer than
+  500 vertices, and high degree vertices (acording to <em class="parameter"><code>mode</code></em>) in larger graphs.
+  The root selecton heuristic may change without notice. To ensure a consistent
+  output, please specify the roots manually.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rootlevel</code></em>:</span></p></td>
+<td><p>
+  This argument can be useful when drawing forests which are
+  not trees (i.e. they are unconnected and have tree components). It specifies
+  the level of the root vertices for every tree in the forest. It is only
+  considered if not a null pointer and the <em class="parameter"><code>roots</code></em> argument is also given
+  (and it is not a null pointer of an empty vector).
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_reingold_tilford_circular" title="1.15. igraph_layout_reingold_tilford_circular — Circular Reingold-Tilford layout for trees"><code class="function">igraph_layout_reingold_tilford_circular()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.21.2.17.13.1"></a><p class="title"><b>Example 20.1.  File <code class="code">examples/simple/igraph_layout_reingold_tilford.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="emphasis"><em>/* -*- mode: C -*-  */</em></span>
+<span class="emphasis"><em>/*</em></span>
+<span class="emphasis"><em>   IGraph library.</em></span>
+<span class="emphasis"><em>   Copyright (C) 2006-2012  Gabor Csardi </em></span>&lt;csardi.gabor@gmail.com&gt;
+<span class="emphasis"><em>   334 Harvard st, Cambridge MA, 02139 USA</em></span>
+
+<span class="emphasis"><em>   This program is free software; you can redistribute it and/or modify</em></span>
+<span class="emphasis"><em>   it under the terms of the GNU General Public License as published by</em></span>
+<span class="emphasis"><em>   the Free Software Foundation; either version 2 of the License, or</em></span>
+<span class="emphasis"><em>   (at your option) any later version.</em></span>
+
+<span class="emphasis"><em>   This program is distributed in the hope that it will be useful,</em></span>
+<span class="emphasis"><em>   but WITHOUT ANY WARRANTY; without even the implied warranty of</em></span>
+<span class="emphasis"><em>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em></span>
+<span class="emphasis"><em>   GNU General Public License for more details.</em></span>
+
+<span class="emphasis"><em>   You should have received a copy of the GNU General Public License</em></span>
+<span class="emphasis"><em>   along with this program; if not, write to the Free Software</em></span>
+<span class="emphasis"><em>   Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA</em></span>
+<span class="emphasis"><em>   02110-1301 USA</em></span>
+
+<span class="emphasis"><em>*/</em></span>
+
+<span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
+
+int <span class="strong"><strong>main</strong></span>() {
+
+    igraph_t g;
+    FILE *f;
+    igraph_matrix_t coords;
+    <span class="emphasis"><em>/* long int i, n; */</em></span>
+
+    f = <span class="strong"><strong>fopen</strong></span>("igraph_layout_reingold_tilford.in", "r");
+    <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_edgelist" title="1.1. igraph_read_graph_edgelist — Reads an edge list from a file and creates a graph.">igraph_read_graph_edgelist</a></strong></span>(&amp;g, f, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Layout.html#igraph_layout_reingold_tilford" title="1.14. igraph_layout_reingold_tilford — Reingold-Tilford layout for tree graphs">igraph_layout_reingold_tilford</a></strong></span>(&amp;g, &amp;coords, IGRAPH_IN, 0, 0);
+
+    <span class="emphasis"><em>/*n=igraph_vcount(&amp;g);</em></span>
+<span class="emphasis"><em>    for (i=0; i&lt;n; i++) {</em></span>
+<span class="emphasis"><em>      printf("%6.3f %6.3f\n", MATRIX(coords, i, 0), MATRIX(coords, i, 1));</em></span>
+<span class="emphasis"><em>    }*/</em></span>
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.3. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="2.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_reingold_tilford_circular"></a>1.15. <code class="function">igraph_layout_reingold_tilford_circular</code> —  Circular Reingold-Tilford layout for trees</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.18.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_reingold_tilford_circular(const igraph_t *graph,
+        igraph_matrix_t *res,
+        igraph_neimode_t mode,
+        const igraph_vector_t *roots,
+        const igraph_vector_t *rootlevel);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+This layout is almost the same as <a class="link" href="igraph-Layout.html#igraph_layout_reingold_tilford" title="1.14. igraph_layout_reingold_tilford — Reingold-Tilford layout for tree graphs"><code class="function">igraph_layout_reingold_tilford()</code></a>, but
+the tree is drawn in a circular way, with the root vertex in the center.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  The result, the coordinates in a matrix. The parameter
+  should point to an initialized matrix object and will be resized.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies which edges to consider when building the tree.
+  If it is <code class="constant">IGRAPH_OUT</code> then only the outgoing, if it is <code class="constant">IGRAPH_IN</code>
+  then only the incoming edges of a parent are considered. If it is
+  <code class="constant">IGRAPH_ALL</code> then all edges are used (this was the behavior in
+  igraph 0.5 and before). This parameter also influences how the root
+  vertices are calculated, if they are not given. See the <em class="parameter"><code>roots</code></em> parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>roots</code></em>:</span></p></td>
+<td><p>
+  The index of the root vertex or root vertices. The set of roots
+  should be specified so that all vertices of the graph are reachable from them.
+  Simply put, in the udirected case, one root should be given from each
+  connected component. If <em class="parameter"><code>roots</code></em> is <code class="constant">NULL</code> or a pointer to an empty vector,
+  then the roots will be selected automatically. Currently, automatic root
+  selection prefers low ecccentricity vertices in graphs with fewer than
+  500 vertices, and high degree vertices (acording to <em class="parameter"><code>mode</code></em>) in larger graphs.
+  The root selecton heuristic may change without notice. To ensure a consistent
+  output, please specify the roots manually.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rootlevel</code></em>:</span></p></td>
+<td><p>
+  This argument can be useful when drawing forests which are
+  not trees (i.e. they are unconnected and have tree components). It specifies
+  the level of the root vertices for every tree in the forest. It is only
+  considered if not a null pointer and the <em class="parameter"><code>roots</code></em> argument is also given
+  (and it is not a null pointer or an empty vector).
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Layout.html#igraph_layout_reingold_tilford" title="1.14. igraph_layout_reingold_tilford — Reingold-Tilford layout for tree graphs"><code class="function">igraph_layout_reingold_tilford()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_sugiyama"></a>1.16. <code class="function">igraph_layout_sugiyama</code> —  Sugiyama layout algorithm for layered directed acyclic graphs.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.2.19.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_sugiyama(const igraph_t *graph, igraph_matrix_t *res,
+                           igraph_t *extd_graph, igraph_vector_t *extd_to_orig_eids,
+                           const igraph_vector_t* layers, igraph_real_t hgap, igraph_real_t vgap,
+                           long int maxiter, const igraph_vector_t *weights);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This layout algorithm is designed for directed acyclic graphs where each
+vertex is assigned to a layer. Layers are indexed from zero, and vertices
+of the same layer will be placed on the same horizontal line. The X coordinates
+of vertices within each layer are decided by the heuristic proposed by
+Sugiyama et al to minimize edge crossings.
+
+</p>
+<p>
+You can also try to lay out undirected graphs, graphs containing cycles, or
+graphs without an a priori layered assignment with this algorithm. igraph
+will try to eliminate cycles and assign vertices to layers, but there is no
+guarantee on the quality of the layout in such cases.
+
+</p>
+<p>
+The Sugiyama layout may introduce "bends" on the edges in order to obtain a
+visually more pleasing layout. This is achieved by adding dummy nodes to
+edges spanning more than one layer. The resulting layout assigns coordinates
+not only to the nodes of the original graph but also to the dummy nodes.
+The layout algorithm will also return the extended graph with the dummy nodes.
+An edge in the original graph may either be mapped to a single edge in the
+extended graph or a <span class="emphasis"><em>path</em></span> that starts and ends in the original
+source and target vertex and passes through multiple dummy vertices. In
+such cases, the user may also request the mapping of the edges of the extended
+graph back to the edges of the original graph.
+
+</p>
+<p>
+For more details, see K. Sugiyama, S. Tagawa and M. Toda, "Methods for Visual
+Understanding of Hierarchical Systems". IEEE Transactions on Systems, Man and
+Cybernetics 11(2):109-125, 1981.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will contain
+             the result and will be resized as needed. The first |V| rows
+             of the layout will contain the coordinates of the original graph,
+             the remaining rows contain the positions of the dummy nodes.
+             Therefore, you can use the result both with <em class="parameter"><code>graph</code></em> or with
+             <em class="parameter"><code>extended_graph</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>extended_graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized graph object or <code class="constant">NULL</code>.
+                      The extended graph with the added dummy nodes will be
+                      returned here. In this graph, each edge points downwards
+                      to lower layers, spans exactly one layer and the first
+                      |V| vertices coincide with the vertices of the
+                      original graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>extd_to_orig_eids</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector or <code class="constant">NULL</code>. If not <code class="constant">NULL</code>, the
+                         mapping from the edge IDs of the extended graph back
+                         to the edge IDs of the original graph will be stored
+                         here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>layers</code></em>:</span></p></td>
+<td><p>
+  The layer index for each vertex or <code class="constant">NULL</code> if the layers should
+               be determined automatically by igraph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hgap</code></em>:</span></p></td>
+<td><p>
+  The preferred minimum horizontal gap between vertices in the same
+             layer.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vgap</code></em>:</span></p></td>
+<td><p>
+  The distance between layers.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  Maximum number of iterations in the crossing minimization stage.
+               100 is a reasonable default; if you feel that you have too
+               many edge crossings, increase this.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Weights of the edges. These are used only if the graph contains
+               cycles; igraph will tend to reverse edges with smaller
+               weights when breaking the cycles.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="three-d-layout-generators"></a>2. 3D layout generators</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random_3d">2.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniform randomly in a cube.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sphere">2.2. <code class="function">igraph_layout_sphere</code> —  Places vertices (more or less) uniformly on a sphere.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid_3d">2.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold_3d">2.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_kamada_kawai_3d">2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_random_3d"></a>2.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniform randomly in a cube.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_random_3d(const igraph_t *graph, igraph_matrix_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Vertex coordinates range from -1 to 1, and are placed in 3 columns
+of a matrix, with a row for each vertex.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to place.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. It will be
+resized to hold the result.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. The current implementation always returns with
+success.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2.</p>
+<p>
+
+Time complexity: O(|V|), the number of vertices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_sphere"></a>2.2. <code class="function">igraph_layout_sphere</code> —  Places vertices (more or less) uniformly on a sphere.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_sphere(const igraph_t *graph, igraph_matrix_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+The algorithm was described in the following paper:
+Distributing many points on a sphere by E.B. Saff and
+A.B.J. Kuijlaars, <span class="emphasis"><em> Mathematical Intelligencer </em></span> 19.1 (1997)
+5--11.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. The current implementation always returns with
+success.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2.</p>
+<p>
+
+Time complexity: O(|V|), the number of vertices in the graph.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_grid_3d"></a>2.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_grid_3d(const igraph_t *graph, igraph_matrix_t *res,
+                          long int width, long int height);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>width</code></em>:</span></p></td>
+<td><p>
+  The number of vertices in a single row of the grid. When
+              zero or negative, the width is determined automatically.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>height</code></em>:</span></p></td>
+<td><p>
+  The number of vertices in a single column of the grid. When
+              zero or negative, the height is determined automatically.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code. The current implementation always returns with
+        success.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|), the number of vertices.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_fruchterman_reingold_3d"></a>2.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_fruchterman_reingold_3d(const igraph_t *graph,
+        igraph_matrix_t *res,
+        igraph_bool_t use_seed,
+        igraph_integer_t niter,
+        igraph_real_t start_temp,
+        const igraph_vector_t *weight,
+        const igraph_vector_t *minx,
+        const igraph_vector_t *maxx,
+        const igraph_vector_t *miny,
+        const igraph_vector_t *maxy,
+        const igraph_vector_t *minz,
+        const igraph_vector_t *maxz);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This is the 3D version of the force based
+Fruchterman-Reingold layout (see <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold</code></a> for the 2D version
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result and will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Logical, if true the supplied values in the
+       <em class="parameter"><code>res</code></em> argument are used as an initial layout, if
+       false a random initial layout is used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>niter</code></em>:</span></p></td>
+<td><p>
+  The number of iterations to do. A reasonable
+       default value is 500.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>start_temp</code></em>:</span></p></td>
+<td><p>
+  Start temperature. This is the maximum amount
+       of movement alloved along one axis, within one step, for a
+       vertex. Currently it is decreased linearly to zero during
+       the iteration.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weight</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector containing edge weights,
+       the attraction along the edges will be multiplied by these.
+       It will be ignored if it is a null-pointer.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minx</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">x</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxx</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minx</code></em>, but the maximum <span class="quote">“<span class="quote">x</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>miny</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">y</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxy</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>miny</code></em>, but the maximum <span class="quote">“<span class="quote">y</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minz</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">z</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxz</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minz</code></em>, but the maximum <span class="quote">“<span class="quote">z</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2.</p>
+<p>
+
+Time complexity: O(|V|^2) in each
+iteration, |V| is the number of
+vertices in the graph.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_kamada_kawai_3d"></a>2.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator</h3></div></div></div>
+<a class="indexterm" name="id-1.21.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_kamada_kawai_3d(const igraph_t *graph, igraph_matrix_t *res,
+                                  igraph_bool_t use_seed, igraph_integer_t maxiter,
+                                  igraph_real_t epsilon, igraph_real_t kkconst,
+                                  const igraph_vector_t *weights,
+                                  const igraph_vector_t *minx, const igraph_vector_t *maxx,
+                                  const igraph_vector_t *miny, const igraph_vector_t *maxy,
+                                  const igraph_vector_t *minz, const igraph_vector_t *maxz);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+This is a force directed layout, see  Kamada, T. and Kawai, S.: An
+Algorithm for Drawing General Undirected Graphs. Information
+Processing Letters, 31/1, 7--15, 1989.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object. This will
+       contain the result (x-positions in column zero and
+       y-positions in column one) and will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>use_seed</code></em>:</span></p></td>
+<td><p>
+  Boolean, whether to use the values supplied in the
+       <em class="parameter"><code>res</code></em> argument as the initial configuration. If zero and there
+       are any limits on the X, Y or Z coordinates, then a random initial
+       configuration is used. Otherwise the vertices are placed uniformly
+       on a sphere of radius 1 as the initial configuration.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxiter</code></em>:</span></p></td>
+<td><p>
+  The maximum number of iterations to perform. A reasonable
+       default value is at least ten (or more) times the number of
+       vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>epsilon</code></em>:</span></p></td>
+<td><p>
+  Stop the iteration, if the maximum delta value of the
+       algorithm is smaller than still. It is safe to leave it at zero,
+       and then <em class="parameter"><code>maxiter</code></em> iterations are performed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>kkconst</code></em>:</span></p></td>
+<td><p>
+  The Kamada-Kawai vertex attraction constant.
+       Typical value: number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Edge weights, larger values will result longer edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minx</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">x</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxx</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minx</code></em>, but the maximum <span class="quote">“<span class="quote">x</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>miny</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">y</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxy</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>miny</code></em>, but the maximum <span class="quote">“<span class="quote">y</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>minz</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, or a <code class="constant">NULL</code> pointer. If not a
+       <code class="constant">NULL</code> pointer then the vector gives the minimum
+       <span class="quote">“<span class="quote">z</span>”</span> coordinate for every vertex.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maxz</code></em>:</span></p></td>
+<td><p>
+  Same as <em class="parameter"><code>minz</code></em>, but the maximum <span class="quote">“<span class="quote">z</span>”</span>
+       coordinates.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|) for each iteration, after an O(|V|^2
+log|V|) initialization step. |V| is the number of vertices in the
+graph.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="merging-layouts"></a>3. Merging layouts</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Layout.html#igraph_layout_merge_dla">3.1. <code class="function">igraph_layout_merge_dla</code> —  Merge multiple layouts by using a DLA algorithm</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_merge_dla"></a>3.1. <code class="function">igraph_layout_merge_dla</code> —  Merge multiple layouts by using a DLA algorithm</h3></div></div></div>
+<a class="indexterm" name="id-1.21.4.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+int igraph_layout_merge_dla(igraph_vector_ptr_t *thegraphs,
+                            igraph_vector_ptr_t *coords,
+                            igraph_matrix_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+First each layout is covered by a circle. Then the layout of the
+largest graph is placed at the origin. Then the other layouts are
+placed by the DLA algorithm, larger ones first and smaller ones
+last.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>thegraphs</code></em>:</span></p></td>
+<td><p>
+  Pointer vector containing the graph object of
+       which the layouts will be merged.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>coords</code></em>:</span></p></td>
+<td><p>
+  Pointer vector containing matrix objects with the 2d
+       layouts of the graphs in <em class="parameter"><code>thegraphs</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized matrix object, the result will
+       be stored here. It will be resized if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Added in version 0.2. This function is experimental.
+
+</p>
+<p>
+Time complexity: TODO.
+ 
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Motifs.html"><b>← Chapter 19. Graph motifs, dyad census and triad census</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Foreign.html"><b>Chapter 21. Reading and writing graphs from and to files →</b></a></td>
+</tr></table>
+{% endraw %}

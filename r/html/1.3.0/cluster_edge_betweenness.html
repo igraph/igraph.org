@@ -1,0 +1,174 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.0
+---
+
+
+{% raw %}
+
+
+<h2>Community structure detection based on edge betweenness</h2>
+
+<h3>Description</h3>
+
+<p>Many networks consist of modules which are densely connected themselves but
+sparsely connected to other modules.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cluster_edge_betweenness(
+  graph,
+  weights = NULL,
+  directed = TRUE,
+  edge.betweenness = TRUE,
+  merges = TRUE,
+  bridges = TRUE,
+  modularity = TRUE,
+  membership = TRUE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to analyze.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>The weights of the edges. It must be a positive numeric vector,
+<code>NULL</code> or <code>NA</code>. If it is <code>NULL</code> and the input graph has a
+&lsquo;weight&rsquo; edge attribute, then that attribute will be used. If
+<code>NULL</code> and no such attribute is present, then the edges will have equal
+weights. Set this to <code>NA</code> if the graph was a &lsquo;weight&rsquo; edge
+attribute, but you don't want to use it for community detection. Edge weights
+are used to calculate weighted edge betweenness. This means that edges are
+interpreted as distances, not as connection strengths.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Logical constant, whether to calculate directed edge
+betweenness for directed graphs. It is ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>edge.betweenness</code></td>
+<td>
+<p>Logical constant, whether to return the edge
+betweenness of the edges at the time of their removal.</p>
+</td></tr>
+<tr valign="top"><td><code>merges</code></td>
+<td>
+<p>Logical constant, whether to return the merge matrix
+representing the hierarchical community structure of the network.  This
+argument is called <code>merges</code>, even if the community structure algorithm
+itself is divisive and not agglomerative: it builds the tree from top to
+bottom. There is one line for each merge (i.e. split) in matrix, the first
+line is the first merge (last split). The communities are identified by
+integer number starting from one. Community ids smaller than or equal to
+<i>N</i>, the number of vertices in the graph, belong to singleton
+communities, ie. individual vertices. Before the first merge we have <i>N</i>
+communities numbered from one to <i>N</i>. The first merge, the first line of
+the matrix creates community <i>N+1</i>, the second merge creates community
+<i>N+2</i>, etc.</p>
+</td></tr>
+<tr valign="top"><td><code>bridges</code></td>
+<td>
+<p>Logical constant, whether to return a list the edge removals
+which actually splitted a component of the graph.</p>
+</td></tr>
+<tr valign="top"><td><code>modularity</code></td>
+<td>
+<p>Logical constant, whether to calculate the maximum
+modularity score, considering all possibly community structures along the
+edge-betweenness based edge removals.</p>
+</td></tr>
+<tr valign="top"><td><code>membership</code></td>
+<td>
+<p>Logical constant, whether to calculate the membership
+vector corresponding to the highest possible modularity score.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The edge betweenness score of an edge measures the number of shortest paths
+through it, see <code><a href="edge_betweenness.html">edge_betweenness</a></code> for details. The idea of the
+edge betweenness based community structure detection is that it is likely
+that edges connecting separate modules have high edge betweenness as all the
+shortest paths from one module to another must traverse through them. So if
+we gradually remove the edge with the highest edge betweenness score we will
+get a hierarchical map, a rooted tree, called a dendrogram of the graph. The
+leafs of the tree are the individual vertices and the root of the tree
+represents the whole graph.
+</p>
+<p><code>cluster_edge_betweenness</code> performs this algorithm by calculating the
+edge betweenness of the graph, removing the edge with the highest edge
+betweenness score, then recalculating edge betweenness of the edges and
+again removing the one with the highest score, etc.
+</p>
+<p><code>edge.betweeness.community</code> returns various information collected
+through the run of the algorithm. See the return value down here.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>cluster_edge_betweenness</code> returns a
+<code><a href="communities.html">communities</a></code> object, please see the <code><a href="communities.html">communities</a></code>
+manual page for details.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>M Newman and M Girvan: Finding and evaluating community
+structure in networks, <em>Physical Review E</em> 69, 026113 (2004)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="edge_betweenness.html">edge_betweenness</a></code> for the definition and calculation
+of the edge betweenness, <code><a href="cluster_walktrap.html">cluster_walktrap</a></code>,
+<code><a href="cluster_fast_greedy.html">cluster_fast_greedy</a></code>,
+<code><a href="cluster_leading_eigen.html">cluster_leading_eigen</a></code> for other community detection
+methods.
+</p>
+<p>See <code><a href="communities.html">communities</a></code> for extracting the results of the community
+detection.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- sample_pa(100, m = 2, directed = FALSE)
+eb &lt;- cluster_edge_betweenness(g)
+
+g &lt;- make_full_graph(10) %du% make_full_graph(10)
+g &lt;- add_edges(g, c(1,11))
+eb &lt;- cluster_edge_betweenness(g)
+eb
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.0 <a href="index.html">Index</a>]</div>
+{% endraw %}

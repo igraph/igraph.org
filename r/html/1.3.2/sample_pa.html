@@ -1,0 +1,197 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.2
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>sample_pa {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate scale-free graphs according to the Barabasi-Albert model</h2>
+
+<h3>Description</h3>
+
+<p>The BA-model is a very simple stochastic algorithm for building a graph.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>sample_pa(
+  n,
+  power = 1,
+  m = NULL,
+  out.dist = NULL,
+  out.seq = NULL,
+  out.pref = FALSE,
+  zero.appeal = 1,
+  directed = TRUE,
+  algorithm = c("psumtree", "psumtree-multiple", "bag"),
+  start.graph = NULL
+)
+
+pa(...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Number of vertices.</p>
+</td></tr>
+<tr valign="top"><td><code>power</code></td>
+<td>
+<p>The power of the preferential attachment, the default is one,
+ie. linear preferential attachment.</p>
+</td></tr>
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>Numeric constant, the number of edges to add in each time step This
+argument is only used if both <code>out.dist</code> and <code>out.seq</code> are omitted
+or NULL.</p>
+</td></tr>
+<tr valign="top"><td><code>out.dist</code></td>
+<td>
+<p>Numeric vector, the distribution of the number of edges to
+add in each time step. This argument is only used if the <code>out.seq</code>
+argument is omitted or NULL.</p>
+</td></tr>
+<tr valign="top"><td><code>out.seq</code></td>
+<td>
+<p>Numeric vector giving the number of edges to add in each time
+step. Its first element is ignored as no edges are added in the first time
+step.</p>
+</td></tr>
+<tr valign="top"><td><code>out.pref</code></td>
+<td>
+<p>Logical, if true the total degree is used for calculating
+the citation probability, otherwise the in-degree is used.</p>
+</td></tr>
+<tr valign="top"><td><code>zero.appeal</code></td>
+<td>
+<p>The &lsquo;attractiveness&rsquo; of the vertices with no
+adjacent edges. See details below.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Whether to create a directed graph.</p>
+</td></tr>
+<tr valign="top"><td><code>algorithm</code></td>
+<td>
+<p>The algorithm to use for the graph generation.
+<code>psumtree</code> uses a partial prefix-sum tree to generate the graph, this
+algorithm can handle any <code>power</code> and <code>zero.appeal</code> values and
+never generates multiple edges.  <code>psumtree-multiple</code> also uses a
+partial prefix-sum tree, but the generation of multiple edges is allowed.
+Before the 0.6 version igraph used this algorithm if <code>power</code> was not
+one, or <code>zero.appeal</code> was not one.  <code>bag</code> is the algorithm that
+was previously (before version 0.6) used if <code>power</code> was one and
+<code>zero.appeal</code> was one as well. It works by putting the ids of the
+vertices into a bag (multiset, really), exactly as many times as their
+(in-)degree, plus once more. Then the required number of cited vertices are
+drawn from the bag, with replacement. This method might generate multiple
+edges. It only works if <code>power</code> and <code>zero.appeal</code> are equal one.</p>
+</td></tr>
+<tr valign="top"><td><code>start.graph</code></td>
+<td>
+<p><code>NULL</code> or an igraph graph. If a graph, then the
+supplied graph is used as a starting graph for the preferential attachment
+algorithm. The graph should have at least one vertex. If a graph is supplied
+here and the <code>out.seq</code> argument is not <code>NULL</code>, then it should
+contain the out degrees of the new vertices only, not the ones in the
+<code>start.graph</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to <code>sample_pa</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is a simple stochastic algorithm to generate a graph. It is a discrete
+time step model and in each time step a single vertex is added.
+</p>
+<p>We start with a single vertex and no edges in the first time step. Then we
+add one vertex in each time step and the new vertex initiates some edges to
+old vertices. The probability that an old vertex is chosen is given by
+</p>
+<p style="text-align: center;"><code class="reqn">P[i] \sim k_i^\alpha+a</code>
+</p>
+<p> where <code class="reqn">k_i</code>
+is the in-degree of vertex <code class="reqn">i</code> in the current time step (more precisely
+the number of adjacent edges of <code class="reqn">i</code> which were not initiated by <code class="reqn">i</code>
+itself) and <code class="reqn">\alpha</code> and <code class="reqn">a</code> are parameters given by the
+<code>power</code> and <code>zero.appeal</code> arguments.
+</p>
+<p>The number of edges initiated in a time step is given by the <code>m</code>,
+<code>out.dist</code> and <code>out.seq</code> arguments. If <code>out.seq</code> is given and
+not NULL then it gives the number of edges to add in a vector, the first
+element is ignored, the second is the number of edges to add in the second
+time step and so on. If <code>out.seq</code> is not given or null and
+<code>out.dist</code> is given and not NULL then it is used as a discrete
+distribution to generate the number of edges in each time step. Its first
+element is the probability that no edges will be added, the second is the
+probability that one edge is added, etc. (<code>out.dist</code> does not need to
+sum up to one, it normalized automatically.) <code>out.dist</code> should contain
+non-negative numbers and at east one element should be positive.
+</p>
+<p>If both <code>out.seq</code> and <code>out.dist</code> are omitted or NULL then <code>m</code>
+will be used, it should be a positive integer constant and <code>m</code> edges
+will be added in each time step.
+</p>
+<p><code>sample_pa</code> generates a directed graph by default, set
+<code>directed</code> to <code>FALSE</code> to generate an undirected graph. Note that
+even if an undirected graph is generated <code class="reqn">k_i</code> denotes the number
+of adjacent edges not initiated by the vertex itself and not the total (in-
++ out-) degree of the vertex, unless the <code>out.pref</code> argument is set to
+<code>TRUE</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Barabasi, A.-L. and Albert R. 1999. Emergence of scaling in
+random networks <em>Science</em>, 286 509&ndash;512.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sample_gnp.html">sample_gnp</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+g &lt;- sample_pa(10000)
+degree_distribution(g)
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.2 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

@@ -1,0 +1,197 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.7
+---
+
+
+{% raw %}
+
+
+<h2>Indexing edge sequences</h2>
+
+<h3>Description</h3>
+
+<p>Edge sequences can be indexed very much like a plain numeric R vector,
+with some extras.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'igraph.es'
+x[...]
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An edge sequence</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Indices, see details below.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Another edge sequence, referring to the same graph.
+</p>
+
+
+<h3>Multiple indices</h3>
+
+<p>When using multiple indices within the bracket, all of them
+are evaluated independently, and then the results are concatenated
+using the <code>c()</code> function. E.g. <code>E(g)[1, 2, .inc(1)]</code>
+is equivalent to <code>c(E(g)[1], E(g)[2], E(g)[.inc(1)])</code>.
+</p>
+
+
+<h3>Index types</h3>
+
+<p>Edge sequences can be indexed with positive numeric vectors,
+negative numeric vectors, logical vectors, character vectors:
+</p>
+
+<ul>
+<li><p> When indexed with positive numeric vectors, the edges at the
+given positions in the sequence are selected. This is the same as
+indexing a regular R atomic vector with positive numeric vectors.
+</p>
+</li>
+<li><p> When indexed with negative numeric vectors, the edges at the
+given positions in the sequence are omitted. Again, this is the same
+as indexing a regular R atomic vector.
+</p>
+</li>
+<li><p> When indexed with a logical vector, the lengths of the edge
+sequence and the index must match, and the edges for which the
+index is <code>TRUE</code> are selected.
+</p>
+</li>
+<li><p> Named graphs can be indexed with character vectors,
+to select edges with the given names. Note that a graph may
+have edge names and vertex names, and both can be used to select
+edges. Edge names are simply used as names of the numeric
+edge id vector. Vertex names effectively only work in graphs without
+multiple edges, and must be separated with a <code>|</code> bar character
+to select an edges that incident to the two given vertices. See
+examples below.
+</p>
+</li></ul>
+
+
+
+<h3>Edge attributes</h3>
+
+<p>When indexing edge sequences, edge attributes can be referred
+to simply by using their names. E.g. if a graph has a <code>weight</code> edge
+attribute, then <code>E(G)[weight &gt; 1]</code> selects all edges with a larger
+than one weight. See more examples below.
+</p>
+
+
+<h3>Special functions</h3>
+
+<p>There are some special igraph functions that can be used
+only in expressions indexing edge sequences: </p>
+
+<dl>
+<dt><code>.inc</code></dt><dd><p>takes a vertex sequence, and selects
+all edges that have at least one incident vertex in the vertex
+sequence.</p>
+</dd>
+<dt><code>.from</code></dt><dd><p>similar to <code>.inc()</code>, but only
+the tails of the edges are considered.</p>
+</dd>
+<dt><code>.to</code></dt><dd><p>is similar to <code>.inc()</code>, but only
+the heads of the edges are considered.</p>
+</dd>
+<dt><code>%--%</code></dt><dd><p>a special operator that can be
+used to select all edges between two sets of vertices. It ignores
+the edge directions in directed graphs.</p>
+</dd>
+<dt><code>%-&gt;%</code></dt><dd><p>similar to <code>%--%</code>,
+but edges <em>from</em> the left hand side argument, pointing
+<em>to</em> the right hand side argument, are selected, in directed
+graphs.</p>
+</dd>
+<dt><code>%&lt;-%</code></dt><dd><p>similar to <code>%--%</code>,
+but edges <em>to</em> the left hand side argument, pointing
+<em>from</em> the right hand side argument, are selected, in directed
+graphs.</p>
+</dd>
+</dl>
+
+<p>Note that multiple special functions can be used together, or with
+regular indices, and then their results are concatenated. See more
+examples below.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other vertex and edge sequences: 
+<code><a href="E.html">E</a>()</code>,
+<code><a href="V.html">V</a>()</code>,
+<code><a href="igraph-es-attributes.html">igraph-es-attributes</a></code>,
+<code><a href="igraph-es-indexing2.html">igraph-es-indexing2</a></code>,
+<code><a href="igraph-vs-attributes.html">igraph-vs-attributes</a></code>,
+<code><a href="igraph-vs-indexing2.html">igraph-vs-indexing2</a></code>,
+<code><a href="igraph-vs-indexing.html">igraph-vs-indexing</a></code>,
+<code><a href="print.igraph.es.html">print.igraph.es</a>()</code>,
+<code><a href="print.igraph.vs.html">print.igraph.vs</a>()</code>
+</p>
+<p>Other vertex and edge sequence operations: 
+<code><a href="c.igraph.es.html">c.igraph.es</a>()</code>,
+<code><a href="c.igraph.vs.html">c.igraph.vs</a>()</code>,
+<code><a href="difference.igraph.es.html">difference.igraph.es</a>()</code>,
+<code><a href="difference.igraph.vs.html">difference.igraph.vs</a>()</code>,
+<code><a href="igraph-es-indexing2.html">igraph-es-indexing2</a></code>,
+<code><a href="igraph-vs-indexing2.html">igraph-vs-indexing2</a></code>,
+<code><a href="igraph-vs-indexing.html">igraph-vs-indexing</a></code>,
+<code><a href="intersection.igraph.es.html">intersection.igraph.es</a>()</code>,
+<code><a href="intersection.igraph.vs.html">intersection.igraph.vs</a>()</code>,
+<code><a href="rev.igraph.es.html">rev.igraph.es</a>()</code>,
+<code><a href="rev.igraph.vs.html">rev.igraph.vs</a>()</code>,
+<code><a href="union.igraph.es.html">union.igraph.es</a>()</code>,
+<code><a href="union.igraph.vs.html">union.igraph.vs</a>()</code>,
+<code><a href="unique.igraph.es.html">unique.igraph.es</a>()</code>,
+<code><a href="unique.igraph.vs.html">unique.igraph.vs</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# special operators for indexing based on graph structure
+g &lt;- sample_pa(100, power = 0.3)
+E(g) [ 1:3 %--% 2:6 ]
+E(g) [ 1:5 %-&gt;% 1:6 ]
+E(g) [ 1:3 %&lt;-% 2:6 ]
+
+# the edges along the diameter
+g &lt;- sample_pa(100, directed = FALSE)
+d &lt;- get_diameter(g)
+E(g, path = d)
+
+# select edges based on attributes
+g &lt;- sample_gnp(20, 3/20) %&gt;%
+  set_edge_attr("weight", value = rnorm(gsize(.)))
+E(g)[[ weight &lt; 0 ]]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.7 <a href="index.html">Index</a>]</div>
+{% endraw %}

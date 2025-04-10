@@ -1,0 +1,133 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.4
+---
+
+
+{% raw %}
+
+
+<h2>Independent vertex sets</h2>
+
+<h3>Description</h3>
+
+<p>A vertex set is called independent if there no edges between any two
+vertices in it. These functions find independent vertex sets in undirected
+graphs
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ivs(graph, min = NULL, max = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, directed graphs are considered as undirected,
+loop edges and multiple edges are ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>min</code></td>
+<td>
+<p>Numeric constant, limit for the minimum size of the independent
+vertex sets to find. <code>NULL</code> means no limit.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>Numeric constant, limit for the maximum size of the independent
+vertex sets to find. <code>NULL</code> means no limit.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>ivs</code> finds all independent vertex sets in the
+network, obeying the size limitations given in the <code>min</code> and <code>max</code>
+arguments.
+</p>
+<p><code>largest_ivs</code> finds the largest independent vertex
+sets in the graph. An independent vertex set is largest if there is no
+independent vertex set with more vertices.
+</p>
+<p><code>maximal_ivs</code> finds the maximal independent vertex
+sets in the graph. An independent vertex set is maximal if it cannot be
+extended to a larger independent vertex set. The largest independent vertex
+sets are maximal, but the opposite is not always true.
+</p>
+<p><code>independece.number</code> calculate the size of the largest independent
+vertex set(s).
+</p>
+<p>These functions use the algorithm described by Tsukiyama et al., see
+reference below.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>ivs</code>,
+<code>largest_ivs</code> and
+<code>maximal_ivs</code> return a list containing numeric
+vertex ids, each list element is an independent vertex set.
+</p>
+<p><code>ivs_size</code> returns an integer constant.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a> ported it from the Very Nauty
+Graph Library by Keith Briggs (<a href="http://keithbriggs.info/">http://keithbriggs.info/</a>) and Gabor
+Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a> wrote the R interface and this manual
+page.
+</p>
+
+
+<h3>References</h3>
+
+<p>S. Tsukiyama, M. Ide, H. Ariyoshi and I. Shirawaka. A new
+algorithm for generating all the maximal independent sets. <em>SIAM J
+Computing</em>, 6:505&ndash;517, 1977.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cliques.html">cliques</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# Do not run, takes a couple of seconds
+## Not run: 
+
+# A quite dense graph
+set.seed(42)
+g &lt;- sample_gnp(100, 0.9)
+ivs_size(g)
+ivs(g, min=ivs_size(g))
+largest_ivs(g)
+# Empty graph
+induced_subgraph(g, largest_ivs(g)[[1]])
+
+length(maximal_ivs(g))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4 <a href="index.html">Index</a>]</div>
+{% endraw %}

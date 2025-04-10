@@ -1,0 +1,133 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>sample_traits_callaway {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Graph generation based on different vertex types</h2>
+
+<h3>Description</h3>
+
+<p>These functions implement evolving network models based on different vertex
+types.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>sample_traits_callaway(
+  nodes,
+  types,
+  edge.per.step = 1,
+  type.dist = rep(1, types),
+  pref.matrix = matrix(1, types, types),
+  directed = FALSE
+)
+
+traits_callaway(...)
+
+sample_traits(
+  nodes,
+  types,
+  k = 1,
+  type.dist = rep(1, types),
+  pref.matrix = matrix(1, types, types),
+  directed = FALSE
+)
+
+traits(...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>The number of vertices in the graph.</p>
+</td></tr>
+<tr valign="top"><td><code>types</code></td>
+<td>
+<p>The number of different vertex types.</p>
+</td></tr>
+<tr valign="top"><td><code>edge.per.step</code></td>
+<td>
+<p>The number of edges to add to the graph per time step.</p>
+</td></tr>
+<tr valign="top"><td><code>type.dist</code></td>
+<td>
+<p>The distribution of the vertex types. This is assumed to be
+stationary in time.</p>
+</td></tr>
+<tr valign="top"><td><code>pref.matrix</code></td>
+<td>
+<p>A matrix giving the preferences of the given vertex
+types. These should be probabilities, ie. numbers between zero and one.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Logical constant, whether to generate directed graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to the constructor, <code>sample_traits</code> or
+<code>sample_traits_callaway</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>The number of trials per time step, see details below.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For <code>sample_traits_callaway</code> the simulation goes like this: in each
+discrete time step a new vertex is added to the graph. The type of this
+vertex is generated based on <code>type.dist</code>. Then two vertices are
+selected uniformly randomly from the graph. The probability that they will
+be connected depends on the types of these vertices and is taken from
+<code>pref.matrix</code>. Then another two vertices are selected and this is
+repeated <code>edges.per.step</code> times in each time step.
+</p>
+<p>For <code>sample_traits</code> the simulation goes like this: a single vertex is
+added at each time step. This new vertex tries to connect to <code>k</code>
+vertices in the graph. The probability that such a connection is realized
+depends on the types of the vertices involved and is taken from
+<code>pref.matrix</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A new graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+# two types of vertices, they like only themselves
+g1 &lt;- sample_traits_callaway(1000, 2, pref.matrix=matrix( c(1,0,0,1), ncol=2))
+g2 &lt;- sample_traits(1000, 2, k=2, pref.matrix=matrix( c(1,0,0,1), ncol=2))
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

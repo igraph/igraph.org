@@ -1,0 +1,2254 @@
+---
+layout: c-manual
+title: igraph Reference Manual
+mainheader: igraph Reference Manual
+lead: For using the igraph C library
+vmenu: true
+doctype: html/
+langversion: 0.10.9
+---
+
+{% raw %}
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Basic.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Memory.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Error"></a>Chapter 5. Error handling</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#error-handling-basics">1.  Error handling basics</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#error-handlers">2.  Error handlers</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#error-codes">3.  Error codes</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#warnings">4.  Warning messages</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#error-advanced-topics">5. Advanced topics</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="error-handling-basics"></a>1.  Error handling basics</h2></div></div></div>
+<p><span class="command"><strong>igraph</strong></span> functions can run into various problems preventing them
+from normal operation. The user might have supplied invalid arguments,
+e.g. a non-square matrix when a square-matrix was expected, or the program
+has run out of memory while some more memory allocation is required, etc.
+</p>
+<p>By default <span class="command"><strong>igraph</strong></span> aborts the program when it runs into an
+error. While this behavior might be good enough for smaller programs,
+it is without doubt avoidable in larger projects. Please read further
+if your project requires more sophisticated error handling. You can
+safely skip the rest of this chapter otherwise.
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="error-handlers"></a>2.  Error handlers</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_handler_t">2.1. <code class="function">igraph_error_handler_t</code> —  The type of error handler functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_handler_abort">2.2. <code class="function">igraph_error_handler_abort</code> —  Abort program in case of error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_handler_ignore">2.3. <code class="function">igraph_error_handler_ignore</code> —  Ignore errors.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_handler_printignore">2.4. <code class="function">igraph_error_handler_printignore</code> —  Print and ignore errors.</a></span></dt>
+</dl></div>
+<p>
+If <span class="command"><strong>igraph</strong></span> runs into an error - an invalid argument was supplied
+to a function, or we've ran out of memory - the control is
+transferred to the <span class="emphasis"><em> error handler </em></span> function.
+</p>
+<p>
+The default error handler is <a class="link" href="igraph-Error.html#igraph_error_handler_abort" title="2.2. igraph_error_handler_abort — Abort program in case of error."><code class="function">igraph_error_handler_abort</code></a> which
+prints an error message and aborts the program.
+</p>
+<p>
+The <a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler."><code class="function">igraph_set_error_handler()</code></a> function can be used to set a new
+error handler function of type <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions."><code class="function">igraph_error_handler_t</code></a>; see the
+documentation of this type for details.
+</p>
+<p>
+There are two other predefined error handler functions,
+<a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors."><code class="function">igraph_error_handler_ignore</code></a> and <a class="link" href="igraph-Error.html#igraph_error_handler_printignore" title="2.4. igraph_error_handler_printignore — Print and ignore errors."><code class="function">igraph_error_handler_printignore</code></a>.
+These deallocate the temporarily allocated memory (more about this
+later) and return with the error code. The latter also prints an
+error message. If you use these error handlers you need to take
+care about possible errors yourself by checking the return value of
+(almost) every non-void <span class="command"><strong>igraph</strong></span> function.
+</p>
+<p>
+Independently of the error handler installed, all functions in the
+library do their best to leave their arguments
+<span class="emphasis"><em>semantically</em></span> unchanged if an error
+happens. By semantically we mean that the implementation of an
+object supplied as an argument might change, but its
+<span class="quote">“<span class="quote">meaning</span>”</span> in most cases does not. The rare occasions
+when this rule is violated are documented in this manual.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_handler_t"></a>2.1. <code class="function">igraph_error_handler_t</code> —  The type of error handler functions.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.3.7.2"></a><pre class="programlisting">
+typedef void igraph_error_handler_t (const char *reason, const char *file,
+                                     int line, igraph_error_t igraph_errno);
+</pre>
+<p>
+
+
+This is the type of the error handler functions.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error is noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of the line in the source file which triggered
+  the error
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_handler_abort"></a>2.2. <code class="function">igraph_error_handler_abort</code> —  Abort program in case of error.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.3.8.2"></a><p>
+</p>
+<pre class="programlisting">
+IGRAPH_EXPORT igraph_error_handler_t igraph_error_handler_abort;
+</pre>
+<p>
+</p>
+<p>
+
+
+The default error handler, prints an error message and aborts the
+program.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_handler_ignore"></a>2.3. <code class="function">igraph_error_handler_ignore</code> —  Ignore errors.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.3.9.2"></a><p>
+</p>
+<pre class="programlisting">
+IGRAPH_EXPORT igraph_error_handler_t igraph_error_handler_ignore;
+</pre>
+<p>
+</p>
+<p>
+
+
+This error handler frees the temporarily allocated memory and returns
+with the error code.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_handler_printignore"></a>2.4. <code class="function">igraph_error_handler_printignore</code> —  Print and ignore errors.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.3.10.2"></a><p>
+</p>
+<pre class="programlisting">
+IGRAPH_EXPORT igraph_error_handler_t igraph_error_handler_printignore;
+</pre>
+<p>
+</p>
+<p>
+
+
+Frees temporarily allocated memory, prints an error message to the
+standard error and returns with the error code.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="error-codes"></a>3.  Error codes</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_t">3.1. <code class="function">igraph_error_t</code> —  Return type for functions returning an error code.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error_type_t">3.2. <code class="function">igraph_error_type_t</code> —  Error code type.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_strerror">3.3. <code class="function">igraph_strerror</code> —  Textual description of an error.</a></span></dt>
+</dl></div>
+<p>Every <span class="command"><strong>igraph</strong></span> function which can fail return a
+single integer error code. Some functions are very simple and
+cannot run into any error, these may return other types, or
+<span class="type">void</span> as well. The error codes are defined by the
+<a class="link" href="igraph-Error.html#igraph_error_type_t" title="3.2. igraph_error_type_t — Error code type."><code class="function">igraph_error_type_t</code></a> enumeration.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_t"></a>3.1. <code class="function">igraph_error_t</code> —  Return type for functions returning an error code.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.4.3.2"></a><pre class="programlisting">
+typedef igraph_error_type_t igraph_error_t;
+</pre>
+<p>
+
+
+This type is used as the return type of igraph functions that return an
+error code. It is a type alias because <span class="type">igraph_error_t</span> used to be
+an <code class="constant">int</code>, and was used slightly differenly than <span class="type">igraph_error_type_t</span>.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_error_type_t"></a>3.2. <code class="function">igraph_error_type_t</code> —  Error code type.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.4.4.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef enum {
+    IGRAPH_SUCCESS           = 0,
+    IGRAPH_FAILURE           = 1,
+    IGRAPH_ENOMEM            = 2,
+    IGRAPH_PARSEERROR        = 3,
+    IGRAPH_EINVAL            = 4,
+    IGRAPH_EXISTS            = 5,
+    IGRAPH_EINVEVECTOR       = 6,
+    IGRAPH_EINVVID           = 7,
+    IGRAPH_NONSQUARE         = 8,
+    IGRAPH_EINVMODE          = 9,
+    IGRAPH_EFILE             = 10,
+    IGRAPH_UNIMPLEMENTED     = 12,
+    IGRAPH_INTERRUPTED       = 13,
+    IGRAPH_DIVERGED          = 14,
+    IGRAPH_ARPACK_PROD       = 15,   /* unused, reserved */
+    IGRAPH_ARPACK_NPOS       = 16,
+    IGRAPH_ARPACK_NEVNPOS    = 17,
+    IGRAPH_ARPACK_NCVSMALL   = 18,
+    IGRAPH_ARPACK_NONPOSI    = 19,
+    IGRAPH_ARPACK_WHICHINV   = 20,
+    IGRAPH_ARPACK_BMATINV    = 21,
+    IGRAPH_ARPACK_WORKLSMALL = 22,
+    IGRAPH_ARPACK_TRIDERR    = 23,
+    IGRAPH_ARPACK_ZEROSTART  = 24,
+    IGRAPH_ARPACK_MODEINV    = 25,
+    IGRAPH_ARPACK_MODEBMAT   = 26,
+    IGRAPH_ARPACK_ISHIFT     = 27,
+    IGRAPH_ARPACK_NEVBE      = 28,
+    IGRAPH_ARPACK_NOFACT     = 29,
+    IGRAPH_ARPACK_FAILED     = 30,
+    IGRAPH_ARPACK_HOWMNY     = 31,
+    IGRAPH_ARPACK_HOWMNYS    = 32,
+    IGRAPH_ARPACK_EVDIFF     = 33,
+    IGRAPH_ARPACK_SHUR       = 34,
+    IGRAPH_ARPACK_LAPACK     = 35,
+    IGRAPH_ARPACK_UNKNOWN    = 36,
+    IGRAPH_ENEGLOOP          = 37,
+    IGRAPH_EINTERNAL         = 38,
+    IGRAPH_ARPACK_MAXIT      = 39,
+    IGRAPH_ARPACK_NOSHIFT    = 40,
+    IGRAPH_ARPACK_REORDER    = 41,
+    IGRAPH_EDIVZERO          = 42,
+    IGRAPH_GLP_EBOUND        = 43,
+    IGRAPH_GLP_EROOT         = 44,
+    IGRAPH_GLP_ENOPFS        = 45,
+    IGRAPH_GLP_ENODFS        = 46,
+    IGRAPH_GLP_EFAIL         = 47,
+    IGRAPH_GLP_EMIPGAP       = 48,
+    IGRAPH_GLP_ETMLIM        = 49,
+    IGRAPH_GLP_ESTOP         = 50,
+    IGRAPH_EATTRIBUTES       = 51,
+    IGRAPH_EATTRCOMBINE      = 52,
+    IGRAPH_ELAPACK           = 53,
+    IGRAPH_EDRL IGRAPH_DEPRECATED_ENUMVAL = 54,
+    IGRAPH_EOVERFLOW         = 55,
+    IGRAPH_EGLP              = 56,
+    IGRAPH_CPUTIME           = 57,
+    IGRAPH_EUNDERFLOW        = 58,
+    IGRAPH_ERWSTUCK          = 59,
+    IGRAPH_STOP              = 60,
+    IGRAPH_ERANGE            = 61,
+    IGRAPH_ENOSOL            = 62
+} igraph_error_type_t;
+</pre>
+<p>
+</p>
+<p>
+
+These are the possible values returned by <span class="command"><strong>igraph</strong></span> functions.
+Note that these are interesting only if you defined an error handler
+with <a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler."><code class="function">igraph_set_error_handler()</code></a>. Otherwise the program is aborted
+and the function causing the error never returns.
+
+</p>
+<p><b>Values: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_SUCCESS</code>:</span></p></td>
+<td><p>
+  The function successfully completed its task.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAILURE</code>:</span></p></td>
+<td><p>
+  Something went wrong. You'll almost never
+   meet this error as normally more specific error codes are used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOMEM</code>:</span></p></td>
+<td><p>
+  There wasn't enough memory to allocate
+   on the heap.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_PARSEERROR</code>:</span></p></td>
+<td><p>
+  A parse error was found in a file.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVAL</code>:</span></p></td>
+<td><p>
+  A parameter's value is invalid. E.g. negative
+   number was specified as the number of vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EXISTS</code>:</span></p></td>
+<td><p>
+  A graph/vertex/edge attribute is already
+   installed with the given name.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVEVECTOR</code>:</span></p></td>
+<td><p>
+  Invalid vector of vertex IDs. A vertex ID
+   is either negative or bigger than the number of vertices minus one.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code>:</span></p></td>
+<td><p>
+  Invalid vertex ID, negative or too big.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_NONSQUARE</code>:</span></p></td>
+<td><p>
+  A non-square matrix was received while a
+   square matrix was expected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVMODE</code>:</span></p></td>
+<td><p>
+  Invalid mode parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EFILE</code>:</span></p></td>
+<td><p>
+  A file operation failed. E.g. a file doesn't exist,
+  or the user has no rights to open it.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_UNIMPLEMENTED</code>:</span></p></td>
+<td><p>
+  Attempted to call an unimplemented or
+  disabled (at compile-time) function.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_DIVERGED</code>:</span></p></td>
+<td><p>
+  A numeric algorithm failed to converge.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_PROD</code>:</span></p></td>
+<td><p>
+  Matrix-vector product failed (not used any more).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NPOS</code>:</span></p></td>
+<td><p>
+  N must be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVNPOS</code>:</span></p></td>
+<td><p>
+  NEV must be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NCVSMALL</code>:</span></p></td>
+<td><p>
+  NCV must be bigger.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NONPOSI</code>:</span></p></td>
+<td><p>
+  Maximum number of iterations should be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WHICHINV</code>:</span></p></td>
+<td><p>
+  Invalid WHICH parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_BMATINV</code>:</span></p></td>
+<td><p>
+  Invalid BMAT parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WORKLSMALL</code>:</span></p></td>
+<td><p>
+  WORKL is too small.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_TRIDERR</code>:</span></p></td>
+<td><p>
+  LAPACK error in tridiagonal eigenvalue calculation.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ZEROSTART</code>:</span></p></td>
+<td><p>
+  Starting vector is zero.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEINV</code>:</span></p></td>
+<td><p>
+  MODE is invalid.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEBMAT</code>:</span></p></td>
+<td><p>
+  MODE and BMAT are not compatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ISHIFT</code>:</span></p></td>
+<td><p>
+  ISHIFT must be 0 or 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVBE</code>:</span></p></td>
+<td><p>
+  NEV and WHICH='BE' are incompatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NOFACT</code>:</span></p></td>
+<td><p>
+  Could not build an Arnoldi factorization.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_FAILED</code>:</span></p></td>
+<td><p>
+  No eigenvalues to sufficient accuracy.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNY</code>:</span></p></td>
+<td><p>
+  HOWMNY is invalid.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNYS</code>:</span></p></td>
+<td><p>
+  HOWMNY='S' is not implemented.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_EVDIFF</code>:</span></p></td>
+<td><p>
+  Different number of converged Ritz values.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_SHUR</code>:</span></p></td>
+<td><p>
+  Error from calculation of a real Schur form.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_LAPACK</code>:</span></p></td>
+<td><p>
+  LAPACK (dtrevc) error for calculating eigenvectors.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_UNKNOWN</code>:</span></p></td>
+<td><p>
+  Unknown ARPACK error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENEGLOOP</code>:</span></p></td>
+<td><p>
+  Negative loop detected while calculating shortest paths.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINTERNAL</code>:</span></p></td>
+<td><p>
+  Internal error, likely a bug in igraph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EDIVZERO</code>:</span></p></td>
+<td><p>
+  Big integer division by zero.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EBOUND</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EBOUND).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EROOT</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EROOT).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ENOPFS</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ENOPFS).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ENODFS</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ENODFS).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EFAIL</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EFAIL).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EMIPGAP</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EMIPGAP).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ETMLIM</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ETMLIM).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ESTOP</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ESTOP).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EATTRIBUTES</code>:</span></p></td>
+<td><p>
+  Attribute handler error. The user is not
+  expected to find this; it is signalled if some igraph function is
+  not using the attribute handler interface properly.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EATTRCOMBINE</code>:</span></p></td>
+<td><p>
+  Unimplemented attribute combination
+  method for the given attribute type.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ELAPACK</code>:</span></p></td>
+<td><p>
+  A LAPACK call resulted in an error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EDRL</code>:</span></p></td>
+<td><p>
+  Internal error in the DrL layout generator; not used
+  any more (replaced by IGRAPH_EINTERNAL).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EOVERFLOW</code>:</span></p></td>
+<td><p>
+  Integer or double overflow.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EGLP</code>:</span></p></td>
+<td><p>
+  Internal GLPK error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_CPUTIME</code>:</span></p></td>
+<td><p>
+  CPU time exceeded.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EUNDERFLOW</code>:</span></p></td>
+<td><p>
+  Integer or double underflow.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ERWSTUCK</code>:</span></p></td>
+<td><p>
+  Random walk got stuck.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ERANGE</code>:</span></p></td>
+<td><p>
+  Maximum vertex or edge count exceeded.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ENOSOL</code>:</span></p></td>
+<td><p>
+  Input problem has no solution.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_strerror"></a>3.3. <code class="function">igraph_strerror</code> —  Textual description of an error.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.4.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ const char* igraph_strerror(const igraph_error_t igraph_errno);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This is a simple utility function, it gives a short general textual
+description for an <span class="command"><strong>igraph</strong></span> error code.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  pointer to the textual description of the error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="warnings"></a>4.  Warning messages</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#igraph_warning_handler_t">4.1. <code class="function">igraph_warning_handler_t</code> —  The type of igraph warning handler functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_set_warning_handler">4.2. <code class="function">igraph_set_warning_handler</code> —  Installs a warning handler.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_WARNING">4.3. <code class="function">IGRAPH_WARNING</code> —  Triggers a warning.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_WARNINGF">4.4. <code class="function">IGRAPH_WARNINGF</code> —  Triggers a warning, with printf-like syntax.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warning">4.5. <code class="function">igraph_warning</code> —  Reports a warning.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warningf">4.6. <code class="function">igraph_warningf</code> —  Reports a warning, printf-like version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warning_handler_ignore">4.7. <code class="function">igraph_warning_handler_ignore</code> —  Ignores all warnings.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_warning_handler_print">4.8. <code class="function">igraph_warning_handler_print</code> —  Prints all warnings to the standard error.</a></span></dt>
+</dl></div>
+<p>
+<span class="command"><strong>igraph</strong></span> also supports warning messages in addition to error
+messages. Warning messages typically do not terminate the
+program, but they are usually crucial to the user.
+</p>
+<p>
+<span class="command"><strong>igraph</strong></span> warnings are handled similarly to errors. There is a
+separate warning handler function that is called whenever
+an <span class="command"><strong>igraph</strong></span> function triggers a warning. This handler can be
+set by the <a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler."><code class="function">igraph_set_warning_handler()</code></a> function. There are
+two predefined simple warning handlers,
+<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings."><code class="function">igraph_warning_handler_ignore()</code></a> and
+<a class="link" href="igraph-Error.html#igraph_warning_handler_print" title="4.8. igraph_warning_handler_print — Prints all warnings to the standard error."><code class="function">igraph_warning_handler_print()</code></a>, the latter being the default.
+</p>
+<p>
+To trigger a warning, <span class="command"><strong>igraph</strong></span> functions typically use the
+<a class="link" href="igraph-Error.html#IGRAPH_WARNING" title="4.3. IGRAPH_WARNING — Triggers a warning."><code class="function">IGRAPH_WARNING()</code></a> macro, the <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a> function,
+or if more flexibility is needed, <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Reports a warning, printf-like version."><code class="function">igraph_warningf()</code></a>.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_warning_handler_t"></a>4.1. <code class="function">igraph_warning_handler_t</code> —  The type of igraph warning handler functions.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.5.2"></a><pre class="programlisting">
+typedef void igraph_warning_handler_t (const char *reason, const char *file, int line);
+</pre>
+<p>
+
+
+Currently it is defined to have the same type as
+<a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions."><code class="function">igraph_error_handler_t</code></a>, although the last (error code)
+argument is not used.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_set_warning_handler"></a>4.2. <code class="function">igraph_set_warning_handler</code> —  Installs a warning handler.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ igraph_warning_handler_t* igraph_set_warning_handler(igraph_warning_handler_t* new_handler);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Install the supplied warning handler function.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>new_handler</code></em>:</span></p></td>
+<td><p>
+  The new warning handler function to install.
+       Supply a null pointer here to uninstall the current
+       warning handler, without installing a new one.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The current warning handler function.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="IGRAPH_WARNING"></a>4.3. <code class="function">IGRAPH_WARNING</code> —  Triggers a warning.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.7.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_WARNING(reason)
+</pre>
+<p>
+</p>
+<p>
+
+
+This is the usual way of triggering a warning from an igraph
+function. It calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  The warning message.
+ </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="IGRAPH_WARNINGF"></a>4.4. <code class="function">IGRAPH_WARNINGF</code> —  Triggers a warning, with printf-like syntax.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.8.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_WARNINGF
+</pre>
+<p>
+</p>
+<p>
+
+
+<span class="command"><strong>igraph</strong></span> functions can use this macro when they notice a warning and
+want to pass on extra information to the user about what went wrong.
+It calls <a class="link" href="igraph-Error.html#igraph_warningf" title="4.6. igraph_warningf — Reports a warning, printf-like version."><code class="function">igraph_warningf()</code></a> with the proper parameters and no
+error code.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the warning, a template string
+       with the same syntax as the standard printf C library function.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  The additional arguments to be substituted into the
+       template string.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_warning"></a>4.5. <code class="function">igraph_warning</code> —  Reports a warning.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ void igraph_warning(const char *reason, const char *file, int line);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Call this function if you want to trigger a warning from within
+a function that uses <span class="command"><strong>igraph</strong></span>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the warning.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the warning was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the
+        warning.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  Warnings could have potentially error codes as well,
+       but this is currently not used in igraph.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The supplied error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_warningf"></a>4.6. <code class="function">igraph_warningf</code> —  Reports a warning, printf-like version.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+IGRAPH_FUNCATTR_PRINTFLIKE(1,4)
+IGRAPH_EXPORT void igraph_warningf(const char *reason, const char *file, int line, ...);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function is similar to <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>, but
+uses a printf-like syntax. It substitutes the additional arguments
+into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_warning" title="4.5. igraph_warning — Reports a warning."><code class="function">igraph_warning()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the warning, a template string
+       with the same syntax as the standard printf C library function.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the warning was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the
+        warning.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  Warnings could have potentially error codes as well,
+       but this is currently not used in igraph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  The additional arguments to be substituted into the
+       template string.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_warning_handler_ignore"></a>4.7. <code class="function">igraph_warning_handler_ignore</code> —  Ignores all warnings.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_warning_handler_ignore(const char *reason, const char *file, int line);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This warning handler function simply ignores all warnings.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the warning.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the warning was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the
+        warning..
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  Warnings could have potentially error codes as well,
+       but this is currently not used in igraph.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_warning_handler_print"></a>4.8. <code class="function">igraph_warning_handler_print</code> —  Prints all warnings to the standard error.</h3></div></div></div>
+<a class="indexterm" name="id-1.6.5.12.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_warning_handler_print(const char *reason, const char *file, int line);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This warning handler function simply prints all warnings to the
+standard error.
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the warning.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the warning was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the
+        warning..
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  Warnings could have potentially error codes as well,
+       but this is currently not used in igraph.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="error-advanced-topics"></a>5. Advanced topics</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#writing-error-handlers">5.1.  Writing error handlers</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#error-handling-internals">5.2.  Error handling internals</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#deallocating-memory">5.3.  Deallocating memory</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#writing-igraph-functions-with-proper-error-handling">5.4.  Writing <span class="command"><strong>igraph</strong></span> functions with
+proper error handling</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#fatal-error-handlers">5.5.  Fatal errors</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#error-handling-and-threads">5.6.  Error handling and threads</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="writing-error-handlers"></a>5.1.  Writing error handlers</h3></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Error.html#igraph_set_error_handler">5.1.1. <code class="function">igraph_set_error_handler</code> —  Sets a new error handler.</a></span></dt></dl></div>
+<p>
+The contents of the rest of this chapter might be useful only
+for those who want to create an interface to <span class="command"><strong>igraph</strong></span> from another
+language, or use igraph from a GUI application. Most readers can
+safely skip to the next chapter.
+</p>
+<p>
+You can write and install error handlers simply by defining a
+function of type <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions."><code class="function">igraph_error_handler_t</code></a> and calling
+<a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler."><code class="function">igraph_set_error_handler()</code></a>. This feature is useful for interface
+writers, as <span class="command"><strong>igraph</strong></span> will have the chance to
+signal errors the appropriate way. For example, the R interface uses
+R's native printing facilities to communicate errors, while the Python
+interface converts them into Python exceptions.
+</p>
+<p>
+The two main tasks of the error handler are to report the error
+(i.e. print the error message) and ensure proper resource cleanup.
+This is ensured by calling <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates objects registered at the current level."><code class="function">IGRAPH_FINALLY_FREE()</code></a>, which deallocates
+some of the temporary memory to avoid memory leaks. Note that this may
+invalidate the error message buffer <em class="parameter"><code>reason</code></em> passed to the error handler.
+Do not access it after having called <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates objects registered at the current level."><code class="function">IGRAPH_FINALLY_FREE()</code></a>.
+</p>
+<p>
+As of <span class="command"><strong>igraph</strong></span> 0.10, temporary memory is dellocated in stages, through
+multiple calls to the error handler (and indirectly to <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates objects registered at the current level."><code class="function">IGRAPH_FINALLY_FREE()</code></a>).
+Therefore, error handlers that do not abort the program
+immediately are expected to return. The error handler should not perform
+a <code class="literal">longjmp</code>, as this may lead to some of the memory not
+getting freed.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_set_error_handler"></a>5.1.1. <code class="function">igraph_set_error_handler</code> —  Sets a new error handler.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.2.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ igraph_error_handler_t* igraph_set_error_handler(igraph_error_handler_t* new_handler);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Installs a new error handler. If called with <code class="constant">NULL</code>, it installs the
+default error handler (which is currently <a class="link" href="igraph-Error.html#igraph_error_handler_abort" title="2.2. igraph_error_handler_abort — Abort program in case of error."><code class="function">igraph_error_handler_abort</code></a>).
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>new_handler</code></em>:</span></p></td>
+<td><p>
+  The error handler function to install.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The old error handler function. This should be saved and
+  restored if <em class="parameter"><code>new_handler</code></em> is not needed any
+  more.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="error-handling-internals"></a>5.2.  Error handling internals</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ERROR">5.2.1. <code class="function">IGRAPH_ERROR</code> —  Triggers an error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ERRORF">5.2.2. <code class="function">IGRAPH_ERRORF</code> —  Triggers an error, with printf-like syntax.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_error">5.2.3. <code class="function">igraph_error</code> —  Reports an error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_errorf">5.2.4. <code class="function">igraph_errorf</code> —  Reports an error, printf-like version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_CHECK">5.2.5. <code class="function">IGRAPH_CHECK</code> —  Checks the return value of a function call.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_CHECK_CALLBACK">5.2.6. <code class="function">IGRAPH_CHECK_CALLBACK</code> —  Checks the return value of a callback.</a></span></dt>
+</dl></div>
+<p>
+If an error happens, the functions in the library call the
+<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> macro with a textual description of the error and an
+<span class="command"><strong>igraph</strong></span> error code. This macro calls (through the <a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> function) the installed error handler. Another useful
+macro is <a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call."><code class="function">IGRAPH_CHECK()</code></a>. This checks the return value of its
+argument, which is normally a function call, and calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> if it is not <code class="constant">IGRAPH_SUCCESS</code>.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_ERROR"></a>5.2.1. <code class="function">IGRAPH_ERROR</code> —  Triggers an error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.3.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_ERROR(reason, igraph_errno)
+</pre>
+<p>
+</p>
+<p>
+
+
+<span class="command"><strong>igraph</strong></span> functions usually use this macro when they notice an error.
+It calls
+<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> with the proper parameters and if that returns
+the macro returns the "calling" function as well, with the error
+code. If for some (suspicious) reason you want to call the error
+handler without returning from the current function, call
+<a class="link" href="igraph-Error.html#igraph_error" title="5.2.3. igraph_error — Reports an error."><code class="function">igraph_error()</code></a> directly.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error. This should be
+  something more descriptive than the text associated with the error
+  code. E.g. if the error code is <code class="constant">IGRAPH_EINVAL</code>,
+  its associated text (see  <a class="link" href="igraph-Error.html#igraph_strerror" title="3.3. igraph_strerror — Textual description of an error."><code class="function">igraph_strerror()</code></a>) is "Invalid
+  value" and this string should explain which parameter was invalid
+  and maybe why.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_ERRORF"></a>5.2.2. <code class="function">IGRAPH_ERRORF</code> —  Triggers an error, with printf-like syntax.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.4.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_ERRORF
+</pre>
+<p>
+</p>
+<p>
+
+
+<span class="command"><strong>igraph</strong></span> functions can use this macro when they notice an error and
+want to pass on extra information to the user about what went wrong.
+It calls <a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Reports an error, printf-like version."><code class="function">igraph_errorf()</code></a> with the proper parameters and if that
+returns the macro returns the "calling" function as well, with the
+error code. If for some (suspicious) reason you want to call the
+error handler without returning from the current function, call
+<a class="link" href="igraph-Error.html#igraph_errorf" title="5.2.4. igraph_errorf — Reports an error, printf-like version."><code class="function">igraph_errorf()</code></a> directly.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error, a template string
+  with the same syntax as the standard printf C library function.
+  This should be something more descriptive than the text associated
+  with the error code. E.g. if the error code is <code class="constant">IGRAPH_EINVAL</code>,
+  its associated text (see  <a class="link" href="igraph-Error.html#igraph_strerror" title="3.3. igraph_strerror — Textual description of an error."><code class="function">igraph_strerror()</code></a>) is "Invalid
+  value" and this string should explain which parameter was invalid
+  and maybe what was expected and what was recieved.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  The additional arguments to be substituted into the
+  template string.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_error"></a>5.2.3. <code class="function">igraph_error</code> —  Reports an error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ igraph_error_t igraph_error(const char *reason, const char *file, int line,
+                               igraph_error_t igraph_errno);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+<span class="command"><strong>igraph</strong></span> functions usually call this function (most often via the
+<a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR</code></a> macro) if they notice an error.
+It calls the currently installed error handler function with the
+supplied arguments.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the
+  error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  the error code (if it returns)
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_errorf().
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_errorf"></a>5.2.4. <code class="function">igraph_errorf</code> —  Reports an error, printf-like version.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+IGRAPH_FUNCATTR_PRINTFLIKE(1,5)
+IGRAPH_EXPORT igraph_error_t igraph_errorf(const char *reason, const char *file, int line,
+                                igraph_error_t igraph_errno, ...);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error, interpreted as
+              a <code class="constant">printf</code> format string.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The line in the source file which triggered the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>igraph_errno</code></em>:</span></p></td>
+<td><p>
+  The <span class="command"><strong>igraph</strong></span> error code.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  Additional parameters, the values to substitute into the
+           format string.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_error().
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_CHECK"></a>5.2.5. <code class="function">IGRAPH_CHECK</code> —  Checks the return value of a function call.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.7.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_CHECK(expr)
+</pre>
+<p>
+</p>
+<p>
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>expr</code></em>:</span></p></td>
+<td><p>
+  An expression, usually a function call. It is guaranteed to
+be evaluated only once.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Executes the expression and checks its value. If this is not
+<code class="constant">IGRAPH_SUCCESS</code>, it calls <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR</code></a> with
+the value as the error code. Here is an example usage:
+</p>
+<div class="informalexample"><pre class="programlisting"> IGRAPH_CHECK(vector_push_back(&amp;v, 100)); </pre></div>
+<p>
+
+</p>
+<p>There is only one reason to use this macro when writing
+<span class="command"><strong>igraph</strong></span> functions. If the user installs an error handler which
+returns to the auxiliary calling code (like <a class="link" href="igraph-Error.html#igraph_error_handler_ignore" title="2.3. igraph_error_handler_ignore — Ignore errors."><code class="function">igraph_error_handler_ignore</code></a> and <a class="link" href="igraph-Error.html#igraph_error_handler_printignore" title="2.4. igraph_error_handler_printignore — Print and ignore errors."><code class="function">igraph_error_handler_printignore</code></a>), and the <span class="command"><strong>igraph</strong></span> function
+signalling the error is called from another <span class="command"><strong>igraph</strong></span> function
+then we need to make sure that the error is propagated back to
+the auxiliary (i.e. non-igraph) calling function. This is achieved
+by using <code class="function">IGRAPH_CHECK</code> on every <span class="command"><strong>igraph</strong></span>
+call which can return an error code.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_CHECK_CALLBACK"></a>5.2.6. <code class="function">IGRAPH_CHECK_CALLBACK</code> —  Checks the return value of a callback.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.3.8.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_CHECK_CALLBACK(expr, code)
+</pre>
+<p>
+</p>
+<p>
+
+
+Identical to <a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call."><code class="function">IGRAPH_CHECK</code></a>, but treats <code class="constant">IGRAPH_STOP</code> as a normal
+(non-erroneous) return code. This macro is used in some igraph functions
+that allow the user to hook into a long-running calculation with a callback
+function. When the user-defined callback function returns <code class="constant">IGRAPH_SUCCESS</code>,
+the calculation will proceed normally. Returning <code class="constant">IGRAPH_STOP</code> from the
+callback will terminate the calculation without reporting an error. Returning
+any other value from the callback is treated as an error code, and igraph
+will trigger the necessary cleanup functions before exiting the function.
+
+</p>
+<p>
+Note that <code class="constant">IGRAPH_CHECK_CALLBACK</code> does not handle <code class="constant">IGRAPH_STOP</code> by any
+means except returning it in the variable pointed to by <code class="constant">code</code>. It is the
+responsibility of the caller to handle <code class="constant">IGRAPH_STOP</code> accordingly.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>expr</code></em>:</span></p></td>
+<td><p>
+  An expression, usually a call to a user-defined callback function.
+It is guaranteed to be evaluated only once.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>code</code></em>:</span></p></td>
+<td><p>
+  Pointer to an optional variable of type <span class="type">igraph_error_t</span>;
+the value of this variable will be set to the error code if it is not a null
+pointer.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="deallocating-memory"></a>5.3.  Deallocating memory</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FINALLY">5.3.1. <code class="function">IGRAPH_FINALLY</code> —  Registers an object for deallocation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FINALLY_CLEAN">5.3.2. <code class="function">IGRAPH_FINALLY_CLEAN</code> —  Signals clean deallocation of objects.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FINALLY_FREE">5.3.3. <code class="function">IGRAPH_FINALLY_FREE</code> —  Deallocates objects registered at the current level.</a></span></dt>
+</dl></div>
+<p>
+If a function runs into an error (and the program is not aborted)
+the error handler should deallocate all temporary memory. This is
+done by storing the address and the destroy function of all temporary
+objects in a stack. The <a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation."><code class="function">IGRAPH_FINALLY</code></a> function declares an object as
+temporary by placing its address in the stack. If an <span class="command"><strong>igraph</strong></span> function returns
+with success it calls <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects."><code class="function">IGRAPH_FINALLY_CLEAN()</code></a> with the
+number of objects to remove from the stack. If an error happens
+however, the error handler should call <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_FREE" title="5.3.3. IGRAPH_FINALLY_FREE — Deallocates objects registered at the current level."><code class="function">IGRAPH_FINALLY_FREE()</code></a> to
+deallocate each object added to the stack. This means that the
+temporary objects allocated in the calling function (and etc.) will
+be freed as well.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_FINALLY"></a>5.3.1. <code class="function">IGRAPH_FINALLY</code> —  Registers an object for deallocation.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.4.3.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_FINALLY(func, ptr)
+</pre>
+<p>
+</p>
+<p>
+
+
+This macro places the address of an object, together with the
+address of its destructor in a stack. This stack is used if an
+error happens to deallocate temporarily allocated objects to
+prevent memory leaks. After manual deallocation, objects are removed
+from the stack using <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects."><code class="function">IGRAPH_FINALLY_CLEAN()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>func</code></em>:</span></p></td>
+<td><p>
+  The function which is normally called to
+  destroy the object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ptr</code></em>:</span></p></td>
+<td><p>
+  Pointer to the object itself.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_FINALLY_CLEAN"></a>5.3.2. <code class="function">IGRAPH_FINALLY_CLEAN</code> —  Signals clean deallocation of objects.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.4.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ void IGRAPH_FINALLY_CLEAN(int num);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Removes the specified number of objects from the stack of
+temporarily allocated objects. It is typically called
+immediately after manually destroying the objects:
+
+</p>
+<pre class="programlisting">
+igraph_vector_t vector;
+igraph_vector_init(&amp;vector, 10);
+IGRAPH_FINALLY(igraph_vector_destroy, &amp;vector);
+// use vector
+igraph_vector_destroy(&amp;vector);
+IGRAPH_FINALLY_CLEAN(1);
+</pre>
+<p>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>num</code></em>:</span></p></td>
+<td><p>
+  The number of objects to remove from the bookkeeping
+  stack.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_FINALLY_FREE"></a>5.3.3. <code class="function">IGRAPH_FINALLY_FREE</code> —  Deallocates objects registered at the current level.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.4.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ void IGRAPH_FINALLY_FREE(void);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Calls the destroy function for all objects in the current level
+of the stack of temporarily allocated objects, i.e. up to the
+nearest mark set by <code class="literal">IGRAPH_FINALLY_ENTER()</code>.
+This function must only be called from an error handler.
+It is <span class="emphasis"><em>not</em></span> appropriate to use it
+instead of destroying each unneeded object of a function, as it
+destroys the temporary objects of the caller function (and so on)
+as well.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="writing-igraph-functions-with-proper-error-handling"></a>5.4.  Writing <span class="command"><strong>igraph</strong></span> functions with
+proper error handling</h3></div></div></div>
+<p>
+There are some simple rules to keep in order to have functions
+behaving well in erroneous situations. First, check the arguments
+of the functions and call <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a> if they are invalid. Second,
+call <a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation."><code class="function">IGRAPH_FINALLY</code></a> on each dynamically allocated object and call
+<a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects."><code class="function">IGRAPH_FINALLY_CLEAN()</code></a> with the proper argument before returning. Third, use
+<a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call."><code class="function">IGRAPH_CHECK</code></a> on all <span class="command"><strong>igraph</strong></span> function calls which can generate errors.
+</p>
+<p>
+The size of the stack used for this bookkeeping is fixed, and
+small. If you want to allocate several objects, write a destroy
+function which can deallocate all of these. See the
+<code class="filename">adjlist.c</code> file in the
+<span class="command"><strong>igraph</strong></span> source for an example.
+</p>
+<p>
+For some functions these mechanisms are simply not flexible
+enough. These functions should define their own error handlers and
+restore the error handler before they return.
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="fatal-error-handlers"></a>5.5.  Fatal errors</h3></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatal_handler_t">5.5.1. <code class="function">igraph_fatal_handler_t</code> —  The type of igraph fatal error handler functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_set_fatal_handler">5.5.2. <code class="function">igraph_set_fatal_handler</code> —  Installs a fatal error handler.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatal_handler_abort">5.5.3. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATAL">5.5.4. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_FATALF">5.5.5. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#IGRAPH_ASSERT">5.5.6. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatal">5.5.7. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</a></span></dt>
+<dt><span class="section"><a href="igraph-Error.html#igraph_fatalf">5.5.8. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</a></span></dt>
+</dl></div>
+<p>
+In some rare situations, <span class="command"><strong>igraph</strong></span> may encounter an internal error
+that cannot be fully handled. In this case, it will call the
+current fatal error handler. The default fatal error handler
+simply prints the error and aborts the program.
+</p>
+<p>
+Fatal error handlers do not return. Typically, they might abort the
+the program immediately, or in the case of the high-level <span class="command"><strong>igraph</strong></span>
+interfaces, they might return to the top level using a
+<code class="literal">longjmp()</code>. The fatal error handler is only called when
+a serious error has occurred, and as a result igraph may be in an
+inconsistent state. The purpose of returning to the top level is to
+give the user a chance to save their work instead of aborting immediately.
+However, the program session should be restarted as soon as possible.
+</p>
+<p>
+Most projects that use <span class="command"><strong>igraph</strong></span> will use the default fatal error
+handler.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_fatal_handler_t"></a>5.5.1. <code class="function">igraph_fatal_handler_t</code> —  The type of igraph fatal error handler functions.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.5.2"></a><pre class="programlisting">
+typedef void igraph_fatal_handler_t (const char *reason, const char *file, int line);
+</pre>
+<p>
+
+
+Functions of this type <span class="emphasis"><em>must</em></span> not return. Typically they
+call <code class="literal">abort()</code> or do a <code class="literal">longjmp()</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error is noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of the line in the source file which triggered the error.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_set_fatal_handler"></a>5.5.2. <code class="function">igraph_set_fatal_handler</code> —  Installs a fatal error handler.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ igraph_fatal_handler_t* igraph_set_fatal_handler(igraph_fatal_handler_t* new_handler);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Installs the supplied fatal error handler function.
+
+</p>
+<p>
+Fatal error handler functions <span class="emphasis"><em>must</em></span> not return. Typically, the fatal
+error handler would either call <code class="literal">abort()</code> or <code class="literal">longjmp()</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>new_handler</code></em>:</span></p></td>
+<td><p>
+  The new fatal error handler function to install.
+       Supply a null pointer here to uninstall the current
+       fatal error handler, without installing a new one.
+</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The current fatal error handler function.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_fatal_handler_abort"></a>5.5.3. <code class="function">igraph_fatal_handler_abort</code> —  Abort program in case of fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.7.2"></a><p>
+</p>
+<pre class="programlisting">
+IGRAPH_EXPORT igraph_fatal_handler_t igraph_fatal_handler_abort;
+</pre>
+<p>
+</p>
+<p>
+
+
+The default fatal error handler, prints an error message and aborts the program.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_FATAL"></a>5.5.4. <code class="function">IGRAPH_FATAL</code> —  Triggers a fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.8.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_FATAL(reason)
+</pre>
+<p>
+</p>
+<p>
+
+
+This is the usual way of triggering a fatal error from an igraph
+function. It calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
+
+</p>
+<p>
+Use this macro only in situations where the error cannot be handled.
+The normal way to handle errors is <a class="link" href="igraph-Error.html#IGRAPH_ERROR" title="5.2.1. IGRAPH_ERROR — Triggers an error."><code class="function">IGRAPH_ERROR()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  The error message.
+ </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_FATALF"></a>5.5.5. <code class="function">IGRAPH_FATALF</code> —  Triggers a fatal error, with printf-like syntax.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.9.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_FATALF
+</pre>
+<p>
+</p>
+<p>
+
+
+<span class="command"><strong>igraph</strong></span> functions can use this macro when a fatal error occurs and
+want to pass on extra information to the user about what went wrong.
+It calls <a class="link" href="igraph-Error.html#igraph_fatalf" title="5.5.8. igraph_fatalf — Triggers a fatal error, printf-like syntax."><code class="function">igraph_fatalf()</code></a> with the proper parameters.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error, a template string
+       with the same syntax as the standard printf C library function.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  The additional arguments to be substituted into the
+       template string.
+ </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="IGRAPH_ASSERT"></a>5.5.6. <code class="function">IGRAPH_ASSERT</code> —  igraph-specific replacement for <code class="literal">assert()</code>.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.10.2"></a><p>
+</p>
+<pre class="programlisting">
+#define IGRAPH_ASSERT(condition)
+</pre>
+<p>
+</p>
+<p>
+
+
+This macro is like the standard <code class="literal">assert()</code>, but instead of
+calling <code class="literal">abort()</code>, it calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>. This allows for returning
+the control to the calling program, e.g. returning to the top level in a high-level
+<span class="command"><strong>igraph</strong></span> interface.
+
+</p>
+<p>
+Unlike <code class="literal">assert()</code>, <code class="literal">IGRAPH_ASSERT()</code> is not disabled
+when the <code class="constant">NDEBUG</code> macro is defined.
+
+</p>
+<p>
+This macro is meant for internal use by <span class="command"><strong>igraph</strong></span>.
+
+</p>
+<p>
+Since a typical fatal error handler does a <code class="literal">longjmp()</code>, avoid using this
+macro in C++ code. With most compilers, destructor will not be called when
+<code class="literal">longjmp()</code> leaves the current scope.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>condition</code></em>:</span></p></td>
+<td><p>
+  The condition to be checked.
+ </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_fatal"></a>5.5.7. <code class="function">igraph_fatal</code> —  Triggers a fatal error.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ IGRAPH_FUNCATTR_NORETURN void igraph_fatal(const char *reason, const char *file, int line);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function triggers a fatal error. Typically it is called indirectly through
+<a class="link" href="igraph-Error.html#IGRAPH_FATAL" title="5.5.4. IGRAPH_FATAL — Triggers a fatal error."><code class="function">IGRAPH_FATAL()</code></a> or <a class="link" href="igraph-Error.html#IGRAPH_ASSERT" title="5.5.6. IGRAPH_ASSERT — igraph-specific replacement for assert()."><code class="function">IGRAPH_ASSERT()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the error.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="igraph_fatalf"></a>5.5.8. <code class="function">igraph_fatalf</code> —  Triggers a fatal error, printf-like syntax.</h4></div></div></div>
+<a class="indexterm" name="id-1.6.6.6.12.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+IGRAPH_FUNCATTR_PRINTFLIKE(1,4)
+IGRAPH_EXPORT IGRAPH_FUNCATTR_NORETURN void igraph_fatalf(const char *reason, const char *file, int line, ...);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function is similar to <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>, but
+uses a printf-like syntax. It substitutes the additional arguments
+into the <em class="parameter"><code>reason</code></em> template string and calls <a class="link" href="igraph-Error.html#igraph_fatal" title="5.5.7. igraph_fatal — Triggers a fatal error."><code class="function">igraph_fatal()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>reason</code></em>:</span></p></td>
+<td><p>
+  Textual description of the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>file</code></em>:</span></p></td>
+<td><p>
+  The source file in which the error was noticed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>line</code></em>:</span></p></td>
+<td><p>
+  The number of line in the source file which triggered the error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>...</code></em>:</span></p></td>
+<td><p>
+  The additional arguments to be substituted into the template string.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="error-handling-and-threads"></a>5.6.  Error handling and threads</h3></div></div></div>
+<p>
+It is likely that the <span class="command"><strong>igraph</strong></span> error handling
+method is <span class="emphasis"><em>not</em></span> thread-safe, mainly because of
+the static global stack which is used to store the address of the
+temporarily allocated objects. This issue might be addressed in a
+later version of <span class="command"><strong>igraph</strong></span>.
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Basic.html"><b>← Chapter 4. Basic data types and interface</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Memory.html"><b>Chapter 6. Memory (de)allocation →</b></a></td>
+</tr></table>
+{% endraw %}

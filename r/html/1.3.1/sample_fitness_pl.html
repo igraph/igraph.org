@@ -1,0 +1,146 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>sample_fitness_pl {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Scale-free random graphs, from vertex fitness scores</h2>
+
+<h3>Description</h3>
+
+<p>This function generates a non-growing random graph with expected power-law
+degree distributions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>sample_fitness_pl(
+  no.of.nodes,
+  no.of.edges,
+  exponent.out,
+  exponent.in = -1,
+  loops = FALSE,
+  multiple = FALSE,
+  finite.size.correction = TRUE
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>no.of.nodes</code></td>
+<td>
+<p>The number of vertices in the generated graph.</p>
+</td></tr>
+<tr valign="top"><td><code>no.of.edges</code></td>
+<td>
+<p>The number of edges in the generated graph.</p>
+</td></tr>
+<tr valign="top"><td><code>exponent.out</code></td>
+<td>
+<p>Numeric scalar, the power law exponent of the degree
+distribution. For directed graphs, this specifies the exponent of the
+out-degree distribution. It must be greater than or equal to 2. If you pass
+<code>Inf</code> here, you will get back an Erdos-Renyi random network.</p>
+</td></tr>
+<tr valign="top"><td><code>exponent.in</code></td>
+<td>
+<p>Numeric scalar. If negative, the generated graph will be
+undirected. If greater than or equal to 2, this argument specifies the
+exponent of the in-degree distribution. If non-negative but less than 2, an
+error will be generated.</p>
+</td></tr>
+<tr valign="top"><td><code>loops</code></td>
+<td>
+<p>Logical scalar, whether to allow loop edges in the generated
+graph.</p>
+</td></tr>
+<tr valign="top"><td><code>multiple</code></td>
+<td>
+<p>Logical scalar, whether to allow multiple edges in the
+generated graph.</p>
+</td></tr>
+<tr valign="top"><td><code>finite.size.correction</code></td>
+<td>
+<p>Logical scalar, whether to use the proposed
+finite size correction of Cho et al., see references below.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This game generates a directed or undirected random graph where the degrees
+of vertices follow power-law distributions with prescribed exponents. For
+directed graphs, the exponents of the in- and out-degree distributions may
+be specified separately.
+</p>
+<p>The game simply uses <code><a href="sample_fitness.html">sample_fitness</a></code> with appropriately
+constructed fitness vectors. In particular, the fitness of vertex <code class="reqn">i</code> is
+<code class="reqn">i^{-alpha}</code>, where <code class="reqn">alpha = 1/(gamma-1)</code> and gamma is
+the exponent given in the arguments.
+</p>
+<p>To remove correlations between in- and out-degrees in case of directed
+graphs, the in-fitness vector will be shuffled after it has been set up and
+before <code><a href="sample_fitness.html">sample_fitness</a></code> is called.
+</p>
+<p>Note that significant finite size effects may be observed for exponents
+smaller than 3 in the original formulation of the game. This function
+provides an argument that lets you remove the finite size effects by
+assuming that the fitness of vertex <code class="reqn">i</code> is
+<code class="reqn">(i+i_0-1)^{-alpha}</code> where <code class="reqn">i_0</code> is a
+constant chosen appropriately to ensure that the maximum degree is less than
+the square root of the number of edges times the average degree; see the
+paper of Chung and Lu, and Cho et al for more details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An igraph graph, directed or undirected.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Goh K-I, Kahng B, Kim D: Universal behaviour of load
+distribution in scale-free networks. <em>Phys Rev Lett</em> 87(27):278701,
+2001.
+</p>
+<p>Chung F and Lu L: Connected components in a random graph with given degree
+sequences. <em>Annals of Combinatorics</em> 6, 125-145, 2002.
+</p>
+<p>Cho YS, Kim JS, Park J, Kahng B, Kim D: Percolation transitions in
+scale-free networks under the Achlioptas process. <em>Phys Rev Lett</em>
+103:135702, 2009.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+g &lt;- sample_fitness_pl(10000, 30000, 2.2, 2.3)
+## Not run: plot(degree_distribution(g, cumulative=TRUE, mode="out"), log="xy")
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

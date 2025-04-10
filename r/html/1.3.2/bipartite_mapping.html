@@ -1,0 +1,103 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.2
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>bipartite_mapping {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Decide whether a graph is bipartite</h2>
+
+<h3>Description</h3>
+
+<p>This function decides whether the vertices of a network can be mapped to two
+vertex types in a way that no vertices of the same type are connected.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>bipartite_mapping(graph)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A bipartite graph in igraph has a &lsquo;<code>type</code>&rsquo; vertex attribute
+giving the two vertex types.
+</p>
+<p>This function simply checks whether a graph <em>could</em> be bipartite. It
+tries to find a mapping that gives a possible division of the vertices into
+two classes, such that no two vertices of the same class are connected by an
+edge.
+</p>
+<p>The existence of such a mapping is equivalent of having no circuits of odd
+length in the graph. A graph with loop edges cannot bipartite.
+</p>
+<p>Note that the mapping is not necessarily unique, e.g. if the graph has at
+least two components, then the vertices in the separate components can be
+mapped independently.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A named list with two elements: </p>
+<table>
+<tr valign="top"><td><code>res</code></td>
+<td>
+<p>A logical scalar,
+<code>TRUE</code> if the can be bipartite, <code>FALSE</code> otherwise.</p>
+</td></tr> <tr valign="top"><td><code>type</code></td>
+<td>
+<p>A
+possible vertex type mapping, a logical vector. If no such mapping exists,
+then an empty vector.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+## Rings with an even number of vertices are bipartite
+g &lt;- make_ring(10)
+bipartite_mapping(g)
+
+## All star graphs are bipartite
+g2 &lt;- make_star(10)
+bipartite_mapping(g2)
+
+## A graph containing a triangle is not bipartite
+g3 &lt;- make_ring(10)
+g3 &lt;- add_edges(g3, c(1,3))
+bipartite_mapping(g3)
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.2 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

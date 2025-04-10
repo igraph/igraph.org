@@ -1,0 +1,108 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Generate random graphs according to the random dot product graph model</h2>
+
+<h3>Description</h3>
+
+<p>In this model, each vertex is represented by a latent position vector.
+Probability of an edge between two vertices are given by the dot product of
+their latent position vectors.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sample_dot_product(vecs, directed = FALSE)
+
+dot_product(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>vecs</code></td>
+<td>
+<p>A numeric matrix in which each latent position vector is a
+column.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>A logical scalar, TRUE if the generated graph should be
+directed.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to <code>sample_dot_product</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The dot product of the latent position vectors should be in the [0,1]
+interval, otherwise a warning is given. For negative dot products, no edges
+are added; dot products that are larger than one always add an edge.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An igraph graph object which is the generated random dot product
+graph.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Christine Leigh Myers Nickel: Random dot product graphs, a model
+for social networks. Dissertation, Johns Hopkins University, Maryland, USA,
+2006.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sample_dirichlet.html">sample_dirichlet</a></code>, <code><a href="sample_sphere_surface.html">sample_sphere_surface</a></code>
+and <code><a href="sample_sphere_volume.html">sample_sphere_volume</a></code> for sampling position vectors.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## A randomly generated  graph
+lpvs &lt;- matrix(rnorm(200), 20, 10)
+lpvs &lt;- apply(lpvs, 2, function(x) { return (abs(x)/sqrt(sum(x^2))) })
+g &lt;- sample_dot_product(lpvs)
+g
+
+## Sample latent vectors from the surface of the unit sphere
+lpvs2 &lt;- sample_sphere_surface(dim=5, n=20)
+g2 &lt;- sample_dot_product(lpvs2)
+g2
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

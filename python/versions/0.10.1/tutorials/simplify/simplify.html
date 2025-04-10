@@ -1,0 +1,141 @@
+---
+layout: default
+title: Simplify
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.1 documentation" href="../../index.html" />
+    <link rel="up" title="Gallery" href="../../gallery.html" />
+    <link rel="next" title="Spanning Trees" href="../spanning_trees/spanning_trees.html" />
+    <link rel="prev" title="Shortest Paths" href="../shortest_paths/shortest_paths.html" />
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.1
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../shortest_paths/shortest_paths.html" title="Previous Chapter: Shortest Paths" class="btn btn-light" role="button" accesskey="P">
+          <i class="fa fa-chevron-left"></i> Shortest Paths
+        </a>
+        <a href="../../gallery.html" title="Parent: Gallery" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-chevron-up"></i> Gallery
+        </a>
+        <a href="../spanning_trees/spanning_trees.html" title="Next Chapter: Spanning Trees" class="btn btn-light" role="button" accesskey="N">
+          Spanning Trees <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Simplify
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Simplify</a></li>
+</ul>
+ -->
+        
+  <section id="simplify">
+<span id="tutorials-simplify"></span><h1>Simplify<a class="headerlink" href="#simplify" title="Permalink to this heading">¶</a></h1>
+<p>This example shows how to remove self loops and multiple edges using <a class="reference external" href="https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html#simplify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">simplify()</span></code></a>.</p>
+<p>We start with a graph that includes loops and multiedges:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Generate graph with multiple edges and loops</span>
+<span class="n">g1</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To get rid of both loops and multiedges, we make a copy of the graph and simplify it in place:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate simplified version of graph</span>
+<span class="n">g2</span> <span class="o">=</span> <span class="n">g1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">g2</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finally, we check what happened by plotting both graphs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot graphs</span>
+<span class="n">visual_style</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;vertex_color&quot;</span><span class="p">:</span> <span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vertex_size&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+    <span class="s2">&quot;vertex_label&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># Make twin axes</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Plot graphs</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g1</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="o">**</span><span class="n">visual_style</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g2</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="o">**</span><span class="n">visual_style</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Draw rectangles around axes</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+    <span class="p">))</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+    <span class="p">))</span>
+<span class="c1"># Set titles</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Multigraph...&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;...simplified&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id2">
+<img alt="Two graphs before and after removing self loops and edges" src="../../_images/simplify.png" />
+<figcaption>
+<p><span class="caption-text">The original graph (left) versus the simplified graph (right).</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

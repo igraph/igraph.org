@@ -1,0 +1,140 @@
+---
+layout: default
+title: Bridges
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.0 documentation" href="../../index.html" />
+    <link rel="up" title="Gallery" href="../../gallery.html" />
+    <link rel="next" title="Generating Cluster Graphs" href="../cluster_graph/cluster_graph.html" />
+    <link rel="prev" title="Maximum Bipartite Matching by Maximum Flow" href="../bipartite_matching_maxflow/bipartite_matching_maxflow.html" />
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.0
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../bipartite_matching_maxflow/bipartite_matching_maxflow.html" title="Previous Chapter: Maximum Bipartite Matching by Maximum Flow" class="btn btn-light" role="button" accesskey="P">
+          <i class="fa fa-chevron-left"></i> Maximum Bipartite Mat...
+        </a>
+        <a href="../../gallery.html" title="Parent: Gallery" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-chevron-up"></i> Gallery
+        </a>
+        <a href="../cluster_graph/cluster_graph.html" title="Next Chapter: Generating Cluster Graphs" class="btn btn-light" role="button" accesskey="N">
+          Generating Cluster Graphs <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Bridges
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Bridges</a><ul>
+<li><a class="reference internal" href="#advanced-cutting-effect">Advanced: Cutting Effect</a></li>
+</ul>
+</li>
+</ul>
+ -->
+        
+  <section id="bridges">
+<span id="tutorials-bridges"></span><h1>Bridges<a class="headerlink" href="#bridges" title="Permalink to this heading">¶</a></h1>
+<p>This example shows how to compute and visualize the <a class="reference external" href="https://en.wikipedia.org/wiki/Bridge_(graph_theory)">bridges</a> in a graph using <a class="reference external" href="https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html#bridges"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bridges_method()</span></code></a>. For an example on articulation points instead, see <a class="reference internal" href="../articulation_points/articulation_points.html#tutorials-articulation-points"><span class="std std-ref">Articulation Points</span></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Construct graph</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span> <span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">11</span> <span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">)])</span>
+
+<span class="c1"># Find and color bridges</span>
+<span class="n">bridges</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">bridges</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;width&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.2</span>
+
+<span class="c1"># Plot graph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">vcount</span><span class="p">())</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The plot looks like this:</p>
+<figure class="align-center" id="id2">
+<img alt="A visual representation of the bridges in a graph" src="../../_images/bridge1.png" />
+<figcaption>
+<p><span class="caption-text">Bridge edges are marked in red.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="advanced-cutting-effect">
+<h2>Advanced: Cutting Effect<a class="headerlink" href="#advanced-cutting-effect" title="Permalink to this heading">¶</a></h2>
+<p>Bridges are edges that when removed, will separate the graph into more components then they started with. To emphasise the removal of edges from the graph, we can add small “x” effect to each of the bridges by using edge labels. We add the following code to define the edge labels only for bridges:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">bridges</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span>
+</pre></div>
+</div>
+<p>And then when we plot…</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot graph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">vcount</span><span class="p">()),</span>
+    <span class="n">edge_background</span><span class="o">=</span><span class="s2">&quot;#FFF0&quot;</span><span class="p">,</span>    <span class="c1"># transparent background color</span>
+    <span class="n">edge_align_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>      <span class="c1"># make sure labels are aligned with the edge</span>
+    <span class="n">edge_label</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span>
+    <span class="n">edge_label_color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As a result, we get:</p>
+<figure class="align-center" id="id3">
+<img alt="A visual representation of the bridges in the graph" src="../../_images/bridge2.png" />
+<figcaption>
+<p><span class="caption-text">Bridges marked with an additional “x” effect.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

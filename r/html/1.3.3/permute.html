@@ -1,0 +1,98 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.3
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>permute {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Permute the vertices of a graph</h2>
+
+<h3>Description</h3>
+
+<p>Create a new graph, by permuting vertex ids.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>permute(graph, permutation)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, it can directed or undirected.</p>
+</td></tr>
+<tr valign="top"><td><code>permutation</code></td>
+<td>
+<p>A numeric vector giving the permutation to apply. The
+first element is the new id of vertex 1, etc. Every number between one and
+<code>vcount(graph)</code> must appear exactly once.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function creates a new graph from the input graph by permuting its
+vertices according to the specified mapping. Call this function with the
+output of <code><a href="canonical_permutation.html">canonical_permutation</a></code> to create the canonical form
+of a graph.
+</p>
+<p><code>permute</code> keeps all graph, vertex and edge attributes of the graph.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A new graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="canonical_permutation.html">canonical_permutation</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+# Random permutation of a random graph
+g &lt;- sample_gnm(20, 50)
+g2 &lt;- permute(g, sample(vcount(g)))
+graph.isomorphic(g, g2)
+
+# Permutation keeps all attributes
+g$name &lt;- "Random graph, Gnm, 20, 50"
+V(g)$name &lt;- letters[1:vcount(g)]
+E(g)$weight &lt;- sample(1:5, ecount(g), replace=TRUE)
+g2 &lt;- permute(g, sample(vcount(g)))
+graph.isomorphic(g, g2)
+g2$name
+V(g2)$name
+E(g2)$weight
+all(sort(E(g2)$weight) == sort(E(g)$weight))
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.3 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

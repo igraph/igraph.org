@@ -1,0 +1,145 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.6
+---
+
+
+{% raw %}
+
+
+<h2>Convert between directed and undirected graphs</h2>
+
+<h3>Description</h3>
+
+<p><code>as.directed</code> converts an undirected graph to directed,
+<code>as.undirected</code> does the opposite, it converts a directed graph to
+undirected.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+as.directed(graph, mode = c("mutual", "arbitrary"))
+
+as.undirected(
+  graph,
+  mode = c("collapse", "each", "mutual"),
+  edge.attr.comb = igraph_opt("edge.attr.comb")
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to convert.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>Character constant, defines the conversion algorithm. For
+<code>as.directed</code> it can be <code>mutual</code> or <code>arbitrary</code>. For
+<code>as.undirected</code> it can be <code>each</code>, <code>collapse</code> or
+<code>mutual</code>. See details below.</p>
+</td></tr>
+<tr valign="top"><td><code>edge.attr.comb</code></td>
+<td>
+<p>Specifies what to do with edge attributes, if
+<code>mode="collapse"</code> or <code>mode="mutual"</code>.  In these cases many edges
+might be mapped to a single one in the new graph, and their attributes are
+combined. Please see <code><a href="attribute.combination.html">attribute.combination</a></code> for details on
+this.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Conversion algorithms for <code>as.directed</code>: </p>
+
+<dl>
+<dt>&quot;arbitrary&quot;</dt><dd><p>The number of edges in the graph stays the same, an
+arbitrarily directed edge is created for each undirected edge.</p>
+</dd>
+<dt>&quot;mutual&quot;</dt><dd><p>Two directed edges are created for each undirected
+edge, one in each direction.</p>
+</dd> </dl>
+
+<p>Conversion algorithms for <code>as.undirected</code>: </p>
+
+<dl>
+<dt>&quot;each&quot;</dt><dd><p>The number of edges remains constant, an undirected edge
+is created for each directed one, this version might create graphs with
+multiple edges.</p>
+</dd> <dt>&quot;collapse&quot;</dt><dd><p>One undirected edge will be created
+for each pair of vertices which are connected with at least one directed
+edge, no multiple edges will be created.</p>
+</dd> <dt>&quot;mutual&quot;</dt><dd><p>One
+undirected edge will be created for each pair of mutual edges. Non-mutual
+edges are ignored. This mode might create multiple edges if there are more
+than one mutual edge pairs between the same pair of vertices.  </p>
+</dd> </dl>
+
+
+
+<h3>Value</h3>
+
+<p>A new graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="simplify.html">simplify</a></code> for removing multiple and/or loop edges from
+a graph.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- make_ring(10)
+as.directed(g, "mutual")
+g2 &lt;- make_star(10)
+as.undirected(g)
+
+# Combining edge attributes
+g3 &lt;- make_ring(10, directed=TRUE, mutual=TRUE)
+E(g3)$weight &lt;- seq_len(ecount(g3))
+ug3 &lt;- as.undirected(g3)
+print(ug3, e=TRUE)
+## Not run: 
+  x11(width=10, height=5)
+  layout(rbind(1:2))
+  plot( g3, layout=layout_in_circle, edge.label=E(g3)$weight)
+  plot(ug3, layout=layout_in_circle, edge.label=E(ug3)$weight)
+
+## End(Not run)
+
+g4 &lt;- graph(c(1,2, 3,2,3,4,3,4, 5,4,5,4,
+              6,7, 7,6,7,8,7,8, 8,7,8,9,8,9,
+              9,8,9,8,9,9, 10,10,10,10))
+E(g4)$weight &lt;- seq_len(ecount(g4))
+ug4 &lt;- as.undirected(g4, mode="mutual",
+              edge.attr.comb=list(weight=length))
+print(ug4, e=TRUE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.6 <a href="index.html">Index</a>]</div>
+{% endraw %}

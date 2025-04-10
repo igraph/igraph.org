@@ -1,0 +1,114 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>scg_eps {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Error of the spectral coarse graining (SCG) approximation</h2>
+
+<h3>Description</h3>
+
+<p><code>scg_eps</code> computes <code class="reqn">\Vert v_i-Pv_i\Vert</code>, where
+<code class="reqn">v_i</code> is the <code class="reqn">i</code>th eigenvector in <code>V</code> and <code class="reqn">P</code> is the
+projector corresponding to the <code>mtype</code> argument.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>scg_eps(
+  V,
+  groups,
+  mtype = c("symmetric", "laplacian", "stochastic"),
+  p = NULL,
+  norm = c("row", "col")
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>V</code></td>
+<td>
+<p>A numeric matrix of (eigen)vectors assumed normalized.  The vectors
+are to be stored column-wise in <code>V</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>groups</code></td>
+<td>
+<p>A vector of <code>nrow(V)</code> integers labeling each group vertex
+in the partition.</p>
+</td></tr>
+<tr valign="top"><td><code>mtype</code></td>
+<td>
+<p>The type of semi-projector used for the SCG. For now
+&ldquo;symmetric&rdquo;, &ldquo;laplacian&rdquo; and &ldquo;stochastic&rdquo; are
+available.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>A probability vector of length <code>nrow(V)</code>.  <code>p</code> is the
+stationary probability distribution of a Markov chain when <code>mtype</code> =
+&ldquo;stochastic&rdquo;. This parameter is ignored otherwise.</p>
+</td></tr>
+<tr valign="top"><td><code>norm</code></td>
+<td>
+<p>Either &ldquo;row&rdquo; or &ldquo;col&rdquo;. If set to &ldquo;row&rdquo; the
+rows of the Laplacian matrix sum to zero and the rows of the stochastic
+matrix sum to one; otherwise it is the columns.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>scg_eps</code> returns with a numeric vector whose <code class="reqn">i</code>th
+component is <code class="reqn">\Vert v_i-Pv_i\Vert</code> (see Details).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>David Morton de Lachapelle,
+<a href="http://people.epfl.ch/david.morton">http://people.epfl.ch/david.morton</a>.
+</p>
+
+
+<h3>References</h3>
+
+<p>D. Morton de Lachapelle, D. Gfeller, and P. De Los Rios,
+Shrinking Matrices while Preserving their Eigenpairs with Application to the
+Spectral Coarse Graining of Graphs. Submitted to <em>SIAM Journal on
+Matrix Analysis and Applications</em>, 2008.
+<a href="http://people.epfl.ch/david.morton">http://people.epfl.ch/david.morton</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="scg-method.html">scg-method</a> and <code><a href="scg.html">scg</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+v &lt;- rexp(20)
+km &lt;- kmeans(v,5)
+sum(km$withinss)
+scg_eps(cbind(v), km$cluster)^2
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

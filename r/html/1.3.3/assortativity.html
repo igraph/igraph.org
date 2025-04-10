@@ -1,0 +1,150 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.3
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>assortativity {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Assortativity coefficient</h2>
+
+<h3>Description</h3>
+
+<p>The assortativity coefficient is positive is similar vertices (based on some
+external property) tend to connect to each, and negative otherwise.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>assortativity(graph, types1, types2 = NULL, directed = TRUE)
+
+assortativity_nominal(graph, types, directed = TRUE)
+
+assortativity_degree(graph, directed = TRUE)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, it can be directed or undirected.</p>
+</td></tr>
+<tr valign="top"><td><code>types1</code></td>
+<td>
+<p>The vertex values, these can be arbitrary numeric values.</p>
+</td></tr>
+<tr valign="top"><td><code>types2</code></td>
+<td>
+<p>A second value vector to be using for the incoming edges when
+calculating assortativity for a directed graph.  Supply <code>NULL</code> here if
+you want to use the same values for outgoing and incoming edges. This
+argument is ignored (with a warning) if it is not <code>NULL</code> and undirected
+assortativity coefficient is being calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Logical scalar, whether to consider edge directions for
+directed graphs. This argument is ignored for undirected graphs. Supply
+<code>TRUE</code> here to do the natural thing, i.e. use directed version of the
+measure for directed graphs and the undirected version for undirected
+graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>types</code></td>
+<td>
+<p>Vector giving the vertex types. They as assumed to be integer
+numbers, starting with one. Non-integer values are converted to integers
+with <code><a href="https://rdrr.io/r/base/integer.html">as.integer</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The assortativity coefficient measures the level of homophyly of the graph,
+based on some vertex labeling or values assigned to vertices. If the
+coefficient is high, that means that connected vertices tend to have the
+same labels or similar assigned values.
+</p>
+<p>M.E.J. Newman defined two kinds of assortativity coefficients, the first one
+is for categorical labels of vertices. <code>assortativity_nominal</code>
+calculates this measure. It is defines as
+</p>
+<p style="text-align: center;"><code class="reqn">r=\frac{\sum_i e_{ii}-\sum_i a_i b_i}{1-\sum_i a_i b_i}</code>
+</p>
+
+<p>where <code class="reqn">e_{ij}</code> is the fraction of edges connecting vertices of
+type <code class="reqn">i</code> and <code class="reqn">j</code>, <code class="reqn">a_i=\sum_j e_{ij}</code> and
+<code class="reqn">b_j=\sum_i e_{ij}</code>.
+</p>
+<p>The second assortativity variant is based on values assigned to the
+vertices. <code>assortativity</code> calculates this measure. It is defined as
+</p>
+<p style="text-align: center;"><code class="reqn">r=\frac1{\sigma_q^2}\sum_{jk} jk(e_{jk}-q_j q_k)</code>
+</p>
+
+<p>for undirected graphs (<code class="reqn">q_i=\sum_j e_{ij}</code>) and as
+</p>
+<p style="text-align: center;"><code class="reqn">r=\frac1{\sigma_o\sigma_i}\sum_{jk}jk(e_{jk}-q_j^o q_k^i)</code>
+</p>
+
+<p>for directed ones. Here <code class="reqn">q_i^o=\sum_j e_{ij}</code>,
+<code class="reqn">q_i^i=\sum_j e_{ji}</code>, moreover,
+<code class="reqn">\sigma_q</code>, <code class="reqn">sigma_o</code> and
+<code class="reqn">sigma_i</code> are the standard deviations of <code class="reqn">q</code>,
+<code class="reqn">q^o</code> and <code class="reqn">q^i</code>, respectively.
+</p>
+<p>The reason of the difference is that in directed networks the relationship
+is not symmetric, so it is possible to assign different values to the
+outgoing and the incoming end of the edges.
+</p>
+<p><code>assortativity_degree</code> uses vertex degree (minus one) as vertex values
+and calls <code>assortativity</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A single real number.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>M. E. J. Newman: Mixing patterns in networks, <em>Phys. Rev.
+E</em> 67, 026126 (2003) <a href="https://arxiv.org/abs/cond-mat/0209450">https://arxiv.org/abs/cond-mat/0209450</a>
+</p>
+<p>M. E. J. Newman: Assortative mixing in networks, <em>Phys. Rev. Lett.</em> 89,
+208701 (2002) <a href="https://arxiv.org/abs/cond-mat/0205405">https://arxiv.org/abs/cond-mat/0205405</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+# random network, close to zero
+assortativity_degree(sample_gnp(10000, 3/10000))
+
+# BA model, tends to be dissortative
+assortativity_degree(sample_pa(10000, m=4))
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.3 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

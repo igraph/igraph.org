@@ -1,0 +1,99 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.6
+---
+
+
+{% raw %}
+
+
+<h2>Union of graphs</h2>
+
+<h3>Description</h3>
+
+<p>The union of two or more graphs are created. The graphs may have identical
+or overlapping vertex sets.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'igraph'
+union(..., byname = "auto")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Graph objects or lists of graph objects.</p>
+</td></tr>
+<tr valign="top"><td><code>byname</code></td>
+<td>
+<p>A logical scalar, or the character scalar <code>auto</code>. Whether
+to perform the operation based on symbolic vertex names. If it is
+<code>auto</code>, that means <code>TRUE</code> if all graphs are named and <code>FALSE</code>
+otherwise. A warning is generated if <code>auto</code> and some (but not all)
+graphs are named.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>union</code> creates the union of two or more graphs.  Edges which are
+included in at least one graph will be part of the new graph. This function
+can be also used via the %u% operator.
+</p>
+<p>If the <code>byname</code> argument is <code>TRUE</code> (or <code>auto</code> and all graphs
+are named), then the operation is performed on symbolic vertex names instead
+of the internal numeric vertex ids.
+</p>
+<p><code>union</code> keeps the attributes of all graphs. All graph, vertex and
+edge attributes are copied to the result. If an attribute is present in
+multiple graphs and would result a name clash, then this attribute is
+renamed by adding suffixes: _1, _2, etc.
+</p>
+<p>The <code>name</code> vertex attribute is treated specially if the operation is
+performed based on symbolic vertex names. In this case <code>name</code> must be
+present in all graphs, and it is not renamed in the result graph.
+</p>
+<p>An error is generated if some input graphs are directed and others are
+undirected.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A new graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Union of two social networks with overlapping sets of actors
+net1 &lt;- graph_from_literal(D-A:B:F:G, A-C-F-A, B-E-G-B, A-B, F-G,
+                  H-F:G, H-I-J)
+net2 &lt;- graph_from_literal(D-A:F:Y, B-A-X-F-H-Z, F-Y)
+print_all(net1 %u% net2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.6 <a href="index.html">Index</a>]</div>
+{% endraw %}

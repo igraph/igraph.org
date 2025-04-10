@@ -1,0 +1,144 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.6
+---
+
+
+{% raw %}
+
+
+<h2>Merging graph layouts</h2>
+
+<h3>Description</h3>
+
+<p>Place several graphs on the same layout
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+merge_coords(graphs, layouts, method = "dla")
+
+layout_components(graph, layout = layout_with_kk, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graphs</code></td>
+<td>
+<p>A list of graph objects.</p>
+</td></tr>
+<tr valign="top"><td><code>layouts</code></td>
+<td>
+<p>A list of two-column matrices.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character constant giving the method to use. Right now only
+<code>dla</code> is implemented.</p>
+</td></tr>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>layout</code></td>
+<td>
+<p>A function object, the layout function to use.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments to pass to the <code>layout</code> layout
+function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>merge_coords</code> takes a list of graphs and a list of coordinates and
+places the graphs in a common layout. The method to use is chosen via the
+<code>method</code> parameter, although right now only the <code>dla</code> method is
+implemented.
+</p>
+<p>The <code>dla</code> method covers the graph with circles.  Then it sorts the
+graphs based on the number of vertices first and places the largest graph at
+the center of the layout. Then the other graphs are placed in decreasing
+order via a DLA (diffision limited aggregation) algorithm: the graph is
+placed randomly on a circle far away from the center and a random walk is
+conducted until the graph walks into the larger graphs already placed or
+walks too far from the center of the layout.
+</p>
+<p>The <code>layout_components</code> function disassembles the graph first into
+maximal connected components and calls the supplied <code>layout</code> function
+for each component separately. Finally it merges the layouts via calling
+<code>merge_coords</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix with two columns and as many lines as the total number of
+vertices in the graphs.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.igraph.html">plot.igraph</a></code>, <code><a href="tkplot.html">tkplot</a></code>,
+<code><a href="layout.html">layout</a></code>, <code><a href="disjoint_union.html">disjoint_union</a></code>
+</p>
+<p>Other graph layouts: 
+<code><a href="add_layout_.html">add_layout_</a>()</code>,
+<code><a href="component_wise.html">component_wise</a>()</code>,
+<code><a href="layout_as_bipartite.html">layout_as_bipartite</a>()</code>,
+<code><a href="layout_as_star.html">layout_as_star</a>()</code>,
+<code><a href="layout_as_tree.html">layout_as_tree</a>()</code>,
+<code><a href="layout_in_circle.html">layout_in_circle</a>()</code>,
+<code><a href="layout_nicely.html">layout_nicely</a>()</code>,
+<code><a href="layout_on_grid.html">layout_on_grid</a>()</code>,
+<code><a href="layout_on_sphere.html">layout_on_sphere</a>()</code>,
+<code><a href="layout_randomly.html">layout_randomly</a>()</code>,
+<code><a href="layout_with_dh.html">layout_with_dh</a>()</code>,
+<code><a href="layout_with_fr.html">layout_with_fr</a>()</code>,
+<code><a href="layout_with_gem.html">layout_with_gem</a>()</code>,
+<code><a href="layout_with_graphopt.html">layout_with_graphopt</a>()</code>,
+<code><a href="layout_with_kk.html">layout_with_kk</a>()</code>,
+<code><a href="layout_with_lgl.html">layout_with_lgl</a>()</code>,
+<code><a href="layout_with_mds.html">layout_with_mds</a>()</code>,
+<code><a href="layout_with_sugiyama.html">layout_with_sugiyama</a>()</code>,
+<code><a href="layout_.html">layout_</a>()</code>,
+<code><a href="norm_coords.html">norm_coords</a>()</code>,
+<code><a href="normalize.html">normalize</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# create 20 scale-free graphs and place them in a common layout
+graphs &lt;- lapply(sample(5:20, 20, replace=TRUE),
+          barabasi.game, directed=FALSE)
+layouts &lt;- lapply(graphs, layout_with_kk)
+lay &lt;- merge_coords(graphs, layouts)
+g &lt;- disjoint_union(graphs)
+## Not run: plot(g, layout=lay, vertex.size=3, labels=NA, edge.color="black")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.6 <a href="index.html">Index</a>]</div>
+{% endraw %}

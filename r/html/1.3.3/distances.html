@@ -1,0 +1,311 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.3
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>distance_table {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Shortest (directed or undirected) paths between vertices</h2>
+
+<h3>Description</h3>
+
+<p><code>distances</code> calculates the length of all the shortest paths from
+or to the vertices in the network. <code>shortest_paths</code> calculates one
+shortest path (the path itself, and not just its length) from or to the
+given vertex.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>distance_table(graph, directed = TRUE)
+
+mean_distance(
+  graph,
+  weights = NULL,
+  directed = TRUE,
+  unconnected = TRUE,
+  details = FALSE
+)
+
+distances(
+  graph,
+  v = V(graph),
+  to = V(graph),
+  mode = c("all", "out", "in"),
+  weights = NULL,
+  algorithm = c("automatic", "unweighted", "dijkstra", "bellman-ford", "johnson")
+)
+
+shortest_paths(
+  graph,
+  from,
+  to = V(graph),
+  mode = c("out", "all", "in"),
+  weights = NULL,
+  output = c("vpath", "epath", "both"),
+  predecessors = FALSE,
+  inbound.edges = FALSE,
+  algorithm = c("automatic", "unweighted", "dijkstra", "bellman-ford")
+)
+
+all_shortest_paths(
+  graph,
+  from,
+  to = V(graph),
+  mode = c("out", "all", "in"),
+  weights = NULL
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to work on.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Whether to consider directed paths in directed graphs,
+this argument is ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>Possibly a numeric vector giving edge weights. If this is
+<code>NULL</code> and the graph has a <code>weight</code> edge attribute, then the
+attribute is used. If this is <code>NA</code> then no weights are used (even if
+the graph has a <code>weight</code> attribute).</p>
+</td></tr>
+<tr valign="top"><td><code>unconnected</code></td>
+<td>
+<p>What to do if the graph is unconnected (not
+trongly connected if directed paths are considered). If TRUE, only
+the lengths of the existing paths are considered and averaged; if
+FALSE, the length of the missing paths are considered as having infinite
+length, making the mean distance infinite as well.</p>
+</td></tr>
+<tr valign="top"><td><code>details</code></td>
+<td>
+<p>Whether to provide additional details in the result.
+Functions accepting this argument (like <code>mean_distance</code>) return
+additional information like the number of disconnected vertex pairs in
+the result when this parameter is set to <code>TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>v</code></td>
+<td>
+<p>Numeric vector, the vertices from which the shortest paths will be
+calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>to</code></td>
+<td>
+<p>Numeric vector, the vertices to which the shortest paths will be
+calculated. By default it includes all vertices. Note that for
+<code>distances</code> every vertex must be included here at most once. (This
+is not required for <code>shortest_paths</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>Character constant, gives whether the shortest paths to or from
+the given vertices should be calculated for directed graphs. If <code>out</code>
+then the shortest paths <em>from</em> the vertex, if <code>in</code> then <em>to</em>
+it will be considered. If <code>all</code>, the default, then the corresponding
+undirected graph will be used, ie. not directed paths are searched. This
+argument is ignored for undirected graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>algorithm</code></td>
+<td>
+<p>Which algorithm to use for the calculation. By default
+igraph tries to select the fastest suitable algorithm. If there are no
+weights, then an unweighted breadth-first search is used, otherwise if all
+weights are positive, then Dijkstra's algorithm is used. If there are
+negative weights and we do the calculation for more than 100 sources, then
+Johnson's algorithm is used. Otherwise the Bellman-Ford algorithm is used.
+You can override igraph's choice by explicitly giving this parameter. Note
+that the igraph C core might still override your choice in obvious cases,
+i.e. if there are no edge weights, then the unweighted algorithm will be
+used, regardless of this argument.</p>
+</td></tr>
+<tr valign="top"><td><code>from</code></td>
+<td>
+<p>Numeric constant, the vertex from or to the shortest paths will
+be calculated. Note that right now this is not a vector of vertex ids, but
+only a single vertex.</p>
+</td></tr>
+<tr valign="top"><td><code>output</code></td>
+<td>
+<p>Character scalar, defines how to report the shortest paths.
+&ldquo;vpath&rdquo; means that the vertices along the paths are reported, this
+form was used prior to igraph version 0.6. &ldquo;epath&rdquo; means that the
+edges along the paths are reported. &ldquo;both&rdquo; means that both forms are
+returned, in a named list with components &ldquo;vpath&rdquo; and &ldquo;epath&rdquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>predecessors</code></td>
+<td>
+<p>Logical scalar, whether to return the predecessor vertex
+for each vertex. The predecessor of vertex <code>i</code> in the tree is the
+vertex from which vertex <code>i</code> was reached. The predecessor of the start
+vertex (in the <code>from</code> argument) is itself by definition. If the
+predecessor is zero, it means that the given vertex was not reached from the
+source during the search. Note that the search terminates if all the
+vertices in <code>to</code> are reached.</p>
+</td></tr>
+<tr valign="top"><td><code>inbound.edges</code></td>
+<td>
+<p>Logical scalar, whether to return the inbound edge for
+each vertex. The inbound edge of vertex <code>i</code> in the tree is the edge via
+which vertex <code>i</code> was reached. The start vertex and vertices that were
+not reached during the search will have zero in the corresponding entry of
+the vector. Note that the search terminates if all the vertices in <code>to</code>
+are reached.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The shortest path, or geodesic between two pair of vertices is a path with
+the minimal number of vertices. The functions documented in this manual page
+all calculate shortest paths between vertex pairs.
+</p>
+<p><code>distances</code> calculates the lengths of pairwise shortest paths from
+a set of vertices (<code>from</code>) to another set of vertices (<code>to</code>). It
+uses different algorithms, depending on the <code>algorithm</code> argument and
+the <code>weight</code> edge attribute of the graph. The implemented algorithms
+are breadth-first search (&lsquo;<code>unweighted</code>&rsquo;), this only works for
+unweighted graphs; the Dijkstra algorithm (&lsquo;<code>dijkstra</code>&rsquo;), this
+works for graphs with non-negative edge weights; the Bellman-Ford algorithm
+(&lsquo;<code>bellman-ford</code>&rsquo;), and Johnson's algorithm
+(&lsquo;<code>"johnson"</code>&rsquo;). The latter two algorithms work with arbitrary
+edge weights, but (naturally) only for graphs that don't have a negative
+cycle.
+</p>
+<p>igraph can choose automatically between algorithms, and chooses the most
+efficient one that is appropriate for the supplied weights (if any). For
+automatic algorithm selection, supply &lsquo;<code>automatic</code>&rsquo; as the
+<code>algorithm</code> argument. (This is also the default.)
+</p>
+<p><code>shortest_paths</code> calculates a single shortest path (i.e. the path
+itself, not just its length) between the source vertex given in <code>from</code>,
+to the target vertices given in <code>to</code>. <code>shortest_paths</code> uses
+breadth-first search for unweighted graphs and Dijkstra's algorithm for
+weighted graphs. The latter only works if the edge weights are non-negative.
+</p>
+<p><code>all_shortest_paths</code> calculates <em>all</em> shortest paths between
+pairs of vertices. More precisely, between the <code>from</code> vertex to the
+vertices given in <code>to</code>. It uses a breadth-first search for unweighted
+graphs and Dijkstra's algorithm for weighted ones. The latter only supports
+non-negative edge weights.
+</p>
+<p><code>mean_distance</code> calculates the average path length in a graph, by
+calculating the shortest paths between all pairs of vertices (both ways for
+directed graphs). It uses a breadth-=first search for unweighted graphs and
+Dijkstra's algorithm for weighted ones. The latter only supports non-negative
+edge weights.
+</p>
+<p><code>distance_table</code> calculates a histogram, by calculating the shortest
+path length between each pair of vertices. For directed graphs both
+directions are considered, so every pair of vertices appears twice in the
+histogram.
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>distances</code> a numeric matrix with <code>length(to)</code>
+columns and <code>length(v)</code> rows. The shortest path length from a vertex to
+itself is always zero. For unreachable vertices <code>Inf</code> is included.
+</p>
+<p>For <code>shortest_paths</code> a named list with four entries is returned:
+</p>
+<table>
+<tr valign="top"><td><code>vpath</code></td>
+<td>
+<p>This itself is a list, of length <code>length(to)</code>; list
+element <code>i</code> contains the vertex ids on the path from vertex <code>from</code>
+to vertex <code>to[i]</code> (or the other way for directed graphs depending on
+the <code>mode</code> argument). The vector also contains <code>from</code> and <code>i</code>
+as the first and last elements. If <code>from</code> is the same as <code>i</code> then
+it is only included once. If there is no path between two vertices then a
+numeric vector of length zero is returned as the list element. If this
+output is not requested in the <code>output</code> argument, then it will be
+<code>NULL</code>.</p>
+</td></tr> <tr valign="top"><td><code>epath</code></td>
+<td>
+<p>This is a list similar to <code>vpath</code>, but the
+vectors of the list contain the edge ids along the shortest paths, instead
+of the vertex ids. This entry is set to <code>NULL</code> if it is not requested
+in the <code>output</code> argument.</p>
+</td></tr> <tr valign="top"><td><code>predecessors</code></td>
+<td>
+<p>Numeric vector, the
+predecessor of each vertex in the <code>to</code> argument, or <code>NULL</code> if it
+was not requested.</p>
+</td></tr> <tr valign="top"><td><code>inbound_edges</code></td>
+<td>
+<p>Numeric vector, the inbound edge
+for each vertex, or <code>NULL</code>, if it was not requested.</p>
+</td></tr>
+</table>
+<p>For <code>all_shortest_paths</code> a list is returned, each list element
+contains a shortest path from <code>from</code> to a vertex in <code>to</code>. The
+shortest paths to the same vertex are collected into consecutive elements of
+the list.
+</p>
+<p>For <code>mean_distance</code> a single number is returned if <code>details=FALSE</code>,
+or a named list with two entries: <code>res</code> is the mean distance as a numeric
+scalar and <code>unconnected</code> is the number of unconnected vertex pairs,
+also as a numeric scalar.
+</p>
+<p><code>distance_table</code> returns a named list with two entries: <code>res</code> is
+a numeric vector, the histogram of distances, <code>unconnected</code> is a
+numeric scalar, the number of pairs for which the first vertex is not
+reachable from the second. The sum of the two entries is always <code class="reqn">n(n-1)</code>
+for directed graphs and <code class="reqn">n(n-1)/2</code> for undirected graphs.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>West, D.B. (1996). <em>Introduction to Graph Theory.</em> Upper
+Saddle River, N.J.: Prentice Hall.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+g &lt;- make_ring(10)
+distances(g)
+shortest_paths(g, 5)
+all_shortest_paths(g, 1, 6:8)
+mean_distance(g)
+## Weighted shortest paths
+el &lt;- matrix(ncol=3, byrow=TRUE,
+             c(1,2,0, 1,3,2, 1,4,1, 2,3,0, 2,5,5, 2,6,2, 3,2,1, 3,4,1,
+               3,7,1, 4,3,0, 4,7,2, 5,6,2, 5,8,8, 6,3,2, 6,7,1, 6,9,1,
+               6,10,3, 8,6,1, 8,9,1, 9,10,4) )
+g2 &lt;- add_edges(make_empty_graph(10), t(el[,1:2]), weight=el[,3])
+distances(g2, mode="out")
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.3 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

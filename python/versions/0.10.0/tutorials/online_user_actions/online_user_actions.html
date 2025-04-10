@@ -1,0 +1,161 @@
+---
+layout: default
+title: Online user actions
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.0 documentation" href="../../index.html" />
+    <link rel="up" title="Gallery" href="../../gallery.html" />
+    <link rel="next" title="Quick Start" href="../quickstart/quickstart.html" />
+    <link rel="prev" title="Minimum Spanning Trees" href="../minimum_spanning_trees/minimum_spanning_trees.html" />
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.0
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../minimum_spanning_trees/minimum_spanning_trees.html" title="Previous Chapter: Minimum Spanning Trees" class="btn btn-light" role="button" accesskey="P">
+          <i class="fa fa-chevron-left"></i> Minimum Spanning Trees
+        </a>
+        <a href="../../gallery.html" title="Parent: Gallery" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-chevron-up"></i> Gallery
+        </a>
+        <a href="../quickstart/quickstart.html" title="Next Chapter: Quick Start" class="btn btn-light" role="button" accesskey="N">
+          Quick Start <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Online user actions
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Online user actions</a></li>
+</ul>
+ -->
+        
+  <section id="online-user-actions">
+<span id="tutorials-online-user-actions"></span><h1>Online user actions<a class="headerlink" href="#online-user-actions" title="Permalink to this heading">¶</a></h1>
+<p>This example reproduces a typical data science situation in an internet company. We start from a pandas DataFrame with online user actions, for instance for an online text editor: the user can create a page, edit it, or delete it. We want to construct and visualize a graph of the users highlighting collaborations on the same page/project.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># User data (usually would come with time stamp)</span>
+<span class="n">action_dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;2r09ej221sk2k5&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;789dsadafj32jj&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;oi32ncwosap399&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;greatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;4r4320dkqpdokk&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;320eljl3lk3239&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;miniProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;3203ejew332323&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;3203ejew332323&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;40m11919332msa&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private2&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;40m11919332msa&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;private2&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;dsj3239asadsa3&#39;</span><span class="p">,</span> <span class="s1">&#39;createPage&#39;</span><span class="p">,</span> <span class="s1">&#39;anotherGreatProject&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;2r09ej221sk2k5&#39;</span><span class="p">,</span> <span class="s1">&#39;editPage&#39;</span><span class="p">,</span> <span class="s1">&#39;anotherGreatProject&#39;</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;project&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This block just introduces the toy data: a DataFrame with three columns, namely the user id, the action, and the page or project that was being actioned upon. Now we need to check when two users worked on the same page. We choose to use a weighted adjacency matrix for this, i.e. a table with rows and columns indexes by the users that has nonzero entries whenever folks collaborate. First, let’s get the users and prepare an empty matrix:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">users</span> <span class="o">=</span> <span class="n">action_dataframe</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">adjacency_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, let’s iterate over all projects one by one, and add all collaborations:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">project</span><span class="p">,</span> <span class="n">project_data</span> <span class="ow">in</span> <span class="n">action_dataframe</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;project&#39;</span><span class="p">):</span>
+    <span class="n">project_users</span> <span class="o">=</span> <span class="n">project_data</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">user1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">project_users</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">user2</span> <span class="ow">in</span> <span class="n">project_users</span><span class="p">[:</span><span class="n">i1</span><span class="p">]:</span>
+            <span class="n">adjacency_matrix</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">user1</span><span class="p">,</span> <span class="n">user2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>There are many ways to achieve the above matrix, so don’t be surprised if you came up with another algorithm ;-)</p>
+<p>Now it’s time to make the graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Weighted_Adjacency</span><span class="p">(</span><span class="n">adjacency_matrix</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;plus&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And finally, let’s plot a layout of the graph, for instance a circle:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make a layout first</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make vertex size based on their closeness to other vertices</span>
+<span class="n">vertex_size</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">closeness</span><span class="p">()</span>
+<span class="n">vertex_size</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="mf">0.05</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertex_size</span><span class="p">]</span>
+
+<span class="c1"># Make mpl axes</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="c1"># Plot graph in that axes</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="n">vertex_size</span><span class="p">,</span>
+    <span class="n">edge_width</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We added a few fancy features to this plot to show off igraph’s capabilities. The result is shown below.</p>
+<figure class="align-center" id="id1">
+<img alt="A visual representation of the collaboratoin graph" src="../../_images/online_user_actions.png" />
+<figcaption>
+<p><span class="caption-text">The collaboration graph: thicker edges mean multiple collaborations, and larger vertices indicate users with higher closeness to the rest of the network.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Loops indicate “self-collaborations”, which are not very meaningful. To filter out loops without losing the edge weights, we can use:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">combine_edges</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then repeat the plotting code verbatim. The result is shown below.</p>
+<figure class="align-center" id="id2">
+<img alt="A visual representation of the collaboratoin graph" src="../../_images/online_users_simple.png" />
+<figcaption>
+<p><span class="caption-text">Simplified graph after loops are filtered out.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

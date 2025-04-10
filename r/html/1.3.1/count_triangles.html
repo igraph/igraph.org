@@ -1,0 +1,105 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>count_triangles {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find triangles in graphs</h2>
+
+<h3>Description</h3>
+
+<p>Count how many triangles a vertex is part of, in a graph, or just list the
+triangles of a graph.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>count_triangles(graph, vids = V(graph))
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph. It might be directed, but edge directions are
+ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>vids</code></td>
+<td>
+<p>The vertices to query, all of them by default. This might be a
+vector of numeric ids, or a character vector of symbolic vertex names for
+named graphs.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>triangles</code> lists all triangles of a graph. For efficiency, all
+triangles are returned in a single vector. The first three vertices belong
+to the first triangle, etc.
+</p>
+<p><code>count_triangles</code> counts how many triangles a vertex is part of.
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>triangles</code> a numeric vector of vertex ids, the first three
+vertices belong to the first triangle found, etc.
+</p>
+<p>For <code>count_triangles</code> a numeric vector, the number of triangles for all
+vertices queried.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="transitivity.html">transitivity</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+## A small graph
+kite &lt;- make_graph("Krackhardt_Kite")
+plot(kite)
+matrix(triangles(kite), nrow=3)
+
+## Adjacenct triangles
+atri &lt;- count_triangles(kite)
+plot(kite, vertex.label=atri)
+
+## Always true
+sum(count_triangles(kite)) == length(triangles(kite))
+
+## Should match, local transitivity is the
+## number of adjacent triangles divided by the number
+## of adjacency triples
+transitivity(kite, type="local")
+count_triangles(kite) / (degree(kite) * (degree(kite)-1)/2)
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

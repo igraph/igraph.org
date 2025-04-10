@@ -1,0 +1,111 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Convert graphNEL objects from the graph package to igraph</h2>
+
+<h3>Description</h3>
+
+<p>The graphNEL class is defined in the <code>graph</code> package, it is another
+way to represent graphs. <code>graph_from_graphnel</code> takes a graphNEL
+graph and converts it to an igraph graph. It handles all
+graph/vertex/edge attributes. If the graphNEL graph has a vertex
+attribute called &lsquo;<code>name</code>&rsquo; it will be used as igraph vertex
+attribute &lsquo;<code>name</code>&rsquo; and the graphNEL vertex names will be
+ignored.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+graph_from_graphnel(graphNEL, name = TRUE, weight = TRUE,
+  unlist.attrs = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graphNEL</code></td>
+<td>
+<p>The graphNEL graph.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Logical scalar, whether to add graphNEL vertex names as an
+igraph vertex attribute called &lsquo;<code>name</code>&rsquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>weight</code></td>
+<td>
+<p>Logical scalar, whether to add graphNEL edge weights as an
+igraph edge attribute called &lsquo;<code>weight</code>&rsquo;. (graphNEL graphs are
+always weighted.)</p>
+</td></tr>
+<tr valign="top"><td><code>unlist.attrs</code></td>
+<td>
+<p>Logical scalar. graphNEL attribute query functions
+return the values of the attributes in R lists, if this argument is
+<code>TRUE</code> (the default) these will be converted to atomic vectors,
+whenever possible, before adding them to the igraph graph.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Because graphNEL graphs poorly support multiple edges, the edge
+attributes of the multiple edges are lost: they are all replaced by the
+attributes of the first of the multiple edges.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>graph_from_graphnel</code> returns an igraph graph object.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="as_graphnel.html">as_graphnel</a></code> for the other direction,
+<code><a href="as_adj.html">as_adj</a></code>, <code><a href="graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></code>,
+<code><a href="as_adj_list.html">as_adj_list</a></code> and <code><a href="graph.adjlist.html">graph.adjlist</a></code> for other
+graph representations.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## Undirected
+g &lt;- make_ring(10)
+V(g)$name &lt;- letters[1:10]
+GNEL &lt;- as_graphnel(g)
+g2 &lt;- graph_from_graphnel(GNEL)
+g2
+
+## Directed
+g3 &lt;- make_star(10, mode="in")
+V(g3)$name &lt;- letters[1:10]
+GNEL2 &lt;- as_graphnel(g3)
+g4 &lt;- graph_from_graphnel(GNEL2)
+g4
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

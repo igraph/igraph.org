@@ -1,0 +1,153 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.7
+---
+
+
+{% raw %}
+
+
+<h2>Fit a hierarchical random graph model</h2>
+
+<h3>Description</h3>
+
+<p><code>fit_hrg</code> fits a HRG to a given graph. It takes the specified
+<code>steps</code> number of MCMC steps to perform the fitting, or a convergence
+criteria if the specified number of steps is zero. <code>fit_hrg</code> can start
+from a given HRG, if this is given in the <code>hrg</code> argument and the
+<code>start</code> argument is <code>TRUE</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fit_hrg(graph, hrg = NULL, start = FALSE, steps = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to fit the model to. Edge directions are ignored in
+directed graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>hrg</code></td>
+<td>
+<p>A hierarchical random graph model, in the form of an
+<code>igraphHRG</code> object. <code>fit_hrg</code> allows this to be <code>NULL</code>, in
+which case a random starting point is used for the fitting.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>Logical, whether to start the fitting/sampling from the
+supplied <code>igraphHRG</code> object, or from a random starting point.</p>
+</td></tr>
+<tr valign="top"><td><code>steps</code></td>
+<td>
+<p>The number of MCMC steps to make. If this is zero, then the
+MCMC procedure is performed until convergence.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>fit_hrg</code> returns an <code>igraphHRG</code> object. This is a list
+with the following members:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>left</code></td>
+<td>
+<p>Vector that contains the left children of the internal
+tree vertices. The first vertex is always the root vertex, so the
+first element of the vector is the left child of the root
+vertex. Internal vertices are denoted with negative numbers, starting
+from -1 and going down, i.e. the root vertex is -1. Leaf vertices
+are denoted by non-negative number, starting from zero and up.</p>
+</td></tr>
+<tr valign="top"><td><code>right</code></td>
+<td>
+<p>Vector that contains the right children of the vertices,
+with the same encoding as the <code>left</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>prob</code></td>
+<td>
+<p>The connection probabilities attached to the internal
+vertices, the first number belongs to the root vertex (i.e. internal
+vertex -1), the second to internal vertex -2, etc.</p>
+</td></tr>
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>The number of edges in the subtree below the given
+internal vertex.</p>
+</td></tr>
+<tr valign="top"><td><code>vertices</code></td>
+<td>
+<p>The number of vertices in the subtree below the
+given internal vertex, including itself.</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p>A. Clauset, C. Moore, and M.E.J. Newman. Hierarchical structure
+and the prediction of missing links in networks. <em>Nature</em> 453, 98&ndash;101
+(2008);
+</p>
+<p>A. Clauset, C. Moore, and M.E.J. Newman. Structural Inference of Hierarchies
+in Networks. In E. M. Airoldi et al. (Eds.): ICML 2006 Ws, <em>Lecture
+Notes in Computer Science</em> 4503, 1&ndash;13. Springer-Verlag, Berlin Heidelberg
+(2007).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other hierarchical random graph functions: 
+<code><a href="consensus_tree.html">consensus_tree</a>()</code>,
+<code><a href="hrg-methods.html">hrg-methods</a></code>,
+<code><a href="hrg_tree.html">hrg_tree</a>()</code>,
+<code><a href="hrg.html">hrg</a>()</code>,
+<code><a href="predict_edges.html">predict_edges</a>()</code>,
+<code><a href="print.igraphHRGConsensus.html">print.igraphHRGConsensus</a>()</code>,
+<code><a href="print.igraphHRG.html">print.igraphHRG</a>()</code>,
+<code><a href="sample_hrg.html">sample_hrg</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## We are not running these examples any more, because they
+## take a long time (~15 seconds) to run and this is against the CRAN
+## repository policy. Copy and paste them by hand to your R prompt if
+## you want to run them.
+
+## Not run: 
+## A graph with two dense groups
+g &lt;- sample_gnp(10, p=1/2) + sample_gnp(10, p=1/2)
+hrg &lt;- fit_hrg(g)
+hrg
+
+## The consensus tree for it
+consensus_tree(g, hrg=hrg, start=TRUE)
+
+## Prediction of missing edges
+g2 &lt;- make_full_graph(4) + (make_full_graph(4) - path(1,2))
+predict_edges(g2)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.7 <a href="index.html">Index</a>]</div>
+{% endraw %}

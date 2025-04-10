@@ -1,0 +1,105 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Stochastic matrix of a graph</h2>
+
+<h3>Description</h3>
+
+<p>Retrieves the stochastic matrix of a graph of class <code>igraph</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+stochastic_matrix(
+  graph,
+  column.wise = FALSE,
+  sparse = igraph_opt("sparsematrices")
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph. Must be of class <code>igraph</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>column.wise</code></td>
+<td>
+<p>If <code>FALSE</code>, then the rows of the stochastic matrix
+sum up to one; otherwise it is the columns.</p>
+</td></tr>
+<tr valign="top"><td><code>sparse</code></td>
+<td>
+<p>Logical scalar, whether to return a sparse matrix. The
+<code>Matrix</code> package is needed for sparse matrices.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Let <i>M</i> be an <i>n x n</i> adjacency matrix with real
+non-negative entries. Let us define <i>D=diag( sum(M[1,i], i), ..., sum(M[n,i], i) )</i>
+</p>
+<p>The (row) stochastic matrix is defined as </p>
+<p style="text-align: center;"><i>W = inv(D) M,</i></p>
+
+<p>where it is assumed that <i>D</i> is non-singular.  Column stochastic
+matrices are defined in a symmetric way.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A regular matrix or a matrix of class <code>Matrix</code> if a
+<code>sparse</code> argument was <code>TRUE</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="as_adj.html">as_adj</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+library(Matrix)
+## g is a large sparse graph
+g &lt;- sample_pa(n = 10^5, power = 2, directed = FALSE)
+W &lt;- stochastic_matrix(g, sparse=TRUE)
+
+## a dense matrix here would probably not fit in the memory
+class(W)
+
+## may not be exactly 1, due to numerical errors
+max(abs(rowSums(W))-1)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

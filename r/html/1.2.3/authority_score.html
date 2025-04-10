@@ -1,0 +1,128 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Kleinberg's authority centrality scores.</h2>
+
+<h3>Description</h3>
+
+<p>The authority scores of the vertices are defined as the principal
+eigenvector of <i>t(A)*A</i>, where <i>A</i> is the adjacency
+matrix of the graph.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+authority_score(graph, scale = TRUE, weights = NULL,
+  options = arpack_defaults)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>Logical scalar, whether to scale the result to have a maximum
+score of one. If no scaling is used then the result vector has unit length
+in the Euclidean norm.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>Optional positive weight vector for calculating weighted
+scores. If the graph has a <code>weight</code> edge attribute, then this is used
+by default.
+This function interprets edge weights as connection strengths. In the
+random surfer model, an edge with a larger weight is more likely to be
+selected by the surfer.</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>A named list, to override some ARPACK options. See
+<code><a href="arpack.html">arpack</a></code> for details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For undirected matrices the adjacency matrix is symmetric and the
+authority scores are the same as hub scores, see
+<code><a href="hub_score.html">hub_score</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A named list with members:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>vector</code></td>
+<td>
+<p>The authority/hub scores of the vertices.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The corresponding eigenvalue of the calculated
+principal eigenvector.</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>Some information about the ARPACK computation, it has
+the same members as the <code>options</code> member returned 
+by <code><a href="arpack.html">arpack</a></code>, see that for documentation.</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p>J. Kleinberg. Authoritative sources in a hyperlinked
+environment. <em>Proc. 9th ACM-SIAM Symposium on Discrete Algorithms</em>,
+1998. Extended version in <em>Journal of the ACM</em> 46(1999). Also appears
+as IBM Research Report RJ 10076, May 1997.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hub_score.html">hub_score</a></code>, <code><a href="eigen_centrality.html">eigen_centrality</a></code> for
+eigenvector centrality, <code><a href="page_rank.html">page_rank</a></code> for the Page Rank
+scores. <code><a href="arpack.html">arpack</a></code> for the underlining machinery of the
+computation.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## An in-star
+g &lt;- make_star(10)
+hub_score(g)$vector
+authority_score(g)$vector
+
+## A ring
+g2 &lt;- make_ring(10)
+hub_score(g2)$vector
+authority_score(g2)$vector
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

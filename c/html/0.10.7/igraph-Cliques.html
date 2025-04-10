@@ -1,0 +1,2264 @@
+---
+layout: c-manual
+title: igraph Reference Manual
+mainheader: igraph Reference Manual
+lead: For using the igraph C library
+vmenu: true
+doctype: html/
+langversion: 0.10.7
+---
+
+{% raw %}
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Visitors.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Isomorphism.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Cliques"></a>Chapter 16. Cliques and independent vertex sets</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cliques.html#cliques">1. Cliques</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#weighted-cliques">2. Weighted cliques</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#independent-vertex-sets">3. Independent vertex sets</a></span></dt>
+</dl></div>
+<p>
+These functions calculate various graph properties related
+to cliques and independent vertex sets.
+</p>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="cliques"></a>1. Cliques</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_cliques">1.1. <code class="function">igraph_cliques</code> —  Finds all or some cliques in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_clique_size_hist">1.2. <code class="function">igraph_clique_size_hist</code> —  Counts cliques of each size in the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_cliques_callback">1.3. <code class="function">igraph_cliques_callback</code> —  Calls a function for each clique in the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_clique_handler_t">1.4. <code class="function">igraph_clique_handler_t</code> —  Type of clique handler functions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_largest_cliques">1.5. <code class="function">igraph_largest_cliques</code> —  Finds the largest clique(s) in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques">1.6. <code class="function">igraph_maximal_cliques</code> —  Finds all maximal cliques in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques_count">1.7. <code class="function">igraph_maximal_cliques_count</code> —  Count the number of maximal cliques in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques_file">1.8. <code class="function">igraph_maximal_cliques_file</code> —  Find maximal cliques and write them to a file.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques_subset">1.9. <code class="function">igraph_maximal_cliques_subset</code> —  Maximal cliques for a subset of initial vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques_hist">1.10. <code class="function">igraph_maximal_cliques_hist</code> —  Counts the number of maximal cliques of each size in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_cliques_callback">1.11. <code class="function">igraph_maximal_cliques_callback</code> —  Finds maximal cliques in a graph and calls a function for each one.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_clique_number">1.12. <code class="function">igraph_clique_number</code> —  Finds the clique number of the graph.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_cliques"></a>1.1. <code class="function">igraph_cliques</code> —  Finds all or some cliques in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_cliques(const igraph_t *graph, igraph_vector_int_list_t *res,
+                   igraph_integer_t min_size, igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Cliques are fully connected subgraphs of a graph.
+
+</p>
+<p>
+If you are only interested in the size of the largest clique in the graph,
+use <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a> instead.
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.5. igraph_largest_cliques — Finds the largest clique(s) in a graph."><code class="function">igraph_largest_cliques()</code></a> and <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: Exponential
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.17.3.2.13.1"></a><p class="title"><b>Example 16.1.  File <code class="code">examples/simple/igraph_cliques.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
+
+int <span class="strong"><strong>compare_vectors</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *v1, <span class="strong"><strong>const</strong></span> igraph_vector_int_t *v2) {
+    igraph_integer_t s1, s2, i;
+
+    s1 = <span class="strong"><strong>igraph_vector_int_size</strong></span>(v1);
+    s2 = <span class="strong"><strong>igraph_vector_int_size</strong></span>(v2);
+    <span class="strong"><strong>if</strong></span> (s1 &lt; s2) {
+        <span class="strong"><strong>return</strong></span> -1;
+    }
+    <span class="strong"><strong>if</strong></span> (s1 &gt; s2) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; s1; ++i) {
+        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v1)[i] &lt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v2)[i]) {
+            <span class="strong"><strong>return</strong></span> -1;
+        }
+        <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v1)[i] &gt; <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v2)[i]) {
+            <span class="strong"><strong>return</strong></span> 1;
+        }
+    }
+    <span class="strong"><strong>return</strong></span> 0;
+}
+
+<span class="emphasis"><em>/* Takes a pointer vector of vectors. Sorts each vector, then sorts the pointer vector */</em></span>
+void <span class="strong"><strong>canonicalize_list</strong></span>(igraph_vector_int_list_t *list) {
+    igraph_integer_t len = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(list);
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; len; ++i) {
+        <span class="strong"><strong>igraph_vector_int_sort</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(list, i));
+    }
+    <span class="strong"><strong>igraph_vector_int_list_sort</strong></span>(list, &amp;compare_vectors);
+}
+
+<span class="strong"><strong>struct</strong></span> userdata {
+    igraph_integer_t i;
+    igraph_vector_int_list_t *list;
+};
+
+<a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>handler</strong></span>(<span class="strong"><strong>const</strong></span> igraph_vector_int_t *clique, void *arg) {
+    <span class="strong"><strong>struct</strong></span> userdata *ud;
+    igraph_bool_t cont;
+
+    ud = (<span class="strong"><strong>struct</strong></span> userdata *) arg;
+    cont = 1; <span class="emphasis"><em>/* true */</em></span>
+
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>compare_vectors</strong></span>(clique, <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(ud-&gt;list, ud-&gt;i)) != 0) {
+        <span class="strong"><strong>printf</strong></span>("igraph_cliques() and igraph_cliques_callback() give different results.\n");
+        cont = 0; <span class="emphasis"><em>/* false */</em></span>
+    }
+
+    ud-&gt;i += 1;
+
+    <span class="strong"><strong>return</strong></span> cont ? IGRAPH_SUCCESS : IGRAPH_STOP;
+}
+
+void <span class="strong"><strong>test_callback</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph) {
+    igraph_vector_int_list_t list;
+    <span class="strong"><strong>struct</strong></span> userdata ud;
+
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;list, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(graph, &amp;list, 0, 0);
+
+    ud.i = 0;
+    ud.list = &amp;list;
+
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.3. igraph_cliques_callback — Calls a function for each clique in the graph.">igraph_cliques_callback</a></strong></span>(graph, 0, 0, &amp;handler, (void *) &amp;ud);
+
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;list);
+}
+
+
+int <span class="strong"><strong>main</strong></span>(void) {
+
+    igraph_t g;
+    igraph_vector_int_list_t result;
+    igraph_es_t es;
+    igraph_integer_t omega;
+    igraph_integer_t i, j, n;
+    <span class="strong"><strong>const</strong></span> int params[] = {4, -1, 2, 2, 0, 0, -1, -1};
+
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
+
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;result, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.17. igraph_full — Creates a full graph (directed or undirected, with or without loops).">igraph_full</a></strong></span>(&amp;g, 6, 0, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_pairs_small" title="6.8. igraph_es_pairs_small — Edge selector, multiple edges defined by their endpoints as arguments.">igraph_es_pairs_small</a></strong></span>(&amp;es, 0, 0, 1, 0, 2, 3, 5, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="4.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, es);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object.">igraph_es_destroy</a></strong></span>(&amp;es);
+
+    <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong>sizeof</strong></span>(params) / (2 * <span class="strong"><strong>sizeof</strong></span>(params[0])); j++) {
+        <span class="strong"><strong>if</strong></span> (params[2 * j + 1] != 0) {
+            <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(&amp;g, &amp;result, params[2 * j], params[2 * j + 1]);
+        } <span class="strong"><strong>else</strong></span> {
+            <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.5. igraph_largest_cliques — Finds the largest clique(s) in a graph.">igraph_largest_cliques</a></strong></span>(&amp;g, &amp;result);
+        }
+        n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
+        <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a> found\n", n);
+        <span class="strong"><strong>canonicalize_list</strong></span>(&amp;result);
+        <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+            igraph_vector_int_t* v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i);
+            <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
+        }
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph.">igraph_clique_number</a></strong></span>(&amp;g, &amp;omega);
+    <span class="strong"><strong>printf</strong></span>("omega=%" IGRAPH_PRId "\n", omega);
+
+    <span class="strong"><strong>test_callback</strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.14. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph.">igraph_cliques</a></strong></span>(&amp;g, &amp;result, 5, 5);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result) != 0) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;result);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_clique_size_hist"></a>1.2. <code class="function">igraph_clique_size_hist</code> —  Counts cliques of each size in the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_clique_size_hist(const igraph_t *graph, igraph_vector_t *hist,
+                            igraph_integer_t min_size, igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Cliques are fully connected subgraphs of a graph.
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hist</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector. The result will be stored
+here. The first element will store the number of size-1 cliques, the second
+element the number of size-2 cliques, etc.  For cliques smaller than <em class="parameter"><code>min_size</code></em>,
+zero counts will be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a> and <a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.3. igraph_cliques_callback — Calls a function for each clique in the graph."><code class="function">igraph_cliques_callback()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: Exponential
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_cliques_callback"></a>1.3. <code class="function">igraph_cliques_callback</code> —  Calls a function for each clique in the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_cliques_callback(const igraph_t *graph,
+                            igraph_integer_t min_size, igraph_integer_t max_size,
+                            igraph_clique_handler_t *cliquehandler_fn, void *arg);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Cliques are fully connected subgraphs of a graph. This function
+enumerates all cliques within the given size range and calls
+<em class="parameter"><code>cliquehandler_fn</code></em> for each of them. The cliques are passed to the
+callback function as a pointer to an <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>.  Destroying and
+freeing this vector is left up to the user.  Use <a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object."><code class="function">igraph_vector_int_destroy()</code></a>
+to destroy it first, then free it using <a class="link" href="igraph-Memory.html#igraph_free" title="4. igraph_free — Deallocate memory that was allocated by igraph functions."><code class="function">igraph_free()</code></a>.
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cliquehandler_fn</code></em>:</span></p></td>
+<td><p>
+  Callback function to be called for each clique.
+  See also <a class="link" href="igraph-Cliques.html#igraph_clique_handler_t" title="1.4. igraph_clique_handler_t — Type of clique handler functions."><code class="function">igraph_clique_handler_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  Extra argument to supply to <em class="parameter"><code>cliquehandler_fn</code></em>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: Exponential
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_clique_handler_t"></a>1.4. <code class="function">igraph_clique_handler_t</code> —  Type of clique handler functions.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.5.2"></a><pre class="programlisting">
+typedef igraph_error_t igraph_clique_handler_t(const igraph_vector_int_t *clique, void *arg);
+</pre>
+<p>
+
+
+Callback type, called when a clique was found.
+
+See the details at the documentation of <a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.3. igraph_cliques_callback — Calls a function for each clique in the graph."><code class="function">igraph_cliques_callback()</code></a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>clique</code></em>:</span></p></td>
+<td><p>
+  The current clique. The clique is owned by the clique search
+  routine. You do not need to destroy or free it if you do not want to store
+  it; however, if you want to hold on to it for a longer period of time, you
+  need to make a copy of it on your own and store the copy itself.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  This extra argument was passed to <a class="link" href="igraph-Cliques.html#igraph_cliques_callback" title="1.3. igraph_cliques_callback — Calls a function for each clique in the graph."><code class="function">igraph_cliques_callback()</code></a> when it was called.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code; <code class="constant">IGRAPH_SUCCESS</code> to continue the search or
+  <code class="constant">IGRAPH_STOP</code> to stop the search without signaling an error.
+ 
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_largest_cliques"></a>1.5. <code class="function">igraph_largest_cliques</code> —  Finds the largest clique(s) in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_largest_cliques(const igraph_t *graph, igraph_vector_int_list_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A clique is largest (quite intuitively) if there is no other clique
+in the graph which contains more vertices.
+
+</p>
+<p>
+Note that this is not necessarily the same as a maximal clique,
+i.e. the largest cliques are always maximal but a maximal clique is
+not always largest.
+
+</p>
+<p>The current implementation of this function searches
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and drops
+those that are not the largest.
+
+</p>
+<p>The implementation of this function changed between
+igraph 0.5 and 0.6, so the order of the cliques and the order of
+vertices within the cliques will almost surely be different between
+these two versions.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(3^(|V|/3)) worst case.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques"></a>1.6. <code class="function">igraph_maximal_cliques</code> —  Finds all maximal cliques in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques(
+    const igraph_t *graph, igraph_vector_int_list_t *res,
+    igraph_integer_t min_size, igraph_integer_t max_size
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A maximal clique is a clique which can't be extended any more by
+adding a new vertex to it.
+
+</p>
+<p>
+If you are only interested in the size of the largest clique in the
+graph, use <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a> instead.
+
+</p>
+<p>
+The current implementation uses a modified Bron-Kerbosch
+algorithm to find the maximal cliques, see: David Eppstein,
+Maarten Löffler, Darren Strash: Listing All Maximal Cliques in
+Sparse Graphs in Near-Optimal Time. Algorithms and Computation,
+Lecture Notes in Computer Science Volume 6506, 2010, pp 403-414.
+
+</p>
+<p>The implementation of this function changed between
+igraph 0.5 and 0.6 and also between 0.6 and 0.7, so the order of
+the cliques and the order of vertices within the cliques will
+almost surely be different between these three versions.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a pointer vector, the result will be stored
+  here, i.e. <em class="parameter"><code>res</code></em> will contain pointers to <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>
+  objects which contain the indices of vertices involved in a clique.
+  The pointer vector will be resized if needed but note that the
+  objects in the pointer vector will not be freed. Note that vertices
+  of a clique may be returned in arbitrary order.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.3. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph."><code class="function">igraph_maximal_independent_vertex_sets()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.17.3.7.14.1"></a><p class="title"><b>Example 16.2.  File <code class="code">examples/simple/igraph_maximal_cliques.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+
+    igraph_t g;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_integer_t no;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 9, IGRAPH_UNDIRECTED,
+                 0,1, 0,2, 1,2, 2,3, 3,4, 3, 5, 4,5, 5,6, 6,7, -1);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 0,
+                           <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph.">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 0,
+                                 <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
+
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
+    }
+
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques_count"></a>1.7. <code class="function">igraph_maximal_cliques_count</code> —  Count the number of maximal cliques in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques_count(const igraph_t *graph,
+                                 igraph_integer_t *res,
+                                 igraph_integer_t min_size,
+                                 igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The current implementation uses a modified Bron-Kerbosch
+algorithm to find the maximal cliques, see: David Eppstein,
+Maarten Löffler, Darren Strash: Listing All Maximal Cliques in
+Sparse Graphs in Near-Optimal Time. Algorithms and Computation,
+Lecture Notes in Computer Science Volume 6506, 2010, pp 403-414.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_integer_t</code>; the number of maximal
+  cliques will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.17.3.8.10.1"></a><p class="title"><b>Example 16.3.  File <code class="code">examples/simple/igraph_maximal_cliques.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+
+    igraph_t g;
+    igraph_vector_int_list_t <a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>;
+    igraph_integer_t no;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 9, IGRAPH_UNDIRECTED,
+                 0,1, 0,2, 1,2, 2,3, 3,4, 3, 5, 4,5, 5,6, 6,7, -1);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph.">igraph_maximal_cliques</a></strong></span>(&amp;g, &amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, <span class="emphasis"><em>/*min_size=*/</em></span> 0,
+                           <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_count" title="1.7. igraph_maximal_cliques_count — Count the number of maximal cliques in a graph.">igraph_maximal_cliques_count</a></strong></span>(&amp;g, &amp;no, <span class="emphasis"><em>/*min_size=*/</em></span> 0,
+                                 <span class="emphasis"><em>/*max_size=*/</em></span> 0 <span class="emphasis"><em>/*no limit*/</em></span>);
+
+    <span class="strong"><strong>if</strong></span> (no != <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>)) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+
+    <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>); i++) {
+        igraph_vector_int_t *v = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>, i);
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(v);
+    }
+
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;<a class="link" href="igraph-Cliques.html#cliques" title="1. Cliques">cliques</a>);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques_file"></a>1.8. <code class="function">igraph_maximal_cliques_file</code> —  Find maximal cliques and write them to a file.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.9.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques_file(const igraph_t *graph,
+                                FILE *outfile,
+                                igraph_integer_t min_size,
+                                igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function enumerates all maximal cliques and writes them to file.
+
+</p>
+<p>
+
+Edge directions are ignored.
+
+</p>
+<p>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>outfile</code></em>:</span></p></td>
+<td><p>
+  Pointer to the output file, it should be writable.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.*
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques_subset"></a>1.9. <code class="function">igraph_maximal_cliques_subset</code> —  Maximal cliques for a subset of initial vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.10.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques_subset(
+    const igraph_t *graph, const igraph_vector_int_t *subset,
+    igraph_vector_int_list_t *res, igraph_integer_t *no,
+    FILE *outfile, igraph_integer_t min_size, igraph_integer_t max_size
+);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function enumerates all maximal cliques for a subset of initial
+vertices and writes them to file.
+
+</p>
+<p>
+Edge directions are ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>subset</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_vector_int_t</code> containing the
+  subset of initial vertices
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors; the cliques will be
+  stored here
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no</code></em>:</span></p></td>
+<td><p>
+  Pointer to an <code class="constant">igraph_integer_t</code>; the number of maximal
+  cliques will be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>outfile</code></em>:</span></p></td>
+<td><p>
+  Pointer to an output file or <code class="constant">NULL</code>.
+  When not <code class="constant">NULL</code>, the file should be writable.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques_hist"></a>1.10. <code class="function">igraph_maximal_cliques_hist</code> —  Counts the number of maximal cliques of each size in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.11.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques_hist(const igraph_t *graph,
+                                igraph_vector_t *hist,
+                                igraph_integer_t min_size,
+                                igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function counts how many maximal cliques of each size are present in
+the graph. Size-1 maximal cliques are simply isolated vertices.
+
+</p>
+<p>
+
+Edge directions are ignored.
+
+</p>
+<p>
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hist</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized vector. The result will be stored
+here. The first element will store the number of size-1 maximal cliques,
+the second element the number of size-2 maximal cliques, etc.
+For cliques smaller than <em class="parameter"><code>min_size</code></em>, zero counts will be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_cliques_callback"></a>1.11. <code class="function">igraph_maximal_cliques_callback</code> —  Finds maximal cliques in a graph and calls a function for each one.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.12.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_cliques_callback(const igraph_t *graph,
+                                    igraph_clique_handler_t *cliquehandler_fn, void *arg,
+                                    igraph_integer_t min_size, igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function enumerates all maximal cliques within the given size range
+and calls <em class="parameter"><code>cliquehandler_fn</code></em> for each of them. The cliques are passed to the
+callback function as a pointer to an <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_int_t</code></a>. The vector is
+owned by the maximal clique search routine so users are expected to make a
+copy of the vector using <a class="link" href="igraph-Data-structures.html#igraph_vector_init_copy" title="2.2.3. igraph_vector_init_copy — Initializes a vector from another vector object (constructor)."><code class="function">igraph_vector_int_init_copy()</code></a> if they want to
+hold on to it.
+
+</p>
+<p>
+Edge directions are ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cliquehandler_fn</code></em>:</span></p></td>
+<td><p>
+  Callback function to be called for each clique.
+See also <a class="link" href="igraph-Cliques.html#igraph_clique_handler_t" title="1.4. igraph_clique_handler_t — Type of clique handler functions."><code class="function">igraph_clique_handler_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg</code></em>:</span></p></td>
+<td><p>
+  Extra argument to supply to <em class="parameter"><code>cliquehandler_fn</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the minimum size of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer giving the maximum size of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(d(n-d)3^(d/3)) worst case, d is the degeneracy
+of the graph, this is typically small for sparse graphs.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_clique_number"></a>1.12. <code class="function">igraph_clique_number</code> —  Finds the clique number of the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.3.13.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_clique_number(const igraph_t *graph, igraph_integer_t *no);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+The clique number of a graph is the size of the largest clique.
+
+</p>
+<p>The current implementation of this function searches
+for maximal cliques using <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques_callback" title="1.11. igraph_maximal_cliques_callback — Finds maximal cliques in a graph and calls a function for each one."><code class="function">igraph_maximal_cliques_callback()</code></a> and keeps
+track of the size of the largest clique that was found.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no</code></em>:</span></p></td>
+<td><p>
+  The clique number will be returned to the <code class="constant">igraph_integer_t</code>
+  pointed by this variable.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.5. igraph_largest_cliques — Finds the largest clique(s) in a graph."><code class="function">igraph_largest_cliques()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(3^(|V|/3)) worst case.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="weighted-cliques"></a>2. Weighted cliques</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_weighted_cliques">2.1. <code class="function">igraph_weighted_cliques</code> —  Finds all cliques in a given weight range in a vertex weighted graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_largest_weighted_cliques">2.2. <code class="function">igraph_largest_weighted_cliques</code> —  Finds the largest weight clique(s) in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_weighted_clique_number">2.3. <code class="function">igraph_weighted_clique_number</code> —  Finds the weight of the largest weight clique in the graph.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_weighted_cliques"></a>2.1. <code class="function">igraph_weighted_cliques</code> —  Finds all cliques in a given weight range in a vertex weighted graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.4.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_weighted_cliques(const igraph_t *graph,
+                            const igraph_vector_t *vertex_weights, igraph_vector_int_list_t *res,
+                            igraph_real_t min_weight, igraph_real_t max_weight, igraph_bool_t maximal);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Cliques are fully connected subgraphs of a graph.
+The weight of a clique is the sum of the weights
+of individual vertices within the clique.
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+Only positive integer vertex weights are supported.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
+<td><p>
+  A vector of vertex weights. The current implementation
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_weight</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the minimum weight of the cliques to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_weight</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the maximum weight of the cliques to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>maximal</code></em>:</span></p></td>
+<td><p>
+  If true, only maximal cliques will be returned
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_cliques" title="1.1. igraph_cliques — Finds all or some cliques in a graph."><code class="function">igraph_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: Exponential
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_largest_weighted_cliques"></a>2.2. <code class="function">igraph_largest_weighted_cliques</code> —  Finds the largest weight clique(s) in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.4.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_largest_weighted_cliques(const igraph_t *graph,
+                                    const igraph_vector_t *vertex_weights, igraph_vector_int_list_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+Finds the clique(s) having the largest weight in the graph.
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+Only positive integer vertex weights are supported.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
+<td><p>
+  A vector of vertex weights. The current implementation
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_weighted_cliques" title="2.1. igraph_weighted_cliques — Finds all cliques in a given weight range in a vertex weighted graph."><code class="function">igraph_weighted_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_weighted_clique_number" title="2.3. igraph_weighted_clique_number — Finds the weight of the largest weight clique in the graph."><code class="function">igraph_weighted_clique_number()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_largest_cliques" title="1.5. igraph_largest_cliques — Finds the largest clique(s) in a graph."><code class="function">igraph_largest_cliques()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_weighted_clique_number"></a>2.3. <code class="function">igraph_weighted_clique_number</code> —  Finds the weight of the largest weight clique in the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.4.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_weighted_clique_number(const igraph_t *graph,
+                                  const igraph_vector_t *vertex_weights, igraph_real_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>The current implementation of this function
+uses version 1.21 of the Cliquer library by Sampo Niskanen and
+Patric R. J. Östergård, <a class="ulink" href="http://users.aalto.fi/~pat/cliquer.html" target="_top">http://users.aalto.fi/~pat/cliquer.html</a>
+
+Only positive integer vertex weights are supported.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
+<td><p>
+  A vector of vertex weights. The current implementation
+  will truncate all weights to their integer parts. You may pass <code class="constant">NULL</code>
+  here to make each vertex have a weight of 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  The largest weight will be returned to the <code class="constant">igraph_real_t</code>
+  pointed to by this variable.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_weighted_cliques" title="2.1. igraph_weighted_cliques — Finds all cliques in a given weight range in a vertex weighted graph."><code class="function">igraph_weighted_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_largest_weighted_cliques" title="2.2. igraph_largest_weighted_cliques — Finds the largest weight clique(s) in a graph."><code class="function">igraph_largest_weighted_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_clique_number" title="1.12. igraph_clique_number — Finds the clique number of the graph."><code class="function">igraph_clique_number()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="independent-vertex-sets"></a>3. Independent vertex sets</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_independent_vertex_sets">3.1. <code class="function">igraph_independent_vertex_sets</code> —  Finds all independent vertex sets in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_largest_independent_vertex_sets">3.2. <code class="function">igraph_largest_independent_vertex_sets</code> —  Finds the largest independent vertex set(s) in a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets">3.3. <code class="function">igraph_maximal_independent_vertex_sets</code> —  Finds all maximal independent vertex sets of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cliques.html#igraph_independence_number">3.4. <code class="function">igraph_independence_number</code> —  Finds the independence number of the graph.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_independent_vertex_sets"></a>3.1. <code class="function">igraph_independent_vertex_sets</code> —  Finds all independent vertex sets in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.5.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_independent_vertex_sets(const igraph_t *graph,
+                                   igraph_vector_int_list_t *res,
+                                   igraph_integer_t min_size,
+                                   igraph_integer_t max_size);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A vertex set is considered independent if there are no edges between
+them.
+
+</p>
+<p>
+If you are interested in the size of the largest independent vertex set,
+use <a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph."><code class="function">igraph_independence_number()</code></a> instead.
+
+</p>
+<p>
+The current implementation was ported to igraph from the Very Nauty Graph
+Library by Keith Briggs and uses the algorithm from the paper
+S. Tsukiyama, M. Ide, H. Ariyoshi and I. Shirawaka. A new algorithm
+for generating all the maximal independent sets. SIAM J Computing,
+6:505--517, 1977.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the minimum size of the sets to be
+  returned. If negative or zero, no lower bound will be used.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_size</code></em>:</span></p></td>
+<td><p>
+  Integer specifying the maximum size of the sets to be
+  returned. If negative or zero, no upper bound will be used.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_largest_independent_vertex_sets" title="3.2. igraph_largest_independent_vertex_sets — Finds the largest independent vertex set(s) in a graph."><code class="function">igraph_largest_independent_vertex_sets()</code></a>,
+<a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph."><code class="function">igraph_independence_number()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.17.5.2.13.1"></a><p class="title"><b>Example 16.4.  File <code class="code">examples/simple/igraph_independent_sets.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdlib.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+
+    igraph_t g;
+    igraph_vector_int_list_t result;
+    igraph_integer_t i, j, n;
+    igraph_integer_t alpha;
+    <span class="strong"><strong>const</strong></span> int params[] = {4, -1, 2, 2, 0, 0, -1, -1};
+
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_warning_handler" title="4.2. igraph_set_warning_handler — Installs a warning handler.">igraph_set_warning_handler</a></strong></span>(<a class="link" href="igraph-Error.html#igraph_warning_handler_ignore" title="4.7. igraph_warning_handler_ignore — Ignores all warnings.">igraph_warning_handler_ignore</a>);
+    <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;result, 0);
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.14. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 5, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong>for</strong></span> (j = 0; j &lt; <span class="strong"><strong>sizeof</strong></span>(params) / (2 * <span class="strong"><strong>sizeof</strong></span>(params[0])); j++) {
+        <span class="strong"><strong>if</strong></span> (params[2 * j + 1] != 0) {
+            <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_independent_vertex_sets" title="3.1. igraph_independent_vertex_sets — Finds all independent vertex sets in a graph.">igraph_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result, params[2 * j], params[2 * j + 1]);
+        } <span class="strong"><strong>else</strong></span> {
+            <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_largest_independent_vertex_sets" title="3.2. igraph_largest_independent_vertex_sets — Finds the largest independent vertex set(s) in a graph.">igraph_largest_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result);
+        }
+        n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
+        <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " independent sets found\n", n);
+        <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+            <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i));
+        }
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.14. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 10, 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.3. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph.">igraph_maximal_independent_vertex_sets</a></strong></span>(&amp;g, &amp;result);
+    n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;result);
+    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " maximal independent sets found\n", n);
+    <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
+        <span class="strong"><strong>igraph_vector_int_print</strong></span>(<span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;result, i));
+    }
+
+    <span class="strong"><strong><a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph.">igraph_independence_number</a></strong></span>(&amp;g, &amp;alpha);
+    <span class="strong"><strong>printf</strong></span>("alpha=%" IGRAPH_PRId "\n", alpha);
+
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;result);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_largest_independent_vertex_sets"></a>3.2. <code class="function">igraph_largest_independent_vertex_sets</code> —  Finds the largest independent vertex set(s) in a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_largest_independent_vertex_sets(const igraph_t *graph,
+        igraph_vector_int_list_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+An independent vertex set is largest if there is no other
+independent vertex set with more vertices in the graph.
+
+</p>
+<p>
+The current implementation was ported to igraph from the Very Nauty Graph
+Library by Keith Briggs and uses the algorithm from the paper
+S. Tsukiyama, M. Ide, H. Ariyoshi and I. Shirawaka. A new algorithm
+for generating all the maximal independent sets. SIAM J Computing,
+6:505--517, 1977.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_independent_vertex_sets" title="3.1. igraph_independent_vertex_sets — Finds all independent vertex sets in a graph."><code class="function">igraph_independent_vertex_sets()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_maximal_independent_vertex_sets" title="3.3. igraph_maximal_independent_vertex_sets — Finds all maximal independent vertex sets of a graph."><code class="function">igraph_maximal_independent_vertex_sets()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_maximal_independent_vertex_sets"></a>3.3. <code class="function">igraph_maximal_independent_vertex_sets</code> —  Finds all maximal independent vertex sets of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.5.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_maximal_independent_vertex_sets(const igraph_t *graph,
+        igraph_vector_int_list_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A maximal independent vertex set is an independent vertex set which
+can't be extended any more by adding a new vertex to it.
+
+</p>
+<p>
+The algorithm used here is based on the following paper:
+S. Tsukiyama, M. Ide, H. Ariyoshi and I. Shirawaka. A new algorithm for
+generating all the maximal independent sets. SIAM J Computing,
+6:505--517, 1977.
+
+</p>
+<p>
+The implementation was originally written by Kevin O'Neill and modified
+by K M Briggs in the Very Nauty Graph Library. I simply re-wrote it to
+use igraph's data structures.
+
+</p>
+<p>
+If you are interested in the size of the largest independent vertex set,
+use <a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph."><code class="function">igraph_independence_number()</code></a> instead.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a list of integer vectors, the result will be stored
+  here. The pointer vector will be resized if needed.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_maximal_cliques" title="1.6. igraph_maximal_cliques — Finds all maximal cliques in a graph."><code class="function">igraph_maximal_cliques()</code></a>, <a class="link" href="igraph-Cliques.html#igraph_independence_number" title="3.4. igraph_independence_number — Finds the independence number of the graph."><code class="function">igraph_independence_number()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_independence_number"></a>3.4. <code class="function">igraph_independence_number</code> —  Finds the independence number of the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.17.5.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_independence_number(const igraph_t *graph, igraph_integer_t *no);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+The independence number of a graph is the cardinality of the largest
+independent vertex set.
+
+</p>
+<p>
+The current implementation was ported to igraph from the Very Nauty Graph
+Library by Keith Briggs and uses the algorithm from the paper
+S. Tsukiyama, M. Ide, H. Ariyoshi and I. Shirawaka. A new algorithm
+for generating all the maximal independent sets. SIAM J Computing,
+6:505--517, 1977.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no</code></em>:</span></p></td>
+<td><p>
+  The independence number will be returned to the <code class="constant">igraph_integer_t</code> pointed by this variable.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cliques.html#igraph_independent_vertex_sets" title="3.1. igraph_independent_vertex_sets — Finds all independent vertex sets in a graph."><code class="function">igraph_independent_vertex_sets()</code></a>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: TODO.
+ 
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Visitors.html"><b>← Chapter 15. Graph visitors</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Isomorphism.html"><b>Chapter 17. Graph isomorphism →</b></a></td>
+</tr></table>
+{% endraw %}

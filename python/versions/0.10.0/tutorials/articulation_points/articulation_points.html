@@ -1,0 +1,106 @@
+---
+layout: default
+title: Articulation Points
+mainheader: python-igraph Manual
+lead: For using igraph from Python
+extrahead:
+    <link rel="top" title="igraph 0.10.0 documentation" href="../../index.html" />
+    <link rel="up" title="Gallery" href="../../gallery.html" />
+    <link rel="next" title="Betweenness" href="../betweenness/betweenness.html" />
+    <link rel="prev" title="Gallery" href="../../gallery.html" />
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/other.css" type="text/css" />
+doctype: tutorial/
+vmenu: true
+lang: python
+langversion: 0.10.0
+---
+
+
+
+
+
+
+
+
+  <div class="main container">
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="navigation-header mb-4" width="100%" summary="Navigation header">
+      <div class="btn-group" role="group">
+        <a href="../../gallery.html" title="Previous Chapter: Gallery" class="btn btn-light" role="button" accesskey="P">
+          <i class="fa fa-chevron-left"></i> Gallery
+        </a>
+        <a href="../../gallery.html" title="Parent: Gallery" class="btn btn-light" role="button" accesskey="U">
+          <i class="fa fa-chevron-up"></i> Gallery
+        </a>
+        <a href="../betweenness/betweenness.html" title="Next Chapter: Betweenness" class="btn btn-light" role="button" accesskey="N">
+          Betweenness <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="document col-md-12">
+      <div class="documentwrapper bs-docs-section" id="top-of-docs">
+        <h1 class="real">
+          Articulation Points
+          <a class="headerlink" href="#top-of-docs" title="Permalink to this headline">¶</a>
+        </h1>
+        <!-- <ul>
+<li><a class="reference internal" href="#">Articulation Points</a></li>
+</ul>
+ -->
+        
+  <section id="articulation-points">
+<span id="tutorials-articulation-points"></span><h1>Articulation Points<a class="headerlink" href="#articulation-points" title="Permalink to this heading">¶</a></h1>
+<p>This example shows how to compute and visualize the <a class="reference external" href="https://en.wikipedia.org/wiki/Biconnected_component">articulation points</a> in a graph using <a class="reference external" href="https://igraph.org/python/doc/api/igraph._igraph.GraphBase.html#articulation_points"><code class="xref py py-meth docutils literal notranslate"><span class="pre">articulation_points()</span></code></a>. For an example on bridges instead, see <a class="reference internal" href="../bridges/bridges.html#tutorials-bridges"><span class="std std-ref">Bridges</span></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">igraph</span> <span class="k">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Construct graph</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">Formula</span><span class="p">(</span>
+    <span class="s2">&quot;0-1-2-0, 3:4:5:6 - 3:4:5:6, 2-3-7-8&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Find the set of articulation points as a vertex sequence</span>
+<span class="n">articulation_points</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">articulation_points</span><span class="p">()]</span>
+
+<span class="c1"># Plot graph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">g</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">vertex_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">vertex_color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
+    <span class="n">vertex_label</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">vcount</span><span class="p">()),</span>
+    <span class="n">vertex_frame_color</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">articulation_points</span> <span class="k">else</span> <span class="s2">&quot;black&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">],</span>
+    <span class="n">vertex_frame_width</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">articulation_points</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">vs</span><span class="p">],</span>
+    <span class="n">edge_width</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The plot looks like this:</p>
+<figure class="align-center" id="id3">
+<img alt="A visual representation of the articulation points in a graph" src="../../_images/articulation_points.png" />
+<figcaption>
+<p><span class="caption-text">Articulation points are marked with a red border.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+
+
+      </div>
+    </div>
+    <div class="clearer"></div>
+    </div>
+  </div>

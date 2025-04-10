@@ -1,0 +1,192 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>The igraph package</h2>
+
+<h3>Description</h3>
+
+<p>igraph is a library and R package for network analysis.
+</p>
+
+
+<h3>Introduction</h3>
+
+<p>The main goals of the igraph library is to provide a set of data types
+and functions for 1) pain-free implementation of graph algorithms, 2)
+fast handling of large graphs, with millions of vertices and edges, 3)
+allowing rapid prototyping via high level languages like R.
+</p>
+
+
+<h3>Igraph graphs</h3>
+
+<p>Igraph graphs have a class &lsquo;<code>igraph</code>&rsquo;. They are printed to
+the screen in a special format, here is an example, a ring graph
+created using <code><a href="make_ring.html">make_ring</a></code>: </p>
+<pre>
+    IGRAPH U--- 10 10 -- Ring graph
+    + attr: name (g/c), mutual (g/x), circular (g/x)  </pre>
+<p>&lsquo;<code>IGRAPH</code>&rsquo; denotes that this is an igraph graph. Then
+come four bits that denote the kind of the graph: the first is
+&lsquo;<code>U</code>&rsquo; for undirected and &lsquo;<code>D</code>&rsquo; for directed
+graphs. The second is &lsquo;<code>N</code>&rsquo; for named graph (i.e. if the
+graph has the &lsquo;<code>name</code>&rsquo; vertex attribute set). The third is
+&lsquo;<code>W</code>&rsquo; for weighted graphs (i.e. if the
+&lsquo;<code>weight</code>&rsquo; edge attribute is set). The fourth is
+&lsquo;<code>B</code>&rsquo; for bipartite graphs (i.e. if the
+&lsquo;<code>type</code>&rsquo; vertex attribute is set).
+</p>
+<p>Then come two numbers, the number of vertices and the number of edges
+in the graph, and after a double dash, the name of the graph (the
+&lsquo;<code>name</code>&rsquo; graph attribute) is printed if present. The
+second line is optional and it contains all the attributes of the
+graph. This graph has a &lsquo;<code>name</code>&rsquo; graph attribute, of type
+character, and two other graph attributes called
+&lsquo;<code>mutual</code>&rsquo; and &lsquo;<code>circular</code>&rsquo;, of a complex
+type. A complex type is simply anything that is not numeric or
+character. See the documentation of <code><a href="print.igraph.html">print.igraph</a></code> for
+details.
+</p>
+<p>If you want to see the edges of the graph as well, then use the
+<code><a href="print_all.html">print_all</a></code> function: </p>
+<pre>    &gt; print_all(g)
+    IGRAPH badcafe U--- 10 10 -- Ring graph
+    + attr: name (g/c), mutual (g/x), circular (g/x)
+    + edges:
+     [1] 1-- 2 2-- 3 3-- 4 4-- 5 5-- 6 6-- 7 7-- 8 8-- 9 9--10 1--10 </pre>
+
+
+<h3>Creating graphs</h3>
+
+<p>There are many functions in igraph for creating graphs, both
+deterministic and stochastic; stochastic graph constructors are called
+&lsquo;games&rsquo;.
+</p>
+<p>To create small graphs with a given structure probably the
+<code><a href="graph_from_literal.html">graph_from_literal</a></code> function is easiest. It uses R's formula
+interface, its manual page contains many examples. Another option is
+<code><a href="graph.html">graph</a></code>, which takes numeric vertex ids directly.
+<code><a href="graph.atlas.html">graph.atlas</a></code> creates graph from the Graph Atlas,
+<code><a href="make_graph.html">make_graph</a></code> can create some special graphs.
+</p>
+<p>To create graphs from field data, <code><a href="graph_from_edgelist.html">graph_from_edgelist</a></code>,
+<code><a href="graph_from_data_frame.html">graph_from_data_frame</a></code> and <code><a href="graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></code> are
+probably the best choices.
+</p>
+<p>The igraph package includes some classic random graphs like the
+Erdos-Renyi GNP and GNM graphs (<code><a href="sample_gnp.html">sample_gnp</a></code>, <code><a href="sample_gnm.html">sample_gnm</a></code>) and
+some recent  popular models, like preferential attachment
+(<code><a href="sample_pa.html">sample_pa</a></code>) and the small-world model
+(<code><a href="sample_smallworld.html">sample_smallworld</a></code>).
+</p>
+
+
+<h3>Vertex and edge IDs</h3>
+
+<p>Vertices and edges have numerical vertex ids in igraph. Vertex ids are
+always consecutive and they start with one. I.e. for a graph with
+<i>n</i> vertices the vertex ids are between <i>1</i> and
+<i>n</i>. If some operation changes the number of vertices in the
+graphs, e.g. a subgraph is created via <code><a href="induced_subgraph.html">induced_subgraph</a></code>, then
+the vertices are renumbered to satisfty this criteria.
+</p>
+<p>The same is true for the edges as well, edge ids are always between
+one and <i>m</i>, the total number of edges in the graph.
+</p>
+<p>It is often desirable to follow vertices along a number of graph
+operations, and vertex ids don't allow this because of the
+renumbering. The solution is to assign attributes to the
+vertices. These are kept by all operations, if possible. See more
+about attributes in the next section.
+</p>
+
+
+<h3>Attributes</h3>
+
+<p>In igraph it is possible to assign attributes to the vertices or edges
+of a graph, or to the graph itself. igraph provides flexible
+constructs for selecting a set of vertices or edges based on their
+attribute values, see <code><a href="vertex_attr.html">vertex_attr</a></code>,
+<code><a href="V.html">V</a></code> and <code><a href="E.html">E</a></code> for details.
+</p>
+<p>Some vertex/edge/graph attributes are treated specially. One of them
+is the &lsquo;name&rsquo; attribute. This is used for printing the graph
+instead of the numerical ids, if it exists. Vertex names can also be
+used to specify a vector or set of vertices, in all igraph
+functions. E.g. <code><a href="degree.html">degree</a></code> has a <code>v</code> argument
+that gives the vertices for which the degree is calculated. This
+argument can be given as a character vector of vertex names.
+</p>
+<p>Edges can also have a &lsquo;name&rsquo; attribute, and this is treated
+specially as well. Just like for vertices, edges can also be selected
+based on their names, e.g. in the <code><a href="delete_edges.html">delete_edges</a></code> and
+other functions.
+</p>
+<p>We note here, that vertex names can also be used to select edges.
+The form &lsquo;<code>from|to</code>&rsquo;, where &lsquo;<code>from</code>&rsquo; and
+&lsquo;<code>to</code>&rsquo; are vertex names, select a single, possibly
+directed, edge going from &lsquo;<code>from</code>&rsquo; to
+&lsquo;<code>to</code>&rsquo;. The two forms can also be mixed in the same edge
+selector.
+</p>
+<p>Other attributes define visualization parameters, see
+<code><a href="igraph.plotting.html">igraph.plotting</a></code> for details.
+</p>
+<p>Attribute values can be set to any R object, but note that storing the
+graph in some file formats might result the loss of complex attribute
+values. All attribute values are preserved if you use
+<code><a href="https://rdrr.io/r/base/save.html">save</a></code> and <code><a href="https://rdrr.io/r/base/load.html">load</a></code> to store/retrieve your
+graphs.
+</p>
+
+
+<h3>Visualization</h3>
+
+<p>igraph provides three different ways for visualization. The first is
+the <code><a href="plot.igraph.html">plot.igraph</a></code> function. (Actually you don't need to
+write <code>plot.igraph</code>, <code>plot</code> is enough. This function uses
+regular R graphics and can be used with any R device.
+</p>
+<p>The second function is <code><a href="tkplot.html">tkplot</a></code>, which uses a Tk GUI for
+basic interactive graph manipulation. (Tk is quite resource hungry, so
+don't try this for very large graphs.)
+</p>
+<p>The third way requires the <code>rgl</code> package and uses OpenGL. See the
+<code><a href="rglplot.html">rglplot</a></code> function for the details.
+</p>
+<p>Make sure you read <code><a href="igraph.plotting.html">igraph.plotting</a></code> before you start
+plotting your graphs.
+</p>
+
+
+<h3>File formats</h3>
+
+<p>igraph can handle various graph file formats, usually both for reading
+and writing. We suggest that you use the GraphML file format for your
+graphs, except if the graphs are too big. For big graphs a simpler
+format is recommended. See <code><a href="read_graph.html">read_graph</a></code> and
+<code><a href="write_graph.html">write_graph</a></code> for details.
+</p>
+
+
+<h3>Further information</h3>
+
+<p>The igraph homepage is at <a href="http://igraph.org">http://igraph.org</a>.
+See especially the documentation section. Join the igraph-help mailing
+list if you have questions or comments.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

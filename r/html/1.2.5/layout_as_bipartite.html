@@ -1,0 +1,138 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Simple two-row layout for bipartite graphs</h2>
+
+<h3>Description</h3>
+
+<p>Minimize edge-crossings in a simple two-row (or column) layout for bipartite
+graphs.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+layout_as_bipartite(graph, types = NULL, hgap = 1, vgap = 1, maxiter = 100)
+
+as_bipartite(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The bipartite input graph. It should have a logical
+&lsquo;<code>type</code>&rsquo; vertex attribute, or the <code>types</code> argument must be
+given.</p>
+</td></tr>
+<tr valign="top"><td><code>types</code></td>
+<td>
+<p>A logical vector, the vertex types. If this argument is
+<code>NULL</code> (the default), then the &lsquo;<code>type</code>&rsquo; vertex attribute is
+used.</p>
+</td></tr>
+<tr valign="top"><td><code>hgap</code></td>
+<td>
+<p>Real scalar, the minimum horizontal gap between vertices in the
+same layer.</p>
+</td></tr>
+<tr valign="top"><td><code>vgap</code></td>
+<td>
+<p>Real scalar, the distance between the two layers.</p>
+</td></tr>
+<tr valign="top"><td><code>maxiter</code></td>
+<td>
+<p>Integer scalar, the maximum number of iterations in the
+crossing minimization stage. 100 is a reasonable default; if you feel that
+you have too many edge crossings, increase this.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments to pass to <code>layout_as_bipartite</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The layout is created by first placing the vertices in two rows, according
+to their types. Then the positions within the rows are optimized to minimize
+edge crossings, using the Sugiyama algorithm (see
+<code><a href="layout_with_sugiyama.html">layout_with_sugiyama</a></code>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix with two columns and as many rows as the number of vertices
+in the input graph.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="layout_with_sugiyama.html">layout_with_sugiyama</a></code>
+</p>
+<p>Other graph layouts: 
+<code><a href="add_layout_.html">add_layout_</a>()</code>,
+<code><a href="component_wise.html">component_wise</a>()</code>,
+<code><a href="layout_as_star.html">layout_as_star</a>()</code>,
+<code><a href="layout_as_tree.html">layout_as_tree</a>()</code>,
+<code><a href="layout_in_circle.html">layout_in_circle</a>()</code>,
+<code><a href="layout_nicely.html">layout_nicely</a>()</code>,
+<code><a href="layout_on_grid.html">layout_on_grid</a>()</code>,
+<code><a href="layout_on_sphere.html">layout_on_sphere</a>()</code>,
+<code><a href="layout_randomly.html">layout_randomly</a>()</code>,
+<code><a href="layout_with_dh.html">layout_with_dh</a>()</code>,
+<code><a href="layout_with_fr.html">layout_with_fr</a>()</code>,
+<code><a href="layout_with_gem.html">layout_with_gem</a>()</code>,
+<code><a href="layout_with_graphopt.html">layout_with_graphopt</a>()</code>,
+<code><a href="layout_with_kk.html">layout_with_kk</a>()</code>,
+<code><a href="layout_with_lgl.html">layout_with_lgl</a>()</code>,
+<code><a href="layout_with_mds.html">layout_with_mds</a>()</code>,
+<code><a href="layout_with_sugiyama.html">layout_with_sugiyama</a>()</code>,
+<code><a href="layout_.html">layout_</a>()</code>,
+<code><a href="merge_coords.html">merge_coords</a>()</code>,
+<code><a href="norm_coords.html">norm_coords</a>()</code>,
+<code><a href="normalize.html">normalize</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Random bipartite graph
+inc &lt;- matrix(sample(0:1, 50, replace = TRUE, prob=c(2,1)), 10, 5)
+g &lt;- graph_from_incidence_matrix(inc)
+plot(g, layout = layout_as_bipartite,
+     vertex.color=c("green","cyan")[V(g)$type+1])
+
+# Two columns
+g %&gt;%
+  add_layout_(as_bipartite()) %&gt;%
+  plot()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

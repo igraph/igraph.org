@@ -1,0 +1,149 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.0
+---
+
+
+{% raw %}
+
+
+<h2>Minimum cut in a graph</h2>
+
+<h3>Description</h3>
+
+<p><code>min_cut</code> calculates the minimum st-cut between two vertices in a graph
+(if the <code>source</code> and <code>target</code> arguments are given) or the minimum
+cut of the graph (if both <code>source</code> and <code>target</code> are <code>NULL</code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+min_cut(
+  graph,
+  source = NULL,
+  target = NULL,
+  capacity = NULL,
+  value.only = TRUE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>source</code></td>
+<td>
+<p>The id of the source vertex.</p>
+</td></tr>
+<tr valign="top"><td><code>target</code></td>
+<td>
+<p>The id of the target vertex (sometimes also called sink).</p>
+</td></tr>
+<tr valign="top"><td><code>capacity</code></td>
+<td>
+<p>Vector giving the capacity of the edges. If this is
+<code>NULL</code> (the default) then the <code>capacity</code> edge attribute is used.</p>
+</td></tr>
+<tr valign="top"><td><code>value.only</code></td>
+<td>
+<p>Logical scalar, if <code>TRUE</code> only the minimum cut value
+is returned, if <code>FALSE</code> the edges in the cut and a the two (or more)
+partitions are also returned.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The minimum st-cut between <code>source</code> and <code>target</code> is the minimum
+total weight of edges needed to remove to eliminate all paths from
+<code>source</code> to <code>target</code>.
+</p>
+<p>The minimum cut of a graph is the minimum total weight of the edges needed
+to remove to separate the graph into (at least) two components. (Which is to
+make the graph <em>not</em> strongly connected in the directed case.)
+</p>
+<p>The maximum flow between two vertices in a graph is the same as the minimum
+st-cut, so <code>max_flow</code> and <code>min_cut</code> essentially calculate the same
+quantity, the only difference is that <code>min_cut</code> can be invoked without
+giving the <code>source</code> and <code>target</code> arguments and then minimum of all
+possible minimum cuts is calculated.
+</p>
+<p>For undirected graphs the Stoer-Wagner algorithm (see reference below) is
+used to calculate the minimum cut.
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>min_cut</code> a nuieric constant, the value of the minimum
+cut, except if <code>value.only = FALSE</code>. In this case a named list with
+components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>Numeric scalar, the cut value.</p>
+</td></tr>
+<tr valign="top"><td><code>cut</code></td>
+<td>
+<p>Numeric vector, the edges in the cut.</p>
+</td></tr>
+<tr valign="top"><td><code>partition1</code></td>
+<td>
+<p>The vertices in the first partition after the cut
+edges are removed. Note that these vertices might be actually in
+different components (after the cut edges are removed), as the graph
+may fall apart into more than two components.</p>
+</td></tr>
+<tr valign="top"><td><code>partition2</code></td>
+<td>
+<p>The vertices in the second partition
+after the cut edges are removed. Note that these vertices might be
+actually in different components (after the cut edges are removed), as
+the graph may fall apart into more than two components.</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p>M. Stoer and F. Wagner: A simple min-cut algorithm,
+<em>Journal of the ACM</em>, 44 585-591, 1997.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="max_flow.html">max_flow</a></code> for the related maximum flow
+problem, <code><a href="distances.html">distances</a></code>, <code><a href="edge_connectivity.html">edge_connectivity</a></code>,
+<code><a href="vertex_connectivity.html">vertex_connectivity</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+g &lt;- make_ring(100)
+min_cut(g, capacity=rep(1,vcount(g)))
+min_cut(g, value.only=FALSE, capacity=rep(1,vcount(g)))
+
+g2 &lt;- graph( c(1,2,2,3,3,4, 1,6,6,5,5,4, 4,1) )
+E(g2)$capacity &lt;- c(3,1,2, 10,1,3, 2)
+min_cut(g2, value.only=FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.0 <a href="index.html">Index</a>]</div>
+{% endraw %}

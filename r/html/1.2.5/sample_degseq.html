@@ -1,0 +1,147 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Generate random graphs with a given degree sequence</h2>
+
+<h3>Description</h3>
+
+<p>It is often useful to create a graph with given vertex degrees. This is
+exactly what <code>sample_degseq</code> does.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sample_degseq(
+  out.deg,
+  in.deg = NULL,
+  method = c("simple", "vl", "simple.no.multiple")
+)
+
+degseq(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>out.deg</code></td>
+<td>
+<p>Numeric vector, the sequence of degrees (for undirected
+graphs) or out-degrees (for directed graphs). For undirected graphs its sum
+should be even. For directed graphs its sum should be the same as the sum of
+<code>in.deg</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>in.deg</code></td>
+<td>
+<p>For directed graph, the in-degree sequence. By default this is
+<code>NULL</code> and an undirected graph is created.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character, the method for generating the graph. Right now the
+&ldquo;simple&rdquo;, &ldquo;simple.no.multiple&rdquo; and &ldquo;vl&rdquo; methods are
+implemented.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to <code>sample_degree</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The &ldquo;simple&rdquo; method connects the out-stubs of the edges (undirected
+graphs) or the out-stubs and in-stubs (directed graphs) together. This way
+loop edges and also multiple edges may be generated. This method is not
+adequate if one needs to generate simple graphs with a given degree
+sequence. The multiple and loop edges can be deleted, but then the degree
+sequence is distorted and there is nothing to ensure that the graphs are
+sampled uniformly.
+</p>
+<p>The &ldquo;simple.no.multiple&rdquo; method is similar to &ldquo;simple&rdquo;, but
+tries to avoid multiple and loop edges and restarts the generation from
+scratch if it gets stuck. It is not guaranteed to sample uniformly from the
+space of all possible graphs with the given sequence, but it is relatively
+fast and it will eventually succeed if the provided degree sequence is
+graphical, but there is no upper bound on the number of iterations.
+</p>
+<p>The &ldquo;vl&rdquo; method is a more sophisticated generator. The algorithm and
+the implementation was done by Fabien Viger and Matthieu Latapy. This
+generator always generates undirected, connected simple graphs, it is an
+error to pass the <code>in.deg</code> argument to it.  The algorithm relies on
+first creating an initial (possibly unconnected) simple undirected graph
+with the given degree sequence (if this is possible at all). Then some
+rewiring is done to make the graph connected. Finally a Monte-Carlo
+algorithm is used to randomize the graph. The &ldquo;vl&rdquo; samples from the
+undirected, connected simple graphs unformly.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The new graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sample_gnp.html">sample_gnp</a></code>, <code><a href="sample_pa.html">sample_pa</a></code>,
+<code><a href="simplify.html">simplify</a></code> to get rid of the multiple and/or loops edges.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## The simple generator
+g &lt;- sample_degseq(rep(2,100))
+degree(g)
+is_simple(g)   # sometimes TRUE, but can be FALSE
+g2 &lt;- sample_degseq(1:10, 10:1)
+degree(g2, mode="out")
+degree(g2, mode="in")
+
+## The vl generator
+g3 &lt;- sample_degseq(rep(2,100), method="vl")
+degree(g3)
+is_simple(g3)  # always TRUE
+
+## Exponential degree distribution
+## Note, that we correct the degree sequence if its sum is odd
+degs &lt;- sample(1:100, 100, replace=TRUE, prob=exp(-0.5*(1:100)))
+if (sum(degs) %% 2 != 0) { degs[1] &lt;- degs[1] + 1 }
+g4 &lt;- sample_degseq(degs, method="vl")
+all(degree(g4) == degs)
+
+## Power-law degree distribution
+## Note, that we correct the degree sequence if its sum is odd
+degs &lt;- sample(1:100, 100, replace=TRUE, prob=(1:100)^-2)
+if (sum(degs) %% 2 != 0) { degs[1] &lt;- degs[1] + 1 }
+g5 &lt;- sample_degseq(degs, method="vl")
+all(degree(g5) == degs)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

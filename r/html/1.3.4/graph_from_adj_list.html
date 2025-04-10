@@ -1,0 +1,118 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.4
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>graph_from_adj_list {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create graphs from adjacency lists</h2>
+
+<h3>Description</h3>
+
+<p>An adjacency list is a list of numeric vectors, containing the neighbor
+vertices for each vertex. This function creates an igraph graph object from
+such a list.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>graph_from_adj_list(
+  adjlist,
+  mode = c("out", "in", "all", "total"),
+  duplicate = TRUE
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>adjlist</code></td>
+<td>
+<p>The adjacency list. It should be consistent, i.e. the maximum
+throughout all vectors in the list must be less than the number of vectors
+(=the number of vertices in the graph). Note that the list is expected to be
+0-indexed.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>Character scalar, it specifies whether the graph to create is
+undirected (&lsquo;all&rsquo; or &lsquo;total&rsquo;) or directed; and in the latter
+case, whether it contains the outgoing (&lsquo;out&rsquo;) or the incoming
+(&lsquo;in&rsquo;) neighbors of the vertices.</p>
+</td></tr>
+<tr valign="top"><td><code>duplicate</code></td>
+<td>
+<p>Logical scalar. For undirected graphs it gives whether
+edges are included in the list twice. E.g. if it is <code>TRUE</code> then for an
+undirected <code>{A,B}</code> edge <code>graph_from_adj_list</code> expects <code>A</code>
+included in the neighbors of <code>B</code> and <code>B</code> to be included in the
+neighbors of <code>A</code>.
+</p>
+<p>This argument is ignored if <code>mode</code> is <code>out</code> or <code>in</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Adjacency lists are handy if you intend to do many (small) modifications to
+a graph. In this case adjacency lists are more efficient than igraph graphs.
+</p>
+<p>The idea is that you convert your graph to an adjacency list by
+<code><a href="as_adj_list.html">as_adj_list</a></code>, do your modifications to the graphs and finally
+create again an igraph graph by calling <code>graph_from_adj_list</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An igraph graph object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="as_edgelist.html">as_edgelist</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+## Directed
+g &lt;- make_ring(10, directed=TRUE)
+al &lt;- as_adj_list(g, mode="out")
+g2 &lt;- graph_from_adj_list(al)
+graph.isomorphic(g, g2)
+
+## Undirected
+g &lt;- make_ring(10)
+al &lt;- as_adj_list(g)
+g2 &lt;- graph_from_adj_list(al, mode="all")
+graph.isomorphic(g, g2)
+ecount(g2)
+g3 &lt;- graph_from_adj_list(al, mode="all", duplicate=FALSE)
+ecount(g3)
+which_multiple(g3)
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.4 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

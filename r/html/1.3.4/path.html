@@ -1,0 +1,97 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.4
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>path {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Helper function to add or delete edges along a path</h2>
+
+<h3>Description</h3>
+
+<p>This function can be used to add or delete edges that form a path.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>path(...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>See details below.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>When adding edges via <code>+</code>, all unnamed arguments are
+concatenated, and each element of a final vector is interpreted
+as a vertex in the graph. For a vector of length <code class="reqn">n+1</code>, <code class="reqn">n</code>
+edges are then added, from vertex 1 to vertex 2, from vertex 2 to vertex
+3, etc. Named arguments will be used as edge attributes for the new
+edges.
+</p>
+<p>When deleting edges, all attributes are concatenated and then passed
+to <code><a href="delete_edges.html">delete_edges</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A special object that can be used together with igraph
+graphs and the plus and minus operators.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other functions for manipulating graph structure: 
+<code><a href="+2B.igraph.html">+.igraph</a>()</code>,
+<code><a href="add_edges.html">add_edges</a>()</code>,
+<code><a href="add_vertices.html">add_vertices</a>()</code>,
+<code><a href="delete_edges.html">delete_edges</a>()</code>,
+<code><a href="delete_vertices.html">delete_vertices</a>()</code>,
+<code><a href="edge.html">edge</a>()</code>,
+<code><a href="igraph-minus.html">igraph-minus</a></code>,
+<code><a href="vertex.html">vertex</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'># Create a (directed) wheel
+g &lt;- make_star(11, center = 1) + path(2:11, 2)
+plot(g)
+
+g &lt;- make_empty_graph(directed = FALSE, n = 10) %&gt;%
+  set_vertex_attr("name", value = letters[1:10])
+
+g2 &lt;- g + path("a", "b", "c", "d")
+plot(g2)
+
+g3 &lt;- g2 + path("e", "f", "g", weight=1:2, color="red")
+E(g3)[[]]
+
+g4 &lt;- g3 + path(c("f", "c", "j", "d"), width=1:3, color="green")
+E(g4)[[]]
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.4 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

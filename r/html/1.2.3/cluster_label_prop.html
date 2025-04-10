@@ -1,0 +1,125 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Finding communities based on propagating labels</h2>
+
+<h3>Description</h3>
+
+<p>This is a fast, nearly linear time algorithm for detecting community
+structure in networks. In works by labeling the vertices with unique labels
+and then updating the labels by majority voting in the neighborhood of the
+vertex.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cluster_label_prop(graph, weights = NULL, initial = NULL,
+  fixed = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph, should be undirected to make sense.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>An optional weight vector. It should contain a positive
+weight for all the edges. The &lsquo;weight&rsquo; edge attribute is used if
+present. Supply &lsquo;<code>NA</code>&rsquo; here if you want to ignore the
+&lsquo;weight&rsquo; edge attribute. Larger edge weights correspond to
+stronger connections.</p>
+</td></tr>
+<tr valign="top"><td><code>initial</code></td>
+<td>
+<p>The initial state. If <code>NULL</code>, every vertex will have a
+different label at the beginning. Otherwise it must be a vector with an
+entry for each vertex. Non-negative values denote different labels, negative
+entries denote vertices without labels.</p>
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+<p>Logical vector denoting which labels are fixed. Of course this
+makes sense only if you provided an initial state, otherwise this element
+will be ignored. Also note that vertices without labels cannot be fixed.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function implements the community detection method described in:
+Raghavan, U.N. and Albert, R. and Kumara, S.: Near linear time algorithm to
+detect community structures in large-scale networks. Phys Rev E 76, 036106.
+(2007). This version extends the original method by the ability to take edge
+weights into consideration and also by allowing some labels to be fixed.
+</p>
+<p>From the abstract of the paper: &ldquo;In our algorithm every node is
+initialized with a unique label and at every step each node adopts the label
+that most of its neighbors currently have. In this iterative process densely
+connected groups of nodes form a consensus on a unique label to form
+communities.&rdquo;
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>cluster_label_prop</code> returns a
+<code><a href="communities.html">communities</a></code> object, please see the <code><a href="communities.html">communities</a></code>
+manual page for details.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a> for the C implementation,
+Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a> for this manual page.
+</p>
+
+
+<h3>References</h3>
+
+<p>Raghavan, U.N. and Albert, R. and Kumara, S.: Near linear time
+algorithm to detect community structures in large-scale networks. <em>Phys
+Rev E</em> 76, 036106. (2007)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="communities.html">communities</a></code> for extracting the actual results.
+</p>
+<p><code><a href="cluster_fast_greedy.html">cluster_fast_greedy</a></code>, <code><a href="cluster_walktrap.html">cluster_walktrap</a></code> and
+<code><a href="cluster_spinglass.html">cluster_spinglass</a></code> for other community detection methods.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  g &lt;- sample_gnp(10, 5/10) %du% sample_gnp(9, 5/9)
+  g &lt;- add_edges(g, c(1, 12))
+  cluster_label_prop(g)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

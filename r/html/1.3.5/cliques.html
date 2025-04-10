@@ -1,0 +1,149 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.5
+---
+
+
+{% raw %}
+
+<table style="width: 100%;"><tr><td>cliques {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Functions to find cliques, ie. complete subgraphs in a graph</h2>
+
+<h3>Description</h3>
+
+<p>These functions find all, the largest or all the maximal cliques in an
+undirected graph. The size of the largest clique can also be calculated.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>cliques(graph, min = 0, max = 0)
+
+max_cliques(graph, min = NULL, max = NULL, subset = NULL, file = NULL)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>graph</code></td>
+<td>
+<p>The input graph, directed graphs will be considered as
+undirected ones, multiple edges and loops are ignored.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>min</code></td>
+<td>
+<p>Numeric constant, lower limit on the size of the cliques to find.
+<code>NULL</code> means no limit, ie. it is the same as 0.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>max</code></td>
+<td>
+<p>Numeric constant, upper limit on the size of the cliques to find.
+<code>NULL</code> means no limit.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>subset</code></td>
+<td>
+<p>If not <code>NULL</code>, then it must be a vector of vertex ids,
+numeric or symbolic if the graph is named. The algorithm is run from these
+vertices only, so only a subset of all maximal cliques is returned. See the
+Eppstein paper for details. This argument makes it possible to easily
+parallelize the finding of maximal cliques.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>file</code></td>
+<td>
+<p>If not <code>NULL</code>, then it must be a file name, i.e. a
+character scalar. The output of the algorithm is written to this file. (If
+it exists, then it will be overwritten.) Each clique will be a separate line
+in the file, given with the numeric ids of its vertices, separated by
+whitespace.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>cliques</code> find all complete subgraphs in the input graph, obeying the
+size limitations given in the <code>min</code> and <code>max</code> arguments.
+</p>
+<p><code>largest_cliques</code> finds all largest cliques in the input graph. A
+clique is largest if there is no other clique including more vertices.
+</p>
+<p><code>max_cliques</code> finds all maximal cliques in the input graph.  A
+clique is maximal if it cannot be extended to a larger clique. The largest
+cliques are always maximal, but a maximal clique is not necessarily the
+largest.
+</p>
+<p><code>count_max_cliques</code> counts the maximal cliques.
+</p>
+<p><code>clique_num</code> calculates the size of the largest clique(s).
+</p>
+<p><code>clique_size_counts</code> returns a numeric vector representing a histogram
+of clique sizes, between the given minimum and maximum clique size.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>cliques</code>, <code>largest_cliques</code> and <code>clique_num</code>
+return a list containing numeric vectors of vertex ids. Each list element is
+a clique, i.e. a vertex sequence of class <code><a href="V.html">igraph.vs</a></code>.
+</p>
+<p><code>max_cliques</code> returns <code>NULL</code>, invisibly, if its <code>file</code>
+argument is not <code>NULL</code>. The output is written to the specified file in
+this case.
+</p>
+<p><code>clique_num</code> and <code>count_max_cliques</code> return an integer
+scalar.
+</p>
+<p><code>clique_size_counts</code> returns a numeric vector with the clique sizes such that
+the i-th item belongs to cliques of size i. Trailing zeros are currently
+truncated, but this might change in future versions.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a> and Gabor Csardi
+<a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>For maximal cliques the following algorithm is implemented:
+David Eppstein, Maarten Loffler, Darren Strash: Listing All Maximal Cliques
+in Sparse Graphs in Near-optimal Time.  <a href="https://arxiv.org/abs/1006.5440">https://arxiv.org/abs/1006.5440</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="ivs.html">ivs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+# this usually contains cliques of size six
+g &lt;- sample_gnp(100, 0.3)
+clique_num(g)
+cliques(g, min=6)
+largest_cliques(g)
+
+# To have a bit less maximal cliques, about 100-200 usually
+g &lt;- sample_gnp(100, 0.03)
+max_cliques(g)
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.5 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

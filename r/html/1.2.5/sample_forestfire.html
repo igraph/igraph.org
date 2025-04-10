@@ -1,0 +1,149 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Forest Fire Network Model</h2>
+
+<h3>Description</h3>
+
+<p>This is a growing network model, which resembles of how the forest fire
+spreads by igniting trees close by.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sample_forestfire(nodes, fw.prob, bw.factor = 1, ambs = 1, directed = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>The number of vertices in the graph.</p>
+</td></tr>
+<tr valign="top"><td><code>fw.prob</code></td>
+<td>
+<p>The forward burning probability, see details below.</p>
+</td></tr>
+<tr valign="top"><td><code>bw.factor</code></td>
+<td>
+<p>The backward burning ratio. The backward burning
+probability is calculated as <code>bw.factor*fw.prob</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ambs</code></td>
+<td>
+<p>The number of ambassador vertices.</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>Logical scalar, whether to create a directed graph.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The forest fire model intends to reproduce the following network
+characteristics, observed in real networks: </p>
+ <ul>
+<li><p> Heavy-tailed
+in-degree distribution.  </p>
+</li>
+<li><p> Heavy-tailed out-degree distribution.  </p>
+</li>
+<li>
+<p>Communities.  </p>
+</li>
+<li><p> Densification power-law. The network is densifying in
+time, according to a power-law rule.  </p>
+</li>
+<li><p> Shrinking diameter. The diameter
+of the network decreases in time.  </p>
+</li></ul>
+
+<p>The network is generated in the following way. One vertex is added at a
+time. This vertex connects to (cites) <code>ambs</code> vertices already present
+in the network, chosen uniformly random. Now, for each cited vertex <i>v</i>
+we do the following procedure: </p>
+ <ol>
+<li><p> We generate two random
+number, <i>x</i> and <i>y</i>, that are geometrically distributed with means
+<i>p/(1-p)</i> and <i>rp(1-rp)</i>. (<i>p</i> is <code>fw.prob</code>, <i>r</i> is
+<code>bw.factor</code>.) The new vertex cites <i>x</i> outgoing neighbors and
+<i>y</i> incoming neighbors of <i>v</i>, from those which are not yet cited by
+the new vertex. If there are less than <i>x</i> or <i>y</i> such vertices
+available then we cite all of them.  </p>
+</li>
+<li><p> The same procedure is applied to
+all the newly cited vertices.  </p>
+</li></ol>
+
+
+
+<h3>Value</h3>
+
+<p>A simple graph, possibly directed if the <code>directed</code> argument is
+<code>TRUE</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p>The version of the model in the published paper is incorrect in the
+sense that it cannot generate the kind of graphs the authors claim. A
+corrected version is available from
+<a href="http://www.cs.cmu.edu/~jure/pubs/powergrowth-tkdd.pdf">http://www.cs.cmu.edu/~jure/pubs/powergrowth-tkdd.pdf</a>, our
+implementation is based on this.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Jure Leskovec, Jon Kleinberg and Christos Faloutsos. Graphs over
+time: densification laws, shrinking diameters and possible explanations.
+<em>KDD '05: Proceeding of the eleventh ACM SIGKDD international
+conference on Knowledge discovery in data mining</em>, 177&ndash;187, 2005.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="barabasi.game.html">barabasi.game</a></code> for the basic preferential attachment
+model.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- sample_forestfire(10000, fw.prob=0.37, bw.factor=0.32/0.37)
+dd1 &lt;- degree_distribution(g, mode="in")
+dd2 &lt;- degree_distribution(g, mode="out")
+plot(seq(along=dd1)-1, dd1, log="xy")
+points(seq(along=dd2)-1, dd2, col=2, pch=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

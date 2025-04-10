@@ -1,0 +1,95 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.5
+---
+
+
+{% raw %}
+
+
+<h2>Diverging palette</h2>
+
+<h3>Description</h3>
+
+<p>This is the &lsquo;PuOr&rsquo; palette from <a href="http://colorbrewer2.org">http://colorbrewer2.org</a>.
+It has at most eleven colors.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+diverging_pal(n)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>The number of colors in the palette. The maximum is eleven
+currently.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is similar to <code><a href="sequential_pal.html">sequential_pal</a></code>, but it also puts
+emphasis on the mid-range values, plus the the two extreme ends.
+Use this palette, if you have such a quantity to mark with vertex
+colors.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector of RGB color codes.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other palettes: 
+<code><a href="categorical_pal.html">categorical_pal</a>()</code>,
+<code><a href="r_pal.html">r_pal</a>()</code>,
+<code><a href="sequential_pal.html">sequential_pal</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+library(igraphdata)
+data(foodwebs)
+fw &lt;- foodwebs[[1]] %&gt;%
+  induced_subgraph(V(.)[ECO == 1]) %&gt;%
+  add_layout_(with_fr()) %&gt;%
+  set_vertex_attr("label", value = seq_len(gorder(.))) %&gt;%
+  set_vertex_attr("size", value = 10) %&gt;%
+  set_edge_attr("arrow.size", value = 0.3)
+
+V(fw)$color &lt;- scales::dscale(V(fw)$Biomass %&gt;% cut(10), diverging_pal)
+plot(fw)
+
+data(karate)
+karate &lt;- karate %&gt;%
+  add_layout_(with_kk()) %&gt;%
+  set_vertex_attr("size", value = 10)
+
+V(karate)$color &lt;- scales::dscale(degree(karate) %&gt;% cut(5), diverging_pal)
+plot(karate)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.5 <a href="index.html">Index</a>]</div>
+{% endraw %}

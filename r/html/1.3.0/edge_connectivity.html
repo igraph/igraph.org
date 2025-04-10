@@ -1,0 +1,133 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.0
+---
+
+
+{% raw %}
+
+
+<h2>Edge connectivity.</h2>
+
+<h3>Description</h3>
+
+<p>The edge connectivity of a graph or two vertices, this is recently also
+called group adhesion.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+edge_connectivity(graph, source = NULL, target = NULL, checks = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>source</code></td>
+<td>
+<p>The id of the source vertex, for <code>edge_connectivity</code> it
+can be <code>NULL</code>, see details below.</p>
+</td></tr>
+<tr valign="top"><td><code>target</code></td>
+<td>
+<p>The id of the target vertex, for <code>edge_connectivity</code> it
+can be <code>NULL</code>, see details below.</p>
+</td></tr>
+<tr valign="top"><td><code>checks</code></td>
+<td>
+<p>Logical constant. Whether to check that the graph is connected
+and also the degree of the vertices. If the graph is not (strongly)
+connected then the connectivity is obviously zero. Otherwise if the minimum
+degree is one then the edge connectivity is also one. It is a good idea to
+perform these checks, as they can be done quickly compared to the
+connectivity calculation itself.  They were suggested by Peter McMahan,
+thanks Peter.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The edge connectivity of a pair of vertices (<code>source</code> and
+<code>target</code>) is the minimum number of edges needed to remove to eliminate
+all (directed) paths from <code>source</code> to <code>target</code>.
+<code>edge_connectivity</code> calculates this quantity if both the <code>source</code>
+and <code>target</code> arguments are given (and not <code>NULL</code>).
+</p>
+<p>The edge connectivity of a graph is the minimum of the edge connectivity of
+every (ordered) pair of vertices in the graph.  <code>edge_connectivity</code>
+calculates this quantity if neither the <code>source</code> nor the <code>target</code>
+arguments are given (ie. they are both <code>NULL</code>).
+</p>
+<p>A set of edge disjoint paths between two vertices is a set of paths between
+them containing no common edges. The maximum number of edge disjoint paths
+between two vertices is the same as their edge connectivity.
+</p>
+<p>The adhesion of a graph is the minimum number of edges needed to remove to
+obtain a graph which is not strongly connected. This is the same as the edge
+connectivity of the graph.
+</p>
+<p>The three functions documented on this page calculate similar properties,
+more precisely the most general is <code>edge_connectivity</code>, the others are
+included only for having more descriptive function names.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A scalar real value.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Douglas R. White and Frank Harary: The cohesiveness of blocks in
+social networks: node connectivity and conditional density, TODO: citation
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="max_flow.html">max_flow</a></code>, <code><a href="vertex_connectivity.html">vertex_connectivity</a></code>,
+<code><a href="vertex_disjoint_paths.html">vertex_disjoint_paths</a></code>, <code><a href="cohesion.html">cohesion</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g &lt;- barabasi.game(100, m=1)
+g2 &lt;- barabasi.game(100, m=5)
+edge_connectivity(g, 100, 1)
+edge_connectivity(g2, 100, 1)
+edge_disjoint_paths(g2, 100, 1)
+
+g &lt;- sample_gnp(50, 5/50)
+g &lt;- as.directed(g)
+g &lt;- induced_subgraph(g, subcomponent(g, 1))
+adhesion(g)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.0 <a href="index.html">Index</a>]</div>
+{% endraw %}

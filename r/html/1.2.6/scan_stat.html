@@ -1,0 +1,117 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.6
+---
+
+
+{% raw %}
+
+
+<h2>Scan statistics on a time series of graphs</h2>
+
+<h3>Description</h3>
+
+<p>Calculate scan statistics on a time series of graphs.
+This is done by calculating the local scan statistics for
+each graph and each vertex, and then normalizing across the
+vertices and across the time steps.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+scan_stat(graphs, tau = 1, ell = 0, locality = c("us", "them"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graphs</code></td>
+<td>
+<p>A list of igraph graph objects. They must be all directed
+or all undirected and they must have the same number of vertices.</p>
+</td></tr>
+<tr valign="top"><td><code>tau</code></td>
+<td>
+<p>The number of previous time steps to consider for the
+time-dependent normalization for individual vertices.  In other words,
+the current locality statistics of each vertex will be compared to this
+many previous time steps of the same vertex to decide whether it is
+significantly larger.</p>
+</td></tr>
+<tr valign="top"><td><code>ell</code></td>
+<td>
+<p>The number of previous time steps to consider
+for the aggregated scan statistics. This is essentially a smoothing
+parameter.</p>
+</td></tr>
+<tr valign="top"><td><code>locality</code></td>
+<td>
+<p>Whether to calculate the &lsquo;us&rsquo; or &lsquo;them&rsquo;
+statistics.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Extra arguments are passed to <code><a href="local_scan.html">local_scan</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with entries:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>stat</code></td>
+<td>
+<p>The scan statistics in each time step. It is <code>NA</code>
+for the initial <code>tau + ell</code> time steps.</p>
+</td></tr>
+<tr valign="top"><td><code>arg_max_v</code></td>
+<td>
+<p>The (numeric) vertex ids for the vertex with
+the largest locality statistics, at each time step. It is <code>NA</code>
+for the initial <code>tau + ell</code> time steps.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p>Other scan statistics: 
+<code><a href="local_scan.html">local_scan</a>()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Generate a bunch of SBMs, with the last one being different
+num_t &lt;- 20
+block_sizes &lt;- c(10, 5, 5)
+p_ij &lt;- list(p = 0.1, h = 0.9, q = 0.9)
+
+P0 &lt;- matrix(p_ij$p, 3, 3)
+P0[2, 2] &lt;- p_ij$h
+PA &lt;- P0
+PA[3, 3] &lt;- p_ij$q
+num_v &lt;- sum(block_sizes)
+
+tsg &lt;- replicate(num_t - 1, P0, simplify = FALSE) %&gt;%
+  append(list(PA)) %&gt;%
+  lapply(sample_sbm, n = num_v, block.sizes = block_sizes, directed = TRUE)
+
+scan_stat(graphs = tsg, k = 1, tau = 4, ell = 2)
+scan_stat(graphs = tsg, locality = "them", k = 1, tau = 4, ell = 2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.6 <a href="index.html">Index</a>]</div>
+{% endraw %}

@@ -1,0 +1,120 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.3
+---
+
+
+{% raw %}
+
+
+<h2>Optimal community structure</h2>
+
+<h3>Description</h3>
+
+<p>This function calculates the optimal community structure of a graph, by
+maximizing the modularity measure over all possible partitions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cluster_optimal(graph, weights = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph. Edge directions are ignored for directed
+graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p>Optional positive weight vector for optimizing weighted
+modularity. If the graph has a <code>weight</code> edge attribute, then this is
+used by default. Supply <code>NA</code> to ignore the weights of a weighted graph.
+Larger edge weights correspond to stronger connections.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function calculates the optimal community structure for a graph, in
+terms of maximal modularity score.
+</p>
+<p>The calculation is done by transforming the modularity maximization into an
+integer programming problem, and then calling the GLPK library to solve
+that. Please the reference below for details.
+</p>
+<p>Note that modularity optimization is an NP-complete problem, and all known
+algorithms for it have exponential time complexity. This means that you
+probably don't want to run this function on larger graphs. Graphs with up to
+fifty vertices should be fine, graphs with a couple of hundred vertices
+might be possible.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>cluster_optimal</code> returns a <code><a href="communities.html">communities</a></code> object,
+please see the <code><a href="communities.html">communities</a></code> manual page for details.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Zachary's karate club
+g &lt;- make_graph("Zachary")
+
+## We put everything into a big 'try' block, in case 
+## igraph was compiled without GLPK support
+
+## The calculation only takes a couple of seconds
+oc &lt;- cluster_optimal(g)
+
+## Double check the result
+print(modularity(oc))
+print(modularity(g, membership(oc)))
+
+## Compare to the greedy optimizer
+fc &lt;- cluster_fast_greedy(g)
+print(modularity(fc))
+</pre>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Csardi <a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Ulrik Brandes, Daniel Delling, Marco Gaertler, Robert Gorke,
+Martin Hoefer, Zoran Nikoloski, Dorothea Wagner: On Modularity Clustering,
+<em>IEEE Transactions on Knowledge and Data Engineering</em> 20(2):172-188,
+2008.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="communities.html">communities</a></code> for the documentation of the result,
+<code><a href="modularity.html">modularity</a></code>. See also <code><a href="cluster_fast_greedy.html">cluster_fast_greedy</a></code> for a
+fast greedy optimizer.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.3 <a href="index.html">Index</a>]</div>
+{% endraw %}

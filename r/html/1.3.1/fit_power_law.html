@@ -1,0 +1,200 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.3.1
+---
+
+
+{% raw %}
+
+<table width="100%"><tr><td>fit_power_law {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Fitting a power-law distribution function to discrete data</h2>
+
+<h3>Description</h3>
+
+<p><code>fit_power_law</code> fits a power-law distribution to a data set.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>fit_power_law(
+  x,
+  xmin = NULL,
+  start = 2,
+  force.continuous = FALSE,
+  implementation = c("plfit", "R.mle"),
+  ...
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The data to fit, a numeric vector. For implementation
+&lsquo;<code>R.mle</code>&rsquo; the data must be integer values. For the
+&lsquo;<code>plfit</code>&rsquo; implementation non-integer values might be present and
+then a continuous power-law distribution is fitted.</p>
+</td></tr>
+<tr valign="top"><td><code>xmin</code></td>
+<td>
+<p>Numeric scalar, or <code>NULL</code>. The lower bound for fitting the
+power-law. If <code>NULL</code>, the smallest value in <code>x</code> will be used for
+the &lsquo;<code>R.mle</code>&rsquo; implementation, and its value will be
+automatically determined for the &lsquo;<code>plfit</code>&rsquo; implementation. This
+argument makes it possible to fit only the tail of the distribution.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>Numeric scalar. The initial value of the exponent for the
+minimizing function, for the &lsquo;<code>R.mle</code>&rsquo; implementation. Usually
+it is safe to leave this untouched.</p>
+</td></tr>
+<tr valign="top"><td><code>force.continuous</code></td>
+<td>
+<p>Logical scalar. Whether to force a continuous
+distribution for the &lsquo;<code>plfit</code>&rsquo; implementation, even if the
+sample vector contains integer values only (by chance). If this argument is
+false, igraph will assume a continuous distribution if at least one sample
+is non-integer and assume a discrete distribution otherwise.</p>
+</td></tr>
+<tr valign="top"><td><code>implementation</code></td>
+<td>
+<p>Character scalar. Which implementation to use. See
+details below.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments, passed to the maximum likelihood
+optimizing function, <code><a href="https://rdrr.io/r/stats4/mle.html">mle</a></code>, if the &lsquo;<code>R.mle</code>&rsquo;
+implementation is chosen. It is ignored by the &lsquo;<code>plfit</code>&rsquo;
+implementation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function fits a power-law distribution to a vector containing samples
+from a distribution (that is assumed to follow a power-law of course). In a
+power-law distribution, it is generally assumed that <code class="reqn">P(X=x)</code> is
+proportional to <code class="reqn">x^{-alpha}</code>, where <code class="reqn">x</code> is a positive
+number and <code class="reqn">\alpha</code> is greater than 1. In many real-world cases,
+the power-law behaviour kicks in only above a threshold value
+<code class="reqn">x_{min}</code>. The goal of this function is to determine
+<code class="reqn">\alpha</code> if <code class="reqn">x_{min}</code> is given, or to determine
+<code class="reqn">x_{min}</code> and the corresponding value of <code class="reqn">\alpha</code>.
+</p>
+<p><code>fit_power_law</code> provides two maximum likelihood implementations.  If
+the <code>implementation</code> argument is &lsquo;<code>R.mle</code>&rsquo;, then the BFGS
+optimization (see <a href="https://rdrr.io/r/stats4/mle.html">mle</a>) algorithm is applied.  The additional
+arguments are passed to the mle function, so it is possible to change the
+optimization method and/or its parameters.  This implementation can
+<em>not</em> to fit the <code class="reqn">x_{min}</code> argument, so use the
+&lsquo;<code>plfit</code>&rsquo; implementation if you want to do that.
+</p>
+<p>The &lsquo;<code>plfit</code>&rsquo; implementation also uses the maximum likelihood
+principle to determine <code class="reqn">\alpha</code> for a given <code class="reqn">x_{min}</code>;
+When <code class="reqn">x_{min}</code> is not given in advance, the algorithm will attempt
+to find itsoptimal value for which the <code class="reqn">p</code>-value of a Kolmogorov-Smirnov
+test between the fitted distribution and the original sample is the largest.
+The function uses the method of Clauset, Shalizi and Newman to calculate the
+parameters of the fitted distribution. See references below for the details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Depends on the <code>implementation</code> argument. If it is
+&lsquo;<code>R.mle</code>&rsquo;, then an object with class &lsquo;<code>mle</code>&rsquo;. It can
+be used to calculate confidence intervals and log-likelihood. See
+<code><a href="https://rdrr.io/r/stats4/mle-class.html">mle-class</a></code> for details.
+</p>
+<p>If <code>implementation</code> is &lsquo;<code>plfit</code>&rsquo;, then the result is a
+named list with entries: </p>
+<table>
+<tr valign="top"><td><code>continuous</code></td>
+<td>
+<p>Logical scalar, whether the
+fitted power-law distribution was continuous or discrete.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>Numeric scalar, the exponent of the fitted power-law
+distribution.</p>
+</td></tr> <tr valign="top"><td><code>xmin</code></td>
+<td>
+<p>Numeric scalar, the minimum value from which the
+power-law distribution was fitted. In other words, only the values larger
+than <code>xmin</code> were used from the input vector.</p>
+</td></tr> <tr valign="top"><td><code>logLik</code></td>
+<td>
+<p>Numeric
+scalar, the log-likelihood of the fitted parameters.</p>
+</td></tr> <tr valign="top"><td><code>KS.stat</code></td>
+<td>
+<p>Numeric
+scalar, the test statistic of a Kolmogorov-Smirnov test that compares the
+fitted distribution with the input vector. Smaller scores denote better
+fit.</p>
+</td></tr> <tr valign="top"><td><code>KS.p</code></td>
+<td>
+<p>Numeric scalar, the p-value of the Kolmogorov-Smirnov
+test. Small p-values (less than 0.05) indicate that the test rejected the
+hypothesis that the original data could have been drawn from the fitted
+power-law distribution.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Tamas Nepusz <a href="mailto:ntamas@gmail.com">ntamas@gmail.com</a> and Gabor Csardi
+<a href="mailto:csardi.gabor@gmail.com">csardi.gabor@gmail.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Power laws, Pareto distributions and Zipf's law, M. E. J.
+Newman, <em>Contemporary Physics</em>, 46, 323-351, 2005.
+</p>
+<p>Aaron Clauset, Cosma R .Shalizi and Mark E.J. Newman: Power-law
+distributions in empirical data. SIAM Review 51(4):661-703, 2009.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="https://rdrr.io/r/stats4/mle.html">mle</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>
+# This should approximately yield the correct exponent 3
+g &lt;- barabasi.game(1000) # increase this number to have a better estimate
+d &lt;- degree(g, mode="in")
+fit1 &lt;- fit_power_law(d+1, 10)
+fit2 &lt;- fit_power_law(d+1, 10, implementation="R.mle")
+
+fit1$alpha
+stats4::coef(fit2)
+fit1$logLik
+stats4::logLik(fit2)
+
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.3.1 <a href="index.html">Index</a>]</div>
+</div>
+{% endraw %}

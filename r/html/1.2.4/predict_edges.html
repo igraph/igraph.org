@@ -1,0 +1,140 @@
+---
+layout: r-manual
+title: igraph R manual pages
+mainheader: R igraph manual pages
+lead: Use this if you are using igraph from R
+vmenu: true
+
+doctype: html/
+langversion: 1.2.4
+---
+
+
+{% raw %}
+
+
+<h2>Predict edges based on a hierarchical random graph model</h2>
+
+<h3>Description</h3>
+
+<p><code>predict_edges</code> uses a hierarchical random graph model to predict
+missing edges from a network. This is done by sampling hierarchical models
+around the optimum model, proportionally to their likelihood. The MCMC
+sampling is stated from <code>hrg</code>, if it is given and the <code>start</code>
+argument is set to <code>TRUE</code>. Otherwise a HRG is fitted to the graph
+first.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+predict_edges(graph, hrg = NULL, start = FALSE, num.samples = 10000,
+  num.bins = 25)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The graph to fit the model to. Edge directions are ignored in
+directed graphs.</p>
+</td></tr>
+<tr valign="top"><td><code>hrg</code></td>
+<td>
+<p>A hierarchical random graph model, in the form of an
+<code>igraphHRG</code> object. <code>predict_edges</code>s allow this to be
+<code>NULL</code> as well, then a HRG is fitted to the graph first, from a
+random starting point.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>Logical, whether to start the fitting/sampling from the
+supplied <code>igraphHRG</code> object, or from a random starting point.</p>
+</td></tr>
+<tr valign="top"><td><code>num.samples</code></td>
+<td>
+<p>Number of samples to use for consensus generation or
+missing edge prediction.</p>
+</td></tr>
+<tr valign="top"><td><code>num.bins</code></td>
+<td>
+<p>Number of bins for the edge probabilities. Give a higher
+number for a more accurate prediction.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with entries:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>The predicted edges, in a two-column matrix of vertex
+ids.</p>
+</td></tr>
+<tr valign="top"><td><code>prob</code></td>
+<td>
+<p>Probabilities of these edges, according to the fitted
+model.</p>
+</td></tr>
+<tr valign="top"><td><code>hrg</code></td>
+<td>
+<p>The (supplied or fitted) hierarchical random graph model.</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p>A. Clauset, C. Moore, and M.E.J. Newman. Hierarchical structure
+and the prediction of missing links in networks. <em>Nature</em> 453, 98&ndash;101
+(2008);
+</p>
+<p>A. Clauset, C. Moore, and M.E.J. Newman. Structural Inference of Hierarchies
+in Networks. In E. M. Airoldi et al. (Eds.): ICML 2006 Ws, <em>Lecture
+Notes in Computer Science</em> 4503, 1&ndash;13. Springer-Verlag, Berlin Heidelberg
+(2007).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other hierarchical random graph functions: <code><a href="consensus_tree.html">consensus_tree</a></code>,
+<code><a href="fit_hrg.html">fit_hrg</a></code>, <code><a href="hrg-methods.html">hrg-methods</a></code>,
+<code><a href="hrg_tree.html">hrg_tree</a></code>, <code><a href="hrg.html">hrg</a></code>,
+<code><a href="print.igraphHRGConsensus.html">print.igraphHRGConsensus</a></code>,
+<code><a href="print.igraphHRG.html">print.igraphHRG</a></code>, <code><a href="sample_hrg.html">sample_hrg</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## We are not running these examples any more, because they
+## take a long time (~15 seconds) to run and this is against the CRAN
+## repository policy. Copy and paste them by hand to your R prompt if
+## you want to run them.
+
+## Not run: 
+## A graph with two dense groups
+g &lt;- sample_gnp(10, p=1/2) + sample_gnp(10, p=1/2)
+hrg &lt;- fit_hrg(g)
+hrg
+
+## The consensus tree for it
+consensus_tree(g, hrg=hrg, start=TRUE)
+
+## Prediction of missing edges
+g2 &lt;- make_full_graph(4) + (make_full_graph(4) - path(1,2))
+predict_edges(g2)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.4 <a href="index.html">Index</a>]</div>
+{% endraw %}
