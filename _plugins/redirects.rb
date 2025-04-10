@@ -42,10 +42,28 @@ Jekyll::Hooks.register :site, :post_write do |site|
   Dir.chdir(site.dest) do
     links.each_pair { |key, value|
       if value
-        # system "ln -s #{Shellwords.escape(value)} #{Shellwords.escape(key)}"
-        system "true"
+        # Create directories for the key if they don't exist
+        FileUtils.mkdir_p(key)
+
+        # Resolve "value" to an absolute path
+        value = File.expand_path(value, File.dirname(File.join(site.dest, key))).delete_prefix(site.dest)
+
+        # Generate an HTML redirect page
+        File.open("#{key}/index.html", "w") do |file|
+          file.write <<~HTML
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta http-equiv="refresh" content="0; url=#{value}/" />
+              <link rel="canonical" href="#{value}/" />
+            </head>
+            <body>
+              <p>If you are not redirected automatically, follow this <a href="#{value}/">link</a>.</p>
+            </body>
+            </html>
+          HTML
+        end
       end
     }
   end
 end
-
