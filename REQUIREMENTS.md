@@ -7,7 +7,7 @@ are listed below.
 
 You need so install RubyGems using `gem install`.
 
-The homepage itself will be built in `docs/`. The contents of `docs/` is exactly
+The homepage itself will be built in `_site/`. The contents of `_site/` is exactly
 the same as what is shown at `igraph.org`. Instead of running Jekyll manually,
 you should call:
 
@@ -19,9 +19,9 @@ you should call:
 
 * `make r` to rebuild the parts related to the R interface.
 
-When you are satisfied with your changes, commit everything (including the
-generated HTML files of the homepage in `docs/`) and push it to Github. Github
-Pages will then update igraph.org accordingly.
+When you are satisfied with your changes, commit everything (excluding the
+generated HTML files of the homepage in `_site/`) and push it to Github. Github
+Actions will then update igraph.org accordingly.
 
 Requirements for building the C-related pages
 ---------------------------------------------
