@@ -42,7 +42,8 @@ Jekyll::Hooks.register :site, :post_write do |site|
   Dir.chdir(site.dest) do
     links.each_pair { |key, value|
       if value
-        system "ln -s #{Shellwords.escape(value)} #{Shellwords.escape(key)}"
+        # system "ln -s #{Shellwords.escape(value)} #{Shellwords.escape(key)}"
+        system "true"
       end
     }
   end
