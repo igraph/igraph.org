@@ -79,14 +79,14 @@ cli::cli_abort(c(
 
 which is more informative about the invalid value supplied, and which directly links to the manual page.
 
-We have also fixed some bugs ( [example](https://github.com/igraph/rigraph/pull/1716)).
+We have also fixed some bugs ([example](https://github.com/igraph/rigraph/pull/1716)).
 
 ## Work on the internals
 
 We did a lot of refactoring!
 Most of it was focussed on [tests](https://github.com/igraph/rigraph/pulls?q=sort%3Aupdated-desc+is%3Apr+in%3Atitle+%22test%3A%22+is%3Amerged), as [previously explained on this blog](/posts/2025-03-04-refactoring-test-files/): merging some test files to ensure alignment between R scripts and test files, refactoring test files for better readability and future debugging, updating the testthat usage by removing old expectations.
-We also worked in the `R/`folder, for instance we replaced the usage of an embedded version of lazyeval with rlang calls.
-( [PR 1](https://github.com/igraph/rigraph/pull/1441), [PR 2](https://github.com/igraph/rigraph/pull/1445))
+We also worked in the `R/`folder, for instance we replaced the usage of an embedded version of lazyeval with rlang calls
+([PR 1](https://github.com/igraph/rigraph/pull/1441), [PR 2](https://github.com/igraph/rigraph/pull/1445)).
 
 ## Sharing our experience
 
