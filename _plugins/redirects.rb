@@ -13,7 +13,7 @@ def latest_version_in(dir)
 end
 
 Jekyll::Hooks.register :site, :after_reset do |site|
-  system "find #{Shellwords.escape(site.dest)} -type l | xargs rm"
+  system "find #{Shellwords.escape(site.dest)} -type l | xargs -r rm"
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
