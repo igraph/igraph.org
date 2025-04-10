@@ -2,6 +2,10 @@
 title: Setting up igraph for success in the next decade
 date: 2025-04-10
 tags: r
+authors:
+- Maëlle Salmon
+- David Schoch
+- Kirill Müller
 ---
 
 _Cross-posted on the [cynkra blog](https://cynkra.com/blog/2025-03-17-igraph-isc-setting-success-decade/)._
