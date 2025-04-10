@@ -69,9 +69,6 @@ def main():
     if not doc_dir.exists():
         fail(f"Build the HTML docs first; {doc_dir} does not exist")
 
-    if jekyll_dir.exists():
-        rmtree(jekyll_dir)
-
     for version in versions:
         doc_dir_version = doc_dir / version
         jekyll_dir_version = jekyll_dir / version
@@ -83,6 +80,9 @@ def main():
             continue
 
         print(jekyll_dir_version)
+        if jekyll_dir_version.exists():
+            rmtree(jekyll_dir_version)
+
         jekyll_dir_version.mkdir(parents=True, exist_ok=True)
         for html_file in doc_dir_version.glob("*.html"):
             jekyll_html_file = jekyll_dir_version / html_file.name
