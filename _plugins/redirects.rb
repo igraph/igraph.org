@@ -17,27 +17,34 @@ Jekyll::Hooks.register :site, :after_reset do |site|
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  puts "  Creating links..."
+  puts "  Duplicating content to simulate symlinks..."
   links = {
+    # values are relative paths anchored at the key, not at site.dest
+
     "c/html/latest" => latest_version_in(File.join(site.source, "c", "html")),
     "c/pdf/latest" => latest_version_in(File.join(site.source, "c", "pdf")),
-    "c/doc" => "html/latest",
     "r/html/latest" => latest_version_in(File.join(site.source, "r", "html")),
     "r/pdf/latest" => latest_version_in(File.join(site.source, "r", "pdf")),
-    "r/doc" => "html/latest",
     "python/api/latest" => latest_version_in(File.join(site.source, "python", "api")),
-    "python/doc/api" => "../api/latest",
-    "python/doc/tutorial" => "../tutorial/latest",
     "python/versions/latest" => latest_version_in(File.join(site.source, "python", "versions")),
 
-    # special case: python/tutorial/X was moved to
-    # python/versions/X/tutorial.html from version 0.10 onwards so we need to
-    # look there
-    # "python/tutorial/latest" => File.join(
-    #   "..", "versions",
-    #   latest_version_in(File.join(site.source, "python", "versions")),
-    #   "tutorial.html"
-    # )
+    "c/doc" => "html/latest",
+    "r/doc" => "html/latest",
+  }
+  Dir.chdir(site.dest) do
+    links.each_pair { |key, value|
+      dest = File.join(site.dest, key)
+      src = File.expand_path(value, File.dirname(File.join(site.dest, key)))
+      preserve = true
+      dereference_root = true
+      remove_destination = true
+
+      FileUtils.copy_entry(src, dest, preserve, dereference_root, remove_destination)
+    }
+  end
+
+  puts "  Creating client-side redirects..."
+  links = {
   }
   Dir.chdir(site.dest) do
     links.each_pair { |key, value|
