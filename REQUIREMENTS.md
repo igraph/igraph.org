@@ -8,16 +8,29 @@ are listed below.
 You need so install RubyGems using `gem install`.
 
 The homepage itself will be built in `_site/`. The contents of `_site/` is exactly
-the same as what is shown at `igraph.org`. Instead of running Jekyll manually,
-you should call:
+the same as what is shown at `igraph.org`.
 
-* `make core` to rebuild the core parts of the homepage.
+If you simply want to add new blog posts, change the layout of the site or do
+anything that does not involve messing around with igraph's source code (like
+generating docs for a new version), the only thing that you need to know is
+that you can edit the Jekyll pages locally and then run the following command
+to preview your changes after a clean checkout:
 
-* `make c` to rebuild the parts related to the C library.
+`bundle install && bundle exec jekyll serve`
 
-* `make python` to rebuild the parts related to the Python interface.
+where `bundle install` takes care of installing Jekyll locally.
 
-* `make r` to rebuild the parts related to the R interface.
+If you need to modify the parts of the homepage that are related to the
+_generated_ documentation, there are a few useful `make` commands that you
+should know about:
+
+* `make core` rebuilds the core parts of the homepage.
+
+* `make c` rebuilds the parts related to the C library.
+
+* `make python` rebuilds the parts related to the Python interface.
+
+* `make r` rebuilds the parts related to the R interface.
 
 When you are satisfied with your changes, commit everything (excluding the
 generated HTML files of the homepage in `_site/`) and push it to Github. Github
