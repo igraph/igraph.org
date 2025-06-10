@@ -160,8 +160,10 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.12.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vs_adj(igraph_vs_t *vs,
-                  igraph_integer_t vid, igraph_neimode_t mode);
+igraph_error_t igraph_vs_adj(
+    igraph_vs_t *vs, igraph_integer_t vid, igraph_neimode_t mode,
+    igraph_loops_t loops, igraph_bool_t multiple
+);
 </pre></div>
 <p>
 </p>
@@ -243,9 +245,30 @@ ID order, as of igraph version 0.4.
 </p>
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Whether to include the vertex itself in the neighborhood if the
+       vertex has a loop edge. If <code class="constant">IGRAPH_NO_LOOPS</code>, loop edges are
+       excluded. If <code class="constant">IGRAPH_LOOPS_ONCE</code>, the vertex is included in its own
+       neighborhood once for every loop edge that it has. If
+       <code class="constant">IGRAPH_LOOPS_TWICE</code>, the vertex is included twice in its own
+       neighborhood for every loop edge that it has, but only if the graph is
+       undirected or <em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
+<td><p>
+  Whether to include multiple edges. If <code class="constant">IGRAPH_NO_MULTIPLE</code>,
+       multiple edges are not included in the neighborhood. If
+       <code class="constant">IGRAPH_MULTIPLE</code>, multiple edges are included in the neighborhood.</p></td>
+</tr>
 </tbody>
 </table></div>
 <p>
+
+
 </p>
 <p><b>Returns: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -2151,8 +2174,10 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.12.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_es_incident(igraph_es_t *es,
-                       igraph_integer_t vid, igraph_neimode_t mode);
+igraph_error_t igraph_es_incident(
+    igraph_es_t *es, igraph_integer_t vid, igraph_neimode_t mode,
+    igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>
@@ -2190,6 +2215,16 @@ igraph_error_t igraph_es_incident(igraph_es_t *es,
        <code class="constant">IGRAPH_OUT</code>, outgoing edges;
        <code class="constant">IGRAPH_IN</code>, incoming edges;
        <code class="constant">IGRAPH_ALL</code>, all edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Whether to include loop edges in the result. If
+       <code class="constant">IGRAPH_NO_LOOPS</code>, loop edges are excluded. If <code class="constant">IGRAPH_LOOPS_ONCE</code>,
+       loop edges are included once. If <code class="constant">IGRAPH_LOOPS_TWICE</code>, loop edges
+       are included twice, but only if the graph is undirected or <em class="parameter"><code>mode</code></em> is
+       set to <code class="constant">IGRAPH_ALL</code>.
 </p></td>
 </tr>
 </tbody>

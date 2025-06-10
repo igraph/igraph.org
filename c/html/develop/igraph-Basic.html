@@ -99,7 +99,7 @@ graphs with self-loops. Most functions which do not support such graphs
 will check their input and issue an error if it is not valid. Those
 rare functions which do not perform this check clearly indicate this
 in their documentation. To eliminate multiple edges from a graph, you can use
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph.">
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph.">
   <code class="function">igraph_simplify()</code></a>.
 </p>
 </div>
@@ -814,7 +814,7 @@ igraph_bool_t igraph_is_directed(const igraph_t *graph);
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Logical value, <code class="constant">true</code> if the graph is directed,
+  Boolean value, <code class="constant">true</code> if the graph is directed,
 <code class="constant">false</code> otherwise.
   </p></td>
 </tr></tbody>
@@ -960,7 +960,10 @@ Time complexity: O(1).
 <a class="indexterm" name="id-1.5.5.6.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_edges(const igraph_t *graph, igraph_es_t eids, igraph_vector_int_t *edges);
+igraph_error_t igraph_edges(
+    const igraph_t *graph, igraph_es_t eids, igraph_vector_int_t *edges,
+    igraph_bool_t bycol
+);
 </pre></div>
 <p>
 </p>
@@ -996,6 +999,16 @@ igraph_error_t igraph_edges(const igraph_t *graph, igraph_es_t eids, igraph_vect
              each edge will be placed here.
 </p></td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bycol</code></em>:</span></p></td>
+<td><p>
+  Boolean constant. If true, the edges will be returned
+       columnwise, e.g. the first edge is
+       <code class="literal">res[0]-&gt;res[|E|]</code>, the second is
+       <code class="literal">res[1]-&gt;res[|E|+1]</code>, etc. Supply false to get
+       the edge list in a format compatible with <a class="link" href="igraph-Basic.html#igraph_add_edges" title="4.3.2. igraph_add_edges — Adds edges to a graph object."><code class="function">igraph_add_edges()</code></a>.
+</p></td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -1024,8 +1037,7 @@ igraph_error_t igraph_edges(const igraph_t *graph, igraph_es_t eids, igraph_vect
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph."><code class="function">igraph_get_edgelist()</code></a> to get the endpoints of all edges;
-    <a class="link" href="igraph-Basic.html#igraph_get_eids" title="4.2.10. igraph_get_eids — Return edge IDs based on the adjacent vertices."><code class="function">igraph_get_eids()</code></a> for the opposite operation;
+  <a class="link" href="igraph-Basic.html#igraph_get_eids" title="4.2.10. igraph_get_eids — Return edge IDs based on the adjacent vertices."><code class="function">igraph_get_eids()</code></a> for the opposite operation;
     <a class="link" href="igraph-Basic.html#igraph_edge" title="4.2.4. igraph_edge — Returns the head and tail vertices of an edge."><code class="function">igraph_edge()</code></a> for getting the endpoints of a single edge;
     <a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge."><code class="function">IGRAPH_TO()</code></a>, <a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge."><code class="function">IGRAPH_FROM()</code></a> and <a class="link" href="igraph-Basic.html#IGRAPH_OTHER" title="4.2.8. IGRAPH_OTHER — The other endpoint of an edge."><code class="function">IGRAPH_OTHER()</code></a> for
     a faster but non-error-checked method.
@@ -1426,10 +1438,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <br class="example-break">
 </div>
-<p>
-Added in version 0.2.</p>
-<p>
- 
+<p> 
 </p>
 </div>
 <div class="section">
@@ -1604,7 +1613,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
             }
         }
 
-        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.23. igraph_diameter — Calculates the diameter of a graph (longest geodesic).">igraph_diameter</a></strong></span>(&amp;g, <span class="emphasis"><em>/*res=*/</em></span> NULL, <span class="emphasis"><em>/*from=*/</em></span> NULL, <span class="emphasis"><em>/*to=*/</em></span> NULL, &amp;path, NULL,
+        <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_diameter" title="3.22. igraph_diameter — Calculates the weighted diameter of a graph using Dijkstra's algorithm.">igraph_diameter</a></strong></span>(&amp;g, <span class="emphasis"><em>/*weights=*/</em></span> NULL, <span class="emphasis"><em>/*res=*/</em></span> NULL, <span class="emphasis"><em>/*from=*/</em></span> NULL, <span class="emphasis"><em>/*to=*/</em></span> NULL, &amp;path, NULL,
                         IGRAPH_UNDIRECTED, <span class="emphasis"><em>/*unconn=*/</em></span> true);
         <span class="strong"><strong>igraph_vector_int_update</strong></span>(&amp;pairs, &amp;path);
         <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_expand_path_to_pairs" title='5.3. igraph_expand_path_to_pairs — Helper function to convert a sequence of vertex IDs describing a path into a "pairs" vector.'>igraph_expand_path_to_pairs</a></strong></span>(&amp;pairs);
@@ -1749,8 +1758,10 @@ Time complexity: TODO
 <a class="indexterm" name="id-1.5.5.6.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_neighbors(const igraph_t *graph, igraph_vector_int_t *neis, igraph_integer_t pnode,
-        igraph_neimode_t mode);
+igraph_error_t igraph_neighbors(
+    const igraph_t *graph, igraph_vector_int_t *neis, igraph_integer_t pnode,
+    igraph_neimode_t mode, igraph_loops_t loops, igraph_bool_t multiple
+);
 </pre></div>
 <p>
 </p>
@@ -1805,6 +1816,28 @@ igraph_error_t igraph_neighbors(const igraph_t *graph, igraph_vector_int_t *neis
        This parameter is ignored for undirected graphs.
 </p></td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat loop edges. <code class="constant">IGRAPH_NO_LOOPS</code>
+       removes loop edges from the result. <code class="constant">IGRAPH_LOOPS_ONCE</code>
+       makes each loop edge appear only once in the result.
+       <code class="constant">IGRAPH_LOOPS_TWICE</code> makes loop edges appear <span class="emphasis"><em>twice</em></span> in the
+       result if the graph is undirected or <em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code>
+       (and once otherwise as returning them twice does not make sense for
+       directed graphs).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat multiple (parallel) edges.
+       <code class="constant">IGRAPH_NO_MULTIPLE</code> collapses parallel edges into a single one;
+       <code class="constant">IGRAPH_MULTIPLE</code> keeps the multiplicities of parallel edges
+       so the same neighbor will appear as many times in the result as the
+       number of parallel edges going between the two vertices.
+</p></td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -1827,9 +1860,8 @@ igraph_error_t igraph_neighbors(const igraph_t *graph, igraph_vector_int_t *neis
 </table></div>
 <p>
 
-Time complexity: O(d),
-d is the number
-of adjacent vertices to the queried vertex.
+Time complexity: O(d), d is the number of adjacent vertices to the queried
+vertex.
 
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
@@ -1846,15 +1878,15 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v, 0);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 4, IGRAPH_DIRECTED, 0,1, 1,2, 2,3, 2,2, -1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;v);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_IN);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_IN, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;v);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_ALL);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_neighbors" title="4.2.12. igraph_neighbors — Adjacent vertices to a vertex.">igraph_neighbors</a></strong></span>(&amp;g, &amp;v, 2, IGRAPH_ALL, IGRAPH_LOOPS_TWICE, IGRAPH_MULTIPLE);
     <span class="strong"><strong>igraph_vector_int_sort</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;v);
 
@@ -1877,8 +1909,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <a class="indexterm" name="id-1.5.5.6.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_incident(const igraph_t *graph, igraph_vector_int_t *eids, igraph_integer_t pnode,
-        igraph_neimode_t mode);
+igraph_error_t igraph_incident(
+    const igraph_t *graph, igraph_vector_int_t *eids, igraph_integer_t pnode,
+    igraph_neimode_t mode, igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>
@@ -1904,8 +1938,7 @@ igraph_error_t igraph_incident(const igraph_t *graph, igraph_vector_int_t *eids,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>eids</code></em>:</span></p></td>
 <td><p>
-  An initialized vector. It will be resized
-to hold the result.
+  An initialized vector. It will be resized to hold the result.
 </p></td>
 </tr>
 <tr>
@@ -1918,9 +1951,21 @@ to hold the result.
 <td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
 <td><p>
   Specifies what kind of edges to include for directed
-graphs. <code class="constant">IGRAPH_OUT</code> means only outgoing edges, <code class="constant">IGRAPH_IN</code> only
-incoming edges, <code class="constant">IGRAPH_ALL</code> both. This parameter is ignored for
-undirected graphs.
+       graphs. <code class="constant">IGRAPH_OUT</code> means only outgoing edges, <code class="constant">IGRAPH_IN</code> means
+       only incoming edges, <code class="constant">IGRAPH_ALL</code> means both. This parameter is
+       ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Specifies how to treat loop edges. <code class="constant">IGRAPH_NO_LOOPS</code>
+       removes loop edges from the result. <code class="constant">IGRAPH_LOOPS_ONCE</code>
+       makes each loop edge appear only once in the result.
+       <code class="constant">IGRAPH_LOOPS_TWICE</code> makes loop edges appear <span class="emphasis"><em>twice</em></span> in the
+       result if the graph is undirected or <em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code>
+       (and once otherwise as returning them twice does not make sense for
+       directed graphs).
 </p></td>
 </tr>
 </tbody>
@@ -1936,14 +1981,13 @@ undirected graphs.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. <code class="constant">IGRAPH_EINVVID</code>: invalid <em class="parameter"><code>pnode</code></em> argument,
-  <code class="constant">IGRAPH_EINVMODE</code>: invalid <em class="parameter"><code>mode</code></em> argument.
+  Error code:
+        <code class="constant">IGRAPH_EINVVID</code>: invalid vertex ID.
+        <code class="constant">IGRAPH_EINVMODE</code>: invalid mode argument.
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory.
   </p></td>
 </tr></tbody>
 </table></div>
-<p>
-
-Added in version 0.2.</p>
 <p>
 
 Time complexity: O(d), the number of incident edges to <em class="parameter"><code>pnode</code></em>.
@@ -1956,9 +2000,10 @@ Time complexity: O(d), the number of incident edges to <em class="parameter"><co
 <a class="indexterm" name="id-1.5.5.6.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_degree(const igraph_t *graph, igraph_vector_int_t *res,
-                  const igraph_vs_t vids,
-                  igraph_neimode_t mode, igraph_bool_t loops);
+igraph_error_t igraph_degree(
+    const igraph_t *graph, igraph_vector_int_t *res, const igraph_vs_t vids,
+    igraph_neimode_t mode, igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>
@@ -2021,8 +2066,10 @@ values. In applications where <code class="constant">igraph_real_t</code> is des
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Boolean, gives whether the self-loops should be
-       counted.
+  Specifies how to treat loop edges when calculating the
+       degree. <code class="constant">IGRAPH_NO_LOOPS</code> ignores loop edges; <code class="constant">IGRAPH_LOOPS_ONCE</code>
+       counts each loop edge only once; <code class="constant">IGRAPH_LOOPS_TWICE</code> counts each
+       loop edge twice in undirected graphs and once in directed graphs.
 </p></td>
 </tr>
 </tbody>
@@ -2219,8 +2266,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <a class="indexterm" name="id-1.5.5.6.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_degree_1(const igraph_t *graph, igraph_integer_t *deg,
-                               igraph_integer_t vid, igraph_neimode_t mode, igraph_bool_t loops);
+igraph_error_t igraph_degree_1(
+    const igraph_t *graph, igraph_integer_t *deg, igraph_integer_t vid,
+    igraph_neimode_t mode, igraph_loops_t loops
+);
 </pre></div>
 <p>
 </p>

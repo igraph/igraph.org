@@ -27,7 +27,7 @@ langversion: develop
 </dl></div>
 <p>Graph generators create graphs.</p>
 <p>Almost all functions which create graph objects are documented
-here. The exceptions are <a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.4. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices."><code class="function">igraph_induced_subgraph()</code></a> and alike, these
+here. The exceptions are <a class="link" href="igraph-Operators.html#igraph_induced_subgraph" title="3.5. igraph_induced_subgraph — Creates a subgraph induced by the specified vertices."><code class="function">igraph_induced_subgraph()</code></a> and alike, these
 create graphs based on another graph.</p>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -59,7 +59,7 @@ create graphs based on another graph.</p>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_realize_bipartite_degree_sequence">1.24. <code class="function">igraph_realize_bipartite_degree_sequence</code> —  Generates a bipartite graph with the given bidegree sequence.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_famous">1.25. <code class="function">igraph_famous</code> —  Create a famous graph by simply providing its name.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_lcf">1.26. <code class="function">igraph_lcf</code> —  Creates a graph from LCF notation.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_lcf_vector">1.27. <code class="function">igraph_lcf_vector</code> —  Creates a graph from LCF notation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_lcf_small">1.27. <code class="function">igraph_lcf_small</code> —  Shorthand to create a graph from LCF notation, giving shifts as the arguments.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_from_prufer">1.28. <code class="function">igraph_from_prufer</code> —  Generates a tree from a Prüfer sequence.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_atlas">1.29. <code class="function">igraph_atlas</code> —  Create a small graph from the <span class="quote">“<span class="quote">Graph Atlas</span>”</span>.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_de_bruijn">1.30. <code class="function">igraph_de_bruijn</code> —  Generate a de Bruijn graph.</a></span></dt>
@@ -264,7 +264,7 @@ undefined behaviour and likely to cause platform-specific issues.
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td>
 <p>
-  Logical constant; gives whether the graph should be
+  Boolean constant; gives whether the graph should be
        directed. Supported values are:
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -416,8 +416,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_DIRECTED</code></span></p></td>
 <td><p>
 
-         The graph will be directed and
-         an element gives the number of edges between two vertices.
+         The graph will be directed and an element gives the number of edges
+          between two vertices.
        
 </p></td>
 </tr>
@@ -425,9 +425,9 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_UNDIRECTED</code></span></p></td>
 <td><p>
 
-         The graph will be undirected and
-         an element gives the number of edges between two vertices.
-         If the input matrix is not symmetric, an error is thrown.
+         The graph will be undirected and an element gives the number of
+         edges between two vertices. If the input matrix is not symmetric,
+         an error is thrown.
        
 </p></td>
 </tr>
@@ -435,9 +435,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_MAX</code></span></p></td>
 <td><p>
 
-         An undirected graph will be created
-         and the number of edges between vertices
-         i and j is max(A(i,j), A(j,i)).
+         An undirected graph will be created and the number of edges between
+         vertices i and j is max(A(i,j), A(j,i)).
        
 </p></td>
 </tr>
@@ -445,9 +444,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_MIN</code></span></p></td>
 <td><p>
 
-         An undirected graph will be created
-         with min(A(i,j), A(j,i))
-         edges between vertices i and j.
+         An undirected graph will be created with min(A(i,j), A(j,i)) edges
+         between vertices i and j.
        
 </p></td>
 </tr>
@@ -455,8 +453,7 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_PLUS</code></span></p></td>
 <td><p>
 
-         An undirected graph will be created
-         with A(i,j)+A(j,i) edges
+         An undirected graph will be created with A(i,j)+A(j,i) edges
          between vertices i and j.
        
 </p></td>
@@ -465,9 +462,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_UPPER</code></span></p></td>
 <td><p>
 
-         An undirected graph will be created.
-         Only the upper right triangle (including the diagonal) is
-         used for the number of edges.
+         An undirected graph will be created. Only the upper right triangle
+         (including the diagonal) is used for the number of edges.
        
 </p></td>
 </tr>
@@ -475,9 +471,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_LOWER</code></span></p></td>
 <td><p>
 
-         An undirected graph will be created.
-         Only the lower left triangle (including the diagonal) is
-         used for the number of edges.
+         An undirected graph will be created. Only the lower left triangle
+         (including the diagonal) is used for the number of edges.
       
 </p></td>
 </tr>
@@ -492,7 +487,8 @@ of edges.
 <td>
 <p>
   Constant to specify how the diagonal of the matrix should be
-       treated when creating loop edges.
+       treated when creating loop edges. Ignored for modes
+       <code class="constant">IGRAPH_ADJ_DIRECTED</code>, <code class="constant">IGRAPH_ADJ_UPPER</code> and <code class="constant">IGRAPH_ADJ_LOWER</code>.
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -630,11 +626,8 @@ of edges.
 <td>
 <p>
   Constant to specify how the given matrix is interpreted
-       as an adjacency matrix. Possible values
-       (A(i,j)
-       is the element in row i and column
-       j in the adjacency matrix
-       <em class="parameter"><code>adjmatrix</code></em>):
+       as an adjacency matrix. Possible values (A(i,j) is the element in row
+       i and column j in the adjacency matrix <em class="parameter"><code>adjmatrix</code></em>):
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -646,8 +639,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_DIRECTED</code></span></p></td>
 <td><p>
 
-         the graph will be directed and
-         an element gives the weight of the edge between two vertices.
+         The graph will be directed and an element specifies the weight of the
+          edge between two vertices.
        
 </p></td>
 </tr>
@@ -655,8 +648,7 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_UNDIRECTED</code></span></p></td>
 <td><p>
 
-         this is the same as <code class="constant">IGRAPH_ADJ_MAX</code>,
-         for convenience.
+         This is the same as <code class="constant">IGRAPH_ADJ_MAX</code>, for convenience.
        
 </p></td>
 </tr>
@@ -664,11 +656,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_MAX</code></span></p></td>
 <td><p>
 
-         undirected graph will be created
-         and the weight of the edge between vertices
-         i and
-         j is
-         max(A(i,j), A(j,i)).
+         An undirected graph will be created and the weight of the edge between
+         vertices i and j is max(A(i,j), A(j,i)).
        
 </p></td>
 </tr>
@@ -676,11 +665,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_MIN</code></span></p></td>
 <td><p>
 
-         undirected graph will be created
-         with edge weight min(A(i,j), A(j,i))
-         between vertices
-         i and
-         j.
+         An undirected graph will be created and the weight of the edge between
+         vertices i and j is min(A(i,j), A(j,i)).
        
 </p></td>
 </tr>
@@ -688,11 +674,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_PLUS</code></span></p></td>
 <td><p>
 
-         undirected graph will be created
-         with edge weight A(i,j)+A(j,i)
-         between vertices
-         i and
-         j.
+         An undirected graph will be created and the weight of the edge between
+         vertices i and j is A(i,j)+A(j,i).
        
 </p></td>
 </tr>
@@ -700,9 +683,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_UPPER</code></span></p></td>
 <td><p>
 
-         undirected graph will be created,
-         only the upper right triangle (including the diagonal) is
-         used for the edge weights.
+         An undirected graph will be created. Only the upper right triangle
+         (including the diagonal) is used for the edge weights.
        
 </p></td>
 </tr>
@@ -710,9 +692,8 @@ of edges.
 <td><p><span class="term"><code class="constant">IGRAPH_ADJ_LOWER</code></span></p></td>
 <td><p>
 
-         undirected graph will be created,
-         only the lower left triangle (including the diagonal) is
-         used for the edge weights.
+         An undirected graph will be created. Only the lower left triangle
+         (including the diagonal) is used for the edge weights.
       
 </p></td>
 </tr>
@@ -733,7 +714,8 @@ of edges.
 <td>
 <p>
   Constant to specify how the diagonal of the matrix should be
-       treated when creating loop edges.
+       treated when creating loop edges. Ignored for modes
+       <code class="constant">IGRAPH_ADJ_DIRECTED</code>, <code class="constant">IGRAPH_ADJ_UPPER</code> and <code class="constant">IGRAPH_ADJ_LOWER</code>.
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
@@ -963,7 +945,7 @@ recreate the igraph graph via this function.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>duplicate</code></em>:</span></p></td>
 <td><p>
-  Logical, for undirected graphs this specified
+  Boolean constant. For undirected graphs this specifies
        whether each edge is included twice, in the vectors of
        both adjacent vertices. If this is <code class="constant">false</code>, then it is
        assumed that every edge is included only once. This argument
@@ -1921,7 +1903,7 @@ connected directed two-cycle contains parallel edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to create a directed graph.
+  Whether to create a directed graph.
        All edges will be oriented in the same direction along
        the cycle or path.
 </p></td>
@@ -1929,14 +1911,14 @@ connected directed two-cycle contains parallel edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>mutual</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to create mutual edges in directed
+  Whether to create mutual edges in directed
        graphs. It is ignored for undirected graphs.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>circular</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to create a closed ring (a cycle)
+  Whether to create a closed ring (a cycle)
        or an open path.
 </p></td>
 </tr>
@@ -2158,7 +2140,7 @@ number of vertices plus the number of edges in the graph.
   <a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_symmetric_tree" title="1.16. igraph_symmetric_tree — Creates a symmetric tree with the specified number of branches at each level."><code class="function">igraph_symmetric_tree()</code></a> and <a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center."><code class="function">igraph_star()</code></a>
 for creating other regular structures; <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.28. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a> and
 <a class="link" href="igraph-Generators.html#igraph_tree_from_parent_vector" title="1.18. igraph_tree_from_parent_vector — Constructs a tree or forest from a vector encoding the parent of each vertex."><code class="function">igraph_tree_from_parent_vector()</code></a> for creating arbitrary trees;
-<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.30. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees;
+<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.31. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees;
 <a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> with <code class="constant">IGRAPH_REALIZE_DEGSEQ_SMALLEST</code>
 to create a tree with given degrees.
   </p></td>
@@ -2322,7 +2304,7 @@ number of vertices plus the number of edges in the graph.
   <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_regular_tree" title="1.17. igraph_regular_tree — Creates a regular tree."><code class="function">igraph_regular_tree()</code></a> and <a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center."><code class="function">igraph_star()</code></a>
 for creating other regular tree structures;
 <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.28. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a> for creating arbitrary trees;
-<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.30. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees.
+<a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.31. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a> for uniform random sampling of trees.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2521,7 +2503,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Compute and print eccentricities. The root is the most central. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eccentricity, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.26. igraph_eccentricity — Eccentricity of some vertices.">igraph_eccentricity</a></strong></span>(&amp;tree, &amp;eccentricity, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_eccentricity" title="3.24. igraph_eccentricity — Eccentricity of some vertices.">igraph_eccentricity</a></strong></span>(&amp;tree, NULL, &amp;eccentricity, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL);
     <span class="strong"><strong>printf</strong></span>("Vertex eccentricities:\n");
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;eccentricity);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;eccentricity);
@@ -2737,13 +2719,13 @@ as well as to directed graphs.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to create a directed graph.
+  Whether to create a directed graph.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to include self-edges (loops).
+  Whether to include self-loops.
 </p></td>
 </tr>
 </tbody>
@@ -3438,10 +3420,10 @@ Connectedness matters: construction and exact random sampling of connected netwo
   <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="9.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a> to test graphicality without generating a graph;
     <a class="link" href="igraph-Generators.html#igraph_realize_bipartite_degree_sequence" title="1.24. igraph_realize_bipartite_degree_sequence — Generates a bipartite graph with the given bidegree sequence."><code class="function">igraph_realize_bipartite_degree_sequence()</code></a> to create bipartite graphs
          from two degree sequence;
-    <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> to generate random graphs with a given
+    <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> to generate random graphs with a given
          degree sequence;
-    <a class="link" href="igraph-Generators.html#igraph_k_regular_game" title="2.9. igraph_k_regular_game — Generates a random graph where each vertex has the same degree."><code class="function">igraph_k_regular_game()</code></a> to generate random regular graphs;
-    <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.14. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a> to randomly rewire the edges of a graph while
+    <a class="link" href="igraph-Generators.html#igraph_k_regular_game" title="2.10. igraph_k_regular_game — Generates a random graph where each vertex has the same degree."><code class="function">igraph_k_regular_game()</code></a> to generate random regular graphs;
+    <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.15. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a> to randomly rewire the edges of a graph while
          preserving its degree sequence.
   </p></td>
 </tr></tbody>
@@ -4103,7 +4085,9 @@ of edges in the graph.
 <a class="indexterm" name="id-1.10.4.27.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_lcf(igraph_t *graph, igraph_integer_t n, ...);
+igraph_error_t igraph_lcf(igraph_t *graph, igraph_integer_t n,
+                          const igraph_vector_int_t *shifts,
+                          igraph_integer_t repeats);
 </pre></div>
 <p>
 </p>
@@ -4111,14 +4095,105 @@ igraph_error_t igraph_lcf(igraph_t *graph, igraph_integer_t n, ...);
 
 
 
-</p>
-<p>
-LCF is short for Lederberg-Coxeter-Frucht, it is a concise notation for
-3-regular Hamiltonian graphs. It consists of three parameters: the
+LCF notation (named after Lederberg, Coxeter and Frucht) is a concise notation
+for 3-regular Hamiltonian graphs. It consists of three parameters: the
 number of vertices in the graph, a list of shifts giving additional
 edges to a cycle backbone, and another integer giving how many times
 the shifts should be performed. See
 <a class="ulink" href="https://mathworld.wolfram.com/LCFNotation.html" target="_top">https://mathworld.wolfram.com/LCFNotation.html</a> for details.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p>
+  Integer constant giving the number of vertices. This
+   is normally set to the number of shifts multiplied by the
+   number of repeats.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>shifts</code></em>:</span></p></td>
+<td><p>
+  An integer vector giving the shifts.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>repeats</code></em>:</span></p></td>
+<td><p>
+  The number of repeats for the shifts.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Generators.html#igraph_lcf_small" title="1.27. igraph_lcf_small — Shorthand to create a graph from LCF notation, giving shifts as the arguments."><code class="function">igraph_lcf_small()</code></a>, <a class="link" href="igraph-Generators.html#igraph_extended_chordal_ring" title="1.34. igraph_extended_chordal_ring — Create an extended chordal ring."><code class="function">igraph_extended_chordal_ring()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number of vertices plus
+the number of edges.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_lcf_small"></a>1.27. <code class="function">igraph_lcf_small</code> —  Shorthand to create a graph from LCF notation, giving shifts as the arguments.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.4.28.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_lcf_small(igraph_t *graph, igraph_integer_t n, ...);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function provides a shorthand to give the shifts of the LCF notation
+directly as function arguments. See <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a> for an explanation
+of LCF notation.
 
 </p>
 <p><b>Arguments: </b>
@@ -4177,7 +4252,7 @@ the shifts should be performed. See
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  See <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a> for a similar function using an
+  See <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a> for a similar function using an
 <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a> instead of the variable length argument list;
 <a class="link" href="igraph-Generators.html#igraph_circulant" title="1.32. igraph_circulant — Creates a circulant graph."><code class="function">igraph_circulant()</code></a> to create circulant graphs.
   </p></td>
@@ -4191,69 +4266,38 @@ of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.4.27.11.1"></a><p class="title"><b>Example 9.12.  File <code class="code">examples/simple/igraph_lcf.c</code></b></p>
+<a name="id-1.10.4.28.10.1"></a><p class="title"><b>Example 9.12.  File <code class="code">examples/simple/igraph_lcf.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
-    igraph_t g, g2;
+    igraph_t g1, g2;
+    igraph_vector_int_t edges;
     igraph_bool_t iso;
 
-    <span class="emphasis"><em>// Franklin graph</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation.">igraph_lcf</a></strong></span>(&amp;g, 12, 5, -5, 6, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g2, "franklin");
+    <span class="emphasis"><em>// Heawood graph through LCF notation: [5, -5]^7</em></span>
+    <span class="emphasis"><em>// The number of vertices is normally the number of shifts</em></span>
+    <span class="emphasis"><em>// multiplied by the number of repeats, in this case 2*7 = 14.</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf_small" title="1.27. igraph_lcf_small — Shorthand to create a graph from LCF notation, giving shifts as the arguments.">igraph_lcf_small</a></strong></span>(&amp;g1,
+                     <span class="emphasis"><em>/* n */</em></span> 14,
+                     <span class="emphasis"><em>/* shifts */</em></span> 5, -5,
+                     <span class="emphasis"><em>/* repeats */</em></span>7,
+                     0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic_vf2" title="3.1. igraph_isomorphic_vf2 — Isomorphism via VF2.">igraph_isomorphic_vf2</a></strong></span>(&amp;g, &amp;g2,
-                          <span class="emphasis"><em>/*vertex.color1=*/</em></span> 0, <span class="emphasis"><em>/*vertex.color2=*/</em></span> 0,
-                          <span class="emphasis"><em>/*edge.color1=*/</em></span> 0, <span class="emphasis"><em>/*edge.color2=*/</em></span> 0,
-                          &amp;iso, 0, 0, 0, 0, 0);
-    <span class="strong"><strong>if</strong></span> (!iso) {
-        <span class="strong"><strong>printf</strong></span>("Failure: Franklin\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
+    <span class="strong"><strong>printf</strong></span>("edges:\n");
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_edgelist" title="26.11. igraph_get_edgelist — The list of edges in a graph.">igraph_get_edgelist</a></strong></span>(&amp;g1, &amp;edges, false);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edges);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="emphasis"><em>// Built-in Heawood graph:</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g2, "Heawood");
+    <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?">igraph_isomorphic</a></strong></span>(&amp;g1, &amp;g2, &amp;iso);
+    <span class="strong"><strong>printf</strong></span>("isomorphic: %s\n", iso ? "true" : "false");
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
-    <span class="emphasis"><em>// [3, -2]^4, n=8</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation.">igraph_lcf</a></strong></span>(&amp;g, 8, 3, -2, 4, 0);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 16) {
-        <span class="strong"><strong>printf</strong></span>("Failure: [3, -2]^4, n=8\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>// [2, -2]^2, n=2</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation.">igraph_lcf</a></strong></span>(&amp;g, 2, 2, -2, 2, 0);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
-        <span class="strong"><strong>printf</strong></span>("Failure: [2, -2]^2, n=2\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>// [2]^2, n=2</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation.">igraph_lcf</a></strong></span>(&amp;g, 2, 2, 2, 0);
-
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
-        <span class="strong"><strong>printf</strong></span>("Failure: [2]^2, n=2\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
-
-    <span class="emphasis"><em>// Regression test for bug #996</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation.">igraph_lcf</a></strong></span>(&amp;g, 0, 0);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 0 || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 0) {
-        <span class="strong"><strong>printf</strong></span>("Failure: regression test for #996\n");
-        <span class="strong"><strong>return</strong></span> 1;
-    }
-
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -4264,98 +4308,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <br class="example-break">
 </div>
 <p> 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_lcf_vector"></a>1.27. <code class="function">igraph_lcf_vector</code> —  Creates a graph from LCF notation.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.28.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_lcf_vector(igraph_t *graph, igraph_integer_t n,
-                      const igraph_vector_int_t *shifts,
-                      igraph_integer_t repeats);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-This function is essentially the same as <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, only
-the way for giving the arguments is different. See <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a> for details.
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  Pointer to an uninitialized graph object.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
-<td><p>
-  Integer constant giving the number of vertices.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>shifts</code></em>:</span></p></td>
-<td><p>
-  A vector giving the shifts.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>repeats</code></em>:</span></p></td>
-<td><p>
-  An integer constant giving the number of repeats
-       for the shifts.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-</p>
-<p><b>See also: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, <a class="link" href="igraph-Generators.html#igraph_extended_chordal_ring" title="1.34. igraph_extended_chordal_ring — Create an extended chordal ring."><code class="function">igraph_extended_chordal_ring()</code></a>
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(|V|+|E|), linear in the number of vertices plus
-the number of edges.
- 
 </p>
 </div>
 <div class="section">
@@ -4460,7 +4412,7 @@ Linear-time Algorithms for Encoding Trees as Sequences of Node Labels
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_to_prufer" title="15.5. igraph_to_prufer — Converts a tree to its Prüfer sequence."><code class="function">igraph_to_prufer()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.30. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a>
+  <a class="link" href="igraph-Structural.html#igraph_to_prufer" title="15.5. igraph_to_prufer — Converts a tree to its Prüfer sequence."><code class="function">igraph_to_prufer()</code></a>, <a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children."><code class="function">igraph_kary_tree()</code></a>, <a class="link" href="igraph-Generators.html#igraph_tree_game" title="2.31. igraph_tree_game — Generates a random tree with the given number of nodes."><code class="function">igraph_tree_game()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5023,7 +4975,7 @@ inserted, in the following way: vertex <code class="constant">i</code> will conn
 In other words, vertex <code class="constant">i</code> will be connected to vertex
 <code class="literal">(i + L[(i mod p)]) mod nodes</code>. If multiple edges are
 defined in this way, this will output a non-simple graph. The result
-can be simplified using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+can be simplified using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
 
 </p>
 <p>
@@ -5100,8 +5052,7 @@ the reverse endpoints.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf_vector" title="1.27. igraph_lcf_vector — Creates a graph from LCF notation."><code class="function">igraph_lcf_vector()</code></a>,
-<a class="link" href="igraph-Generators.html#igraph_circulant" title="1.32. igraph_circulant — Creates a circulant graph."><code class="function">igraph_circulant()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph."><code class="function">igraph_ring()</code></a>, <a class="link" href="igraph-Generators.html#igraph_lcf" title="1.26. igraph_lcf — Creates a graph from LCF notation."><code class="function">igraph_lcf()</code></a>, <a class="link" href="igraph-Generators.html#igraph_circulant" title="1.32. igraph_circulant — Creates a circulant graph."><code class="function">igraph_circulant()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -5121,35 +5072,36 @@ of edges.
 <dt><span class="section"><a href="igraph-Generators.html#igraph_barabasi_game">2.2. <code class="function">igraph_barabasi_game</code> —  Generates a graph based on the Barabási-Albert model.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_erdos_renyi_game_gnm">2.3. <code class="function">igraph_erdos_renyi_game_gnm</code> —  Generates a random (Erdős-Rényi) graph with a fixed number of edges.</a></span></dt>
 <dt><span class="section"><a href="igraph-Generators.html#igraph_erdos_renyi_game_gnp">2.4. <code class="function">igraph_erdos_renyi_game_gnp</code> —  Generates a random (Erdős-Rényi) graph with fixed edge probabilities.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_watts_strogatz_game">2.5. <code class="function">igraph_watts_strogatz_game</code> —  The Watts-Strogatz small-world model.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire_edges">2.6. <code class="function">igraph_rewire_edges</code> —  Rewires the edges of a graph with constant probability.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire_directed_edges">2.7. <code class="function">igraph_rewire_directed_edges</code> —  Rewires the chosen endpoint of directed edges.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_degree_sequence_game">2.8. <code class="function">igraph_degree_sequence_game</code> —  Generates a random graph with a given degree sequence.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_k_regular_game">2.9. <code class="function">igraph_k_regular_game</code> —  Generates a random graph where each vertex has the same degree.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_static_fitness_game">2.10. <code class="function">igraph_static_fitness_game</code> —  Non-growing random graph with edge probabilities proportional to node fitness scores.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_static_power_law_game">2.11. <code class="function">igraph_static_power_law_game</code> —  Generates a non-growing random graph with expected power-law degree distributions.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_chung_lu_game">2.12. <code class="function">igraph_chung_lu_game</code> —  Samples graphs from the Chung-Lu model.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_forest_fire_game">2.13. <code class="function">igraph_forest_fire_game</code> —  Generates a network according to the <span class="quote">“<span class="quote">forest fire game</span>”</span>.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire">2.14. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_growing_random_game">2.15. <code class="function">igraph_growing_random_game</code> —  Generates a growing random graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_callaway_traits_game">2.16. <code class="function">igraph_callaway_traits_game</code> —  Simulates a growing network with vertex types.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_establishment_game">2.17. <code class="function">igraph_establishment_game</code> —  Generates a graph with a simple growing model with vertex types.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_preference_game">2.18. <code class="function">igraph_preference_game</code> —  Generates a graph with vertex types and connection preferences.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_asymmetric_preference_game">2.19. <code class="function">igraph_asymmetric_preference_game</code> —  Generates a graph with asymmetric vertex types and connection preferences.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_recent_degree_game">2.20. <code class="function">igraph_recent_degree_game</code> —  Stochastic graph generator based on the number of incident edges a node has gained recently.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_barabasi_aging_game">2.21. <code class="function">igraph_barabasi_aging_game</code> —  Preferential attachment with aging of vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_recent_degree_aging_game">2.22. <code class="function">igraph_recent_degree_aging_game</code> —  Preferential attachment based on the number of edges gained recently, with aging of vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_lastcit_game">2.23. <code class="function">igraph_lastcit_game</code> —  Simulates a citation network, based on time passed since the last citation.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_cited_type_game">2.24. <code class="function">igraph_cited_type_game</code> —  Simulates a citation based on vertex types.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_citing_cited_type_game">2.25. <code class="function">igraph_citing_cited_type_game</code> —  Simulates a citation network based on vertex types.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_sbm_game">2.26. <code class="function">igraph_sbm_game</code> —  Sample from a stochastic block model.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_hsbm_game">2.27. <code class="function">igraph_hsbm_game</code> —  Hierarchical stochastic block model.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_hsbm_list_game">2.28. <code class="function">igraph_hsbm_list_game</code> —  Hierarchical stochastic block model, more general version.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_dot_product_game">2.29. <code class="function">igraph_dot_product_game</code> —  Generates a random dot product graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_tree_game">2.30. <code class="function">igraph_tree_game</code> —  Generates a random tree with the given number of nodes.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_correlated_game">2.31. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_correlated_pair_game">2.32. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</a></span></dt>
-<dt><span class="section"><a href="igraph-Generators.html#igraph_simple_interconnected_islands_game">2.33. <code class="function">igraph_simple_interconnected_islands_game</code> —  Generates a random graph made of several interconnected islands, each island being a random graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_iea_game">2.5. <code class="function">igraph_iea_game</code> —  Generates a random multigraph through independent edge assignment.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_watts_strogatz_game">2.6. <code class="function">igraph_watts_strogatz_game</code> —  The Watts-Strogatz small-world model.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire_edges">2.7. <code class="function">igraph_rewire_edges</code> —  Rewires the edges of a graph with constant probability.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire_directed_edges">2.8. <code class="function">igraph_rewire_directed_edges</code> —  Rewires the chosen endpoint of directed edges.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_degree_sequence_game">2.9. <code class="function">igraph_degree_sequence_game</code> —  Generates a random graph with a given degree sequence.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_k_regular_game">2.10. <code class="function">igraph_k_regular_game</code> —  Generates a random graph where each vertex has the same degree.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_static_fitness_game">2.11. <code class="function">igraph_static_fitness_game</code> —  Non-growing random graph with edge probabilities proportional to node fitness scores.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_static_power_law_game">2.12. <code class="function">igraph_static_power_law_game</code> —  Generates a non-growing random graph with expected power-law degree distributions.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_chung_lu_game">2.13. <code class="function">igraph_chung_lu_game</code> —  Samples graphs from the Chung-Lu model.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_forest_fire_game">2.14. <code class="function">igraph_forest_fire_game</code> —  Generates a network according to the <span class="quote">“<span class="quote">forest fire game</span>”</span>.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_rewire">2.15. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_growing_random_game">2.16. <code class="function">igraph_growing_random_game</code> —  Generates a growing random graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_callaway_traits_game">2.17. <code class="function">igraph_callaway_traits_game</code> —  Simulates a growing network with vertex types.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_establishment_game">2.18. <code class="function">igraph_establishment_game</code> —  Generates a graph with a simple growing model with vertex types.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_preference_game">2.19. <code class="function">igraph_preference_game</code> —  Generates a graph with vertex types and connection preferences.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_asymmetric_preference_game">2.20. <code class="function">igraph_asymmetric_preference_game</code> —  Generates a graph with asymmetric vertex types and connection preferences.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_recent_degree_game">2.21. <code class="function">igraph_recent_degree_game</code> —  Stochastic graph generator based on the number of incident edges a node has gained recently.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_barabasi_aging_game">2.22. <code class="function">igraph_barabasi_aging_game</code> —  Preferential attachment with aging of vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_recent_degree_aging_game">2.23. <code class="function">igraph_recent_degree_aging_game</code> —  Preferential attachment based on the number of edges gained recently, with aging of vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_lastcit_game">2.24. <code class="function">igraph_lastcit_game</code> —  Simulates a citation network, based on time passed since the last citation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_cited_type_game">2.25. <code class="function">igraph_cited_type_game</code> —  Simulates a citation based on vertex types.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_citing_cited_type_game">2.26. <code class="function">igraph_citing_cited_type_game</code> —  Simulates a citation network based on vertex types.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_sbm_game">2.27. <code class="function">igraph_sbm_game</code> —  Sample from a stochastic block model.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_hsbm_game">2.28. <code class="function">igraph_hsbm_game</code> —  Hierarchical stochastic block model.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_hsbm_list_game">2.29. <code class="function">igraph_hsbm_list_game</code> —  Hierarchical stochastic block model, more general version.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_dot_product_game">2.30. <code class="function">igraph_dot_product_game</code> —  Generates a random dot product graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_tree_game">2.31. <code class="function">igraph_tree_game</code> —  Generates a random tree with the given number of nodes.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_correlated_game">2.32. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_correlated_pair_game">2.33. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Generators.html#igraph_simple_interconnected_islands_game">2.34. <code class="function">igraph_simple_interconnected_islands_game</code> —  Generates a random graph made of several interconnected islands, each island being a random graph.</a></span></dt>
 </dl></div>
 <p>Games are random graph generators, i.e. they generate a different
 graph every time they are called. igraph includes many such generators.
@@ -5211,7 +5163,7 @@ Original code contributed by Keith Briggs, thanks Keith.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>torus</code></em>:</span></p></td>
 <td><p>
-  Logical constant. If true, periodic boundary conditions
+  Boolean constant. If true, periodic boundary conditions
        will be used, i.e. the vertices are assumed to be on a torus
        instead of a square.
 </p></td>
@@ -5292,7 +5244,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Compute average path length */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length_dijkstra" title="3.21. igraph_average_path_length_dijkstra — The average weighted shortest path length between all vertex pairs.">igraph_average_path_length_dijkstra</a></strong></span>(&amp;graph, &amp;avg_dist, NULL, &amp;weights, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn */</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_average_path_length" title="3.20. igraph_average_path_length — The average shortest path length between all vertex pairs.">igraph_average_path_length</a></strong></span>(&amp;graph, &amp;weights, &amp;avg_dist, NULL, IGRAPH_UNDIRECTED, <span class="emphasis"><em>/* unconn */</em></span> 1);
 
     <span class="strong"><strong>printf</strong></span>("Average distance in the geometric graph: %g.\n", avg_dist);
 
@@ -5576,7 +5528,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 5;
     }
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v2, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;v2, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;v2, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS);
     <span class="strong"><strong>for</strong></span> (igraph_integer_t i = 0; i &lt; <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g); i++) {
         <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v3)[i] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(v2)[i]) {
             <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;v3);
@@ -5764,20 +5716,20 @@ and <em class="parameter"><code>m</code></em> edges is generated uniformly at ra
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate a directed graph.
+  Whether to generate a directed graph.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate self-loops.
+  Whether to generate self-loops.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
 <td><p>
-  Logical, whether it is allowed to generate more than one
-       edge between the same pair of vertices.
+  Whether it is allowed to generate more than one edge between
+   the same pair of vertices.
 </p></td>
 </tr>
 </tbody>
@@ -5816,9 +5768,11 @@ number of vertices plus the number of edges in the graph.
 <td><p>
   <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> to sample from the related
 <code class="literal">G(n, p)</code> model, which constrains the <span class="emphasis"><em>expected</em></span> edge count;
-<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> to constrain the degree sequence;
+<a class="link" href="igraph-Generators.html#igraph_iea_game" title="2.5. igraph_iea_game — Generates a random multigraph through independent edge assignment."><code class="function">igraph_iea_game()</code></a> to generate multigraph by assigning edges to vertex
+pairs uniformly and independently;
+<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> to constrain the degree sequence;
 <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> for the bipartite version of this model;
-<a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model."><code class="function">igraph_barabasi_game()</code></a> and <a class="link" href="igraph-Generators.html#igraph_growing_random_game" title="2.15. igraph_growing_random_game — Generates a growing random graph."><code class="function">igraph_growing_random_game()</code></a> for other
+<a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model."><code class="function">igraph_barabasi_game()</code></a> and <a class="link" href="igraph-Generators.html#igraph_growing_random_game" title="2.16. igraph_growing_random_game — Generates a growing random graph."><code class="function">igraph_growing_random_game()</code></a> for other
 commonly used random graph models.
   </p></td>
 </tr></tbody>
@@ -5935,13 +5889,13 @@ in (undirected or directed) graphs without self-loops,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate a directed graph.
+  Whether to generate a directed graph.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate self-loops.
+  Whether to generate self-loops.
 </p></td>
 </tr>
 </tbody>
@@ -5979,11 +5933,11 @@ number of vertices plus the number of edges in the graph.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> to generate random graphs with
-a sharply fixed edge count; <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.12. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a> and
-<a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.10. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> to generate random graphs with a
+a sharply fixed edge count; <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.13. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a> and
+<a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.11. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> to generate random graphs with a
 fixed expected degree sequence; <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> for the
 bipartite version of this model; <a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model."><code class="function">igraph_barabasi_game()</code></a> and
-<a class="link" href="igraph-Generators.html#igraph_growing_random_game" title="2.15. igraph_growing_random_game — Generates a growing random graph."><code class="function">igraph_growing_random_game()</code></a> for other commonly used random graph models.
+<a class="link" href="igraph-Generators.html#igraph_growing_random_game" title="2.16. igraph_growing_random_game — Generates a growing random graph."><code class="function">igraph_growing_random_game()</code></a> for other commonly used random graph models.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -6037,8 +5991,153 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_watts_strogatz_game"></a>2.5. <code class="function">igraph_watts_strogatz_game</code> —  The Watts-Strogatz small-world model.</h3></div></div></div>
+<a name="igraph_iea_game"></a>2.5. <code class="function">igraph_iea_game</code> —  Generates a random multigraph through independent edge assignment.</h3></div></div></div>
 <a class="indexterm" name="id-1.10.5.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_iea_game(
+        igraph_t *graph,
+        igraph_integer_t n, igraph_integer_t m,
+        igraph_bool_t directed, igraph_bool_t loops);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This model generates random multigraphs on <em class="parameter"><code>n</code></em> vertices with <em class="parameter"><code>m</code></em> edges
+through independent edge assignment (IEA). Each of the <em class="parameter"><code>m</code></em> edges is assigned
+uniformly at random to an <span class="emphasis"><em>ordered</em></span> vertex pair, independently of each
+other.
+
+</p>
+<p>
+This model does not sample multigraphs uniformly. Undirected graphs are
+generated with probability proportional to
+
+</p>
+<p>
+<code class="literal">(prod_(i&lt;j) A_ij ! prod_i A_ii !!)^(-1)</code>,
+
+</p>
+<p>
+where <code class="constant">A</code> denotes the adjacency matrix and <code class="literal">!!</code> denotes
+the double factorial. Here <code class="constant">A</code> is assumed to have twice the number of
+self-loops on its diagonal. The corresponding  expression for directed
+graphs is
+
+</p>
+<p>
+<code class="literal">(prod_(i,j) A_ij !)^(-1)</code>.
+
+</p>
+<p>
+Thus the probability of all simple graphs (which only have 0s and 1s in
+the adjacency matrix) is the same, while that of non-simple ones depends
+on their edge and self-loop multiplicities.
+
+</p>
+<p>
+An alternative way to think of this model is that it performs uniform
+sampling of <span class="emphasis"><em>edge-labeled</em></span> graphs, i.e. graphs in which not only vertices,
+but also edges carry unique identities and are distinguishable.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n</code></em>:</span></p></td>
+<td><p>
+  The number of vertices in the graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p>
+  The number of edges in the graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Whether to generate a directed graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p>
+  Whether to generate self-loops.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_EINVAL</code>: invalid <em class="parameter"><code>n</code></em> or <em class="parameter"><code>m</code></em> parameter.
+        <code class="constant">IGRAPH_ENOMEM</code>: there is not enough
+        memory for the operation.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), the
+number of vertices plus the number of edges in the graph.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> to uniformly sample graphs with
+a given number of vertices and edges.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_watts_strogatz_game"></a>2.6. <code class="function">igraph_watts_strogatz_game</code> —  The Watts-Strogatz small-world model.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_watts_strogatz_game(igraph_t *graph, igraph_integer_t dim,
@@ -6111,7 +6210,7 @@ Nature 393, 440-442, 1998.
 <td><p><span class="term"><em class="parameter"><code>nei</code></em>:</span></p></td>
 <td><p>
   The size of the neighborhood for each vertex. This is
-   the same as the <em class="parameter"><code>nei</code></em> argument of <a class="link" href="igraph-Operators.html#igraph_connect_neighborhood" title="3.1. igraph_connect_neighborhood — Connects each vertex to its neighborhood."><code class="function">igraph_connect_neighborhood()</code></a>.
+   the same as the <em class="parameter"><code>order</code></em> argument of <a class="link" href="igraph-Operators.html#igraph_connect_neighborhood" title="3.1. igraph_connect_neighborhood — Connects each vertex to its neighborhood."><code class="function">igraph_connect_neighborhood()</code></a>.
 </p></td>
 </tr>
 <tr>
@@ -6124,14 +6223,13 @@ Nature 393, 440-442, 1998.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate loop edges.
+  Whether to generate loop edges.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to allow multiple edges in the
-  generated graph.
+  Whether to allow multiple edges in the generated graph.
 </p></td>
 </tr>
 </tbody>
@@ -6164,7 +6262,7 @@ Nature 393, 440-442, 1998.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a>, <a class="link" href="igraph-Operators.html#igraph_connect_neighborhood" title="3.1. igraph_connect_neighborhood — Connects each vertex to its neighborhood."><code class="function">igraph_connect_neighborhood()</code></a> and
-<a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.6. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a> can be used if more flexibility is
+<a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.7. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a> can be used if more flexibility is
 needed, e.g. a different type of lattice.
   </p></td>
 </tr></tbody>
@@ -6179,8 +6277,8 @@ argument.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rewire_edges"></a>2.6. <code class="function">igraph_rewire_edges</code> —  Rewires the edges of a graph with constant probability.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.8.2"></a><p>
+<a name="igraph_rewire_edges"></a>2.7. <code class="function">igraph_rewire_edges</code> —  Rewires the edges of a graph with constant probability.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rewire_edges(igraph_t *graph, igraph_real_t prob,
@@ -6266,7 +6364,7 @@ call <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_watts_strogatz_game" title="2.5. igraph_watts_strogatz_game — The Watts-Strogatz small-world model."><code class="function">igraph_watts_strogatz_game()</code></a> uses this function for the
+  <a class="link" href="igraph-Generators.html#igraph_watts_strogatz_game" title="2.6. igraph_watts_strogatz_game — The Watts-Strogatz small-world model."><code class="function">igraph_watts_strogatz_game()</code></a> uses this function for the
 rewiring.
   </p></td>
 </tr></tbody>
@@ -6279,8 +6377,8 @@ Time complexity: O(|V|+|E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rewire_directed_edges"></a>2.7. <code class="function">igraph_rewire_directed_edges</code> —  Rewires the chosen endpoint of directed edges.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.9.2"></a><p>
+<a name="igraph_rewire_directed_edges"></a>2.8. <code class="function">igraph_rewire_directed_edges</code> —  Rewires the chosen endpoint of directed edges.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rewire_directed_edges(igraph_t *graph, igraph_real_t prob,
@@ -6317,7 +6415,7 @@ call <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_
 <td><p>
   The input graph, this will be rewired, it can be
    directed or undirected. If it is undirected or <em class="parameter"><code>mode</code></em> is set to
-   IGRAPH_ALL, <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.6. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a> will be called.
+   IGRAPH_ALL, <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.7. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a> will be called.
 </p></td>
 </tr>
 <tr>
@@ -6406,7 +6504,7 @@ call <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.6. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a>, <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.14. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_rewire_edges" title="2.7. igraph_rewire_edges — Rewires the edges of a graph with constant probability."><code class="function">igraph_rewire_edges()</code></a>, <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.15. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -6418,8 +6516,8 @@ Time complexity: O(|E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_degree_sequence_game"></a>2.8. <code class="function">igraph_degree_sequence_game</code> —  Generates a random graph with a given degree sequence.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.10.2"></a><p>
+<a name="igraph_degree_sequence_game"></a>2.9. <code class="function">igraph_degree_sequence_game</code> —  Generates a random graph with a given degree sequence.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_degree_sequence_game(
@@ -6557,7 +6655,7 @@ Journal of Physics: Complexity 2, no. 1, pp. 015008 (2021).
          This is an MCMC sampler based on degree-preserving edge switches.
          It generates simple undirected or directed graphs.
          It uses <a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct an initial
-         graph, then rewires it using <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.14. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>.
+         graph, then rewires it using <a class="link" href="igraph-Generators.html#igraph_rewire" title="2.15. igraph_rewire — Randomly rewires a graph while preserving its degree sequence."><code class="function">igraph_rewire()</code></a>.
          
 </p></td>
 </tr>
@@ -6626,8 +6724,8 @@ The time complexity of the other modes is not known.
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_is_graphical" title="9.1. igraph_is_graphical — Is there a graph with the given degree sequence?"><code class="function">igraph_is_graphical()</code></a> to determine if there exist graphs with a certain
 degree sequence; <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> to generate graphs with a
-fixed number of edges, without any degree constraints; <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.12. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>
-and <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.10. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> to sample random graphs with a prescribed
+fixed number of edges, without any degree constraints; <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.13. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>
+and <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.11. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> to sample random graphs with a prescribed
 <span class="emphasis"><em>expected</em></span> degree sequence (but variable actual degrees);
 <a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> and <a class="link" href="igraph-Generators.html#igraph_realize_bipartite_degree_sequence" title="1.24. igraph_realize_bipartite_degree_sequence — Generates a bipartite graph with the given bidegree sequence."><code class="function">igraph_realize_bipartite_degree_sequence()</code></a>
 to generate a single (non-random) graph with given degrees.
@@ -6639,7 +6737,7 @@ to generate a single (non-random) graph with given degrees.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.5.10.13.1"></a><p class="title"><b>Example 9.19.  File <code class="code">examples/simple/igraph_degree_sequence_game.c</code></b></p>
+<a name="id-1.10.5.11.13.1"></a><p class="title"><b>Example 9.19.  File <code class="code">examples/simple/igraph_degree_sequence_game.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -6657,72 +6755,72 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;vec, 0);
 
     <span class="emphasis"><em>/* checking the configuration model, undirected graphs */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_CONFIGURATION);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_CONFIGURATION);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* checking the Viger-Latapy method, undirected graphs */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_VL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_VL);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 3;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 4;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 0)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_NO_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 5;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* checking the configuration model, directed graphs */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, &amp;indeg, IGRAPH_DEGSEQ_CONFIGURATION);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, &amp;indeg, IGRAPH_DEGSEQ_CONFIGURATION);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 6;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 7;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_IN, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_IN, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 8;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* checking the fast heuristic method, undirected graphs */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_FAST_HEUR_SIMPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, 0, IGRAPH_DEGSEQ_FAST_HEUR_SIMPLE);
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 9;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 10;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 11;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* checking the fast heuristic method, directed graphs */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, &amp;indeg, IGRAPH_DEGSEQ_FAST_HEUR_SIMPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence.">igraph_degree_sequence_game</a></strong></span>(&amp;g, &amp;outdeg, &amp;indeg, IGRAPH_DEGSEQ_FAST_HEUR_SIMPLE);
     <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;g) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g) != 10) {
         <span class="strong"><strong>return</strong></span> 12;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;g, &amp;is_simple) || !is_simple) {
         <span class="strong"><strong>return</strong></span> 13;
     }
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 14;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_IN, 1)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph.">igraph_degree</a></strong></span>(&amp;g, &amp;vec, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_IN, IGRAPH_LOOPS)) {
         <span class="strong"><strong>return</strong></span> 15;
     }
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;vec);
@@ -6745,8 +6843,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_k_regular_game"></a>2.9. <code class="function">igraph_k_regular_game</code> —  Generates a random graph where each vertex has the same degree.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.11.2"></a><p>
+<a name="igraph_k_regular_game"></a>2.10. <code class="function">igraph_k_regular_game</code> —  Generates a random graph where each vertex has the same degree.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_k_regular_game(igraph_t *graph,
@@ -6766,7 +6864,7 @@ graphs, at least one of k and the number of vertices must be even.
 
 </p>
 <p>
-Currently, this game simply uses <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game</code></a> with
+Currently, this game simply uses <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game</code></a> with
 the <code class="constant">IGRAPH_DEGSEQ_CONFIGURATION</code> or the <code class="constant">IGRAPH_DEGSEQ_FAST_SIMPLE</code>
 method and appropriately constructed degree sequences.
 Thefore, it does not sample uniformly: while it can generate all k-regular
@@ -6844,8 +6942,8 @@ Time complexity: O(|V|+|E|) if <code class="constant">multiple</code> is true, o
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_static_fitness_game"></a>2.10. <code class="function">igraph_static_fitness_game</code> —  Non-growing random graph with edge probabilities proportional to node fitness scores.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.12.2"></a><p>
+<a name="igraph_static_fitness_game"></a>2.11. <code class="function">igraph_static_fitness_game</code> —  Non-growing random graph with edge probabilities proportional to node fitness scores.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_static_fitness_game(igraph_t *graph, igraph_integer_t no_of_edges,
@@ -6882,7 +6980,7 @@ desired number of links are created.
 The <span class="emphasis"><em>expected</em></span> degree (though not the actual degree) of each vertex will be
 proportional to its fitness. This is exactly true when self-loops and multi-edges
 are allowed, and approximately true otherwise. If you need to generate a graph
-with an exact degree sequence, consider <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> and
+with an exact degree sequence, consider <a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> and
 <a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> instead.
 
 </p>
@@ -6896,13 +6994,13 @@ directed case.
 </p>
 <p>
 This model is similar to the better-known Chung-Lu model, implemented in igraph
-as <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.12. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>, but with a sharply fixed edge count.
+as <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.13. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>, but with a sharply fixed edge count.
 
 </p>
 <p>
 This model is commonly used to generate static scale-free networks. To
 achieve this, you have to draw the fitness scores from the desired power-law
-distribution. Alternatively, you may use <a class="link" href="igraph-Generators.html#igraph_static_power_law_game" title="2.11. igraph_static_power_law_game — Generates a non-growing random graph with expected power-law degree distributions."><code class="function">igraph_static_power_law_game()</code></a>
+distribution. Alternatively, you may use <a class="link" href="igraph-Generators.html#igraph_static_power_law_game" title="2.12. igraph_static_power_law_game — Generates a non-growing random graph with expected power-law degree distributions."><code class="function">igraph_static_power_law_game()</code></a>
 which generates the fitnesses for you with a given exponent.
 
 </p>
@@ -6997,8 +7095,8 @@ in scale-free networks. Phys Rev Lett 87(27):278701, 2001
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_static_power_law_game" title="2.11. igraph_static_power_law_game — Generates a non-growing random graph with expected power-law degree distributions."><code class="function">igraph_static_power_law_game()</code></a>, <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.12. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>,
-<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_static_power_law_game" title="2.12. igraph_static_power_law_game — Generates a non-growing random graph with expected power-law degree distributions."><code class="function">igraph_static_power_law_game()</code></a>, <a class="link" href="igraph-Generators.html#igraph_chung_lu_game" title="2.13. igraph_chung_lu_game — Samples graphs from the Chung-Lu model."><code class="function">igraph_chung_lu_game()</code></a>,
+<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -7010,8 +7108,8 @@ Time complexity: O(|V| + |E| log |E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_static_power_law_game"></a>2.11. <code class="function">igraph_static_power_law_game</code> —  Generates a non-growing random graph with expected power-law degree distributions.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.13.2"></a><p>
+<a name="igraph_static_power_law_game"></a>2.12. <code class="function">igraph_static_power_law_game</code> —  Generates a non-growing random graph with expected power-law degree distributions.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_static_power_law_game(igraph_t *graph,
@@ -7034,7 +7132,7 @@ distributions may be specified separately.
 
 </p>
 <p>
-The game simply uses <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.10. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> with appropriately
+The game simply uses <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.11. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> with appropriately
 constructed fitness vectors. In particular, the fitness of vertex <code class="constant">i</code>
 is <code class="literal">i^(-alpha)</code>, where <code class="literal">alpha = 1/(gamma-1)</code>
 and <code class="constant">gamma</code> is the exponent given in the arguments.
@@ -7043,7 +7141,7 @@ and <code class="constant">gamma</code> is the exponent given in the arguments.
 <p>
 To remove correlations between in- and out-degrees in case of directed
 graphs, the in-fitness vector will be shuffled after it has been set up
-and before <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.10. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> is called.
+and before <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.11. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> is called.
 
 </p>
 <p>
@@ -7175,8 +7273,8 @@ Time complexity: O(|V| + |E| log |E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_chung_lu_game"></a>2.12. <code class="function">igraph_chung_lu_game</code> —  Samples graphs from the Chung-Lu model.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.14.2"></a><p>
+<a name="igraph_chung_lu_game"></a>2.13. <code class="function">igraph_chung_lu_game</code> —  Samples graphs from the Chung-Lu model.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_chung_lu_game(igraph_t *graph,
@@ -7420,9 +7518,9 @@ Random Struct Algorithms 42, 480–508 (2013).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.10. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> implements a similar model with
+  <a class="link" href="igraph-Generators.html#igraph_static_fitness_game" title="2.11. igraph_static_fitness_game — Non-growing random graph with edge probabilities proportional to node fitness scores."><code class="function">igraph_static_fitness_game()</code></a> implements a similar model with
 a sharp constraint on the number of edges;
-<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.8. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> samples random graphs with sharply
+<a class="link" href="igraph-Generators.html#igraph_degree_sequence_game" title="2.9. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> samples random graphs with sharply
 specified degrees; <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> creates random
 graphs with a fixed connection probability <code class="constant">p</code> between all vertex pairs.
   </p></td>
@@ -7436,8 +7534,8 @@ Time complexity: O(|E| + |V|), linear in the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_forest_fire_game"></a>2.13. <code class="function">igraph_forest_fire_game</code> —  Generates a network according to the <span class="quote">“<span class="quote">forest fire game</span>”</span>.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.15.2"></a><p>
+<a name="igraph_forest_fire_game"></a>2.14. <code class="function">igraph_forest_fire_game</code> —  Generates a network according to the <span class="quote">“<span class="quote">forest fire game</span>”</span>.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_forest_fire_game(igraph_t *graph, igraph_integer_t nodes,
@@ -7588,8 +7686,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_rewire"></a>2.14. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.16.2"></a><p>
+<a name="igraph_rewire"></a>2.15. <code class="function">igraph_rewire</code> —  Randomly rewires a graph while preserving its degree sequence.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.17.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rewire(igraph_t *graph, igraph_integer_t n, igraph_rewiring_t mode);
@@ -7726,8 +7824,8 @@ Time complexity: TODO.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_growing_random_game"></a>2.15. <code class="function">igraph_growing_random_game</code> —  Generates a growing random graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.17.2"></a><p>
+<a name="igraph_growing_random_game"></a>2.16. <code class="function">igraph_growing_random_game</code> —  Generates a growing random graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.18.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_growing_random_game(igraph_t *graph, igraph_integer_t n,
@@ -7817,8 +7915,8 @@ number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_callaway_traits_game"></a>2.16. <code class="function">igraph_callaway_traits_game</code> —  Simulates a growing network with vertex types.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.18.2"></a><p>
+<a name="igraph_callaway_traits_game"></a>2.17. <code class="function">igraph_callaway_traits_game</code> —  Simulates a growing network with vertex types.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.19.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_callaway_traits_game(igraph_t *graph, igraph_integer_t nodes,
@@ -7908,7 +8006,7 @@ Phys. Rev. E 64, 041902 (2001).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate a directed graph.
+  Whether to generate a directed graph.
 </p></td>
 </tr>
 <tr>
@@ -7947,8 +8045,8 @@ k is <em class="parameter"><code>edges_per_step</code></em>.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_establishment_game"></a>2.17. <code class="function">igraph_establishment_game</code> —  Generates a graph with a simple growing model with vertex types.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.19.2"></a><p>
+<a name="igraph_establishment_game"></a>2.18. <code class="function">igraph_establishment_game</code> —  Generates a graph with a simple growing model with vertex types.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.20.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_establishment_game(igraph_t *graph, igraph_integer_t nodes,
@@ -8021,7 +8119,7 @@ different vertex types.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate a directed graph.
+  Whether to generate a directed graph.
 </p></td>
 </tr>
 <tr>
@@ -8060,8 +8158,8 @@ and k is the <em class="parameter"><code>k</code></em> parameter.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_preference_game"></a>2.18. <code class="function">igraph_preference_game</code> —  Generates a graph with vertex types and connection preferences.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.20.2"></a><p>
+<a name="igraph_preference_game"></a>2.19. <code class="function">igraph_preference_game</code> —  Generates a graph with vertex types and connection preferences.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.21.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_preference_game(igraph_t *graph, igraph_integer_t nodes,
@@ -8082,7 +8180,7 @@ igraph_error_t igraph_preference_game(igraph_t *graph, igraph_integer_t nodes,
 </p>
 <p>
 This is practically the nongrowing variant of
-<a class="link" href="igraph-Generators.html#igraph_establishment_game" title="2.17. igraph_establishment_game — Generates a graph with a simple growing model with vertex types."><code class="function">igraph_establishment_game()</code></a>. A given number of vertices are
+<a class="link" href="igraph-Generators.html#igraph_establishment_game" title="2.18. igraph_establishment_game — Generates a graph with a simple growing model with vertex types."><code class="function">igraph_establishment_game()</code></a>. A given number of vertices are
 generated. Every vertex is assigned to a vertex type according to
 the given type probabilities. Finally, every
 vertex pair is evaluated and an edge is created between them with a
@@ -8158,7 +8256,7 @@ groups only.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical, whether to generate a directed graph. If undirected
+  Whether to generate a directed graph. If undirected
   graphs are requested, only the lower left triangle of the preference
   matrix is considered.
 </p></td>
@@ -8166,7 +8264,7 @@ groups only.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether loop edges are allowed.
+  Whether loop edges are allowed.
 </p></td>
 </tr>
 </tbody>
@@ -8204,8 +8302,8 @@ number of vertices plus the number of edges in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_asymmetric_preference_game" title="2.19. igraph_asymmetric_preference_game — Generates a graph with asymmetric vertex types and connection preferences."><code class="function">igraph_asymmetric_preference_game()</code></a>,
-<a class="link" href="igraph-Generators.html#igraph_establishment_game" title="2.17. igraph_establishment_game — Generates a graph with a simple growing model with vertex types."><code class="function">igraph_establishment_game()</code></a>, <a class="link" href="igraph-Generators.html#igraph_callaway_traits_game" title="2.16. igraph_callaway_traits_game — Simulates a growing network with vertex types."><code class="function">igraph_callaway_traits_game()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_asymmetric_preference_game" title="2.20. igraph_asymmetric_preference_game — Generates a graph with asymmetric vertex types and connection preferences."><code class="function">igraph_asymmetric_preference_game()</code></a>,
+<a class="link" href="igraph-Generators.html#igraph_establishment_game" title="2.18. igraph_establishment_game — Generates a graph with a simple growing model with vertex types."><code class="function">igraph_establishment_game()</code></a>, <a class="link" href="igraph-Generators.html#igraph_callaway_traits_game" title="2.17. igraph_callaway_traits_game — Simulates a growing network with vertex types."><code class="function">igraph_callaway_traits_game()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8215,8 +8313,8 @@ number of vertices plus the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_asymmetric_preference_game"></a>2.19. <code class="function">igraph_asymmetric_preference_game</code> —  Generates a graph with asymmetric vertex types and connection preferences.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.21.2"></a><p>
+<a name="igraph_asymmetric_preference_game"></a>2.20. <code class="function">igraph_asymmetric_preference_game</code> —  Generates a graph with asymmetric vertex types and connection preferences.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.22.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_asymmetric_preference_game(igraph_t *graph, igraph_integer_t nodes,
@@ -8236,7 +8334,7 @@ igraph_error_t igraph_asymmetric_preference_game(igraph_t *graph, igraph_integer
 
 </p>
 <p>
-This is the asymmetric variant of <a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.18. igraph_preference_game — Generates a graph with vertex types and connection preferences."><code class="function">igraph_preference_game()</code></a>.
+This is the asymmetric variant of <a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.19. igraph_preference_game — Generates a graph with vertex types and connection preferences."><code class="function">igraph_preference_game()</code></a>.
 A given number of vertices are generated. Every vertex is assigned to an
 "outgoing" and an "incoming " vertex type according to the given joint
 type probabilities. Finally, every vertex pair is evaluated and a
@@ -8310,7 +8408,7 @@ vertex.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
 <td><p>
-  Logical, whether loop edges are allowed.
+  Whether loop edges are allowed.
 </p></td>
 </tr>
 </tbody>
@@ -8348,7 +8446,7 @@ number of vertices plus the number of edges in the graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.18. igraph_preference_game — Generates a graph with vertex types and connection preferences."><code class="function">igraph_preference_game()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_preference_game" title="2.19. igraph_preference_game — Generates a graph with vertex types and connection preferences."><code class="function">igraph_preference_game()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8358,8 +8456,8 @@ number of vertices plus the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_recent_degree_game"></a>2.20. <code class="function">igraph_recent_degree_game</code> —  Stochastic graph generator based on the number of incident edges a node has gained recently.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.22.2"></a><p>
+<a name="igraph_recent_degree_game"></a>2.21. <code class="function">igraph_recent_degree_game</code> —  Stochastic graph generator based on the number of incident edges a node has gained recently.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.23.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_recent_degree_game(igraph_t *graph, igraph_integer_t nodes,
@@ -8433,7 +8531,7 @@ igraph_error_t igraph_recent_degree_game(igraph_t *graph, igraph_integer_t nodes
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outpref</code></em>:</span></p></td>
 <td><p>
-  Logical constant, if true the edges originated by a
+  Boolean constant, if true the edges originated by a
        vertex also count as recent incident edges.
        For most applications it is reasonable to set it to false.
 </p></td>
@@ -8448,7 +8546,7 @@ igraph_error_t igraph_recent_degree_game(igraph_t *graph, igraph_integer_t nodes
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to generate a directed
+  Boolean constant, whether to generate a directed
        graph.
 </p></td>
 </tr>
@@ -8479,8 +8577,8 @@ vertices, |E| is the number of edges in the graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_barabasi_aging_game"></a>2.21. <code class="function">igraph_barabasi_aging_game</code> —  Preferential attachment with aging of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.23.2"></a><p>
+<a name="igraph_barabasi_aging_game"></a>2.22. <code class="function">igraph_barabasi_aging_game</code> —  Preferential attachment with aging of vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.24.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_barabasi_aging_game(igraph_t *graph,
@@ -8562,7 +8660,7 @@ time steps.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outpref</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether the edges
+  Boolean constant, whether the edges
        initiated by a vertex contribute to the probability to gain
        a new edge.
 </p></td>
@@ -8617,7 +8715,7 @@ time steps.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to generate a directed
+  Boolean constant, whether to generate a directed
        graph.
 </p></td>
 </tr>
@@ -8647,8 +8745,8 @@ of vertices, |E| the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_recent_degree_aging_game"></a>2.22. <code class="function">igraph_recent_degree_aging_game</code> —  Preferential attachment based on the number of edges gained recently, with aging of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.24.2"></a><p>
+<a name="igraph_recent_degree_aging_game"></a>2.23. <code class="function">igraph_recent_degree_aging_game</code> —  Preferential attachment based on the number of edges gained recently, with aging of vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.25.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_recent_degree_aging_game(igraph_t *graph,
@@ -8671,7 +8769,7 @@ igraph_error_t igraph_recent_degree_aging_game(igraph_t *graph,
 
 </p>
 <p>
-This game is very similar to <a class="link" href="igraph-Generators.html#igraph_barabasi_aging_game" title="2.21. igraph_barabasi_aging_game — Preferential attachment with aging of vertices."><code class="function">igraph_barabasi_aging_game()</code></a>,
+This game is very similar to <a class="link" href="igraph-Generators.html#igraph_barabasi_aging_game" title="2.22. igraph_barabasi_aging_game — Preferential attachment with aging of vertices."><code class="function">igraph_barabasi_aging_game()</code></a>,
 except that instead of the total number of incident edges the
 number of edges gained in the last <em class="parameter"><code>time_window</code></em> time steps are
 counted.
@@ -8721,7 +8819,7 @@ steps, l is the age of the vertex.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outpref</code></em>:</span></p></td>
 <td><p>
-  Logical constant, if true the edges initiated by a
+  Boolean constant, if true the edges initiated by a
        vertex are also counted. Normally it is false.
 </p></td>
 </tr>
@@ -8761,7 +8859,7 @@ steps, l is the age of the vertex.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to create a directed
+  Boolean constant, whether to create a directed
        graph.
 </p></td>
 </tr>
@@ -8791,8 +8889,8 @@ of vertices, |E| the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_lastcit_game"></a>2.23. <code class="function">igraph_lastcit_game</code> —  Simulates a citation network, based on time passed since the last citation.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.25.2"></a><p>
+<a name="igraph_lastcit_game"></a>2.24. <code class="function">igraph_lastcit_game</code> —  Simulates a citation network, based on time passed since the last citation.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.26.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_lastcit_game(igraph_t *graph,
@@ -8832,7 +8930,7 @@ never cited. This element should be bigger than zero.
 </p>
 <p>
 Note that this function generates networks with multiple edges if
-<em class="parameter"><code>edges_per_step</code></em> is bigger than one, call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
+<em class="parameter"><code>edges_per_step</code></em> is bigger than one, call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
 on the result to get rid of these edges.
 
 </p>
@@ -8884,7 +8982,7 @@ on the result to get rid of these edges.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to create directed
+  Boolean constant, whether to create directed
      networks.
 </p></td>
 </tr>
@@ -8917,7 +9015,7 @@ on the result to get rid of these edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_barabasi_aging_game" title="2.21. igraph_barabasi_aging_game — Preferential attachment with aging of vertices."><code class="function">igraph_barabasi_aging_game()</code></a>.
+  <a class="link" href="igraph-Generators.html#igraph_barabasi_aging_game" title="2.22. igraph_barabasi_aging_game — Preferential attachment with aging of vertices."><code class="function">igraph_barabasi_aging_game()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -8930,8 +9028,8 @@ Time complexity: O(|V|*a+|E|*log|V|), |V| is the number of vertices,
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_cited_type_game"></a>2.24. <code class="function">igraph_cited_type_game</code> —  Simulates a citation based on vertex types.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.26.2"></a><p>
+<a name="igraph_cited_type_game"></a>2.25. <code class="function">igraph_cited_type_game</code> —  Simulates a citation based on vertex types.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.27.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_cited_type_game(igraph_t *graph, igraph_integer_t nodes,
@@ -8956,7 +9054,7 @@ cited, as given by the <em class="parameter"><code>pref</code></em> vector.
 <p>
 Note that this function might generate networks with multiple edges
 if <em class="parameter"><code>edges_per_step</code></em> is greater than one. You might want to call
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result to remove multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result to remove multiple edges.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -9004,7 +9102,7 @@ if <em class="parameter"><code>edges_per_step</code></em> is greater than one. Y
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to create a directed
+  Boolean constant, whether to create a directed
     network.
 </p></td>
 </tr>
@@ -9037,7 +9135,7 @@ if <em class="parameter"><code>edges_per_step</code></em> is greater than one. Y
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_citing_cited_type_game" title="2.25. igraph_citing_cited_type_game — Simulates a citation network based on vertex types."><code class="function">igraph_citing_cited_type_game()</code></a> for a bit more general
+  <a class="link" href="igraph-Generators.html#igraph_citing_cited_type_game" title="2.26. igraph_citing_cited_type_game — Simulates a citation network based on vertex types."><code class="function">igraph_citing_cited_type_game()</code></a> for a bit more general
 game.
   </p></td>
 </tr></tbody>
@@ -9051,8 +9149,8 @@ vertices and edges, respectively.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_citing_cited_type_game"></a>2.25. <code class="function">igraph_citing_cited_type_game</code> —  Simulates a citation network based on vertex types.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.27.2"></a><p>
+<a name="igraph_citing_cited_type_game"></a>2.26. <code class="function">igraph_citing_cited_type_game</code> —  Simulates a citation network based on vertex types.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.28.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_citing_cited_type_game(igraph_t *graph, igraph_integer_t nodes,
@@ -9067,7 +9165,7 @@ igraph_error_t igraph_citing_cited_type_game(igraph_t *graph, igraph_integer_t n
 
 
 
-This game is similar to <a class="link" href="igraph-Generators.html#igraph_cited_type_game" title="2.24. igraph_cited_type_game — Simulates a citation based on vertex types."><code class="function">igraph_cited_type_game()</code></a> but here the
+This game is similar to <a class="link" href="igraph-Generators.html#igraph_cited_type_game" title="2.25. igraph_cited_type_game — Simulates a citation based on vertex types."><code class="function">igraph_cited_type_game()</code></a> but here the
 category of the citing vertex is also considered.
 
 </p>
@@ -9086,7 +9184,7 @@ citing vertex is <code class="constant">i</code>.
 <p>
 Note that this function might generate networks with multiple edges
 if <em class="parameter"><code>edges_per_step</code></em> is greater than one. You might want to call
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result to remove multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result to remove multiple edges.
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -9134,7 +9232,7 @@ if <em class="parameter"><code>edges_per_step</code></em> is greater than one. Y
 <tr>
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
-  Logical constant, whether to create a directed
+  Boolean constant, whether to create a directed
     network.
 </p></td>
 </tr>
@@ -9164,8 +9262,8 @@ vertices and edges, respectively.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_sbm_game"></a>2.26. <code class="function">igraph_sbm_game</code> —  Sample from a stochastic block model.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.28.2"></a><p>
+<a name="igraph_sbm_game"></a>2.27. <code class="function">igraph_sbm_game</code> —  Sample from a stochastic block model.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.29.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sbm_game(igraph_t *graph, igraph_integer_t n,
@@ -9286,8 +9384,8 @@ groups.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hsbm_game"></a>2.27. <code class="function">igraph_hsbm_game</code> —  Hierarchical stochastic block model.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.29.2"></a><p>
+<a name="igraph_hsbm_game"></a>2.28. <code class="function">igraph_hsbm_game</code> —  Hierarchical stochastic block model.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.30.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hsbm_game(igraph_t *graph, igraph_integer_t n,
@@ -9382,8 +9480,8 @@ stochastic block model.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_sbm_game" title="2.26. igraph_sbm_game — Sample from a stochastic block model."><code class="function">igraph_sbm_game()</code></a> for the classic stochastic block model,
-<a class="link" href="igraph-Generators.html#igraph_hsbm_list_game" title="2.28. igraph_hsbm_list_game — Hierarchical stochastic block model, more general version."><code class="function">igraph_hsbm_list_game()</code></a> for a more general version.
+  <a class="link" href="igraph-Generators.html#igraph_sbm_game" title="2.27. igraph_sbm_game — Sample from a stochastic block model."><code class="function">igraph_sbm_game()</code></a> for the classic stochastic block model,
+<a class="link" href="igraph-Generators.html#igraph_hsbm_list_game" title="2.29. igraph_hsbm_list_game — Hierarchical stochastic block model, more general version."><code class="function">igraph_hsbm_list_game()</code></a> for a more general version.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9393,8 +9491,8 @@ stochastic block model.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_hsbm_list_game"></a>2.28. <code class="function">igraph_hsbm_list_game</code> —  Hierarchical stochastic block model, more general version.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.30.2"></a><p>
+<a name="igraph_hsbm_list_game"></a>2.29. <code class="function">igraph_hsbm_list_game</code> —  Hierarchical stochastic block model, more general version.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.31.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hsbm_list_game(igraph_t *graph, igraph_integer_t n,
@@ -9490,8 +9588,8 @@ stochastic block model.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_sbm_game" title="2.26. igraph_sbm_game — Sample from a stochastic block model."><code class="function">igraph_sbm_game()</code></a> for the classic stochastic block model,
-<a class="link" href="igraph-Generators.html#igraph_hsbm_game" title="2.27. igraph_hsbm_game — Hierarchical stochastic block model."><code class="function">igraph_hsbm_game()</code></a> for a simpler general version.
+  <a class="link" href="igraph-Generators.html#igraph_sbm_game" title="2.27. igraph_sbm_game — Sample from a stochastic block model."><code class="function">igraph_sbm_game()</code></a> for the classic stochastic block model,
+<a class="link" href="igraph-Generators.html#igraph_hsbm_game" title="2.28. igraph_hsbm_game — Hierarchical stochastic block model."><code class="function">igraph_hsbm_game()</code></a> for a simpler general version.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -9501,8 +9599,8 @@ stochastic block model.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_dot_product_game"></a>2.29. <code class="function">igraph_dot_product_game</code> —  Generates a random dot product graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.31.2"></a><p>
+<a name="igraph_dot_product_game"></a>2.30. <code class="function">igraph_dot_product_game</code> —  Generates a random dot product graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.32.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_dot_product_game(igraph_t *graph, const igraph_matrix_t *vecs,
@@ -9587,7 +9685,7 @@ and m is the length of the latent vectors.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Nongraph.html#igraph_sample_dirichlet" title="4.3. igraph_sample_dirichlet — Sample points from a Dirichlet distribution."><code class="function">igraph_sample_dirichlet()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_volume" title="4.2. igraph_sample_sphere_volume — Sample points uniformly from the volume of a sphere."><code class="function">igraph_sample_sphere_volume()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_sample_sphere_surface" title="4.1. igraph_sample_sphere_surface — Sample points uniformly from the surface of a sphere."><code class="function">igraph_sample_sphere_surface()</code></a>
+  <a class="link" href="igraph-Nongraph.html#igraph_rng_sample_dirichlet" title="4.3. igraph_rng_sample_dirichlet — Sample points from a Dirichlet distribution."><code class="function">igraph_rng_sample_dirichlet()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_rng_sample_sphere_volume" title="4.2. igraph_rng_sample_sphere_volume — Sample points uniformly from the volume of a sphere."><code class="function">igraph_rng_sample_sphere_volume()</code></a>, <a class="link" href="igraph-Nongraph.html#igraph_rng_sample_sphere_surface" title="4.1. igraph_rng_sample_sphere_surface — Sample points uniformly from the surface of a sphere."><code class="function">igraph_rng_sample_sphere_surface()</code></a>
 for functions to generate the latent vectors.
   </p></td>
 </tr></tbody>
@@ -9598,8 +9696,8 @@ for functions to generate the latent vectors.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_tree_game"></a>2.30. <code class="function">igraph_tree_game</code> —  Generates a random tree with the given number of nodes.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.32.2"></a><p>
+<a name="igraph_tree_game"></a>2.31. <code class="function">igraph_tree_game</code> —  Generates a random tree with the given number of nodes.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.33.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_tree_game(igraph_t *graph, igraph_integer_t n, igraph_bool_t directed, igraph_random_tree_t method);
@@ -9725,8 +9823,8 @@ which is not considered to be a tree by <a class="link" href="igraph-Structural.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_correlated_game"></a>2.31. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.33.2"></a><p>
+<a name="igraph_correlated_game"></a>2.32. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.34.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_correlated_game(const igraph_t *old_graph, igraph_t *new_graph,
@@ -9815,7 +9913,7 @@ given simple graph and shuffling its vertices.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_correlated_pair_game" title="2.32. igraph_correlated_pair_game — Generates pairs of correlated random graphs."><code class="function">igraph_correlated_pair_game()</code></a> for generating a pair
+  <a class="link" href="igraph-Generators.html#igraph_correlated_pair_game" title="2.33. igraph_correlated_pair_game — Generates pairs of correlated random graphs."><code class="function">igraph_correlated_pair_game()</code></a> for generating a pair
 of correlated random graphs in one go.
   </p></td>
 </tr></tbody>
@@ -9826,8 +9924,8 @@ of correlated random graphs in one go.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_correlated_pair_game"></a>2.32. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.34.2"></a><p>
+<a name="igraph_correlated_pair_game"></a>2.33. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.35.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_correlated_pair_game(igraph_t *graph1, igraph_t *graph2,
@@ -9928,7 +10026,7 @@ Sample two random graphs, with given correlation.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_correlated_game" title="2.31. igraph_correlated_game — Generates a random graph correlated to an existing graph."><code class="function">igraph_correlated_game()</code></a> for generating a correlated pair
+  <a class="link" href="igraph-Generators.html#igraph_correlated_game" title="2.32. igraph_correlated_game — Generates a random graph correlated to an existing graph."><code class="function">igraph_correlated_game()</code></a> for generating a correlated pair
 to a given graph.
   </p></td>
 </tr></tbody>
@@ -9939,8 +10037,8 @@ to a given graph.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_simple_interconnected_islands_game"></a>2.33. <code class="function">igraph_simple_interconnected_islands_game</code> —  Generates a random graph made of several interconnected islands, each island being a random graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.35.2"></a><p>
+<a name="igraph_simple_interconnected_islands_game"></a>2.34. <code class="function">igraph_simple_interconnected_islands_game</code> —  Generates a random graph made of several interconnected islands, each island being a random graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.10.5.36.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_simple_interconnected_islands_game(

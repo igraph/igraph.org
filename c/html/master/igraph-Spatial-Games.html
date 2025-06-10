@@ -22,22 +22,226 @@ langversion: master
 <div class="titlepage"><div><div><h1 class="title">
 <a name="igraph-Spatial-Games"></a>Chapter 10. Games on graphs</h1></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Spatial-Games.html#microscopic-update-rules">1. Microscopic update rules</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#epidemic-models">2. Epidemic models</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#epidemic-models">1. Epidemic models</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#spatial-games-deprecated">2. Deprecated-functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="microscopic-update-rules"></a>1. Microscopic update rules</h2></div></div></div>
+<a name="epidemic-models"></a>1. Epidemic models</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation">1.1. <code class="function">igraph_deterministic_optimal_imitation</code> —  Adopt a strategy via deterministic optimal imitation.</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_moran_process">1.2. <code class="function">igraph_moran_process</code> —  The Moran process in a network setting.</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation">1.3. <code class="function">igraph_roulette_wheel_imitation</code> —  Adopt a strategy via roulette wheel selection.</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_stochastic_imitation">1.4. <code class="function">igraph_stochastic_imitation</code> —  Adopt a strategy via stochastic imitation with uniform selection.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir">1.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir_t">1.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir_destroy">1.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_deterministic_optimal_imitation"></a>1.1. <code class="function">igraph_deterministic_optimal_imitation</code> —  Adopt a strategy via deterministic optimal imitation.</h3></div></div></div>
+<a name="igraph_sir"></a>1.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</h3></div></div></div>
 <a class="indexterm" name="id-1.11.2.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_sir(const igraph_t *graph, igraph_real_t beta,
+               igraph_real_t gamma, igraph_integer_t no_sim,
+               igraph_vector_ptr_t *result);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The SIR model is a simple model from epidemiology. The individuals
+of the population might be in three states: susceptible, infected
+and recovered. Recovered people are assumed to be immune to the
+disease. Susceptibles become infected with a rate that depends on
+their number of infected neighbors. Infected people become recovered
+with a constant rate. See these parameters below.
+
+</p>
+<p>
+This function runs multiple simulations, all starting with a
+single uniformly randomly chosen infected individual. A simulation
+is stopped when no infected individuals are left.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to perform the model on. For directed graphs
+       edge directions are ignored and a warning is given.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
+<td><p>
+  The rate of infection of an individual that is
+       susceptible and has a single infected neighbor.
+       The infection rate of a susceptible individual with n
+       infected neighbors is n times beta. Formally
+       this is the rate parameter of an exponential distribution.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gamma</code></em>:</span></p></td>
+<td><p>
+  The rate of recovery of an infected individual.
+       Formally, this is the rate parameter of an exponential
+       distribution.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no_sim</code></em>:</span></p></td>
+<td><p>
+  The number of simulation runs to perform.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  The result of the simulation is stored here,
+       in a list of <a class="link" href="igraph-Spatial-Games.html#igraph_sir_t" title="1.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> objects. To deallocate
+       memory, the user needs to call <a class="link" href="igraph-Spatial-Games.html#igraph_sir_destroy" title="1.3. igraph_sir_destroy — Deallocates memory associated with a SIR simulation run."><code class="function">igraph_sir_destroy</code></a> on
+       each element, before destroying the pointer vector itself
+       using <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.17.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(no_sim * (|V| + |E| log(|V|))).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_sir_t"></a>1.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.2.3.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef struct igraph_sir_t {
+    igraph_vector_t times;
+    igraph_vector_int_t no_s, no_i, no_r;
+} igraph_sir_t;
+</pre>
+<p>
+</p>
+<p>
+</p>
+<p>Data structure to store the results of one simulation
+of the SIR (susceptible-infected-recovered) model on a graph.
+
+It has the following members. They are all (real or integer)
+vectors, and they are of the same length.
+
+</p>
+<p><b>Values: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">times</code>:</span></p></td>
+<td><p>
+  A vector, the times of the events are stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_s</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of susceptibles in
+             each time step is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_i</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of infected individuals
+             at each time step, is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_r</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of recovered individuals
+             is stored here at each time step.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_sir_destroy"></a>1.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_sir_destroy(igraph_sir_t *sir);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>sir</code></em>:</span></p></td>
+<td><p>
+  The <a class="link" href="igraph-Spatial-Games.html#igraph_sir_t" title="1.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> object storing the simulation.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="spatial-games-deprecated"></a>2. Deprecated-functions</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation">2.1. <code class="function">igraph_deterministic_optimal_imitation</code> —  Adopt a strategy via deterministic optimal imitation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_moran_process">2.2. <code class="function">igraph_moran_process</code> —  The Moran process in a network setting.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation">2.3. <code class="function">igraph_roulette_wheel_imitation</code> —  Adopt a strategy via roulette wheel selection.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_stochastic_imitation">2.4. <code class="function">igraph_stochastic_imitation</code> —  Adopt a strategy via stochastic imitation with uniform selection.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_deterministic_optimal_imitation"></a>2.1. <code class="function">igraph_deterministic_optimal_imitation</code> —  Adopt a strategy via deterministic optimal imitation.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_deterministic_optimal_imitation(const igraph_t *graph,
@@ -98,7 +302,7 @@ The quantity in this case could be a measure such as fitness.
 <td><p><span class="term"><em class="parameter"><code>optimality</code></em>:</span></p></td>
 <td>
 <p>
-  Logical; controls the type of optimality to be used.
+  Boolean; controls the type of optimality to be used.
        Supported values are:
        </p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -235,7 +439,7 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.11.2.2.8.2"></a><p class="title"><b>Example 10.1.  File <code class="code">examples/simple/igraph_deterministic_optimal_imitation.c</code></b></p>
+<a name="id-1.11.3.2.8.2"></a><p class="title"><b>Example 10.1.  File <code class="code">examples/simple/igraph_deterministic_optimal_imitation.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -273,7 +477,7 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
     <span class="emphasis"><em>/* Now update strategy of vertex 3. Since this vertex is isolated, no */</em></span>
     <span class="emphasis"><em>/* strategy update would take place. The resulting strategies vector */</em></span>
     <span class="emphasis"><em>/* would be the same as it was originally. */</em></span>
-    ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
+    ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="2.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
             <span class="emphasis"><em>/*vertex*/</em></span> 3,
             <span class="emphasis"><em>/*optimality*/</em></span> IGRAPH_MAXIMUM,
             <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
@@ -337,7 +541,7 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; nvert; i++) {
         <span class="emphasis"><em>/* maximum deterministic imitation */</em></span>
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
-        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
+        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="2.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
                 <span class="emphasis"><em>/*vertex*/</em></span> i,
                 <span class="emphasis"><em>/*optimality*/</em></span> IGRAPH_MAXIMUM,
                 <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
@@ -350,7 +554,7 @@ Time complexity: O(2d), where d is the degree of the vertex <em class="parameter
         <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcopy);
         <span class="emphasis"><em>/* minimum deterministic imitation */</em></span>
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
-        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="1.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
+        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_deterministic_optimal_imitation" title="2.1. igraph_deterministic_optimal_imitation — Adopt a strategy via deterministic optimal imitation.">igraph_deterministic_optimal_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
                 <span class="emphasis"><em>/*vertex*/</em></span> i,
                 <span class="emphasis"><em>/*optimality*/</em></span> IGRAPH_MINIMUM,
                 <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
@@ -399,8 +603,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_moran_process"></a>1.2. <code class="function">igraph_moran_process</code> —  The Moran process in a network setting.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.2.3.2"></a><p>
+<a name="igraph_moran_process"></a>2.2. <code class="function">igraph_moran_process</code> —  The Moran process in a network setting.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_moran_process(const igraph_t *graph,
@@ -609,8 +813,8 @@ References:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_roulette_wheel_imitation"></a>1.3. <code class="function">igraph_roulette_wheel_imitation</code> —  Adopt a strategy via roulette wheel selection.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.2.4.2"></a><p>
+<a name="igraph_roulette_wheel_imitation"></a>2.3. <code class="function">igraph_roulette_wheel_imitation</code> —  Adopt a strategy via roulette wheel selection.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_roulette_wheel_imitation(const igraph_t *graph,
@@ -815,7 +1019,7 @@ Reference:
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.11.2.4.9.2"></a><p class="title"><b>Example 10.2.  File <code class="code">examples/simple/igraph_roulette_wheel_imitation.c</code></b></p>
+<a name="id-1.11.3.4.9.2"></a><p class="title"><b>Example 10.2.  File <code class="code">examples/simple/igraph_roulette_wheel_imitation.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -888,7 +1092,7 @@ Reference:
     <span class="strong"><strong>while</strong></span> (i &lt; n) {
         test = all_checks[i];
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
-        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex,
+        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="2.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex,
                                               test-&gt;islocal, test-&gt;quantities,
                                               &amp;stratcopy, test-&gt;mode);
         <span class="strong"><strong>if</strong></span> (ret != test-&gt;retval) {
@@ -967,7 +1171,7 @@ Reference:
         }
         <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcp);
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcp, &amp;strat);
-        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 1, &amp;quant, &amp;stratcp,
+        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="2.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 1, &amp;quant, &amp;stratcp,
                                         IGRAPH_ALL);
     } <span class="strong"><strong>while</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcp)[v] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[v]);
     <span class="emphasis"><em>/* If we get to this point, we know that there was an update round */</em></span>
@@ -981,7 +1185,7 @@ Reference:
         }
         <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;stratcp);
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcp, &amp;strat);
-        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="1.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 0, &amp;quant, &amp;stratcp,
+        <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_roulette_wheel_imitation" title="2.3. igraph_roulette_wheel_imitation — Adopt a strategy via roulette wheel selection.">igraph_roulette_wheel_imitation</a></strong></span>(&amp;g, v, <span class="emphasis"><em>/*is local?*/</em></span> 0, &amp;quant, &amp;stratcp,
                                         IGRAPH_ALL);
     } <span class="strong"><strong>while</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(stratcp)[v] != <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(strat)[v]);
     <span class="emphasis"><em>/* nothing further to do, but housekeeping */</em></span>
@@ -1020,8 +1224,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_stochastic_imitation"></a>1.4. <code class="function">igraph_stochastic_imitation</code> —  Adopt a strategy via stochastic imitation with uniform selection.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.2.5.2"></a><p>
+<a name="igraph_stochastic_imitation"></a>2.4. <code class="function">igraph_stochastic_imitation</code> —  Adopt a strategy via stochastic imitation with uniform selection.</h3></div></div></div>
+<a class="indexterm" name="id-1.11.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_stochastic_imitation(const igraph_t *graph,
@@ -1232,7 +1436,7 @@ usually be O(1).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.11.2.5.8.1"></a><p class="title"><b>Example 10.3.  File <code class="code">examples/simple/igraph_stochastic_imitation.c</code></b></p>
+<a name="id-1.11.3.5.8.1"></a><p class="title"><b>Example 10.3.  File <code class="code">examples/simple/igraph_stochastic_imitation.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -1271,7 +1475,7 @@ usually be O(1).
     <span class="emphasis"><em>/* Now update strategy of vertex 3. Since this vertex is isolated, no */</em></span>
     <span class="emphasis"><em>/* strategy update would take place. The resulting strategies vector */</em></span>
     <span class="emphasis"><em>/* would be the same as it was originally. */</em></span>
-    ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="1.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
+    ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="2.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(<span class="emphasis"><em>/*graph*/</em></span> &amp;g,
             <span class="emphasis"><em>/*vertex*/</em></span> 3,
             <span class="emphasis"><em>/*algorithm*/</em></span> IGRAPH_IMITATE_BLIND,
             <span class="emphasis"><em>/*quantities*/</em></span> &amp;quant,
@@ -1344,7 +1548,7 @@ usually be O(1).
     <span class="strong"><strong>while</strong></span> (i &lt; n) {
         test = all_checks[i];
         <span class="strong"><strong>igraph_vector_int_init_copy</strong></span>(&amp;stratcopy, &amp;strat);
-        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="1.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex, test-&gt;algo,
+        ret = <span class="strong"><strong><a class="link" href="igraph-Spatial-Games.html#igraph_stochastic_imitation" title="2.4. igraph_stochastic_imitation — Adopt a strategy via stochastic imitation with uniform selection.">igraph_stochastic_imitation</a></strong></span>(test-&gt;graph, test-&gt;vertex, test-&gt;algo,
                                           test-&gt;quantities, &amp;stratcopy,
                                           test-&gt;mode);
         <span class="strong"><strong>if</strong></span> (ret) {
@@ -1402,210 +1606,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <br class="example-break">
 </div>
 <p> 
-</p>
-</div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="epidemic-models"></a>2. Epidemic models</h2></div></div></div>
-<div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir">2.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir_t">2.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</a></span></dt>
-<dt><span class="section"><a href="igraph-Spatial-Games.html#igraph_sir_destroy">2.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</a></span></dt>
-</dl></div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_sir"></a>2.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.3.2.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_sir(const igraph_t *graph, igraph_real_t beta,
-               igraph_real_t gamma, igraph_integer_t no_sim,
-               igraph_vector_ptr_t *result);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-The SIR model is a simple model from epidemiology. The individuals
-of the population might be in three states: susceptible, infected
-and recovered. Recovered people are assumed to be immune to the
-disease. Susceptibles become infected with a rate that depends on
-their number of infected neighbors. Infected people become recovered
-with a constant rate. See these parameters below.
-
-</p>
-<p>
-This function runs multiple simulations, all starting with a
-single uniformly randomly chosen infected individual. A simulation
-is stopped when no infected individuals are left.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
-<td><p>
-  The graph to perform the model on. For directed graphs
-       edge directions are ignored and a warning is given.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
-<td><p>
-  The rate of infection of an individual that is
-       susceptible and has a single infected neighbor.
-       The infection rate of a susceptible individual with n
-       infected neighbors is n times beta. Formally
-       this is the rate parameter of an exponential distribution.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>gamma</code></em>:</span></p></td>
-<td><p>
-  The rate of recovery of an infected individual.
-       Formally, this is the rate parameter of an exponential
-       distribution.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>no_sim</code></em>:</span></p></td>
-<td><p>
-  The number of simulation runs to perform.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
-<td><p>
-  The result of the simulation is stored here,
-       in a list of <a class="link" href="igraph-Spatial-Games.html#igraph_sir_t" title="2.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> objects. To deallocate
-       memory, the user needs to call <a class="link" href="igraph-Spatial-Games.html#igraph_sir_destroy" title="2.3. igraph_sir_destroy — Deallocates memory associated with a SIR simulation run."><code class="function">igraph_sir_destroy</code></a> on
-       each element, before destroying the pointer vector itself
-       using <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.17.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code.
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(no_sim * (|V| + |E| log(|V|))).
- 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_sir_t"></a>2.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.3.3.2"></a><p>
-</p>
-<pre class="programlisting">
-typedef struct igraph_sir_t {
-    igraph_vector_t times;
-    igraph_vector_int_t no_s, no_i, no_r;
-} igraph_sir_t;
-</pre>
-<p>
-</p>
-<p>
-</p>
-<p>Data structure to store the results of one simulation
-of the SIR (susceptible-infected-recovered) model on a graph.
-
-It has the following members. They are all (real or integer)
-vectors, and they are of the same length.
-
-</p>
-<p><b>Values: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><code class="constant">times</code>:</span></p></td>
-<td><p>
-  A vector, the times of the events are stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">no_s</code>:</span></p></td>
-<td><p>
-  An integer vector, the number of susceptibles in
-             each time step is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">no_i</code>:</span></p></td>
-<td><p>
-  An integer vector, the number of infected individuals
-             at each time step, is stored here.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="constant">no_r</code>:</span></p></td>
-<td><p>
-  An integer vector, the number of recovered individuals
-             is stored here at each time step.</p></td>
-</tr>
-</tbody>
-</table></div>
-<p> 
-</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_sir_destroy"></a>2.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</h3></div></div></div>
-<a class="indexterm" name="id-1.11.3.4.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-void igraph_sir_destroy(igraph_sir_t *sir);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>sir</code></em>:</span></p></td>
-<td><p>
-  The <a class="link" href="igraph-Spatial-Games.html#igraph_sir_t" title="2.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> object storing the simulation.</p></td>
-</tr></tbody>
-</table></div>
-<p>
-
- 
 </p>
 </div>
 </div>

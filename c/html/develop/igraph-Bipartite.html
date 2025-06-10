@@ -60,6 +60,7 @@ to them.</p>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_full_bipartite">2.2. <code class="function">igraph_full_bipartite</code> —  Creates a complete bipartite graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnm">2.3. <code class="function">igraph_bipartite_game_gnm</code> —  Generate a random bipartite graph with a fixed number of edges.</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_game_gnp">2.4. <code class="function">igraph_bipartite_game_gnp</code> —  Generates a random bipartite graph with a fixed connection probability.</a></span></dt>
+<dt><span class="section"><a href="igraph-Bipartite.html#igraph_bipartite_iea_game">2.5. <code class="function">igraph_bipartite_iea_game</code> —  Generates a random bipartite multigraph through independent edge assignment.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -554,6 +555,164 @@ probability <em class="parameter"><code>p</code></em>.
 <td><p>
   <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> for the unipartite version,
 <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> for the <code class="literal">G(n1, n2, m)</code> model.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), linear in the number of vertices and
+edges.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_bipartite_iea_game"></a>2.5. <code class="function">igraph_bipartite_iea_game</code> —  Generates a random bipartite multigraph through independent edge assignment.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_bipartite_iea_game(
+        igraph_t *graph, igraph_vector_bool_t *types,
+        igraph_integer_t n1, igraph_integer_t n2, igraph_integer_t m,
+        igraph_bool_t directed, igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This model generates random multigraphs with <em class="parameter"><code>n1</code></em> bottom vertices,
+<em class="parameter"><code>n2</code></em> top vertices and <em class="parameter"><code>m</code></em> edges through independent edge assignment (IEA).
+Each of the <em class="parameter"><code>m</code></em> edges is assigned uniformly at random to a vertex pair,
+independently of each other.
+
+</p>
+<p>
+This model does not sample multigraphs uniformly. Undirected graphs are
+generated with probability proportional to
+
+</p>
+<p>
+<code class="literal">(prod_(i&lt;j) A_ij !)^(-1)</code>,
+
+</p>
+<p>
+where <code class="constant">A</code> denotes the adjacency matrix. The corresponding  expression for
+directed graphs is
+
+</p>
+<p>
+<code class="literal">(prod_(i,j) A_ij !)^(-1)</code>.
+
+</p>
+<p>
+Thus the probability of all simple graphs (which only have 0s and 1s in the
+adjacency matrix) is the same, while that of non-simple ones depends on
+their edge and self-loop multiplicities.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized igraph graph, the result
+   is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  Pointer to an initialized boolean vector, or a <code class="constant">NULL</code>
+   pointer. If not <code class="constant">NULL</code>, then the vertex types are stored
+   here. Bottom vertices come first, <em class="parameter"><code>n1</code></em> of them, then <em class="parameter"><code>n2</code></em> top
+   vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n1</code></em>:</span></p></td>
+<td><p>
+  The number of bottom vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n2</code></em>:</span></p></td>
+<td><p>
+  The number of top vertices.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p>
+  The number of edges.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Whether to generate a directed graph. See
+    also the <em class="parameter"><code>mode</code></em> argument.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies how to direct the edges in directed
+    graphs. If it is <code class="constant">IGRAPH_OUT</code>, then directed edges point from
+    bottom vertices to top vertices. If it is <code class="constant">IGRAPH_IN</code>, edges
+    point from top vertices to bottom vertices. <code class="constant">IGRAPH_OUT</code> and
+    <code class="constant">IGRAPH_IN</code> do not generate mutual edges. If this argument is
+    <code class="constant">IGRAPH_ALL</code>, then each edge direction is considered
+    independently and mutual edges might be generated. This
+    argument is ignored for undirected graphs.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Generators.html#igraph_iea_game" title="2.5. igraph_iea_game — Generates a random multigraph through independent edge assignment."><code class="function">igraph_iea_game()</code></a> for the unipartite version;
+<a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> to uniformly sample bipartite graphs
+with a given number of vertices and edges.
   </p></td>
 </tr></tbody>
 </table></div>

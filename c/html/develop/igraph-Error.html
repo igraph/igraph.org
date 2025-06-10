@@ -1460,10 +1460,32 @@ be freed as well.
 
 
 This macro places the address of an object, together with the
-address of its destructor in a stack. This stack is used if an
+address of its destructor on a stack. This stack is used if an
 error happens to deallocate temporarily allocated objects to
 prevent memory leaks. After manual deallocation, objects are removed
 from the stack using <a class="link" href="igraph-Error.html#IGRAPH_FINALLY_CLEAN" title="5.3.2. IGRAPH_FINALLY_CLEAN — Signals clean deallocation of objects."><code class="function">IGRAPH_FINALLY_CLEAN()</code></a>.
+
+</p>
+<p>
+The typical usage is just after an initialization:
+
+</p>
+<pre class="programlisting">
+IGRAPH_CHECK(igraph_vector_init(&amp;vector, 0));
+IGRAPH_FINALLY(igraph_vector_destroy, &amp;vector);
+</pre>
+<p>
+
+The most commonly used data structures, such as <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects"><code class="function">igraph_vector_t</code></a>,
+have associated convenience macros that initialize the object and register
+it on this stack in one step. Thus the pattern above can be replaced with a
+single line:
+
+</p>
+<pre class="programlisting">
+IGRAPH_VECTOR_INIT_FINALLY(&amp;vector, 0);
+</pre>
+<p>
 
 </p>
 <p><b>Arguments: </b>
@@ -1629,7 +1651,7 @@ restore the error handler before they return.
 
     <span class="emphasis"><em>/* igraph_contract_vertices() preserves all edges, some of which become</em></span>
 <span class="emphasis"><em>     * parallel edges or self-loops after the contraction. We simplify these. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.8. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
 
     <span class="emphasis"><em>/* Data structures that are no longer needed must be explicitly destroyed.</em></span>
 <span class="emphasis"><em>     * If they were added to the "finally" stack, they must be removed explicitly,</em></span>
