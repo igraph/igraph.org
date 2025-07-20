@@ -335,12 +335,27 @@ matrix and degrees are used.
 <td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
 <td><p>
   For directed graphs: if the edges should be treated as
-                  undirected. For undirected graphs this is ignored.</p></td>
+                  undirected. For undirected graphs this is ignored.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 </p>
 <p><b>See also: </b></p>
@@ -622,12 +637,27 @@ lines in <em class="parameter"><code>merges</code></em>.
 <td><p>
   Pointer to an initialized vector, or NULL. If not NULL
    then the sizes of the components will be stored here, the vector
-   will be resized as needed.</p></td>
+   will be resized as needed.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 </p>
 <p><b>See also: </b></p>
@@ -704,12 +734,27 @@ range 0, ..., n - 1.
   Pointer to an integer for the number of
                     distinct clusters. If not <code class="constant">NULL</code>, this will be
                     updated to reflect the number of distinct
-                    clusters found in membership.</p></td>
+                    clusters found in membership.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 Time complexity: should be O(n) for n elements.
  
@@ -1375,7 +1420,7 @@ calculating all the communities in the graph.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>inner_links</code></em>:</span></p></td>
 <td><p>
-  Pointer to an integer, if not <code class="constant">NULL</code> the
+  Pointer to a real, if not <code class="constant">NULL</code> the
     number of edges within the community (or the sum of their weights)
     is stored here.
 </p></td>
@@ -1383,7 +1428,7 @@ calculating all the communities in the graph.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>outer_links</code></em>:</span></p></td>
 <td><p>
-  Pointer to an integer, if not <code class="constant">NULL</code> the
+  Pointer to a real, if not <code class="constant">NULL</code> the
     number of edges between the community and the rest of the graph
     (or the sum of their weights) will be stored here.
 </p></td>
@@ -1515,7 +1560,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_matrix_int_t merges;
     igraph_vector_int_t membership;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> x;
 
     <span class="emphasis"><em>/* Zachary Karate club */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
@@ -1539,11 +1583,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong>igraph_matrix_int_init</strong></span>(&amp;merges, 0, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;x, 0);
 
     <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version).">igraph_community_leading_eigenvector</a></strong></span>(&amp;g, <span class="emphasis"><em>/*weights=*/</em></span> NULL,
                                          &amp;merges, &amp;membership,
-                                         <span class="emphasis"><em>/*stpes=*/</em></span> 1,
+                                         <span class="emphasis"><em>/*steps=*/</em></span> 1,
                                          <span class="emphasis"><em>/*options=*/</em></span> NULL,
                                          <span class="emphasis"><em>/*modularity=*/</em></span> NULL,
                                          <span class="emphasis"><em>/*start=*/</em></span> NULL,
@@ -1574,7 +1617,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_matrix_int_print</strong></span>(&amp;merges);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;x);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
     <span class="strong"><strong>igraph_matrix_int_destroy</strong></span>(&amp;merges);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
@@ -2548,18 +2590,18 @@ connected.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Whether to use the directed or undirected version
+   of modularity. Will be ignored for undirected graphs.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>edges</code></em>:</span></p></td>
 <td><p>
   Vector containing the edges to be removed from the
    network, all edges are expected to appear exactly once in the
    vector.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
-<td><p>
-  Whether to use the directed or undirected version
-   of modularity. Will be ignored for undirected graphs.
 </p></td>
 </tr>
 <tr>
@@ -3395,14 +3437,6 @@ Springer, vol 689, p 229. <a class="ulink" href="https://doi.org/10.1007/978-3-3
 they are assigned to.
 </p></td>
 </tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>modularity</code></em>:</span></p></td>
-<td><p>
-  If not a null pointer, then it must be a pointer
-  to a real number. The modularity score of the detected community
-  structure is stored here.
-</p></td>
-</tr>
 </tbody>
 </table></div>
 <p>
@@ -3540,7 +3574,7 @@ label propagation. Scientific Reports, 13:1, (2023).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph. Note that the algorithm wsa originally
+  The input graph. Note that the algorithm was originally
    defined for undirected graphs. You are advised to set <em class="parameter"><code>mode</code></em> to
    <code class="constant">IGRAPH_ALL</code> if you pass a directed graph here to treat it as
    undirected.
@@ -3650,7 +3684,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t membership;
     igraph_real_t modularity;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
 
     <span class="emphasis"><em>/* Label propagation is a stochastic method; the result will depend on the random seed. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 123);

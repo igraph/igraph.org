@@ -194,7 +194,7 @@ Weighted Graphs". <a class="ulink" href="https://doi.org/10.1002/rsa.20130" targ
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        the calculated spanner will be returned here. Use
-       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.10. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.11. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanner as a separate
        graph object.
 </p></td>
 </tr>
@@ -3171,7 +3171,7 @@ typedef igraph_error_t igraph_astar_heuristic_func_t(
 
 <a class="link" href="igraph-Structural.html#igraph_get_shortest_path_astar" title="3.14. igraph_get_shortest_path_astar — A* gives the shortest path from one vertex to another, with heuristic."><code class="function">igraph_get_shortest_path_astar()</code></a> uses a heuristic based on a distance
 estimate to the target vertex to guide its search, and determine
-which vertex to try next. The heurstic function is expected to compute
+which vertex to try next. The heuristic function is expected to compute
 an estimate of the distance between <em class="parameter"><code>from</code></em> and <em class="parameter"><code>to</code></em>. In order for
 <a class="link" href="igraph-Structural.html#igraph_get_shortest_path_astar" title="3.14. igraph_get_shortest_path_astar — A* gives the shortest path from one vertex to another, with heuristic."><code class="function">igraph_get_shortest_path_astar()</code></a> to find an exact shortest path,
 the distance must not be overestimated, i.e. the heuristic function
@@ -6245,6 +6245,16 @@ suitable for use on paths, cycles, or arbitrary walks.
   The sequence of vertex IDs traversed will be returned here.
 </p></td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  A constant specifying how edge directions are
+        considered in directed graphs. <code class="constant">IGRAPH_OUT</code> follows edge
+        directions, <code class="constant">IGRAPH_IN</code> follows the opposite directions,
+        and <code class="constant">IGRAPH_ALL</code> ignores edge directions. This argument is
+        ignored for undirected graphs.
+</p></td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -8297,6 +8307,12 @@ k-neighborhood of vertices.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the results are stored here.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>weights_them</code></em>:</span></p></td>
 <td><p>
   Weight vector for weighted graphs, null pointer for
@@ -8872,7 +8888,7 @@ and edges in the graph.
 
     <span class="emphasis"><em>/* igraph_contract_vertices() preserves all edges, some of which become</em></span>
 <span class="emphasis"><em>     * parallel edges or self-loops after the contraction. We simplify these. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
 
     <span class="emphasis"><em>/* Data structures that are no longer needed must be explicitly destroyed.</em></span>
 <span class="emphasis"><em>     * If they were added to the "finally" stack, they must be removed explicitly,</em></span>
@@ -9908,7 +9924,7 @@ connected components in the graph.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>bridges</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector, the
    bridges will be stored here as edge indices.
@@ -10003,7 +10019,7 @@ two connected vertices as biconnected, however, igraph does.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
   If not a <code class="constant">NULL</code> pointer, the result will be returned here.
 </p></td>
@@ -10262,7 +10278,7 @@ G. Cairns and S. Mendan, Degree Sequence for Graphs with Loops (2013).
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_is_bigraphical" title="9.2. igraph_is_bigraphical — Is there a bipartite graph with the given bi-degree-sequence?"><code class="function">igraph_is_bigraphical()</code></a> to check if a bi-degree-sequence can be realized as a bipartite graph;
-<a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.23. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct a graph with a given degree sequence.
+<a class="link" href="igraph-Generators.html#igraph_realize_degree_sequence" title="1.25. igraph_realize_degree_sequence — Generates a graph with the given degree sequence."><code class="function">igraph_realize_degree_sequence()</code></a> to construct a graph with a given degree sequence.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -11377,7 +11393,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_real_t value;
 
     <span class="emphasis"><em>/* Create a directed graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.31. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 3);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kautz" title="1.34. igraph_kautz — Generate a Kautz graph.">igraph_kautz</a></strong></span>(&amp;graph, 2, 3);
 
     <span class="emphasis"><em>/* Initialize the vector where the results will be stored */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;pagerank, 0);
@@ -11615,7 +11631,7 @@ stuck in a sink vertex (a vertex with no outgoing edges).
 This simplified interface takes a vertex sequence and resets the random walk to
 one of the vertices in the specified vertex sequence, chosen uniformly. A typical
 application of personalized PageRank is when the random walk is reset to the same
-vertex every time - this can easily be achieved using <a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version)."><code class="function">igraph_vss_1()</code></a> which
+vertex every time: this can easily be achieved using <a class="link" href="igraph-Iterators.html#igraph_vss_1" title="4.3. igraph_vss_1 — Vertex set with a single vertex (immediate version)."><code class="function">igraph_vss_1()</code></a> which
 generates a vertex sequence containing only a single vertex.
 
 </p>
@@ -11691,6 +11707,8 @@ does not result in any performance increase at all.
 <td><p><span class="term"><em class="parameter"><code>reset_vids</code></em>:</span></p></td>
 <td><p>
   IDs of the vertices used when resetting the random walk.
+   The walk will be restarted from a vertex in this set, chosen uniformly at
+   random. Duplicate vertices are allowed.
 </p></td>
 </tr>
 <tr>
@@ -13308,14 +13326,6 @@ source and target subset.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  An optional vector containing edge weights for
-       calculating weighted betweenness. No edge weight may be NaN.
-       Supply a null pointer here for unweighted betweenness.
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>sources</code></em>:</span></p></td>
 <td><p>
   A vertex selector for the sources of the shortest paths taken
@@ -13327,6 +13337,14 @@ source and target subset.
 <td><p>
   A vertex selector for the targets of the shortest paths taken
        into considuration in the betweenness calculation.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional vector containing edge weights for
+       calculating weighted betweenness. No edge weight may be NaN.
+       Supply a null pointer here for unweighted betweenness.
 </p></td>
 </tr>
 </tbody>
@@ -13434,14 +13452,6 @@ source and target subset.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  An optional weight vector for weighted
-       betweenness. No edge weight may be NaN. Supply a null
-       pointer here for unweighted betweenness.
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>sources</code></em>:</span></p></td>
 <td><p>
   A vertex selector for the sources of the shortest paths taken
@@ -13453,6 +13463,14 @@ source and target subset.
 <td><p>
   A vertex selector for the targets of the shortest paths taken
        into considuration in the betweenness calculation.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional weight vector for weighted
+       betweenness. No edge weight may be NaN. Supply a null
+       pointer here for unweighted betweenness.
 </p></td>
 </tr>
 </tbody>
@@ -14130,6 +14148,13 @@ as the 1-norm or 2-norm are not currently implemented.
 <td><p>
   If not a null pointer, then the leading eigenvalue is
      stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Boolean scalar, whether to consider edge directions
+    in a directed graph. It is ignored for undirected graphs.
 </p></td>
 </tr>
 <tr>
@@ -16569,7 +16594,7 @@ also <span class="emphasis"><em>increase</em></span> it. For instance, if nodes 
 no common neighbors, their similarity is zero. However, if a loop edge is
 added to B, then B itself becomes a common neighbor of A and B and thus the
 similarity of A and B will be increased. Consider removing loop edges
-explicitly before invoking this function using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+explicitly before invoking this function using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
 
 </p>
 <p>
@@ -16819,7 +16844,7 @@ random sampling of spanning trees of a graph.
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        a spanning tree will be returned here. Use
-       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.10. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.11. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
        a separate graph object.
 </p></td>
 </tr>
@@ -16890,7 +16915,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
 
     <span class="emphasis"><em>/* Compute the edge betweenness. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
@@ -17180,7 +17205,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
 
     <span class="emphasis"><em>/* Create the Frucht graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Frucht");
 
     <span class="emphasis"><em>/* Compute the edge betweenness. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph));
@@ -17269,7 +17294,7 @@ and <code class="literal">3-1-2</code> will be sampled with multiplicity 2, whil
 <td><p>
   An initialized vector, the IDs of the edges that constitute
        a spanning tree will be returned here. Use
-       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.10. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
+       <a class="link" href="igraph-Operators.html#igraph_subgraph_from_edges" title="3.11. igraph_subgraph_from_edges — Creates a subgraph with the specified edges and their endpoints."><code class="function">igraph_subgraph_from_edges()</code></a> to extract the spanning tree as
        a separate graph object.
 </p></td>
 </tr>
@@ -17447,7 +17472,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Create a directed binary tree on 15 nodes,</em></span>
 <span class="emphasis"><em>       with edges pointing towards the root. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;graph, 15, 2, IGRAPH_TREE_IN);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.17. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;graph, 15, 2, IGRAPH_TREE_IN);
 
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_tree" title="15.5. igraph_is_tree — Decides whether the graph is a tree.">igraph_is_tree</a></strong></span>(&amp;graph, &amp;res, NULL, IGRAPH_IN);
     <span class="strong"><strong>printf</strong></span>("Is it an in-tree? %s\n", res ? "Yes" : "No");
@@ -17689,7 +17714,7 @@ sequence of n-2 integers, each between 0 and n-1 (inclusive).
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.28. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a>
+  <a class="link" href="igraph-Generators.html#igraph_from_prufer" title="1.31. igraph_from_prufer — Generates a tree from a Prüfer sequence."><code class="function">igraph_from_prufer()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -17845,7 +17870,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.19. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g, 20, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_transitivity_undirected" title="16.1. igraph_transitivity_undirected — Calculates the transitivity (clustering coefficient) of a graph.">igraph_transitivity_undirected</a></strong></span>(&amp;g, &amp;res, IGRAPH_TRANSITIVITY_NAN);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
@@ -19145,7 +19170,7 @@ multiple edges.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_is_loop" title="19.2. igraph_is_loop — Find the loop edges in a graph."><code class="function">igraph_is_loop()</code></a> and <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.5. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> to
-find the loops and multiple edges, <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to
+find the loops and multiple edges, <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to
 get rid of them, or <a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.6. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> to decide whether
 there is at least one multiple edge.
   </p></td>
@@ -19231,7 +19256,7 @@ A loop edge, also called a self-loop, is an edge from a vertex to itself.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
+  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19332,12 +19357,27 @@ will return a cached value in O(1) time.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized boolean vector for storing the result.</p></td>
+  Pointer to an initialized boolean vector for storing the result.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 </p>
 <p><b>See also: </b></p>
@@ -19349,7 +19389,7 @@ will return a cached value in O(1) time.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
+  <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to get rid of loop edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19360,7 +19400,7 @@ Time complexity: O(e), the number of edges to check.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.21.4.10.1"></a><p class="title"><b>Example 13.39.  File <code class="code">examples/simple/igraph_is_loop.c</code></b></p>
+<a name="id-1.14.21.4.12.1"></a><p class="title"><b>Example 13.39.  File <code class="code">examples/simple/igraph_is_loop.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -19447,7 +19487,7 @@ major version of igraph. Use it at your own risk.</p>
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>loop_count</code></em>:</span></p></td>
 <td><p>
   Pointer to an integer, the number of self-loops will be stored here.
 </p></td>
@@ -19606,7 +19646,7 @@ appearances of the multiple edges.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_count_multiple_1" title="19.8. igraph_count_multiple_1 — The multiplicity of a single edge in a graph."><code class="function">igraph_count_multiple_1()</code></a>,
-<a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.6. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+<a class="link" href="igraph-Structural.html#igraph_has_multiple" title="19.6. igraph_has_multiple — Check whether the graph has at least one multiple edge."><code class="function">igraph_has_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19736,7 +19776,7 @@ will return a cached value in O(1) time.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.5. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a>, <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.5. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> and <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19902,7 +19942,7 @@ is the number of edges between its endpoints.
   <a class="link" href="igraph-Structural.html#igraph_count_multiple_1" title="19.8. igraph_count_multiple_1 — The multiplicity of a single edge in a graph."><code class="function">igraph_count_multiple_1()</code></a> if you only need the multiplicity of a
 single edge; <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.5. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> if you are only interested in whether
 the graph has at least one edge with multiplicity greater than one;
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -19988,7 +20028,7 @@ igraph_error_t igraph_count_multiple_1(const igraph_t *graph, igraph_integer_t *
   <a class="link" href="igraph-Structural.html#igraph_count_multiple" title="19.7. igraph_count_multiple — The multiplicity of some edges in a graph."><code class="function">igraph_count_multiple()</code></a> if you need the multiplicity of multiple
 edges; <a class="link" href="igraph-Structural.html#igraph_is_multiple" title="19.5. igraph_is_multiple — Find the multiple edges in a graph."><code class="function">igraph_is_multiple()</code></a> if you are only interested in whether the
 graph has at least one edge with multiplicity greater than one;
-<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
+<a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to ensure that the graph has no multiple edges.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -20656,12 +20696,6 @@ Proc. Natl. Acad. Sci. USA 101, 3747 (2004).
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>vids</code></em>:</span></p></td>
-<td><p>
-  The vertices for which the calculation is performed.
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>knn</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector, the result will be
@@ -20739,7 +20773,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> knn, knnk;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.25. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary");
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary");
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;knn, 0);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;knnk, 0);
@@ -21044,16 +21078,16 @@ Phys. Rev. E 67, 026126 (2003)
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
-<td><p>
-  The mixing matrix M_ij will be stored here.
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
   A vector containing the weights of the edges. If passing a
    <code class="constant">NULL</code> pointer, edges will be assumed to have unit weights.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
+<td><p>
+  The mixing matrix <code class="constant">M_ij</code> will be stored here.
 </p></td>
 </tr>
 <tr>
@@ -21601,7 +21635,7 @@ etc. need to be included.
 <p>
 The current implementation of this function iteratively decrements support
 of each edge using O(|E|) space and O(|E|^1.5) time. The implementation does
-not support multigraphs; use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to collapse edges before
+not support multigraphs; use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to collapse edges before
 calling this function.
 
 </p>
@@ -22842,12 +22876,27 @@ graph such that one of its neighbors is also unmatched.
 <td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
 <td><p>
   Pointer to a boolean variable, the result will be returned
-              here.</p></td>
+              here.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
 
 </p>
 <p><b>See also: </b></p>
@@ -22872,7 +22921,7 @@ Time complexity: O(|V|+|E|) where |V| is the number of vertices and
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.14.26.3.8.1"></a><p class="title"><b>Example 13.50.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
+<a name="id-1.14.26.3.10.1"></a><p class="title"><b>Example 13.50.  File <code class="code">examples/simple/igraph_maximum_bipartite_matching.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -23278,7 +23327,7 @@ allowed to have a connection to themselves? This is controlled by the
 </p>
 <p>
 Note that density is ill-defined for graphs which have multiple edges
-between some pairs of vertices. Consider calling <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
+between some pairs of vertices. Consider calling <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>
 on such graphs. This function does not check whether the graph has
 parallel edges. The result it returns for such graphs is not meaningful.
 
@@ -23610,7 +23659,7 @@ will be zero.
 </p>
 <p>
 The measure works only if the graph is undirected and has no multiple edges.
-If the graph has multiple edges, simplify it first using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>. If the graph is directed, convert it into an undirected
+If the graph has multiple edges, simplify it first using <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a>. If the graph is directed, convert it into an undirected
 graph with <a class="link" href="igraph-Structural.html#igraph_to_undirected" title="17.2. igraph_to_undirected — Convert a directed graph to an undirected one."><code class="function">igraph_to_undirected()</code></a> .
 
 </p>
@@ -24118,6 +24167,64 @@ igraph_error_t igraph_get_adjacency_sparse(
 </p>
 </td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional vector containing the weight of each edge
+       in the graph. Supply a null pointer here to make all edges have
+       the same weight of 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td>
+<p>
+  Constant specifying how loop edges should be handled.
+       Possible values:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_NO_LOOPS</code></span></p></td>
+<td><p>
+
+         loop edges are ignored and the diagonal of the matrix will contain
+         zeros only
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_ONCE</code></span></p></td>
+<td><p>
+
+         loop edges are counted once, i.e. a vertex with a single unweighted
+         loop edge will have 1 in the corresponding diagonal entry
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LOOPS_TWICE</code></span></p></td>
+<td><p>
+
+         loop edges are counted twice in <span class="emphasis"><em>undirected</em></span> graphs, i.e. a vertex
+         with a single unweighted loop edge in an undirected graph will have
+         2 in the corresponding diagonal entry. Loop edges in directed graphs
+         are still counted as 1. Essentially, this means that the function is
+         counting the incident edge <span class="emphasis"><em>stems</em></span> , which makes more sense when
+         using the adjacency matrix in linear algebra.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -24207,6 +24314,14 @@ the sum of each row (or column) is one.
   Whether to normalize column-wise.
 </p></td>
 </tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional vector containing the weight of each edge
+       in the graph. Supply a null pointer here to make all edges have
+       the same weight of 1.
+</p></td>
+</tr>
 </tbody>
 </table></div>
 <p>
@@ -24294,6 +24409,14 @@ the sum of each row (or column) is one.
 <td><p><span class="term"><em class="parameter"><code>column_wise</code></em>:</span></p></td>
 <td><p>
   Whether to normalize column-wise.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  An optional vector containing the weight of each edge
+       in the graph. Supply a null pointer here to make all edges have
+       the same weight of 1.
 </p></td>
 </tr>
 </tbody>

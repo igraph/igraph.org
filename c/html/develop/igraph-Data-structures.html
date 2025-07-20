@@ -4448,7 +4448,7 @@ value is undefined and <em class="parameter"><code>pos</code></em> may point to 
   vector if it is present. If <em class="parameter"><code>v</code></em> does not
   contain <em class="parameter"><code>what</code></em> then
   <em class="parameter"><code>pos</code></em> is set to the position to which it
-  should be inserted (to keep the the vector sorted of course).
+  should be inserted (to keep the vector sorted of course).
 </p></td>
 </tr>
 </tbody>
@@ -4529,7 +4529,7 @@ the slice.
 <td><p>
   Pointer to an <span class="type">igraph_integer_t</span>. This is set to the position of an
        instance of <em class="parameter"><code>what</code></em> in the slice of the vector if it is present. If <em class="parameter"><code>v</code></em> does not contain <em class="parameter"><code>what</code></em> then <em class="parameter"><code>pos</code></em> is set to the position to which
-       it should be inserted (to keep the the vector sorted).
+       it should be inserted (to keep the vector sorted).
 </p></td>
 </tr>
 <tr>
@@ -5295,7 +5295,7 @@ igraph_error_t igraph_vector_complex_imag(const igraph_vector_complex_t *v,
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>real</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>imag</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector. The result will be stored here.
 </p></td>
@@ -5484,7 +5484,7 @@ igraph_error_t igraph_vector_complex_create_polar(igraph_vector_complex_t *v,
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>m</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
 <td><p>
   Pointer to an uninitialized complex vector.
 </p></td>
@@ -12232,7 +12232,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Transpose matrices */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_init" title="4.2.1. igraph_sparsemat_init — Initializes a sparse matrix, in triplet format.">igraph_sparsemat_init</a></strong></span>(&amp;A, 1, 1, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.17. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;G, 10, <span class="emphasis"><em>/*children=*/</em></span> 2, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_get_adjacency_sparse" title="26.8. igraph_get_adjacency_sparse — Returns the adjacency matrix of a graph in a sparse matrix format.">igraph_get_adjacency_sparse</a></strong></span>(&amp;G, &amp;A, IGRAPH_GET_ADJACENCY_BOTH, NULL, IGRAPH_LOOPS_ONCE);
     <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;G);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_sparsemat_compress" title="4.6.1. igraph_sparsemat_compress — Converts a sparse matrix to column-compressed format.">igraph_sparsemat_compress</a></strong></span>(&amp;A, &amp;B);
@@ -12403,8 +12403,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_t M, N;
     igraph_vector_int_t p, q;
     igraph_integer_t i;
-
-    <span class="strong"><strong>RNG_BEGIN</strong></span>();
 
     <span class="emphasis"><em>/* Permutation of a matrix */</em></span>
 
@@ -12598,8 +12596,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;M);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;N);
 
-    <span class="strong"><strong>RNG_END</strong></span>();
-
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -12656,8 +12652,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_sparsemat_t A, B, C;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> b, x;
     igraph_integer_t i;
-
-    <span class="strong"><strong>RNG_BEGIN</strong></span>();
 
     <span class="emphasis"><em>/* lsolve */</em></span>
 
@@ -12895,8 +12889,6 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
 <span class="strong"><strong>#undef</strong></span> DIM
 <span class="strong"><strong>#undef</strong></span> EDGES
-
-    <span class="strong"><strong>RNG_END</strong></span>();
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -14692,15 +14684,15 @@ Count the number of matrix entries that are closer to zero than <em class="param
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>The</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>A</code></em>:</span></p></td>
 <td><p>
-  input matrix, column-compressed.
+  The input matrix, column-compressed.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>The</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>tol</code></em>:</span></p></td>
 <td><p>
-  tolerance for zero comparisons.
+  The tolerance for zero comparisons.
 </p></td>
 </tr>
 </tbody>
@@ -16902,7 +16894,7 @@ Solve Ax=b, where A is a symmetric positive definite matrix.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>v</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>b</code></em>:</span></p></td>
 <td><p>
   The right hand side.
 </p></td>
@@ -17451,9 +17443,9 @@ igraph_error_t igraph_sparsemat_arpack_rssolve(const igraph_sparsemat_t *A,
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>The</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>A</code></em>:</span></p></td>
 <td><p>
-  input matrix, must be column-compressed.
+  The input matrix, must be column-compressed.
 </p></td>
 </tr>
 <tr>
@@ -17660,7 +17652,7 @@ igraph_error_t igraph_sparsemat(igraph_t *graph, const igraph_sparsemat_t *A,
 
 One edge is created for each non-zero entry in the matrix. If you
 have a symmetric matrix, and want to create an undirected graph,
-then delete the entries in the upper diagonal first, or call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.9. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result graph to eliminate the multiple
+then delete the entries in the upper diagonal first, or call <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> on the result graph to eliminate the multiple
 edges.
 
 </p>
@@ -19902,7 +19894,7 @@ All elements of the string vector are set to the empty string.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>len</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>size</code></em>:</span></p></td>
 <td><p>
   The (initial) length of the string vector.
 </p></td>
@@ -20065,7 +20057,7 @@ element. Use <a class="link" href="igraph-Data-structures.html#igraph_strvector_
 <tr>
 <td><p><span class="term"><em class="parameter"><code>i</code></em>:</span></p></td>
 <td><p>
-  The the index of the element.
+  The index of the element.
 </p></td>
 </tr>
 </tbody>
@@ -20359,7 +20351,7 @@ length of the new string.
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_strvector_push_back_len(
         igraph_strvector_t *sv,
-        const char *value, igraph_integer_t len);
+        const char *value, size_t len);
 </pre></div>
 <p>
 </p>
@@ -23333,7 +23325,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <span class="emphasis"><em>     * representation, then reconstruct the graph from the tree and check</em></span>
 <span class="emphasis"><em>     * whether the two are isomorphic (they should be) */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.15. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_kary_tree" title="1.17. igraph_kary_tree — Creates a k-ary tree in which almost all vertices have k children.">igraph_kary_tree</a></strong></span>(&amp;g, 42, 3, IGRAPH_TREE_OUT);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_adjlist_init" title="10.1.1. igraph_adjlist_init — Constructs an adjacency list of vertices from a given graph.">igraph_adjlist_init</a></strong></span>(&amp;g, &amp;adjlist, IGRAPH_OUT, IGRAPH_LOOPS_ONCE, IGRAPH_MULTIPLE);
     <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_adjlist" title="1.7. igraph_adjlist — Creates a graph from an adjacency list.">igraph_adjlist</a></strong></span>(&amp;g2, &amp;adjlist, IGRAPH_OUT, <span class="emphasis"><em>/* duplicate = */</em></span> 0);
     <span class="strong"><strong><a class="link" href="igraph-Isomorphism.html#igraph_isomorphic" title="1.1. igraph_isomorphic — Are two graphs isomorphic?">igraph_isomorphic</a></strong></span>(&amp;g, &amp;g2, &amp;iso);
@@ -23522,15 +23514,15 @@ it does not require your graph to exist yet.
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>no_of_nodes</code></em>:</span></p></td>
-<td><p>
-  The number of vertices
-</p></td>
-</tr>
-<tr>
 <td><p><span class="term"><em class="parameter"><code>al</code></em>:</span></p></td>
 <td><p>
   Pointer to an uninitialized <span class="type">igraph_adjlist_t</span> object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no_of_nodes</code></em>:</span></p></td>
+<td><p>
+  The number of vertices
 </p></td>
 </tr>
 </tbody>
@@ -24162,7 +24154,7 @@ void igraph_inclist_destroy(igraph_inclist_t *il);
 <col>
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>eal</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>il</code></em>:</span></p></td>
 <td><p>
   The incidence list to destroy.</p></td>
 </tr></tbody>
@@ -24782,7 +24774,7 @@ to a different value than <code class="constant">IGRAPH_LOOPS_TWICE</code>.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>al</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>il</code></em>:</span></p></td>
 <td><p>
   Pointer to an uninitialized incidence list.
 </p></td>
@@ -24848,6 +24840,7 @@ void igraph_lazy_inclist_destroy(igraph_lazy_inclist_t *il);
 
 
 Frees all allocated memory for a lazy incidence list.
+
 </p>
 <p><b>Arguments: </b>
 </p>
@@ -24857,7 +24850,7 @@ Frees all allocated memory for a lazy incidence list.
 <col>
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>al</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>il</code></em>:</span></p></td>
 <td><p>
   The incidence list to deallocate.</p></td>
 </tr></tbody>

@@ -25,7 +25,7 @@ langversion: master
 <dt><span class="section"><a href="igraph-Layout.html#two-d-layout-generators">1. 2D layout generators</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#layouts-for-trees-and-acyclic-graphs">2. Layouts for trees and acyclic graphs</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#three-d-layout-generators">3. 3D layout generators</a></span></dt>
-<dt><span class="section"><a href="igraph-Layout.html#merging-layouts">4. Merging layouts</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#pp-layouts">4. Post-processing layouts</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -1433,7 +1433,7 @@ Information Processing Letters, 31/1, 7--15, 1989.
 <td><p><span class="term"><em class="parameter"><code>epsilon</code></em>:</span></p></td>
 <td><p>
   Stop the iteration, if the maximum delta value of the
-       algorithm is smaller than still. It is safe to leave it at zero,
+       algorithm is smaller than this. It is safe to leave it at zero,
        and then <em class="parameter"><code>maxiter</code></em> iterations are performed.
 </p></td>
 </tr>
@@ -1797,8 +1797,6 @@ igraph_error_t igraph_layout_mds(const igraph_t *graph, igraph_matrix_t *res,
 
 
 
-</p>
-<p>
 This layout requires a distance matrix, where the intersection of
 row i and column j specifies the desired distance between vertex i
 and vertex j. The algorithm will try to place the vertices in a
@@ -1813,8 +1811,8 @@ and Hall, London.
 If the input graph is disconnected, igraph will decompose it
 first into its subgraphs, lay out the subgraphs one by one
 using the appropriate submatrices of the distance matrix, and
-then merge the layouts using <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="4.1. igraph_layout_merge_dla — Merges multiple layouts by using a DLA algorithm."><code class="function">igraph_layout_merge_dla</code></a>.
-Since <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="4.1. igraph_layout_merge_dla — Merges multiple layouts by using a DLA algorithm."><code class="function">igraph_layout_merge_dla</code></a> works for 2D layouts only,
+then merge the layouts using <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="4.1. igraph_layout_merge_dla — Merges multiple layouts by using a DLA algorithm."><code class="function">igraph_layout_merge_dla()</code></a>.
+Since <a class="link" href="igraph-Layout.html#igraph_layout_merge_dla" title="4.1. igraph_layout_merge_dla — Merges multiple layouts by using a DLA algorithm."><code class="function">igraph_layout_merge_dla()</code></a> works for 2D layouts only,
 you cannot run the MDS layout on disconnected graphs for
 more than two dimensions.
 
@@ -2520,14 +2518,14 @@ Cybernetics 11(2):109-125, 1981.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>extended_graph</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>extd_graph</code></em>:</span></p></td>
 <td><p>
   Pointer to an uninitialized graph object or <code class="constant">NULL</code>.
-                      The extended graph with the added dummy nodes will be
-                      returned here. In this graph, each edge points downwards
-                      to lower layers, spans exactly one layer and the first
-                      |V| vertices coincide with the vertices of the
-                      original graph.
+                  The extended graph with the added dummy nodes will be
+                  returned here. In this graph, each edge points downwards
+                  to lower layers, spans exactly one layer and the first
+                  |V| vertices coincide with the vertices of the
+                  original graph.
 </p></td>
 </tr>
 <tr>
@@ -2572,12 +2570,27 @@ Cybernetics 11(2):109-125, 1981.
 <td><p>
   Weights of the edges. These are used only if the graph contains
                cycles; igraph will tend to reverse edges with smaller
-               weights when breaking the cycles.</p></td>
+               weights when breaking the cycles.
+</p></td>
 </tr>
 </tbody>
 </table></div>
 <p>
-
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
  
 </p>
 </div>
@@ -3355,7 +3368,7 @@ requirements are of the order O(|V|^2).
 <td><p><span class="term"><em class="parameter"><code>epsilon</code></em>:</span></p></td>
 <td><p>
   Stop the iteration, if the maximum delta value of the
-       algorithm is smaller than still. It is safe to leave it at zero,
+       algorithm is smaller than this. It is safe to leave it at zero,
        and then <em class="parameter"><code>maxiter</code></em> iterations are performed.
 </p></td>
 </tr>
@@ -3580,8 +3593,11 @@ major version of igraph. Use it at your own risk.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="merging-layouts"></a>4. Merging layouts</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Layout.html#igraph_layout_merge_dla">4.1. <code class="function">igraph_layout_merge_dla</code> —  Merges multiple layouts by using a DLA algorithm.</a></span></dt></dl></div>
+<a name="pp-layouts"></a>4. Post-processing layouts</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_merge_dla">4.1. <code class="function">igraph_layout_merge_dla</code> —  Merges multiple layouts by using a DLA algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_align">4.2. <code class="function">igraph_layout_align</code> —  Aligns a graph layout with the coordinate axes.</a></span></dt>
+</dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_merge_dla"></a>4.1. <code class="function">igraph_layout_merge_dla</code> —  Merges multiple layouts by using a DLA algorithm.</h3></div></div></div>
@@ -3664,6 +3680,79 @@ Added in version 0.2.
 </p>
 <p>
 Time complexity: TODO.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_layout_align"></a>4.2. <code class="function">igraph_layout_align</code> —  Aligns a graph layout with the coordinate axes.</h3></div></div></div>
+<a class="indexterm" name="id-1.21.5.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_layout_align(const igraph_t *graph, igraph_matrix_t *layout);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function centers a vertex layout on the coordinate system origin and
+rotates the layout to achieve a visually pleasing alignment with the coordinate
+axes. Doing this is particularly useful with force-directed layouts such as
+<a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold()</code></a>. Layouts in arbitrary dimensional
+spaces are supported.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph whose layout is to be aligned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>layout</code></em>:</span></p></td>
+<td><p>
+  A matrix whose rows are the coordinates of vertices. It will
+   be modified in-place.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E| + |V|), linear in the number of edges and vertices.
  
 </p>
 </div>
