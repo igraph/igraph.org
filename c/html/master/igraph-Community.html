@@ -57,7 +57,7 @@ Physics Reports 659 (2016): 1–44.
 <dt><span class="section"><a href="igraph-Community.html#igraph_modularity">1.1. <code class="function">igraph_modularity</code> —  Calculates the modularity of a graph with respect to some clusters or vertex types.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_modularity_matrix">1.2. <code class="function">igraph_modularity_matrix</code> —  Calculates the modularity matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_optimal_modularity">1.3. <code class="function">igraph_community_optimal_modularity</code> —  Calculate the community structure with the highest modularity value.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_community_to_membership">1.4. <code class="function">igraph_community_to_membership</code> —  Creates a membership vector from a community structure dendrogram.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_community_to_membership">1.4. <code class="function">igraph_community_to_membership</code> —  Cut a dendrogram after a given number of merges.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_reindex_membership">1.5. <code class="function">igraph_reindex_membership</code> —  Makes the IDs in a membership vector contiguous.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_compare_communities">1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_split_join_distance">1.7. <code class="function">igraph_split_join_distance</code> —  Calculates the split-join distance of two community structures.</a></span></dt>
@@ -174,7 +174,9 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
   Numeric vector of integer values which gives the type of each
                   vertex, i.e. the cluster to which it belongs.
                   It does not have to be consecutive, i.e. empty communities
-                  are allowed.
+                  are allowed. For better performance, ensure that community
+                  indices are nonnegative and smaller than the vertex count.
+                  This can be ensured using <a class="link" href="igraph-Community.html#igraph_reindex_membership" title="1.5. igraph_reindex_membership — Makes the IDs in a membership vector contiguous."><code class="function">igraph_reindex_membership()</code></a>.
 </p></td>
 </tr>
 <tr>
@@ -240,7 +242,8 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
 <p>
 
 Time complexity: O(|V|+|E|), the number of vertices plus the number
-of edges.
+of edges, assuming that community indices are nonnegative and smaller
+than the vertex count. Otherwise, O(|V| log |V| + |E|).
  
 </p>
 </div>
@@ -392,8 +395,9 @@ igraph_error_t igraph_community_optimal_modularity(const igraph_t *graph,
 
 
 
-This function calculates the optimal community structure for a
-graph, in terms of maximal modularity score.
+This function calculates the optimal community structure for a graph, in
+terms of maximal modularity score. Both undirected and directed graphs
+are supported.
 
 </p>
 <p>
@@ -532,7 +536,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;graph, &amp;simple);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_is_simple" title="20.1. igraph_is_simple — Decides whether the input graph is a simple graph.">igraph_is_simple</a></strong></span>(&amp;graph, &amp;simple);
     <span class="strong"><strong>if</strong></span> (!simple) {
         <span class="strong"><strong>return</strong></span> 1;
     }
@@ -592,7 +596,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_community_to_membership"></a>1.4. <code class="function">igraph_community_to_membership</code> —  Creates a membership vector from a community structure dendrogram.</h3></div></div></div>
+<a name="igraph_community_to_membership"></a>1.4. <code class="function">igraph_community_to_membership</code> —  Cut a dendrogram after a given number of merges.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -608,26 +612,31 @@ igraph_error_t igraph_community_to_membership(const igraph_matrix_int_t *merges,
 
 
 
-This function creates a membership vector from a community
-structure dendrogram. A membership vector contains for each vertex
-the id of its graph component, the graph components are numbered
-from zero, see the same argument of <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>
-for an example of a membership vector.
+This function creates a membership vector from a dendrogram whose leaves
+are individual vertices by cutting it at the specified level. It produces
+a membership vector that contains for each vertex its cluster ID, numbered
+from zero. This is the same membership vector format that is produced by
+<a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, as well as all community detection
+functions in igraph.
 
 </p>
 <p>
-Many community detection algorithms return with a <span class="emphasis"><em>merges</em></span>
-matrix, <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> and <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a> are two examples. The matrix
-contains the merge operations performed while mapping the
-hierarchical structure of a network. If the matrix has <code class="constant">n-1</code> rows,
-where <code class="constant">n</code> is the number of vertices in the graph, then it contains
-the hierarchical structure of the whole network and it is called a
-dendrogram.
+It takes as input the number of vertices <em class="parameter"><code>n</code></em>, and a <em class="parameter"><code>merges</code></em> matrix
+encoding the dendrogram, in the format produced by hierarchical clustering
+functions such as <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a>,
+<a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> or <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a>.
+The matrix must have two columns and up to <code class="literal">n - 1</code> rows.
+Each row represents merging two dendrogram nodes into their parent node.
+The leaf nodes of the dendrogram are indexed from 0 to <code class="literal">n - 1</code>
+and are identical to the vertices of the graph that is being partitioned
+into communities. Row <code class="constant">i</code> contains the children of dendrogram node
+with index <code class="literal">n + i</code>.
 
 </p>
 <p>
 This function performs <em class="parameter"><code>steps</code></em> merge operations as prescribed by
-the <em class="parameter"><code>merges</code></em> matrix and returns the current state of the network.
+the <em class="parameter"><code>merges</code></em> matrix and returns the resulting partitioning into
+<code class="literal">n - steps</code> communities.
 
 </p>
 <p>
@@ -647,9 +656,7 @@ lines in <em class="parameter"><code>merges</code></em>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>merges</code></em>:</span></p></td>
 <td><p>
-  The two-column matrix containing the merge
-   operations. See <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> for the
-   detailed syntax.
+  The two-column matrix containing the merge operations.
 </p></td>
 </tr>
 <tr>
@@ -668,14 +675,14 @@ lines in <em class="parameter"><code>merges</code></em>.
 <td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector, the membership
-   results will be stored here, if not NULL. The vector will be
+   results will be stored here, if not <code class="constant">NULL</code>. The vector will be
    resized as needed.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>csize</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized vector, or NULL. If not NULL
+  Pointer to an initialized vector, or <code class="constant">NULL</code>. If not <code class="constant">NULL</code>
    then the sizes of the components will be stored here, the vector
    will be resized as needed.
 </p></td>
@@ -710,7 +717,9 @@ lines in <em class="parameter"><code>merges</code></em>.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a> for community structure detection
-algorithms.
+algorithms producing merge matrices in this format;
+<a class="link" href="igraph-Community.html#igraph_le_community_to_membership" title="3.3. igraph_le_community_to_membership — Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment."><code class="function">igraph_le_community_to_membership()</code></a> to perform merges
+starting from a given cluster assignment.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -726,9 +735,10 @@ Time complexity: O(|V|), the number of vertices in the graph.
 <a class="indexterm" name="id-1.25.5.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_reindex_membership(igraph_vector_int_t *membership,
-                              igraph_vector_int_t *new_to_old,
-                              igraph_integer_t *nb_clusters);
+igraph_error_t igraph_reindex_membership(
+        igraph_vector_int_t *membership,
+        igraph_vector_int_t *new_to_old,
+        igraph_integer_t *nb_clusters);
 </pre></div>
 <p>
 </p>
@@ -736,11 +746,9 @@ igraph_error_t igraph_reindex_membership(igraph_vector_int_t *membership,
 
 
 
-This function reindexes component IDs in a membership vector
-in a way that the new IDs start from zero and go up to C-1,
-where C is the number of unique component IDs in the original
-vector. The supplied membership is expected to fall in the
-range 0, ..., n - 1.
+This function reindexes component IDs in a membership vector in a way that
+the new IDs start from zero and go up to <code class="literal">C-1</code>, where <code class="constant">C</code> is the
+number of unique component IDs in the original vector.
 
 </p>
 <p><b>Arguments: </b>
@@ -796,7 +804,8 @@ range 0, ..., n - 1.
 </table></div>
 <p>
 
-Time complexity: should be O(n) for n elements.
+Time complexity: Let n be the length of the membership vector.
+O(n) if cluster indices are within 0..n-1, and O(n log(n)) otherwise.
  
 </p>
 </div>
@@ -1552,7 +1561,7 @@ Time complexity: TODO.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector">3.1. <code class="function">igraph_community_leading_eigenvector</code> —  Leading eigenvector community finding (proper version).</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector_callback_t">3.2. <code class="function">igraph_community_leading_eigenvector_callback_t</code> — Callback for the leading eigenvector community finding method.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> —  Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment.</a></span></dt>
 </dl></div>
 <p>
 The function documented in these section implements the
@@ -1718,8 +1727,7 @@ Phys Rev E 74:036104 (2006).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  The weights of the edges, or a null pointer for
-   unweighted graphs.
+  The weights of the edges, or <code class="constant">NULL</code> for unweighted graphs.
 </p></td>
 </tr>
 <tr>
@@ -1728,7 +1736,7 @@ Phys Rev E 74:036104 (2006).
   The result of the algorithm, a matrix containing the
    information about the splits performed. The matrix is built in
    the opposite way however, it is like the result of an
-   agglomerative algorithm. Unlike with most other hierarchicaly
+   agglomerative algorithm. Unlike with most other hierarchical
    community detection functions in igraph, the integers in this matrix
    represent community indices, not vertex indices. If at the end of
    the algorithm (after <em class="parameter"><code>steps</code></em> steps was done) there are <span class="quote">“<span class="quote">p</span>”</span>
@@ -1750,7 +1758,7 @@ Phys Rev E 74:036104 (2006).
    This argument is ignored if it is <code class="constant">NULL</code>. This argument can
    also be used to supply a starting configuration for the community
    finding, in the format of a membership vector. In this case the
-   <em class="parameter"><code>start</code></em> argument must be set to 1.
+   <em class="parameter"><code>start</code></em> argument must be set to <code class="constant">true</code>.
 </p></td>
 </tr>
 <tr>
@@ -2027,7 +2035,7 @@ The following arguments are passed to the callback:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</h3></div></div></div>
+<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> —  Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment.</h3></div></div></div>
 <a class="indexterm" name="id-1.25.7.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
@@ -2042,10 +2050,33 @@ igraph_error_t igraph_le_community_to_membership(const igraph_matrix_int_t *merg
 
 
 
-This function creates a membership vector from the
-result of <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>.
-It takes <code class="constant">membership</code> and performs <code class="constant">steps</code> merges,
-according to the supplied <code class="constant">merges</code> matrix.
+This function takes a dendrogram whose leaves are cluster IDs given in an
+initial cluster assignment provided in <em class="parameter"><code>membership</code></em>. Then it updates
+the cluster assignment by performing the specified number of mergers,
+as given by the dendrogram encoded in <em class="parameter"><code>merges</code></em>. It is a more general
+version of <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a>, which assumes that
+the dendrogram leaves are singleton clusters corresponding to individual
+vertices.
+
+</p>
+<p>
+This dendrogram format is suitable for divise hierarchical community
+detection algorithms that stop before dividing the graph into individual
+vertices, such as <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>.
+
+</p>
+<p>
+Initially, <em class="parameter"><code>membership</code></em> is expected to contain <code class="constant">m</code> contiguous cluster
+indices, numbered from zero. These correspond to the leaf nodes of the
+dendrogram. Row <code class="constant">i</code> of the two-column <em class="parameter"><code>merges</code></em> matrix contains the IDs of
+clusters that are merged together into dendrogram node <code class="literal">m + i</code>.
+It may have up to <code class="literal">m - 1</code> rows.
+
+</p>
+<p>
+This function performs <em class="parameter"><code>steps</code></em> merge operations as prescribed by the
+<em class="parameter"><code>merges</code></em> matrix and updates <em class="parameter"><code>membership</code></em> to the resulting partitioning
+into <code class="literal">m - steps</code> communities.
 
 </p>
 <p><b>Arguments: </b>
@@ -2099,6 +2130,23 @@ according to the supplied <code class="constant">merges</code> matrix.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> for a simpler interface that
+starts by merging individual vertices.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2403,8 +2451,8 @@ Proc. Nat. Acad. Sci. USA 99, 7821-7826 (2002).
     then merges performed by the algorithm are stored here. Even if
     this is a divisive algorithm, we can replay it backwards and
     note which two clusters were merged. Clusters are numbered from
-    zero, see the <em class="parameter"><code>merges</code></em> argument of <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>
-    for details. The matrix will be resized as needed.
+    zero. See <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> for details. The
+    matrix will be resized as needed.
 </p></td>
 </tr>
 <tr>
@@ -2760,10 +2808,10 @@ structure in mega-scale social networks,
 <td><p><span class="term"><em class="parameter"><code>merges</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized matrix or <code class="constant">NULL</code>, the result of the
-   computation is stored here. The matrix has two columns and each
-   merge corresponds to one merge, the IDs of the two merged
-   components are stored. The component IDs are numbered from zero and
-   the first <code class="constant">n</code> components are the individual vertices, <code class="constant">n</code> is
+   computation is stored here as a merges matrix representing a dendrogram.
+   The matrix has two columns and each merge corresponds to one merge, the
+   IDs of the two merged components are stored. The component IDs are numbered
+   from zero and the first <code class="constant">n</code> components are the individual vertices, <code class="constant">n</code> is
    the number of vertices in the graph. Component <code class="constant">n</code> is created
    in the first merge, component <code class="literal">n+1</code> in the second merge, etc.
    The matrix will be resized as needed. If this argument is <code class="constant">NULL</code>
@@ -2816,9 +2864,8 @@ structure in mega-scale social networks,
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a> for other community detection
-algorithms, <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Creates a membership vector from a community structure dendrogram."><code class="function">igraph_community_to_membership()</code></a> to convert the
-dendrogram to a membership vector.
+  <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> to cut the dendrogram at
+an arbitrary number of steps.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -3862,7 +3909,7 @@ major version of igraph. Use it at your own risk.</p>
 </div>
 <p>This function finds communities using a Voronoi partitioning of vertices based
 on the given edge lengths divided by the edge clustering coefficient
-(<a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>). The generator vertices are chosen to be those with the
+(<a class="link" href="igraph-Structural.html#igraph_ecc" title="17.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>). The generator vertices are chosen to be those with the
 largest local relative density within a radius <em class="parameter"><code>r</code></em>, with the local relative
 density of a vertex defined as
 <code class="literal">s m / (m + k)</code>, where <code class="constant">s</code> is the strength of the vertex,
@@ -3979,7 +4026,7 @@ Scientific Reports 14, 8124 (2024)
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.34. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>, <a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.34. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>, <a class="link" href="igraph-Structural.html#igraph_ecc" title="17.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>

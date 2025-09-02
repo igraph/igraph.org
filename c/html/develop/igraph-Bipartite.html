@@ -10,17 +10,17 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Arpack.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Games.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Advanced.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Spatial.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Bipartite"></a>Chapter 30. Bipartite, i.e. two-mode graphs</h1></div></div></div>
+<a name="igraph-Bipartite"></a>Chapter 13. Bipartite, i.e. two-mode graphs</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Bipartite.html#about-bipartite">1.  Bipartite networks in igraph</a></span></dt>
 <dt><span class="section"><a href="igraph-Bipartite.html#create-two-mode-networks">2. Create two-mode networks</a></span></dt>
@@ -65,7 +65,7 @@ to them.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_create_bipartite"></a>2.1. <code class="function">igraph_create_bipartite</code> —  Create a bipartite graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.3.2.2"></a><p>
+<a class="indexterm" name="id-1.14.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_create_bipartite(igraph_t *graph, const igraph_vector_bool_t *types,
@@ -79,7 +79,7 @@ igraph_error_t igraph_create_bipartite(igraph_t *graph, const igraph_vector_bool
 
 
 This is a simple wrapper function to create a bipartite graph. It
-does a little more than <a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges."><code class="function">igraph_create()</code></a>, e.g. it checks that
+does a little more than <a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges."><code class="function">igraph_create()</code></a>, e.g. it checks that
 the graph is indeed bipartite with respect to the given <em class="parameter"><code>types</code></em>
 vector. If there is an edge connecting two vertices of the same
 kind, then an error is reported.
@@ -146,17 +146,19 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.31.3.2.8.1"></a><p class="title"><b>Example 30.1.  File <code class="code">examples/simple/igraph_bipartite_create.c</code></b></p>
+<a name="id-1.14.3.2.8.1"></a><p class="title"><b>Example 13.1.  File <code class="code">examples/simple/igraph_bipartite_create.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
-    igraph_integer_t edges2[] = {0, 1, 1, 2, 3, 4, 5, 6, 6, 5, 1, 4, 1, 6, 0, 3 };
+    igraph_int_t edges2[] = {0, 1, 1, 2, 3, 4, 5, 6, 6, 5, 1, 4, 1, 6, 0, 3 };
     igraph_t g;
     igraph_vector_bool_t types;
     igraph_vector_int_t edges;
-    igraph_integer_t i;
+    igraph_int_t i;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;edges, edges2, <span class="strong"><strong>sizeof</strong></span>(edges2) / <span class="strong"><strong>sizeof</strong></span>(edges2[0]));
     <span class="strong"><strong>igraph_vector_bool_init</strong></span>(&amp;types, <span class="strong"><strong>igraph_vector_int_max</strong></span>(&amp;edges) + 1);
@@ -166,7 +168,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Bipartite.html#igraph_create_bipartite" title="2.1. igraph_create_bipartite — Create a bipartite graph.">igraph_create_bipartite</a></strong></span>(&amp;g, &amp;types, &amp;edges, <span class="emphasis"><em>/*directed=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
     <span class="strong"><strong>igraph_vector_bool_destroy</strong></span>(&amp;types);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -183,12 +185,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_full_bipartite"></a>2.2. <code class="function">igraph_full_bipartite</code> —  Creates a complete bipartite graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.3.3.2"></a><p>
+<a class="indexterm" name="id-1.14.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_full_bipartite(igraph_t *graph,
                           igraph_vector_bool_t *types,
-                          igraph_integer_t n1, igraph_integer_t n2,
+                          igraph_int_t n1, igraph_int_t n2,
                           igraph_bool_t directed,
                           igraph_neimode_t mode);
 </pre></div>
@@ -299,8 +301,8 @@ edges.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph)."><code class="function">igraph_full()</code></a> for non-bipartite complete graphs,
-<a class="link" href="igraph-Generators.html#igraph_full_multipartite" title="1.23. igraph_full_multipartite — Creates a full multipartite graph."><code class="function">igraph_full_multipartite()</code></a> for complete multipartite graphs.
+  <a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph)."><code class="function">igraph_full()</code></a> for non-bipartite complete graphs,
+<a class="link" href="igraph-Generators.html#igraph_full_multipartite" title="7.3. igraph_full_multipartite — Creates a full multipartite graph."><code class="function">igraph_full_multipartite()</code></a> for complete multipartite graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -311,12 +313,12 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_game_gnm"></a>2.3. <code class="function">igraph_bipartite_game_gnm</code> —  Generate a random bipartite graph with a fixed number of edges.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.3.4.2"></a><p>
+<a class="indexterm" name="id-1.14.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bipartite_game_gnm(igraph_t *graph, igraph_vector_bool_t *types,
-                              igraph_integer_t n1, igraph_integer_t n2,
-                              igraph_integer_t m, igraph_bool_t directed,
+                              igraph_int_t n1, igraph_int_t n2,
+                              igraph_int_t m, igraph_bool_t directed,
                               igraph_neimode_t mode, igraph_bool_t multiple);
 </pre></div>
 <p>
@@ -427,7 +429,7 @@ The <code class="literal">G(n1, n2, m)</code> model uniformly samples bipartite 
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> for the unipartite version,
+  <a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnm" title="1.1. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges."><code class="function">igraph_erdos_renyi_game_gnm()</code></a> for the unipartite version,
 <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnp" title="2.4. igraph_bipartite_game_gnp — Generates a random bipartite graph with a fixed connection probability."><code class="function">igraph_bipartite_game_gnp()</code></a> for the <code class="literal">G(n1, n2, p)</code>
 model.
   </p></td>
@@ -443,13 +445,13 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_game_gnp"></a>2.4. <code class="function">igraph_bipartite_game_gnp</code> —  Generates a random bipartite graph with a fixed connection probability.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.3.5.2"></a><p>
+<a class="indexterm" name="id-1.14.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bipartite_game_gnp(igraph_t *graph, igraph_vector_bool_t *types,
-                              igraph_integer_t n1, igraph_integer_t n2,
-                              igraph_real_t p, igraph_bool_t directed,
-                              igraph_neimode_t mode);
+                                         igraph_int_t n1, igraph_int_t n2,
+                                         igraph_real_t p, igraph_bool_t directed,
+                                         igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -553,7 +555,7 @@ probability <em class="parameter"><code>p</code></em>.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnp" title="2.4. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> for the unipartite version,
+  <a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnp" title="1.2. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities."><code class="function">igraph_erdos_renyi_game_gnp()</code></a> for the unipartite version,
 <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> for the <code class="literal">G(n1, n2, m)</code> model.
   </p></td>
 </tr></tbody>
@@ -568,12 +570,12 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_iea_game"></a>2.5. <code class="function">igraph_bipartite_iea_game</code> —  Generates a random bipartite multigraph through independent edge assignment.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.3.6.2"></a><p>
+<a class="indexterm" name="id-1.14.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bipartite_iea_game(
         igraph_t *graph, igraph_vector_bool_t *types,
-        igraph_integer_t n1, igraph_integer_t n2, igraph_integer_t m,
+        igraph_int_t n1, igraph_int_t n2, igraph_int_t m,
         igraph_bool_t directed, igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -710,7 +712,7 @@ their edge and self-loop multiplicities.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_iea_game" title="2.5. igraph_iea_game — Generates a random multigraph through independent edge assignment."><code class="function">igraph_iea_game()</code></a> for the unipartite version;
+  <a class="link" href="igraph-Games.html#igraph_iea_game" title="1.3. igraph_iea_game — Generates a random multigraph through independent edge assignment."><code class="function">igraph_iea_game()</code></a> for the unipartite version;
 <a class="link" href="igraph-Bipartite.html#igraph_bipartite_game_gnm" title="2.3. igraph_bipartite_game_gnm — Generate a random bipartite graph with a fixed number of edges."><code class="function">igraph_bipartite_game_gnm()</code></a> to uniformly sample bipartite graphs
 with a given number of vertices and edges.
   </p></td>
@@ -735,7 +737,7 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_biadjacency"></a>3.1. <code class="function">igraph_biadjacency</code> —  Creates a bipartite graph from a bipartite adjacency matrix.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.4.2.2"></a><p>
+<a class="indexterm" name="id-1.14.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_biadjacency(
@@ -849,7 +851,7 @@ Time complexity: O(n*m), the size of the bipartite adjacency matrix.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_weighted_biadjacency"></a>3.2. <code class="function">igraph_weighted_biadjacency</code> —  Creates a bipartite graph from a weighted bipartite adjacency matrix.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.4.3.2"></a><p>
+<a class="indexterm" name="id-1.14.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_weighted_biadjacency(
@@ -952,7 +954,7 @@ Time complexity: O(n*m), the size of the bipartite adjacency matrix.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_get_biadjacency"></a>3.3. <code class="function">igraph_get_biadjacency</code> —  Converts a bipartite graph into a bipartite adjacency matrix.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.4.4.2"></a><p>
+<a class="indexterm" name="id-1.14.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_get_biadjacency(
@@ -1086,15 +1088,15 @@ Time complexity: O(|E|) where |E| is the number of edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_projection_size"></a>4.1. <code class="function">igraph_bipartite_projection_size</code> —  Calculate the number of vertices and edges in the bipartite projections.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.5.2.2"></a><p>
+<a class="indexterm" name="id-1.14.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bipartite_projection_size(const igraph_t *graph,
                                      const igraph_vector_bool_t *types,
-                                     igraph_integer_t *vcount1,
-                                     igraph_integer_t *ecount1,
-                                     igraph_integer_t *vcount2,
-                                     igraph_integer_t *ecount2);
+                                     igraph_int_t *vcount1,
+                                     igraph_int_t *ecount1,
+                                     igraph_int_t *vcount2,
+                                     igraph_int_t *ecount2);
 </pre></div>
 <p>
 </p>
@@ -1131,7 +1133,7 @@ memory you would need to calculate the projections themselves.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vcount1</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <code class="constant">igraph_integer_t</code>, the number of
+  Pointer to an <code class="constant">igraph_int_t</code>, the number of
     vertices in the first projection is stored here. May be <code class="constant">NULL</code>
     if not needed.
 </p></td>
@@ -1139,7 +1141,7 @@ memory you would need to calculate the projections themselves.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ecount1</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <code class="constant">igraph_integer_t</code>, the number of
+  Pointer to an <code class="constant">igraph_int_t</code>, the number of
     edges in the first projection is stored here. May be <code class="constant">NULL</code>
     if not needed.
 </p></td>
@@ -1147,7 +1149,7 @@ memory you would need to calculate the projections themselves.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>vcount2</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <code class="constant">igraph_integer_t</code>, the number of
+  Pointer to an <code class="constant">igraph_int_t</code>, the number of
     vertices in the second projection is stored here. May be <code class="constant">NULL</code>
     if not needed.
 </p></td>
@@ -1155,7 +1157,7 @@ memory you would need to calculate the projections themselves.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>ecount2</code></em>:</span></p></td>
 <td><p>
-  Pointer to an <code class="constant">igraph_integer_t</code>, the number of
+  Pointer to an <code class="constant">igraph_int_t</code>, the number of
     edges in the second projection is stored here. May be <code class="constant">NULL</code>
     if not needed.
 </p></td>
@@ -1205,7 +1207,7 @@ graphs.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bipartite_projection"></a>4.2. <code class="function">igraph_bipartite_projection</code> —  Create one or both projections of a bipartite (two-mode) network.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.5.3.2"></a><p>
+<a class="indexterm" name="id-1.14.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bipartite_projection(const igraph_t *graph,
@@ -1214,7 +1216,7 @@ igraph_error_t igraph_bipartite_projection(const igraph_t *graph,
                                 igraph_t *proj2,
                                 igraph_vector_int_t *multiplicity1,
                                 igraph_vector_int_t *multiplicity2,
-                                igraph_integer_t probe1);
+                                igraph_int_t probe1);
 </pre></div>
 <p>
 </p>
@@ -1354,7 +1356,7 @@ graphs.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_is_bipartite"></a>5.1. <code class="function">igraph_is_bipartite</code> —  Check whether a graph is bipartite.</h3></div></div></div>
-<a class="indexterm" name="id-1.31.6.2.2"></a><p>
+<a class="indexterm" name="id-1.14.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_bipartite(const igraph_t *graph,
@@ -1434,13 +1436,30 @@ can be mapped independently.
 
 Time complexity: O(|V|+|E|), linear in the number of vertices and
 edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_is_bipartite_coloring() to determine if all edges connect
+vertices of different types, given a specific type vector.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
  
 </p>
 </div>
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Arpack.html"><b>← Chapter 29. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Advanced.html"><b>Chapter 31. Advanced igraph programming →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Games.html"><b>← Chapter 12. Stochastic graph generators ("games")</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Spatial.html"><b>Chapter 14. Spatial graphs →</b></a></td>
 </tr></table>
 {% endraw %}

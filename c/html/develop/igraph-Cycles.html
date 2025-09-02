@@ -14,32 +14,32 @@ langversion: develop
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Visitors.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Cliques.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Cycles"></a>Chapter 14. Graph cycles</h1></div></div></div>
+<a name="igraph-Cycles"></a>Chapter 18. Graph cycles</h1></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.2">1. Finding cycles</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.3">2. Eulerian cycles and paths</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#id-1.15.4">3. Cycle bases</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#finding-cycles">1. Finding cycles</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#acyclic-graphs-feedback-sets">2. Acyclic graphs and feedback sets</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#eulerian-cycles">3. Eulerian cycles and paths</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#cycle-bases">4. Cycle bases</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id-1.15.2"></a>1. Finding cycles</h2></div></div></div>
+<a name="finding-cycles"></a>1. Finding cycles</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Cycles.html#igraph_find_cycle">1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Cycles.html#igraph_simple_cycles">1.2. <code class="function">igraph_simple_cycles</code> —  Finds all simple cycles.</a></span></dt>
 <dt><span class="section"><a href="igraph-Cycles.html#igraph_simple_cycles_callback">1.3. <code class="function">igraph_simple_cycles_callback</code> —  Finds all simple cycles (callback version).</a></span></dt>
 <dt><span class="section"><a href="igraph-Cycles.html#igraph_cycle_handler_t">1.4. <code class="function">igraph_cycle_handler_t</code> —  Type of cycle handler functions.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_acyclic">1.5. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_find_cycle"></a>1.1. <code class="function">igraph_find_cycle</code> —  Finds a single cycle in the graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.2.2"></a><p>
+<a class="indexterm" name="id-1.19.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_find_cycle(const igraph_t *graph,
@@ -53,14 +53,7 @@ igraph_error_t igraph_find_cycle(const igraph_t *graph,
 
 
 
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p>This function returns a cycle of the graph, if there is one. If the graph
+This function returns a cycle of the graph, if there is one. If the graph
 is acyclic, it returns empty vectors.
 
 </p>
@@ -135,7 +128,7 @@ vertices and edges in the original input graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cycles.html#igraph_is_acyclic" title="1.5. igraph_is_acyclic — Checks whether a graph is acyclic or not."><code class="function">igraph_is_acyclic()</code></a> to determine if a graph is acyclic,
+  <a class="link" href="igraph-Cycles.html#igraph_is_acyclic" title="2.2. igraph_is_acyclic — Checks whether a graph is acyclic or not."><code class="function">igraph_is_acyclic()</code></a> to determine if a graph is acyclic,
 without returning a specific cycle; <a class="link" href="igraph-Cycles.html#igraph_simple_cycles" title="1.2. igraph_simple_cycles — Finds all simple cycles."><code class="function">igraph_simple_cycles()</code></a>
 to list all cycles in a graph.
   </p></td>
@@ -148,7 +141,7 @@ to list all cycles in a graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_simple_cycles"></a>1.2. <code class="function">igraph_simple_cycles</code> —  Finds all simple cycles.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.3.2"></a><p>
+<a class="indexterm" name="id-1.19.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_simple_cycles(
@@ -156,8 +149,8 @@ igraph_error_t igraph_simple_cycles(
         igraph_vector_int_list_t *vertices,
         igraph_vector_int_list_t *edges,
         igraph_neimode_t mode,
-        igraph_integer_t min_cycle_length,
-        igraph_integer_t max_cycle_length);
+        igraph_int_t min_cycle_length,
+        igraph_int_t max_cycle_length);
 </pre></div>
 <p>
 </p>
@@ -270,7 +263,7 @@ SIAM J. Comput. 4(1):77-84.
   <a class="link" href="igraph-Cycles.html#igraph_simple_cycles_callback" title="1.3. igraph_simple_cycles_callback — Finds all simple cycles (callback version)."><code class="function">igraph_simple_cycles_callback()</code></a> to call a function for each found
 cycle;
 <a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a single cycle;
-<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="3.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and <a class="link" href="igraph-Cycles.html#igraph_minimum_cycle_basis" title="3.2. igraph_minimum_cycle_basis — Computes a minimum weight cycle basis."><code class="function">igraph_minimum_cycle_basis()</code></a>
+<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="4.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and <a class="link" href="igraph-Cycles.html#igraph_minimum_cycle_basis" title="4.2. igraph_minimum_cycle_basis — Computes a minimum weight cycle basis."><code class="function">igraph_minimum_cycle_basis()</code></a>
 to find a cycle basis, a compact representation of the cycle structure
 of the graph.
   </p></td>
@@ -283,14 +276,14 @@ of the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_simple_cycles_callback"></a>1.3. <code class="function">igraph_simple_cycles_callback</code> —  Finds all simple cycles (callback version).</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.4.2"></a><p>
+<a class="indexterm" name="id-1.19.2.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_simple_cycles_callback(
         const igraph_t *graph,
         igraph_neimode_t mode,
-        igraph_integer_t min_cycle_length,
-        igraph_integer_t max_cycle_length,
+        igraph_int_t min_cycle_length,
+        igraph_int_t max_cycle_length,
         igraph_cycle_handler_t *callback,
         void *arg);
 </pre></div>
@@ -405,7 +398,7 @@ SIAM J. Comput. 4(1):77-84.
 <td><p>
   <a class="link" href="igraph-Cycles.html#igraph_simple_cycles" title="1.2. igraph_simple_cycles — Finds all simple cycles."><code class="function">igraph_simple_cycles()</code></a> to store the found cycles;
 <a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a single cycle;
-<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="3.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and igraph_minimum_cycle_basis()
+<a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="4.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a> and igraph_minimum_cycle_basis()
 to find a cycle basis, a compact representation of the cycle structure
 of the graph.
   </p></td>
@@ -418,7 +411,7 @@ of the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_cycle_handler_t"></a>1.4. <code class="function">igraph_cycle_handler_t</code> —  Type of cycle handler functions.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.5.2"></a><pre class="programlisting">
+<a class="indexterm" name="id-1.19.2.5.2"></a><pre class="programlisting">
 typedef igraph_error_t igraph_cycle_handler_t(
         const igraph_vector_int_t *vertices,
         const igraph_vector_int_t *edges,
@@ -479,10 +472,112 @@ a cycle is found.
 <p>
 </p>
 </div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="acyclic-graphs-feedback-sets"></a>2. Acyclic graphs and feedback sets</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_dag">2.1. <code class="function">igraph_is_dag</code> —  Checks whether a graph is a directed acyclic graph (DAG).</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_acyclic">2.2. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_topological_sorting">2.3. <code class="function">igraph_topological_sorting</code> —  Calculate a possible topological sorting of the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_feedback_arc_set">2.4. <code class="function">igraph_feedback_arc_set</code> —  Feedback arc set of a graph using exact or heuristic methods.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_feedback_vertex_set">2.5. <code class="function">igraph_feedback_vertex_set</code> —  Feedback vertex set of a graph.</a></span></dt>
+</dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_acyclic"></a>1.5. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.2.6.2"></a><p>
+<a name="igraph_is_dag"></a>2.1. <code class="function">igraph_is_dag</code> —  Checks whether a graph is a directed acyclic graph (DAG).</h3></div></div></div>
+<a class="indexterm" name="id-1.19.3.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_is_dag(const igraph_t* graph, igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A directed acyclic graph (DAG) is a directed graph with no cycles.
+
+</p>
+<p>
+This function returns <code class="constant">false</code> for undirected graphs.
+
+</p>
+<p>
+The return value of this function is cached in the graph itself; calling
+the function multiple times with no modifications to the graph in between
+will return a cached value in O(1) time.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean constant, the result
+    is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), where |V| and |E| are the number of
+vertices and edges in the original input graph.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cycles.html#igraph_topological_sorting" title="2.3. igraph_topological_sorting — Calculate a possible topological sorting of the graph."><code class="function">igraph_topological_sorting()</code></a> to get a possible topological
+    sorting of a DAG.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_is_acyclic"></a>2.2. <code class="function">igraph_is_acyclic</code> —  Checks whether a graph is acyclic or not.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_acyclic(const igraph_t *graph, igraph_bool_t *res);
@@ -496,6 +591,12 @@ igraph_error_t igraph_is_acyclic(const igraph_t *graph, igraph_bool_t *res);
 
 This function checks whether a graph has any cycles. Edge directions are
 considered, i.e. in directed graphs, only directed cycles are searched for.
+
+</p>
+<p>
+The result of this function is cached in the graph itself; calling
+the function multiple times with no modifications to the graph in between
+will return a cached value in O(1) time.
 
 </p>
 <p><b>Arguments: </b>
@@ -549,8 +650,9 @@ considered, i.e. in directed graphs, only directed cycles are searched for.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Cycles.html#igraph_find_cycle" title="1.1. igraph_find_cycle — Finds a single cycle in the graph."><code class="function">igraph_find_cycle()</code></a> to find a cycle that demonstrates
-that the graph is not acyclic; <a class="link" href="igraph-Structural.html#igraph_is_forest" title="15.4. igraph_is_forest — Decides whether the graph is a forest."><code class="function">igraph_is_forest()</code></a> to look
-for undirected cycles even in directed graphs.
+that the graph is not acyclic; <a class="link" href="igraph-Structural.html#igraph_is_forest" title="16.4. igraph_is_forest — Decides whether the graph is a forest."><code class="function">igraph_is_forest()</code></a> to look
+for undirected cycles even in directed graphs; <a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG)."><code class="function">igraph_is_dag()</code></a>
+to test specifically for directed acyclic graphs.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -561,21 +663,638 @@ vertices and edges in the original input graph.
  
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_topological_sorting"></a>2.3. <code class="function">igraph_topological_sorting</code> —  Calculate a possible topological sorting of the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_topological_sorting(
+        const igraph_t* graph, igraph_vector_int_t *res, igraph_neimode_t mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+A topological sorting of a directed acyclic graph (DAG) is a linear ordering
+of its vertices where each vertex comes before all nodes to which it has
+edges. Every DAG has at least one topological sort, and may have many.
+This function returns one possible topological sort among them. If the
+graph contains any cycles that are not self-loops, an error is raised.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a vector, the result will be stored here.
+  It will be resized if needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Specifies how to use the direction of the edges.
+  For <code class="constant">IGRAPH_OUT</code>, the sorting order ensures that each vertex comes
+  before all vertices to which it has edges, so vertices with no incoming
+  edges go first. For <code class="constant">IGRAPH_IN</code>, it is quite the opposite: each
+  vertex comes before all vertices from which it receives edges. Vertices
+  with no outgoing edges go first.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|+|E|), where |V| and |E| are the number of
+vertices and edges in the original input graph.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG)."><code class="function">igraph_is_dag()</code></a> if you are only interested in whether a given
+    graph is a DAG or not, or <a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods."><code class="function">igraph_feedback_arc_set()</code></a> to find a
+    set of edges whose removal makes the graph acyclic.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.19.3.4.11.1"></a><p class="title"><b>Example 18.1.  File <code class="code">examples/simple/igraph_topological_sorting.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+    igraph_t graph;
+    igraph_vector_int_t res;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="emphasis"><em>/* Test graph taken from </em></span>http://en.wikipedia.org/wiki/Topological_sorting
+<span class="emphasis"><em>     * @ 05.03.2006 */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 8, IGRAPH_DIRECTED,
+                 0, 3, 0, 4, 1, 3, 2, 4, 2, 7, 3, 5, 3, 6, 3, 7, 4, 6,
+                 -1);
+
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;res, 0);
+
+    <span class="emphasis"><em>/* Sort the vertices in "increasing" order. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_topological_sorting" title="2.3. igraph_topological_sorting — Calculate a possible topological sorting of the graph.">igraph_topological_sorting</a></strong></span>(&amp;graph, &amp;res, IGRAPH_OUT);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;res);
+    <span class="strong"><strong>printf</strong></span>("\n");
+
+    <span class="emphasis"><em>/* Sort the vertices in "decreasing" order. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_topological_sorting" title="2.3. igraph_topological_sorting — Calculate a possible topological sorting of the graph.">igraph_topological_sorting</a></strong></span>(&amp;graph, &amp;res, IGRAPH_IN);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;res);
+
+    <span class="emphasis"><em>/* Destroy data structures when done using them. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;res);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_feedback_arc_set"></a>2.4. <code class="function">igraph_feedback_arc_set</code> —  Feedback arc set of a graph using exact or heuristic methods.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_feedback_arc_set(
+        const igraph_t *graph,
+        igraph_vector_int_t *result,
+        const igraph_vector_t *weights,
+        igraph_fas_algorithm_t algo);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+
+A feedback arc set is a set of edges whose removal makes the graph acyclic.
+We are usually interested in <span class="emphasis"><em>minimum</em></span> feedback arc sets, i.e. sets of edges
+whose total weight is the smallest among all the feedback arc sets.
+
+</p>
+<p>
+For undirected graphs, the solution is simple: one has to find a maximum weight
+spanning tree and then remove all the edges not in the spanning tree. For directed
+graphs, this is an NP-complete problem, and various heuristics are usually used to
+find an approximate solution to the problem. This function implements both exact
+methods and heuristics, selectable with the <em class="parameter"><code>algo</code></em> parameter.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+Eades P, Lin X and Smyth WF:
+A fast and effective heuristic for the feedback arc set problem.
+Information Processing Letters 47(6), pp 319-323 (1993).
+<a class="ulink" href="https://doi.org/10.1016/0020-0190(93)90079-O" target="_top">https://doi.org/10.1016/0020-0190(93)90079-O</a>
+
+</p>
+<p>
+Baharev A, Hermann S, Arnold N and Tobias A:
+An Exact Method for the Minimum Feedback Arc Set Problem.
+ACM Journal of Experimental Algorithmics 26, 1–28 (2021).
+<a class="ulink" href="https://doi.org/10.1145/3446429" target="_top">https://doi.org/10.1145/3446429</a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the result will be written here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Weight vector or <code class="constant">NULL</code> if no weights are specified.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>algo</code></em>:</span></p></td>
+<td>
+<p>
+  The algorithm to use to solve the problem if the graph is directed.
+       Possible values:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP</code></span></p></td>
+<td><p>
+
+         Finds a <span class="emphasis"><em>minimum</em></span> feedback arc set using integer programming (IP),
+         automatically selecting the best method of this type (currently
+         always <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code>). The complexity is of course
+         at least exponential.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP_CG</code></span></p></td>
+<td><p>
+
+         This is an integer programming approach based on a minimum set cover
+         formulation and using incremental constraint generation (CG), added
+         in igraph 0.10.14. We minimize <code class="literal">sum_e w_e b_e</code> subject to
+         the constraints <code class="literal">sum_e c_e b_e &gt;= 1</code> for all cycles <code class="constant">c</code>.
+         Here <code class="constant">w_e</code> is the weight of edge <code class="constant">e</code>, <code class="constant">b_e</code> is a binary variable
+         (0 or 1) indicating whether edge <code class="constant">e</code> is in the feedback set,
+         and <code class="constant">c_e</code> is a binary coefficient indicating whether edge <code class="constant">e</code>
+         is in cycle <code class="constant">c</code>. The constraint expresses the requirement that all
+         cycles must intersect with (be broken by) the edge set represented
+         by <code class="constant">b</code>. Since there are a very large number of cycles in the graph,
+         constraints are generated incrementally, iteratively adding some cycles
+         that do not intersect with the current edge set <code class="constant">b</code>, then solving for
+         <code class="constant">b</code> again, until finally no unbroken cycles remain. This approach is
+         similar to that described by Baharev et al (though with a simpler
+         cycle generation scheme), and to what is implemented by SageMath's.
+         <code class="constant">feedback_edge_set</code> function.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_EXACT_IP_TI</code></span></p></td>
+<td><p>
+
+         This is another integer programming approach based on finding a
+         maximum (largest weight) edge set that adheres to a topological
+         order. It uses the common formulation through triangle inequalities
+         (TI), see Section 3.1 of Baharev et al (2021) for an overview. This
+         method was used before igraph 0.10.14, and is typically much slower
+         than <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code>.
+       
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FAS_APPROX_EADES</code></span></p></td>
+<td><p>
+
+         Finds a feedback arc set using the heuristic of Eades, Lin and
+         Smyth (1993). This is guaranteed to be smaller than |E|/2 - |V|/6,
+         and it is linear in the number of edges (i.e. O(|E|)) to compute.
+       
+</p></td>
+</tr>
+</tbody>
+</table></div>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_EINVAL</code> if an unknown method was specified or the weight vector
+           is invalid.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.19.3.5.12.1"></a><p class="title"><b>Example 18.2.  File <code class="code">examples/simple/igraph_feedback_arc_set.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+    igraph_t g;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
+    igraph_vector_int_t result;
+    igraph_bool_t dag;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;result, 0);
+
+    <span class="emphasis"><em>/***********************************************************************/</em></span>
+    <span class="emphasis"><em>/* Approximation with Eades' method                                    */</em></span>
+    <span class="emphasis"><em>/***********************************************************************/</em></span>
+
+    <span class="emphasis"><em>/* Simple unweighted graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_APPROX_EADES);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Simple weighted graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, -1);
+    <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;weights, -1, 1, 1, 3, 1, 1, 1, 1, 1, 1, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, &amp;weights, IGRAPH_FAS_APPROX_EADES);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 2;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Simple unweighted graph with loops */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, 1, 1, 4, 4, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_APPROX_EADES);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 3;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Null graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, NULL, IGRAPH_FAS_APPROX_EADES);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;result) != 0) {
+        <span class="strong"><strong>return</strong></span> 4;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Singleton graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 1, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, NULL, IGRAPH_FAS_APPROX_EADES);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;result) != 0) {
+        <span class="strong"><strong>return</strong></span> 5;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;result);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.19.3.5.12.2"></a><p class="title"><b>Example 18.3.  File <code class="code">examples/simple/igraph_feedback_arc_set_ip.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+<span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+    igraph_t g;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
+    igraph_vector_int_t result;
+    igraph_bool_t dag;
+    <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> retval;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;result, 0);
+
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#igraph_set_error_handler" title="5.1.1. igraph_set_error_handler — Sets a new error handler.">igraph_set_error_handler</a></strong></span>(&amp;<a class="link" href="igraph-Error.html#igraph_error_handler_printignore" title="2.4. igraph_error_handler_printignore — Print and ignore errors.">igraph_error_handler_printignore</a>);
+
+    <span class="emphasis"><em>/***********************************************************************/</em></span>
+    <span class="emphasis"><em>/* Exact solution with integer programming                             */</em></span>
+    <span class="emphasis"><em>/***********************************************************************/</em></span>
+
+    <span class="emphasis"><em>/* Simple unweighted graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, -1);
+    retval = <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>if</strong></span> (retval == IGRAPH_UNIMPLEMENTED) {
+        <span class="strong"><strong>return</strong></span> 77;
+    }
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 1;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Simple weighted graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, -1);
+    <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;weights, -1, 1, 1, 3, 1, 1, 1, 1, 1, 1, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, &amp;weights, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 2;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Simple unweighted graph with loops */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 1, 2, 2, 0, 2, 3, 2, 4, 0, 4, 4, 3, 5, 0, 6, 5, 1, 1, 4, 4, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 3;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Disjoint union of two almost identical graphs */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED,
+                 0, 1, 1, 2, 2, 0, 2, 3,  2, 4,  0, 4,  4, 3,    5, 0,  6, 5, 1, 1, 4, 4,
+                 7, 8, 8, 9, 9, 7, 9, 10, 9, 11, 7, 11, 11, 10, 12, 7, 13, 12,
+                 -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 4;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Graph with lots of isolated vertices */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 10000, IGRAPH_DIRECTED, 0, 1, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, 0, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;result);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph.">igraph_delete_edges</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_ess_vector" title="7.4. igraph_ess_vector — Immediate vector view edge selector.">igraph_ess_vector</a></strong></span>(&amp;result));
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_is_dag" title="2.1. igraph_is_dag — Checks whether a graph is a directed acyclic graph (DAG).">igraph_is_dag</a></strong></span>(&amp;g, &amp;dag);
+    <span class="strong"><strong>if</strong></span> (!dag) {
+        <span class="strong"><strong>return</strong></span> 5;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Null graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, NULL, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;result) != 0) {
+        <span class="strong"><strong>return</strong></span> 6;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="emphasis"><em>/* Singleton graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 1, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods.">igraph_feedback_arc_set</a></strong></span>(&amp;g, &amp;result, NULL, IGRAPH_FAS_EXACT_IP);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;result) != 0) {
+        <span class="strong"><strong>return</strong></span> 7;
+    }
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;result);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p>
+Time complexity: depends on <em class="parameter"><code>algo</code></em>, see the time complexities there.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_feedback_vertex_set"></a>2.5. <code class="function">igraph_feedback_vertex_set</code> —  Feedback vertex set of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_feedback_vertex_set(
+    const igraph_t *graph, igraph_vector_int_t *result,
+    const igraph_vector_t *vertex_weights, igraph_fvs_algorithm_t algo);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+A feedback vertex set is a set of vertices whose removal makes the graph
+acyclic. Finding a <span class="emphasis"><em>minimum</em></span> feedback vertex set is an NP-complete
+problem, both on directed and undirected graphs.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  An initialized vector, the result will be written here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
+<td><p>
+  Vertex weight vector or <code class="constant">NULL</code> if no weights are specified.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>algo</code></em>:</span></p></td>
+<td>
+<p>
+  Algorithm to use. Possible values:
+       </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><code class="constant">IGRAPH_FVS_EXACT_IP</code></span></p></td>
+<td><p>
+
+        Finds a <span class="emphasis"><em>miniumum</em></span> feedback vertex set using integer programming
+        (IP). The complexity is of course at least exponential. Currently
+        this method uses an approach analogous to that of the
+        <code class="constant">IGRAPH_FAS_EXACT_IP_CG</code> algorithm of <a class="link" href="igraph-Cycles.html#igraph_feedback_arc_set" title="2.4. igraph_feedback_arc_set — Feedback arc set of a graph using exact or heuristic methods."><code class="function">igraph_feedback_arc_set()</code></a>.
+       
+</p></td>
+</tr></tbody>
+</table></div>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: depends on <em class="parameter"><code>algo</code></em>, see the time complexities there.
+ 
+</p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id-1.15.3"></a>2. Eulerian cycles and paths</h2></div></div></div>
+<a name="eulerian-cycles"></a>3. Eulerian cycles and paths</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">2.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">2.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">2.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_is_eulerian">3.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_cycle">3.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_eulerian_path">3.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</a></span></dt>
 </dl></div>
 <p>These functions calculate whether an Eulerian path or cycle exists
 and if so, can find them.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_is_eulerian"></a>2.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.3.3.2"></a><p>
+<a name="igraph_is_eulerian"></a>3.1. <code class="function">igraph_is_eulerian</code> —  Checks whether an Eulerian path or cycle exists.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_eulerian(const igraph_t *graph, igraph_bool_t *has_path, igraph_bool_t *has_cycle);
@@ -646,8 +1365,8 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_eulerian_cycle"></a>2.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.3.4.2"></a><p>
+<a name="igraph_eulerian_cycle"></a>3.2. <code class="function">igraph_eulerian_cycle</code> —  Finds an Eulerian cycle.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_eulerian_cycle(
@@ -757,8 +1476,8 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_eulerian_path"></a>2.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.3.5.2"></a><p>
+<a name="igraph_eulerian_path"></a>3.3. <code class="function">igraph_eulerian_path</code> —  Finds an Eulerian path.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_eulerian_path(
@@ -868,22 +1587,21 @@ Time complexity: O(|V|+|E|), the number of vertices plus the number of edges.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="id-1.15.4"></a>3. Cycle bases</h2></div></div></div>
+<a name="cycle-bases"></a>4. Cycle bases</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_fundamental_cycles">3.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</a></span></dt>
-<dt><span class="section"><a href="igraph-Cycles.html#igraph_minimum_cycle_basis">3.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_fundamental_cycles">4.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</a></span></dt>
+<dt><span class="section"><a href="igraph-Cycles.html#igraph_minimum_cycle_basis">4.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_fundamental_cycles"></a>3.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.4.2.2"></a><p>
+<a name="igraph_fundamental_cycles"></a>4.1. <code class="function">igraph_fundamental_cycles</code> —  Finds a fundamental cycle basis.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_fundamental_cycles(const igraph_t *graph,
-                                         igraph_vector_int_list_t *result,
-                                         igraph_integer_t start_vid,
-                                         igraph_integer_t bfs_cutoff,
-                                         const igraph_vector_t *weights);
+igraph_error_t igraph_fundamental_cycles(
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_vector_int_list_t *result,
+        igraph_int_t start_vid, igraph_real_t bfs_cutoff);
 </pre></div>
 <p>
 </p>
@@ -921,6 +1639,12 @@ Edge directions are ignored. Multi-edges and self-loops are supported.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Currently unused.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
 <td><p>
   An initialized integer vector list. The result will be stored here,
@@ -942,12 +1666,6 @@ Edge directions are ignored. Multi-edges and self-loops are supported.
   If negative, a complete cycle basis is returned. Otherwise, only
   cycles of length <code class="literal">2*bfs_cutoff + 1</code> or shorter are included. <em class="parameter"><code>bfs_cutoff</code></em>
   is used to limit the depth of the BFS tree when searching for cycle edges.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  Currently unused.
 </p></td>
 </tr>
 </tbody>
@@ -979,7 +1697,7 @@ Edge directions are ignored. Multi-edges and self-loops are supported.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cycles.html#igraph_minimum_cycle_basis" title="3.2. igraph_minimum_cycle_basis — Computes a minimum weight cycle basis."><code class="function">igraph_minimum_cycle_basis()</code></a>
+  <a class="link" href="igraph-Cycles.html#igraph_minimum_cycle_basis" title="4.2. igraph_minimum_cycle_basis — Computes a minimum weight cycle basis."><code class="function">igraph_minimum_cycle_basis()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -991,16 +1709,15 @@ Time complexity: O(|V| + |E|).
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_minimum_cycle_basis"></a>3.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</h3></div></div></div>
-<a class="indexterm" name="id-1.15.4.3.2"></a><p>
+<a name="igraph_minimum_cycle_basis"></a>4.2. <code class="function">igraph_minimum_cycle_basis</code> —  Computes a minimum weight cycle basis.</h3></div></div></div>
+<a class="indexterm" name="id-1.19.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_minimum_cycle_basis(const igraph_t *graph,
-                                          igraph_vector_int_list_t *result,
-                                          igraph_integer_t bfs_cutoff,
-                                          igraph_bool_t complete,
-                                          igraph_bool_t use_cycle_order,
-                                          const igraph_vector_t *weights);
+igraph_error_t igraph_minimum_cycle_basis(
+        const igraph_t *graph, const igraph_vector_t *weights,
+        igraph_vector_int_list_t *result,
+        igraph_real_t bfs_cutoff,
+        igraph_bool_t complete, igraph_bool_t use_cycle_order);
 </pre></div>
 <p>
 </p>
@@ -1049,6 +1766,12 @@ SIAM Journal on Computing, 16 (2): 358–366.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Currently unused.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
 <td><p>
   An initialized integer vector list, the elements of the cycle
@@ -1085,12 +1808,6 @@ SIAM Journal on Computing, 16 (2): 358–366.
   performance tradeoffs.
 </p></td>
 </tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
-<td><p>
-  Currently unused.
-</p></td>
-</tr>
 </tbody>
 </table></div>
 <p>
@@ -1120,7 +1837,7 @@ SIAM Journal on Computing, 16 (2): 358–366.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="3.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a>
+  <a class="link" href="igraph-Cycles.html#igraph_fundamental_cycles" title="4.1. igraph_fundamental_cycles — Finds a fundamental cycle basis."><code class="function">igraph_fundamental_cycles()</code></a>
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1133,7 +1850,7 @@ Time complexity: TODO.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Structural.html"><b>← Chapter 13. Structural properties of graphs</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Visitors.html"><b>Chapter 15. Graph visitors →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Structural.html"><b>← Chapter 17. Structural properties of graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Cliques.html"><b>Chapter 19. Cliques and independent vertex sets →</b></a></td>
 </tr></table>
 {% endraw %}

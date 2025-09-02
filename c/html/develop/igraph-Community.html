@@ -20,7 +20,7 @@ langversion: develop
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Community"></a>Chapter 24. Detecting community structure</h1></div></div></div>
+<a name="igraph-Community"></a>Chapter 25. Detecting community structure</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Community.html#common-functions-related-to-community-detection">1. Common functions related to community structure</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#community-detection-based-on-statistical-mechanics">2. Community structure based on statistical mechanics</a></span></dt>
@@ -57,7 +57,7 @@ Physics Reports 659 (2016): 1–44.
 <dt><span class="section"><a href="igraph-Community.html#igraph_modularity">1.1. <code class="function">igraph_modularity</code> —  Calculates the modularity of a graph with respect to some clusters or vertex types.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_modularity_matrix">1.2. <code class="function">igraph_modularity_matrix</code> —  Calculates the modularity matrix.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_optimal_modularity">1.3. <code class="function">igraph_community_optimal_modularity</code> —  Calculate the community structure with the highest modularity value.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_community_to_membership">1.4. <code class="function">igraph_community_to_membership</code> —  Creates a membership vector from a community structure dendrogram.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_community_to_membership">1.4. <code class="function">igraph_community_to_membership</code> —  Cut a dendrogram after a given number of merges.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_reindex_membership">1.5. <code class="function">igraph_reindex_membership</code> —  Makes the IDs in a membership vector contiguous.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_compare_communities">1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_split_join_distance">1.7. <code class="function">igraph_split_join_distance</code> —  Calculates the split-join distance of two community structures.</a></span></dt>
@@ -65,7 +65,7 @@ Physics Reports 659 (2016): 1–44.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_modularity"></a>1.1. <code class="function">igraph_modularity</code> —  Calculates the modularity of a graph with respect to some clusters or vertex types.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.2.2"></a><p>
+<a class="indexterm" name="id-1.26.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_modularity(const igraph_t *graph,
@@ -174,7 +174,9 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
   Numeric vector of integer values which gives the type of each
                   vertex, i.e. the cluster to which it belongs.
                   It does not have to be consecutive, i.e. empty communities
-                  are allowed.
+                  are allowed. For better performance, ensure that community
+                  indices are nonnegative and smaller than the vertex count.
+                  This can be ensured using <a class="link" href="igraph-Community.html#igraph_reindex_membership" title="1.5. igraph_reindex_membership — Makes the IDs in a membership vector contiguous."><code class="function">igraph_reindex_membership()</code></a>.
 </p></td>
 </tr>
 <tr>
@@ -240,14 +242,15 @@ Review E 74, 016110. <a class="ulink" href="https://doi.org/10.1103/PhysRevE.74.
 <p>
 
 Time complexity: O(|V|+|E|), the number of vertices plus the number
-of edges.
+of edges, assuming that community indices are nonnegative and smaller
+than the vertex count. Otherwise, O(|V| log |V| + |E|).
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_modularity_matrix"></a>1.2. <code class="function">igraph_modularity_matrix</code> —  Calculates the modularity matrix.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.3.2"></a><p>
+<a class="indexterm" name="id-1.26.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_modularity_matrix(const igraph_t *graph,
@@ -378,7 +381,7 @@ matrix and degrees are used.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_optimal_modularity"></a>1.3. <code class="function">igraph_community_optimal_modularity</code> —  Calculate the community structure with the highest modularity value.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.4.2"></a><p>
+<a class="indexterm" name="id-1.26.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_optimal_modularity(const igraph_t *graph,
@@ -393,8 +396,9 @@ igraph_error_t igraph_community_optimal_modularity(const igraph_t *graph,
 
 
 
-This function calculates the optimal community structure for a
-graph, in terms of maximal modularity score.
+This function calculates the optimal community structure for a graph, in
+terms of maximal modularity score. Both undirected and directed graphs
+are supported.
 
 </p>
 <p>
@@ -502,7 +506,7 @@ Time complexity: exponential in the number of vertices.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.5.4.12.1"></a><p class="title"><b>Example 24.1.  File <code class="code">examples/simple/igraph_community_optimal_modularity.c</code></b></p>
+<a name="id-1.26.5.4.12.1"></a><p class="title"><b>Example 25.1.  File <code class="code">examples/simple/igraph_community_optimal_modularity.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -513,7 +517,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <a class="link" href="igraph-Error.html#igraph_error_handler_t" title="2.1. igraph_error_handler_t — The type of error handler functions.">igraph_error_handler_t</a> *handler;
     <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> errcode;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 9, IGRAPH_UNDIRECTED,
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 9, IGRAPH_UNDIRECTED,
                  0, 3, 0, 4, 0, 1, 0, 2, 0, 5, 0, 6, 1, 3, 3, 5, 4, 7, 7, 8, 2, 4, 1, 2, 6, 8,
                  -1);
 
@@ -535,7 +542,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("Membership: ");
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
 
@@ -552,13 +559,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_community_to_membership"></a>1.4. <code class="function">igraph_community_to_membership</code> —  Creates a membership vector from a community structure dendrogram.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.5.2"></a><p>
+<a name="igraph_community_to_membership"></a>1.4. <code class="function">igraph_community_to_membership</code> —  Cut a dendrogram after a given number of merges.</h3></div></div></div>
+<a class="indexterm" name="id-1.26.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_to_membership(const igraph_matrix_int_t *merges,
-                                   igraph_integer_t nodes,
-                                   igraph_integer_t steps,
+                                   igraph_int_t nodes,
+                                   igraph_int_t steps,
                                    igraph_vector_int_t *membership,
                                    igraph_vector_int_t *csize);
 </pre></div>
@@ -568,26 +575,31 @@ igraph_error_t igraph_community_to_membership(const igraph_matrix_int_t *merges,
 
 
 
-This function creates a membership vector from a community
-structure dendrogram. A membership vector contains for each vertex
-the id of its graph component, the graph components are numbered
-from zero, see the same argument of <a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>
-for an example of a membership vector.
+This function creates a membership vector from a dendrogram whose leaves
+are individual vertices by cutting it at the specified level. It produces
+a membership vector that contains for each vertex its cluster ID, numbered
+from zero. This is the same membership vector format that is produced by
+<a class="link" href="igraph-Structural.html#igraph_connected_components" title="8.2. igraph_connected_components — Calculates the (weakly or strongly) connected components in a graph."><code class="function">igraph_connected_components()</code></a>, as well as all community detection
+functions in igraph.
 
 </p>
 <p>
-Many community detection algorithms return with a <span class="emphasis"><em>merges</em></span>
-matrix, <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> and <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a> are two examples. The matrix
-contains the merge operations performed while mapping the
-hierarchical structure of a network. If the matrix has <code class="constant">n-1</code> rows,
-where <code class="constant">n</code> is the number of vertices in the graph, then it contains
-the hierarchical structure of the whole network and it is called a
-dendrogram.
+It takes as input the number of vertices <em class="parameter"><code>n</code></em>, and a <em class="parameter"><code>merges</code></em> matrix
+encoding the dendrogram, in the format produced by hierarchical clustering
+functions such as <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a>,
+<a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> or <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a>.
+The matrix must have two columns and up to <code class="literal">n - 1</code> rows.
+Each row represents merging two dendrogram nodes into their parent node.
+The leaf nodes of the dendrogram are indexed from 0 to <code class="literal">n - 1</code>
+and are identical to the vertices of the graph that is being partitioned
+into communities. Row <code class="constant">i</code> contains the children of dendrogram node
+with index <code class="literal">n + i</code>.
 
 </p>
 <p>
 This function performs <em class="parameter"><code>steps</code></em> merge operations as prescribed by
-the <em class="parameter"><code>merges</code></em> matrix and returns the current state of the network.
+the <em class="parameter"><code>merges</code></em> matrix and returns the resulting partitioning into
+<code class="literal">n - steps</code> communities.
 
 </p>
 <p>
@@ -607,9 +619,7 @@ lines in <em class="parameter"><code>merges</code></em>.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>merges</code></em>:</span></p></td>
 <td><p>
-  The two-column matrix containing the merge
-   operations. See <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a> for the
-   detailed syntax.
+  The two-column matrix containing the merge operations.
 </p></td>
 </tr>
 <tr>
@@ -628,14 +638,14 @@ lines in <em class="parameter"><code>merges</code></em>.
 <td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized vector, the membership
-   results will be stored here, if not NULL. The vector will be
+   results will be stored here, if not <code class="constant">NULL</code>. The vector will be
    resized as needed.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>csize</code></em>:</span></p></td>
 <td><p>
-  Pointer to an initialized vector, or NULL. If not NULL
+  Pointer to an initialized vector, or <code class="constant">NULL</code>. If not <code class="constant">NULL</code>
    then the sizes of the components will be stored here, the vector
    will be resized as needed.
 </p></td>
@@ -670,7 +680,9 @@ lines in <em class="parameter"><code>merges</code></em>.
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
   <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity."><code class="function">igraph_community_fastgreedy()</code></a> for community structure detection
-algorithms.
+algorithms producing merge matrices in this format;
+<a class="link" href="igraph-Community.html#igraph_le_community_to_membership" title="3.3. igraph_le_community_to_membership — Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment."><code class="function">igraph_le_community_to_membership()</code></a> to perform merges
+starting from a given cluster assignment.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -683,12 +695,13 @@ Time complexity: O(|V|), the number of vertices in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_reindex_membership"></a>1.5. <code class="function">igraph_reindex_membership</code> —  Makes the IDs in a membership vector contiguous.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.6.2"></a><p>
+<a class="indexterm" name="id-1.26.5.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_reindex_membership(igraph_vector_int_t *membership,
-                              igraph_vector_int_t *new_to_old,
-                              igraph_integer_t *nb_clusters);
+igraph_error_t igraph_reindex_membership(
+        igraph_vector_int_t *membership,
+        igraph_vector_int_t *new_to_old,
+        igraph_int_t *nb_clusters);
 </pre></div>
 <p>
 </p>
@@ -696,11 +709,9 @@ igraph_error_t igraph_reindex_membership(igraph_vector_int_t *membership,
 
 
 
-This function reindexes component IDs in a membership vector
-in a way that the new IDs start from zero and go up to C-1,
-where C is the number of unique component IDs in the original
-vector. The supplied membership is expected to fall in the
-range 0, ..., n - 1.
+This function reindexes component IDs in a membership vector in a way that
+the new IDs start from zero and go up to <code class="literal">C-1</code>, where <code class="constant">C</code> is the
+number of unique component IDs in the original vector.
 
 </p>
 <p><b>Arguments: </b>
@@ -756,14 +767,15 @@ range 0, ..., n - 1.
 </table></div>
 <p>
 
-Time complexity: should be O(n) for n elements.
+Time complexity: Let n be the length of the membership vector.
+O(n) if cluster indices are within 0..n-1, and O(n log(n)) otherwise.
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_compare_communities"></a>1.6. <code class="function">igraph_compare_communities</code> —  Compares community structures using various metrics.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.7.2"></a><p>
+<a class="indexterm" name="id-1.26.5.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_compare_communities(const igraph_vector_int_t *comm1,
@@ -979,12 +991,12 @@ Time complexity: O(n log(n)).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_split_join_distance"></a>1.7. <code class="function">igraph_split_join_distance</code> —  Calculates the split-join distance of two community structures.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.5.8.2"></a><p>
+<a class="indexterm" name="id-1.26.5.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_split_join_distance(const igraph_vector_int_t *comm1,
-                               const igraph_vector_int_t *comm2, igraph_integer_t *distance12,
-                               igraph_integer_t *distance21);
+                               const igraph_vector_int_t *comm2, igraph_int_t *distance12,
+                               igraph_int_t *distance21);
 </pre></div>
 <p>
 </p>
@@ -1050,7 +1062,7 @@ Mathematics and Computer Science in the Netherlands, Amsterdam, May 2000.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>distance12</code></em>:</span></p></td>
 <td><p>
-  pointer to an <code class="constant">igraph_integer_t</code>, the projection distance
+  pointer to an <code class="constant">igraph_int_t</code>, the projection distance
                     of the first community structure from the second one will be
                     returned here.
 </p></td>
@@ -1058,7 +1070,7 @@ Mathematics and Computer Science in the Netherlands, Amsterdam, May 2000.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>distance21</code></em>:</span></p></td>
 <td><p>
-  pointer to an <code class="constant">igraph_integer_t</code>, the projection distance
+  pointer to an <code class="constant">igraph_int_t</code>, the projection distance
                     of the second community structure from the first one will be
                     returned here.
 </p></td>
@@ -1115,7 +1127,7 @@ Time complexity: O(n log(n)).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_spinglass"></a>2.1. <code class="function">igraph_community_spinglass</code> —  Community detection based on statistical mechanics.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.6.2.2"></a><p>
+<a class="indexterm" name="id-1.26.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_spinglass(const igraph_t *graph,
@@ -1124,7 +1136,7 @@ igraph_error_t igraph_community_spinglass(const igraph_t *graph,
                                igraph_real_t *temperature,
                                igraph_vector_int_t *membership,
                                igraph_vector_int_t *csize,
-                               igraph_integer_t spins,
+                               igraph_int_t spins,
                                igraph_bool_t parupdate,
                                igraph_real_t starttemp,
                                igraph_real_t stoptemp,
@@ -1333,18 +1345,18 @@ Time complexity: TODO.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_spinglass_single"></a>2.2. <code class="function">igraph_community_spinglass_single</code> —  Community of a single node based on statistical mechanics.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.6.3.2"></a><p>
+<a class="indexterm" name="id-1.26.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_spinglass_single(const igraph_t *graph,
                                       const igraph_vector_t *weights,
-                                      igraph_integer_t vertex,
+                                      igraph_int_t vertex,
                                       igraph_vector_int_t *community,
                                       igraph_real_t *cohesion,
                                       igraph_real_t *adhesion,
                                       igraph_real_t *inner_links,
                                       igraph_real_t *outer_links,
-                                      igraph_integer_t spins,
+                                      igraph_int_t spins,
                                       igraph_spincomm_update_t update_rule,
                                       igraph_real_t gamma);
 </pre></div>
@@ -1513,7 +1525,7 @@ Time complexity: TODO.
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector">3.1. <code class="function">igraph_community_leading_eigenvector</code> —  Leading eigenvector community finding (proper version).</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leading_eigenvector_callback_t">3.2. <code class="function">igraph_community_leading_eigenvector_callback_t</code> — Callback for the leading eigenvector community finding method.</a></span></dt>
-<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_le_community_to_membership">3.3. <code class="function">igraph_le_community_to_membership</code> —  Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment.</a></span></dt>
 </dl></div>
 <p>
 The function documented in these section implements the
@@ -1550,7 +1562,7 @@ proposed in Section V.A of Newman (2006), is not implemented here.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.7.6.1"></a><p class="title"><b>Example 24.2.  File <code class="code">examples/simple/igraph_community_leading_eigenvector.c</code></b></p>
+<a name="id-1.26.7.6.1"></a><p class="title"><b>Example 25.2.  File <code class="code">examples/simple/igraph_community_leading_eigenvector.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -1561,8 +1573,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_int_t merges;
     igraph_vector_int_t membership;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Zachary Karate club */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
                  0,  1,  0,  2,  0,  3,  0,  4,  0,  5,
                  0,  6,  0,  7,  0,  8,  0, 10,  0, 11,
                  0, 12,  0, 13,  0, 17,  0, 19,  0, 21,
@@ -1604,7 +1619,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="emphasis"><em>/* Make all the steps */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version).">igraph_community_leading_eigenvector</a></strong></span>(&amp;g, <span class="emphasis"><em>/*weights=*/</em></span> NULL,
                                          &amp;merges, &amp;membership,
-                                         <span class="emphasis"><em>/*steps=*/</em></span> <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g),
+                                         <span class="emphasis"><em>/*steps=*/</em></span> <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g),
                                          <span class="emphasis"><em>/*options=*/</em></span> NULL,
                                          <span class="emphasis"><em>/*modularity=*/</em></span> NULL,
                                          <span class="emphasis"><em>/*start=*/</em></span> NULL,
@@ -1619,7 +1634,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
     <span class="strong"><strong>igraph_matrix_int_destroy</strong></span>(&amp;merges);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1632,7 +1647,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_leading_eigenvector"></a>3.1. <code class="function">igraph_community_leading_eigenvector</code> —  Leading eigenvector community finding (proper version).</h3></div></div></div>
-<a class="indexterm" name="id-1.25.7.7.2"></a><p>
+<a class="indexterm" name="id-1.26.7.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_leading_eigenvector(
@@ -1640,13 +1655,13 @@ igraph_error_t igraph_community_leading_eigenvector(
         const igraph_vector_t *weights,
         igraph_matrix_int_t *merges,
         igraph_vector_int_t *membership,
-        igraph_integer_t steps,
+        igraph_int_t steps,
         igraph_arpack_options_t *options,
         igraph_real_t *modularity,
         igraph_bool_t start,
         igraph_vector_t *eigenvalues,
         igraph_vector_list_t *eigenvectors,
-        igraph_vector_t *history,
+        igraph_vector_int_t *history,
         igraph_community_leading_eigenvector_callback_t *callback,
         void *callback_extra);
 </pre></div>
@@ -1683,8 +1698,7 @@ Phys Rev E 74:036104 (2006).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
 <td><p>
-  The weights of the edges, or a null pointer for
-   unweighted graphs.
+  The weights of the edges, or <code class="constant">NULL</code> for unweighted graphs.
 </p></td>
 </tr>
 <tr>
@@ -1693,7 +1707,7 @@ Phys Rev E 74:036104 (2006).
   The result of the algorithm, a matrix containing the
    information about the splits performed. The matrix is built in
    the opposite way however, it is like the result of an
-   agglomerative algorithm. Unlike with most other hierarchicaly
+   agglomerative algorithm. Unlike with most other hierarchical
    community detection functions in igraph, the integers in this matrix
    represent community indices, not vertex indices. If at the end of
    the algorithm (after <em class="parameter"><code>steps</code></em> steps was done) there are <span class="quote">“<span class="quote">p</span>”</span>
@@ -1715,7 +1729,7 @@ Phys Rev E 74:036104 (2006).
    This argument is ignored if it is <code class="constant">NULL</code>. This argument can
    also be used to supply a starting configuration for the community
    finding, in the format of a membership vector. In this case the
-   <em class="parameter"><code>start</code></em> argument must be set to 1.
+   <em class="parameter"><code>start</code></em> argument must be set to <code class="constant">true</code>.
 </p></td>
 </tr>
 <tr>
@@ -1895,10 +1909,10 @@ performed.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_leading_eigenvector_callback_t"></a>3.2. <code class="function">igraph_community_leading_eigenvector_callback_t</code> — Callback for the leading eigenvector community finding method.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.7.8.2"></a><pre class="programlisting">
+<a class="indexterm" name="id-1.26.7.8.2"></a><pre class="programlisting">
 typedef igraph_error_t igraph_community_leading_eigenvector_callback_t(
     const igraph_vector_int_t *membership,
-    igraph_integer_t comm,
+    igraph_int_t comm,
     igraph_real_t eigenvalue,
     const igraph_vector_t *eigenvector,
     igraph_arpack_function_t *arpack_multiplier,
@@ -1952,7 +1966,7 @@ The following arguments are passed to the callback:
 <tr>
 <td><p><span class="term"><em class="parameter"><code>arpack_multiplier</code></em>:</span></p></td>
 <td><p>
-  A function that was passed to <a class="link" href="igraph-Arpack.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a> to solve the last eigenproblem.
+  A function that was passed to <a class="link" href="igraph-Linalg.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a> to solve the last eigenproblem.
 </p></td>
 </tr>
 <tr>
@@ -1982,7 +1996,7 @@ The following arguments are passed to the callback:
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>, <a class="link" href="igraph-Arpack.html#igraph_arpack_function_t" title="3.1.3. igraph_arpack_function_t — Type of the ARPACK callback function."><code class="function">igraph_arpack_function_t</code></a>, <a class="link" href="igraph-Arpack.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a>.
+  <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>, <a class="link" href="igraph-Linalg.html#igraph_arpack_function_t" title="3.1.3. igraph_arpack_function_t — Type of the ARPACK callback function."><code class="function">igraph_arpack_function_t</code></a>, <a class="link" href="igraph-Linalg.html#igraph_arpack_rssolve" title="3.2.1. igraph_arpack_rssolve — ARPACK solver for symmetric matrices."><code class="function">igraph_arpack_rssolve()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -1992,12 +2006,12 @@ The following arguments are passed to the callback:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> —  Vertex membership from the leading eigenvector community structure.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.7.9.2"></a><p>
+<a name="igraph_le_community_to_membership"></a>3.3. <code class="function">igraph_le_community_to_membership</code> —  Cut an incomplete dendrogram after a given number of merges, starting with an initial cluster assignment.</h3></div></div></div>
+<a class="indexterm" name="id-1.26.7.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_le_community_to_membership(const igraph_matrix_int_t *merges,
-                                                 igraph_integer_t steps,
+                                                 igraph_int_t steps,
                                                  igraph_vector_int_t *membership,
                                                  igraph_vector_int_t *csize);
 </pre></div>
@@ -2007,10 +2021,33 @@ igraph_error_t igraph_le_community_to_membership(const igraph_matrix_int_t *merg
 
 
 
-This function creates a membership vector from the
-result of <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>.
-It takes <code class="constant">membership</code> and performs <code class="constant">steps</code> merges,
-according to the supplied <code class="constant">merges</code> matrix.
+This function takes a dendrogram whose leaves are cluster IDs given in an
+initial cluster assignment provided in <em class="parameter"><code>membership</code></em>. Then it updates
+the cluster assignment by performing the specified number of mergers,
+as given by the dendrogram encoded in <em class="parameter"><code>merges</code></em>. It is a more general
+version of <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a>, which assumes that
+the dendrogram leaves are singleton clusters corresponding to individual
+vertices.
+
+</p>
+<p>
+This dendrogram format is suitable for divise hierarchical community
+detection algorithms that stop before dividing the graph into individual
+vertices, such as <a class="link" href="igraph-Community.html#igraph_community_leading_eigenvector" title="3.1. igraph_community_leading_eigenvector — Leading eigenvector community finding (proper version)."><code class="function">igraph_community_leading_eigenvector()</code></a>.
+
+</p>
+<p>
+Initially, <em class="parameter"><code>membership</code></em> is expected to contain <code class="constant">m</code> contiguous cluster
+indices, numbered from zero. These correspond to the leaf nodes of the
+dendrogram. Row <code class="constant">i</code> of the two-column <em class="parameter"><code>merges</code></em> matrix contains the IDs of
+clusters that are merged together into dendrogram node <code class="literal">m + i</code>.
+It may have up to <code class="literal">m - 1</code> rows.
+
+</p>
+<p>
+This function performs <em class="parameter"><code>steps</code></em> merge operations as prescribed by the
+<em class="parameter"><code>merges</code></em> matrix and updates <em class="parameter"><code>membership</code></em> to the resulting partitioning
+into <code class="literal">m - steps</code> communities.
 
 </p>
 <p><b>Arguments: </b>
@@ -2069,6 +2106,23 @@ according to the supplied <code class="constant">merges</code> matrix.
 </table></div>
 <p>
 
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> for a simpler interface that
+starts by merging individual vertices.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
 Time complexity: O(|V|), the number of vertices.
  
 </p>
@@ -2081,12 +2135,12 @@ Time complexity: O(|V|), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_walktrap"></a>4.1. <code class="function">igraph_community_walktrap</code> —  Community finding using a random walk based similarity measure.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.8.2.2"></a><p>
+<a class="indexterm" name="id-1.26.8.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_walktrap(const igraph_t *graph,
                               const igraph_vector_t *weights,
-                              igraph_integer_t steps,
+                              igraph_int_t steps,
                               igraph_matrix_int_t *merges,
                               igraph_vector_t *modularity,
                               igraph_vector_int_t *membership);
@@ -2220,7 +2274,7 @@ Time complexity: O(|E||V|^2) in the worst case, O(|V|^2 log|V|) typically,
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.8.2.12.1"></a><p class="title"><b>Example 24.3.  File <code class="code">examples/simple/walktrap.c</code></b></p>
+<a name="id-1.26.8.2.12.1"></a><p class="title"><b>Example 25.3.  File <code class="code">examples/simple/walktrap.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2228,10 +2282,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_matrix_int_t merges;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> modularity;
-    igraph_integer_t no_of_nodes;
-    igraph_integer_t i;
+    igraph_int_t no_of_nodes;
+    igraph_int_t i;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED,
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_UNDIRECTED,
                  0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 1, 3, 1, 4, 2, 3, 2, 4, 3, 4,
                  5, 6, 5, 7, 5, 8, 5, 9, 6, 7, 6, 8, 6, 9, 7, 8, 7, 9, 8, 9, 0, 5, 4, 9, -1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;modularity, 0);
@@ -2243,7 +2300,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
                               &amp;merges, &amp;modularity,
                               <span class="emphasis"><em>/* membership=*/</em></span> NULL);
 
-    no_of_nodes = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
+    no_of_nodes = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;g);
     <span class="strong"><strong>printf</strong></span>("Merges:\n");
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_matrix_int_nrow</strong></span>(&amp;merges); i++) {
         <span class="strong"><strong>printf</strong></span>("%2.1" IGRAPH_PRId " + %2." IGRAPH_PRId " -&gt; %2." IGRAPH_PRId " (modularity %4.2f)\n",
@@ -2251,7 +2308,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
                no_of_nodes + i, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(modularity)[i]);
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>igraph_matrix_int_destroy</strong></span>(&amp;merges);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;modularity);
@@ -2278,7 +2335,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_edge_betweenness"></a>5.1. <code class="function">igraph_community_edge_betweenness</code> —  Community finding based on edge betweenness.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.9.2.2"></a><p>
+<a class="indexterm" name="id-1.26.9.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_edge_betweenness(const igraph_t *graph,
@@ -2397,8 +2454,8 @@ Analysis of Weighted Networks, Phys. Rev. E 70, 9 (2004).
     then merges performed by the algorithm are stored here. Even if
     this is a divisive algorithm, we can replay it backwards and
     note which two clusters were merged. Clusters are numbered from
-    zero, see the <em class="parameter"><code>merges</code></em> argument of <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>
-    for details. The matrix will be resized as needed.
+    zero. See <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> for details. The
+    matrix will be resized as needed.
 </p></td>
 </tr>
 <tr>
@@ -2492,7 +2549,7 @@ O(|V||E|) and we do it |E|-1 times.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.9.2.18.1"></a><p class="title"><b>Example 24.4.  File <code class="code">examples/simple/igraph_community_edge_betweenness.c</code></b></p>
+<a name="id-1.26.9.2.18.1"></a><p class="title"><b>Example 25.4.  File <code class="code">examples/simple/igraph_community_edge_betweenness.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2503,10 +2560,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_matrix_int_t merges;
     igraph_vector_int_t bridges;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 5, IGRAPH_UNDIRECTED,
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 5, IGRAPH_UNDIRECTED,
                  0, 1, 1, 2, 0, 2, 0, 3, 1, 3, 1, 4,
                  -1);
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;weights, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)+1);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init_range" title="2.2.4. igraph_vector_init_range — Initializes a vector with a range.">igraph_vector_init_range</a></strong></span>(&amp;weights, 1, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)+1);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;eb, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
     <span class="strong"><strong>igraph_matrix_int_init</strong></span>(&amp;merges, 0, 0);
@@ -2526,7 +2586,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("bridges:\n");
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;bridges);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edges);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;eb);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
@@ -2547,7 +2607,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_eb_get_merges"></a>5.2. <code class="function">igraph_community_eb_get_merges</code> —  Calculating the merges, i.e. the dendrogram for an edge betweenness community structure.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.9.3.2"></a><p>
+<a class="indexterm" name="id-1.26.9.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_eb_get_merges(const igraph_t *graph,
@@ -2703,11 +2763,12 @@ Time complexity: O(|E|+|V|log|V|), |V| is the number of vertices,
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_fastgreedy">6.1. <code class="function">igraph_community_fastgreedy</code> —  Finding community structure by greedy optimization of modularity.</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_multilevel">6.2. <code class="function">igraph_community_multilevel</code> —  Finding community structure by multi-level optimization of modularity (Louvain).</a></span></dt>
 <dt><span class="section"><a href="igraph-Community.html#igraph_community_leiden">6.3. <code class="function">igraph_community_leiden</code> —  Finding community structure using the Leiden algorithm.</a></span></dt>
+<dt><span class="section"><a href="igraph-Community.html#igraph_community_leiden_simple">6.4. <code class="function">igraph_community_leiden_simple</code> —  Finding community structure using the Leiden algorithm, simple interface.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_fastgreedy"></a>6.1. <code class="function">igraph_community_fastgreedy</code> —  Finding community structure by greedy optimization of modularity.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.10.2.2"></a><p>
+<a class="indexterm" name="id-1.26.10.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_fastgreedy(const igraph_t *graph,
@@ -2763,10 +2824,10 @@ structure in mega-scale social networks,
 <td><p><span class="term"><em class="parameter"><code>merges</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized matrix or <code class="constant">NULL</code>, the result of the
-   computation is stored here. The matrix has two columns and each
-   merge corresponds to one merge, the IDs of the two merged
-   components are stored. The component IDs are numbered from zero and
-   the first <code class="constant">n</code> components are the individual vertices, <code class="constant">n</code> is
+   computation is stored here as a merges matrix representing a dendrogram.
+   The matrix has two columns and each merge corresponds to one merge, the
+   IDs of the two merged components are stored. The component IDs are numbered
+   from zero and the first <code class="constant">n</code> components are the individual vertices, <code class="constant">n</code> is
    the number of vertices in the graph. Component <code class="constant">n</code> is created
    in the first merge, component <code class="literal">n+1</code> in the second merge, etc.
    The matrix will be resized as needed. If this argument is <code class="constant">NULL</code>
@@ -2819,9 +2880,8 @@ structure in mega-scale social networks,
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Community.html#igraph_community_walktrap" title="4.1. igraph_community_walktrap — Community finding using a random walk based similarity measure."><code class="function">igraph_community_walktrap()</code></a>, <a class="link" href="igraph-Community.html#igraph_community_edge_betweenness" title="5.1. igraph_community_edge_betweenness — Community finding based on edge betweenness."><code class="function">igraph_community_edge_betweenness()</code></a> for other community detection
-algorithms, <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Creates a membership vector from a community structure dendrogram."><code class="function">igraph_community_to_membership()</code></a> to convert the
-dendrogram to a membership vector.
+  <a class="link" href="igraph-Community.html#igraph_community_to_membership" title="1.4. igraph_community_to_membership — Cut a dendrogram after a given number of merges."><code class="function">igraph_community_to_membership()</code></a> to cut the dendrogram at
+an arbitrary number of steps.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2834,7 +2894,7 @@ the number of edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.10.2.11.1"></a><p class="title"><b>Example 24.5.  File <code class="code">examples/simple/igraph_community_fastgreedy.c</code></b></p>
+<a name="id-1.26.10.2.11.1"></a><p class="title"><b>Example 25.5.  File <code class="code">examples/simple/igraph_community_fastgreedy.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2843,16 +2903,19 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
     igraph_matrix_int_t merges;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_matrix_int_init</strong></span>(&amp;merges, 0, 0);
     <span class="strong"><strong>igraph_vector_init_int</strong></span>(&amp;weights, 8, 10, 10, 1, 1, 1, 1, 1, 1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 6, IGRAPH_UNDIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 6, IGRAPH_UNDIRECTED,
                  0,1, 1,2, 2,3, 2,4, 2,5, 3,4, 3,5, 4,5, -1);
     <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_fastgreedy" title="6.1. igraph_community_fastgreedy — Finding community structure by greedy optimization of modularity.">igraph_community_fastgreedy</a></strong></span>(&amp;graph, &amp;weights, &amp;merges,
                                 <span class="emphasis"><em>/*modularity*/</em></span> NULL,
                                 <span class="emphasis"><em>/*membership=*/</em></span> NULL);
     <span class="strong"><strong>igraph_matrix_int_print</strong></span>(&amp;merges);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
     <span class="strong"><strong>igraph_matrix_int_destroy</strong></span>(&amp;merges);
 
@@ -2870,7 +2933,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_multilevel"></a>6.2. <code class="function">igraph_community_multilevel</code> —  Finding community structure by multi-level optimization of modularity (Louvain).</h3></div></div></div>
-<a class="indexterm" name="id-1.25.10.3.2"></a><p>
+<a class="indexterm" name="id-1.26.10.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_multilevel(const igraph_t *graph,
@@ -3004,12 +3067,12 @@ Time complexity: in average near linear on sparse graphs.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.10.3.13.1"></a><p class="title"><b>Example 24.6.  File <code class="code">examples/simple/igraph_community_multilevel.c</code></b></p>
+<a name="id-1.26.10.3.13.1"></a><p class="title"><b>Example 25.6.  File <code class="code">examples/simple/igraph_community_multilevel.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 void <span class="strong"><strong>show_results</strong></span>(igraph_t *g, igraph_vector_int_t *membership, igraph_matrix_int_t *memberships, <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *modularity, FILE* f) {
-    igraph_integer_t i, j, no_of_nodes = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(g);
+    igraph_int_t i, j, no_of_nodes = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(g);
 
     j = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_which_max" title="2.10.4. igraph_vector_which_max — Gives the index of the maximum element of the vector.">igraph_vector_which_max</a></strong></span>(modularity);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; <span class="strong"><strong>igraph_vector_int_size</strong></span>(membership); i++) {
@@ -3032,12 +3095,16 @@ void <span class="strong"><strong>show_results</strong></span>(igraph_t *g, igra
 }
 
 int <span class="strong"><strong>main</strong></span>(void) {
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
     igraph_t g;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> modularity;
     igraph_vector_int_t edges;
     igraph_vector_int_t membership;
     igraph_matrix_int_t memberships;
-    igraph_integer_t i, j, k;
+    igraph_int_t i, j, k;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;modularity, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, 0);
@@ -3046,7 +3113,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
 
     <span class="emphasis"><em>/* Unweighted test graph from the paper of Blondel et al */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 16, IGRAPH_UNDIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 16, IGRAPH_UNDIRECTED,
                  0, 2, 0, 3, 0, 4, 0, 5,
                  1, 2, 1, 4, 1, 7,
                  2, 4, 2, 5, 2, 6,
@@ -3066,7 +3133,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_multilevel" title="6.2. igraph_community_multilevel — Finding community structure by multi-level optimization of modularity (Louvain).">igraph_community_multilevel</a></strong></span>(&amp;g, 0, 1.5, &amp;membership, &amp;memberships, &amp;modularity);
     <span class="strong"><strong>show_results</strong></span>(&amp;g, &amp;membership, &amp;memberships, &amp;modularity, stdout);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Ring of 30 cliques */</em></span>
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edges, 0);
@@ -3082,10 +3149,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong>igraph_vector_int_push_back</strong></span>(&amp;edges, i * 5 % 150);
         <span class="strong"><strong>igraph_vector_int_push_back</strong></span>(&amp;edges, (i * 5 + 6) % 150);
     }
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;edges, 150, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;edges, 150, 0);
     <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_multilevel" title="6.2. igraph_community_multilevel — Finding community structure by multi-level optimization of modularity (Louvain).">igraph_community_multilevel</a></strong></span>(&amp;g, 0, 1, &amp;membership, &amp;memberships, &amp;modularity);
     <span class="strong"><strong>show_results</strong></span>(&amp;g, &amp;membership, &amp;memberships, &amp;modularity, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;modularity);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
@@ -3106,14 +3173,21 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_leiden"></a>6.3. <code class="function">igraph_community_leiden</code> —  Finding community structure using the Leiden algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.10.4.2"></a><p>
+<a class="indexterm" name="id-1.26.10.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_community_leiden(const igraph_t *graph,
-                            const igraph_vector_t *edge_weights, const igraph_vector_t *node_weights,
-                            const igraph_real_t resolution_parameter, const igraph_real_t beta, const igraph_bool_t start,
-                            const igraph_integer_t n_iterations,
-                            igraph_vector_int_t *membership, igraph_integer_t *nb_clusters, igraph_real_t *quality);
+igraph_error_t igraph_community_leiden(
+        const igraph_t *graph,
+        const igraph_vector_t *edge_weights,
+        const igraph_vector_t *vertex_out_weights,
+        const igraph_vector_t *vertex_in_weights,
+        igraph_real_t resolution,
+        igraph_real_t beta,
+        igraph_bool_t start,
+        igraph_int_t n_iterations,
+        igraph_vector_int_t *membership,
+        igraph_int_t *nb_clusters,
+        igraph_real_t *quality);
 </pre></div>
 <p>
 </p>
@@ -3130,31 +3204,31 @@ structure.
 It is similar to the multilevel algorithm, often called the Louvain
 algorithm, but it is faster and yields higher quality solutions. It can
 optimize both modularity and the Constant Potts Model, which does not suffer
-from the resolution-limit (see Tragg, Van Dooren &amp; Nesterov).
+from the resolution-limit (see Traag, Van Dooren &amp; Nesterov).
 
 </p>
 <p>
-The Leiden algorithm consists of three phases: (1) local moving of nodes, (2)
+The Leiden algorithm consists of three phases: (1) local moving of vertices, (2)
 refinement of the partition and (3) aggregation of the network based on the
 refined partition, using the non-refined partition to create an initial
 partition for the aggregate network. In the local move procedure in the
-Leiden algorithm, only nodes whose neighborhood has changed are visited. Only
+Leiden algorithm, only vertices whose neighborhood has changed are visited. Only
 moves that strictly improve the quality function are made. The refinement is
 done by restarting from a singleton partition within each cluster and
 gradually merging the subclusters. When aggregating, a single cluster may
-then be represented by several nodes (which are the subclusters identified in
+then be represented by several vertices (which are the subclusters identified in
 the refinement).
 
 </p>
 <p>
 The Leiden algorithm provides several guarantees. The Leiden algorithm is
 typically iterated: the output of one iteration is used as the input for the
-next iteration. At each iteration all clusters are guaranteed to be
+next iteration. At each iteration all clusters are guaranteed to be (weakly)
 connected and well-separated. After an iteration in which nothing has
-changed, all nodes and some parts are guaranteed to be locally optimally
+changed, all vertices and some parts are guaranteed to be locally optimally
 assigned. Note that even if a single iteration did not result in any change,
 it is still possible that a subsequent iteration might find some
-improvement. Each iteration explores different subsets of nodes to consider
+improvement. Each iteration explores different subsets of vertices to consider
 for moving from one cluster to another. Finally, asymptotically, all subsets
 of all clusters are guaranteed to be locally optimally assigned. For more
 details, please see Traag, Waltman &amp; van Eck (2019).
@@ -3169,15 +3243,32 @@ The objective function being optimized is
 
 </p>
 <p>
-where m is the total edge weight, <code class="literal">A_ij</code> is the weight of edge
+in the undirected case and
+
+</p>
+<p>
+<code class="literal">1 / m sum_ij (A_ij - γ n^out_i n^in_j) δ(s_i, s_j)</code>
+
+</p>
+<p>
+in the directed case.
+Here <code class="constant">m</code> is the total edge weight, <code class="literal">A_ij</code> is the weight of edge
 (i, j), <code class="constant">γ</code> is the so-called resolution parameter, <code class="literal">n_i</code>
-is the node weight of node <code class="constant">i</code>, <code class="literal">s_i</code> is the cluster of node
+is the vertex weight of vertex <code class="constant">i</code> (separate out- and in-weights are used
+with directed graphs), <code class="literal">s_i</code> is the cluster of vertex
 <code class="constant">i</code> and <code class="literal">δ(x, y) = 1</code> if and only if <code class="literal">x = y</code> and 0
-otherwise. By setting <code class="literal">n_i = k_i</code>, the degree of node <code class="constant">i</code>, and
-dividing <code class="constant">γ</code> by <code class="literal">2m</code>, we effectively obtain an expression for
-modularity. Hence, the standard modularity will be optimized when you supply
-the degrees as <code class="constant">node_weights</code> and by supplying as a resolution parameter
-<code class="literal">1/(2m)</code>, with <code class="constant">m</code> the number of edges.
+otherwise.
+
+</p>
+<p>
+By setting <code class="literal">n_i = k_i</code>, the degree of vertex <code class="constant">i</code>, and
+dividing <code class="constant">γ</code> by <code class="literal">2m</code> (by <code class="constant">m</code> in the directed case), we effectively
+obtain an expression for modularity. Hence, the standard modularity will be
+optimized when you supply the degrees (out- and in-degrees with directed graphs)
+as the vertex weights and by supplying as a resolution parameter
+<code class="literal">1/(2m)</code> (<code class="literal">1/m</code> with directed graphs).
+Use the <a class="link" href="igraph-Community.html#igraph_community_leiden_simple" title="6.4. igraph_community_leiden_simple — Finding community structure using the Leiden algorithm, simple interface."><code class="function">igraph_community_leiden_simple()</code></a> convenience function to
+compute vertex weights automatically for modularity maximization.
 
 </p>
 <p>
@@ -3209,29 +3300,40 @@ Phys. Rev. E 84, 016114 (2011).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
-  The input graph. It must be an undirected graph.
+  The input graph.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>edge_weights</code></em>:</span></p></td>
 <td><p>
-  Numeric vector containing edge weights. If <code class="constant">NULL</code>, every edge
-   has equal weight of 1. The weights need not be non-negative.
+  Numeric vector containing edge weights. If <code class="constant">NULL</code>,
+   every edge has equal weight of 1. The weights need not be non-negative.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>node_weights</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>vertex_out_weights</code></em>:</span></p></td>
 <td><p>
-  Numeric vector containing node weights. If <code class="constant">NULL</code>, every node
-   has equal weight of 1.
+  Numeric vector containing vertex weights, or vertex
+   out-weights for directed graphs. If <code class="constant">NULL</code>, every vertex has equal
+   weight of 1.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>resolution_parameter</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>vertex_in_weights</code></em>:</span></p></td>
 <td><p>
-  The resolution parameter used, which is
-   represented by gamma in the objective function mentioned in the
-   documentation.
+  Numeric vector containing vertex in-weights for
+   directed graphs. If set to <code class="constant">NULL</code>, in-weights are assumed to be the same
+   as out-weights, which effectively ignores edge directions.
+   Must be <code class="constant">NULL</code> for undirected graphs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_iterations</code></em>:</span></p></td>
+<td><p>
+  Iterate the core Leiden algorithm the indicated number
+   of times. If this is a negative number, it will continue iterating until
+   an iteration did not change the clustering. Two iterations are often
+   sufficient, thus 2 is a reasonable default.
 </p></td>
 </tr>
 <tr>
@@ -3270,7 +3372,7 @@ Phys. Rev. E 84, 016114 (2011).
 <tr>
 <td><p><span class="term"><em class="parameter"><code>nb_clusters</code></em>:</span></p></td>
 <td><p>
-  The number of clusters contained in <code class="constant">membership</code>.
+  The number of clusters contained in the final <em class="parameter"><code>membership</code></em>.
    If <code class="constant">NULL</code>, the number of clusters will not be returned.
 </p></td>
 </tr>
@@ -3304,9 +3406,27 @@ Phys. Rev. E 84, 016114 (2011).
 Time complexity: near linear on sparse graphs.
 
 </p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_community_leiden_simple" title="6.4. igraph_community_leiden_simple — Finding community structure using the Leiden algorithm, simple interface."><code class="function">igraph_community_leiden_simple()</code></a> for a simplified interface
+that allows specifying an objective function directly and does not require
+vertex weights.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.10.4.17.1"></a><p class="title"><b>Example 24.7.  File <code class="code">examples/simple/igraph_community_leiden.c</code></b></p>
+<a name="id-1.26.10.4.22.1"></a><p class="title"><b>Example 25.7.  File <code class="code">examples/simple/igraph_community_leiden.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -3314,22 +3434,33 @@ Time complexity: near linear on sparse graphs.
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     igraph_vector_int_t membership;
-    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
-    igraph_integer_t nb_clusters;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vertex_weights;
+    <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> vertex_out_weights, vertex_in_weights;
+    igraph_int_t nb_clusters;
     igraph_real_t quality;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="emphasis"><em>/* Set default seed to get reproducible results */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 0);
 
-    <span class="emphasis"><em>/* Simple unweighted graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 10, IGRAPH_UNDIRECTED,
+    <span class="emphasis"><em>/* UNDIRECTED EXAMPLE */</em></span>
+
+    <span class="emphasis"><em>/* Simple unweighted undirected graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 10, IGRAPH_UNDIRECTED,
                  0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 1, 3, 1, 4, 2, 3, 2, 4, 3, 4,
                  5, 6, 5, 7, 5, 8, 5, 9, 6, 7, 6, 8, 6, 9, 7, 8, 7, 9, 8, 9,
                  0, 5, -1);
 
     <span class="emphasis"><em>/* Perform Leiden algorithm using CPM for 1 iteration */</em></span>
-    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, NULL, 0.05, 0.01, 0, 1, &amp;membership, &amp;nb_clusters, &amp;quality);
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, NULL, NULL,
+                            <span class="emphasis"><em>/* resolution */</em></span> 0.05,
+                            <span class="emphasis"><em>/* beta */</em></span> 0.01,
+                            <span class="emphasis"><em>/* start */</em></span> false,
+                            <span class="emphasis"><em>/* iterations */</em></span> 1,
+                            &amp;membership, &amp;nb_clusters, &amp;quality);
 
     <span class="strong"><strong>printf</strong></span>("Leiden found %" IGRAPH_PRId " clusters using CPM (resolution parameter 0.05), quality is %.4f.\n", nb_clusters, quality);
     <span class="strong"><strong>printf</strong></span>("Membership: ");
@@ -3337,7 +3468,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("\n");
 
     <span class="emphasis"><em>/* Start from existing membership for 10 iterations to improve it further */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, NULL, 0.05, 0.01, 1, 10, &amp;membership, &amp;nb_clusters, &amp;quality);
+    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, NULL, NULL,
+                            <span class="emphasis"><em>/* resolution */</em></span> 0.05,
+                            <span class="emphasis"><em>/* beta */</em></span> 0.01,
+                            <span class="emphasis"><em>/* start */</em></span> true,
+                            <span class="emphasis"><em>/* iterations */</em></span> 10,
+                            &amp;membership, &amp;nb_clusters, &amp;quality);
 
     <span class="strong"><strong>printf</strong></span>("Iterated Leiden, using CPM (resolution parameter 0.05), quality is %.4f.\n", quality);
     <span class="strong"><strong>printf</strong></span>("Membership: ");
@@ -3345,20 +3481,58 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("\n");
 
     <span class="emphasis"><em>/* Use degrees as vertex weights for optimizing modularity */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="10.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;graph, &amp;weights, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_LOOPS, NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vertex_weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="11.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;graph, &amp;vertex_weights, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_LOOPS, NULL);
 
     <span class="emphasis"><em>/* Perform Leiden algorithm using modularity until stable iteration */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, &amp;weights, 1.0 / (2 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)), 0.01, 0, -1, &amp;membership, &amp;nb_clusters, &amp;quality);
+    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, &amp;vertex_weights, NULL,
+                            <span class="emphasis"><em>/* resolution */</em></span> 1.0 / (2 * <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph)),
+                            <span class="emphasis"><em>/* beta */</em></span> 0.01,
+                            <span class="emphasis"><em>/* start */</em></span> false,
+                            <span class="emphasis"><em>/* iterations */</em></span> -1,
+                            &amp;membership, &amp;nb_clusters, &amp;quality);
 
     <span class="strong"><strong>printf</strong></span>("Leiden found %" IGRAPH_PRId " clusters using modularity, quality is %.4f.\n", nb_clusters, quality);
     <span class="strong"><strong>printf</strong></span>("Membership: ");
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
     <span class="strong"><strong>printf</strong></span>("\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vertex_weights);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+
+    <span class="emphasis"><em>/* DIRECTED EXAMPLE */</em></span>
+
+    <span class="emphasis"><em>/* Simple unweighted directed graph */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;graph, 6, IGRAPH_DIRECTED,
+                 0, 1, 0, 3, 0, 5, 1, 3, 1, 4, 2, 3, 4, 1, 5, 2, 5, 4,
+                 -1);
+
+    <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;membership, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vertex_out_weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;vertex_in_weights, <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;graph));
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="11.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;graph, &amp;vertex_out_weights, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_OUT, IGRAPH_LOOPS, NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="11.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;graph, &amp;vertex_in_weights, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_IN, IGRAPH_LOOPS, NULL);
+
+    <span class="emphasis"><em>/* Perform Leiden algorithm using modularity for two iterations,</em></span>
+<span class="emphasis"><em>     * which are usually sufficient to achieve stability.</em></span>
+<span class="emphasis"><em>     * Note that in the directed case, we divide by the edge count m, not 2*m. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm.">igraph_community_leiden</a></strong></span>(&amp;graph, NULL, &amp;vertex_out_weights, &amp;vertex_in_weights,
+                            <span class="emphasis"><em>/* resolution */</em></span> 1.0 / <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph),
+                            <span class="emphasis"><em>/* beta */</em></span> 0.01,
+                            <span class="emphasis"><em>/* start */</em></span> false,
+                            <span class="emphasis"><em>/* iterations */</em></span> 2,
+                            &amp;membership, &amp;nb_clusters, &amp;quality);
+
+    <span class="strong"><strong>printf</strong></span>("Leiden found %" IGRAPH_PRId " clusters using modularity, quality is %.4f.\n", nb_clusters, quality);
+    <span class="strong"><strong>printf</strong></span>("Membership: ");
+    <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;membership);
+    <span class="strong"><strong>printf</strong></span>("\n");
+
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vertex_in_weights);
+    <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;vertex_out_weights);
+    <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -3371,6 +3545,220 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <p> 
 </p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_community_leiden_simple"></a>6.4. <code class="function">igraph_community_leiden_simple</code> —  Finding community structure using the Leiden algorithm, simple interface.</h3></div></div></div>
+<a class="indexterm" name="id-1.26.10.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_community_leiden_simple(
+        const igraph_t *graph,
+        const igraph_vector_t *weights,
+        igraph_leiden_objective_t objective,
+        igraph_real_t resolution,
+        igraph_real_t beta,
+        igraph_bool_t start,
+        igraph_int_t n_iterations,
+        igraph_vector_int_t *membership,
+        igraph_int_t *nb_clusters,
+        igraph_real_t *quality);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This is a simplified interface to <a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm."><code class="function">igraph_community_leiden()</code></a> for
+convenience purposes. Instead of requiring vertex weights, it allows
+choosing from a set of objective functions to maximize. It implements
+these objective functions by passing suitable vertex weights to
+<a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm."><code class="function">igraph_community_leiden()</code></a>, as explained in the documentation of
+that function.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph. May be directed or undirected.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  The edge weights. If <code class="constant">NULL</code>, all weights are assumed to be 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>objective</code></em>:</span></p></td>
+<td>
+<p>
+  The objective function to maximize.
+   </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LEIDEN_OBJECTIVE_MODULARITY</code></span></p></td>
+<td><p>
+
+     Use the generalized modularity, defined as
+     <code class="literal">Q = 1/(2m) sum_ij (A_ij - γ k_i k_j / (2m)) δ(c_i, c_j)</code>
+     for undirected graphs and as
+     <code class="literal">Q = 1/m sum_ij (A_ij - γ k^out_i k^in_j / m) δ(c_i, c_j)</code>
+     for directed graphs. This effectively uses a multigraph configuration
+     model as the null model. Edge weights must not be negative.
+   
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LEIDEN_OBJECTIVE_CPM</code></span></p></td>
+<td><p>
+
+     Use the constant Potts model, whose objective function is defined as
+     <code class="literal">Q = 1/(2m) sum_ij (A_ij - γ) δ(c_i, c_j)</code>
+     for undirected graphs and as
+     <code class="literal">Q = 1/m sum_ij (A_ij - γ) δ(c_i, c_j)</code>
+     for directed graphs. Edge weights are allowed to be negative.
+     Edge directions have no impact on the result.
+   
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LEIDEN_OBJECTIVE_ER</code></span></p></td>
+<td><p>
+
+     Use an objective function based on the multigraph Erdős-Rényi G(n,p)
+     null model, defined as
+     <code class="literal">Q = 1/(2m) sum_ij (A_ij - γ p) δ(c_i, c_j)</code>
+     for undirected graphs and as
+     <code class="literal">Q = 1/m sum_ij (A_ij - γ p) δ(c_i, c_j)</code>
+     for directed graphs. <code class="constant">p</code> is the weighted density, i.e. the average
+     link strength between all vertex pairs (whether adjacent or not).
+     Edge weights must not be negative. Edge directions have no impact on
+     the result.
+   
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+   In the above formulas, <code class="constant">A</code> is the adjacency matrix, <code class="constant">m</code> is the total
+   edge weight, <code class="constant">k</code> are the (out- and in-) degrees, <code class="constant">γ</code> is the resolution
+   parameter, and <code class="literal">δ(c_i, c_j)</code> is 1 if vertices <code class="constant">i</code> and <code class="constant">j</code>
+   are in the same community and 0 otherwise. Edge directions are only
+   relevant with <code class="constant">IGRAPH_LEIDEN_OBJECTIVE_MODULARITY</code>. The other two
+   objective functions are equivalent between directed and undirected graphs:
+   the formal difference is due to each edge being included twice in
+   undirected (symmetric) adjacency matrices.
+</p>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>resolution</code></em>:</span></p></td>
+<td><p>
+  The resolution parameter, which is represented by γ in
+   the objective functions detailed above.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
+<td><p>
+  The randomness used in the refinement step when merging. A small
+   amount of randomness (<code class="constant">beta</code> = 0.01) typically works well.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>start</code></em>:</span></p></td>
+<td><p>
+  Start from membership vector. If this is true, the optimization
+   will start from the provided membership vector. If this is false, the
+   optimization will start from a singleton partition.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_iterations</code></em>:</span></p></td>
+<td><p>
+  Iterate the core Leiden algorithm the indicated number
+   of times. If this is a negative number, it will continue iterating until
+   an iteration did not change the clustering. Two iterations are often
+   sufficient, thus 2 is a reasonable default.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
+<td><p>
+  The membership vector. If <em class="parameter"><code>start</code></em> is set to <code class="constant">false</code>,
+   it will be resized appropriately. If <em class="parameter"><code>start</code></em> is <code class="constant">true</code>, it must be
+   a valid membership vector for the given <em class="parameter"><code>graph</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>nb_clusters</code></em>:</span></p></td>
+<td><p>
+  The number of clusters contained in the final <em class="parameter"><code>membership</code></em>.
+   If <code class="constant">NULL</code>, the number of clusters will not be returned.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>quality</code></em>:</span></p></td>
+<td><p>
+  The quality of the partition, in terms of the objective
+   function selected by <em class="parameter"><code>objective</code></em>. If <code class="constant">NULL</code> the quality will
+   not be calculated.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: near linear on sparse graphs.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Community.html#igraph_community_leiden" title="6.3. igraph_community_leiden — Finding community structure using the Leiden algorithm."><code class="function">igraph_community_leiden()</code></a> for a more flexible interface that
+allows specifying raw vertex weights.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -3379,12 +3767,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_fluid_communities"></a>7.1. <code class="function">igraph_community_fluid_communities</code> —  Community detection based on fluids interacting on the graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.11.2.2"></a><p>
+<a class="indexterm" name="id-1.26.11.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_community_fluid_communities(const igraph_t *graph,
-                                       igraph_integer_t no_of_communities,
-                                       igraph_vector_int_t *membership);
+igraph_error_t igraph_community_fluid_communities(
+        const igraph_t *graph,
+        igraph_int_t no_of_communities,
+        igraph_vector_int_t *membership);
 </pre></div>
 <p>
 </p>
@@ -3468,7 +3857,7 @@ Time complexity: O(|E|)
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_label_propagation"></a>8.1. <code class="function">igraph_community_label_propagation</code> —  Community detection based on label propagation.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.12.2.2"></a><p>
+<a class="indexterm" name="id-1.26.12.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_label_propagation(const igraph_t *graph,
@@ -3639,16 +4028,45 @@ label propagation. Scientific Reports, 13:1, (2023).
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>lpa_variant</code></em>:</span></p></td>
+<td>
+<p>
+  Which variant of the label propagation algorithm to run.
+  </p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LPA_DOMINANCE</code></span></p></td>
 <td><p>
-  Which variant of label propagation algorithm to run.
-  One of
-  <code class="constant">IGRAPH_LPA_DOMINANCE</code> Check for dominance of all nodes after each
-                          iteration.
-  <code class="constant">IGRAPH_LPA_RETENTION</code> Keep current label if among dominant labels,
-                          only check if labels changed.
-  <code class="constant">IGRAPH_LPA_FAST</code>      Sample from dominant labels, only check
-                          neighbors.
+
+    check for dominance of all nodes after each iteration.
+  
 </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LPA_RETENTION</code></span></p></td>
+<td><p>
+
+    keep current label if among dominant labels, only check if labels changed.
+  
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_LPA_FAST</code></span></p></td>
+<td><p>
+
+    sample from dominant labels, only check neighbors.
+  
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</td>
 </tr>
 </tbody>
 </table></div>
@@ -3674,7 +4092,7 @@ Time complexity: O(m+n)
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.25.12.2.16.1"></a><p class="title"><b>Example 24.8.  File <code class="code">examples/simple/igraph_community_label_propagation.c</code></b></p>
+<a name="id-1.26.12.2.16.1"></a><p class="title"><b>Example 25.8.  File <code class="code">examples/simple/igraph_community_label_propagation.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -3684,7 +4102,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t membership;
     igraph_real_t modularity;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="8.1. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;graph, "Zachary"); <span class="emphasis"><em>/* We use Zachary's karate club network. */</em></span>
 
     <span class="emphasis"><em>/* Label propagation is a stochastic method; the result will depend on the random seed. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 123);
@@ -3710,7 +4131,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Destroy data structures at the end. */</em></span>
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;membership);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -3727,19 +4148,22 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="infomap-algorithm"></a>9. The InfoMAP algorithm</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Community.html#igraph_community_infomap">9.1. <code class="function">igraph_community_infomap</code> —  Find community structure that minimizes the expected description length of a random walker trajectory.</a></span></dt></dl></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Community.html#igraph_community_infomap">9.1. <code class="function">igraph_community_infomap</code> —  Community structure that minimizes the expected description length of a random walker trajectory.</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_community_infomap"></a>9.1. <code class="function">igraph_community_infomap</code> —  Find community structure that minimizes the expected description length of a random walker trajectory.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.13.2.2"></a><p>
+<a name="igraph_community_infomap"></a>9.1. <code class="function">igraph_community_infomap</code> —  Community structure that minimizes the expected description length of a random walker trajectory.</h3></div></div></div>
+<a class="indexterm" name="id-1.26.13.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_community_infomap(const igraph_t * graph,
-                             const igraph_vector_t *e_weights,
-                             const igraph_vector_t *v_weights,
-                             igraph_integer_t nb_trials,
-                             igraph_vector_int_t *membership,
-                             igraph_real_t *codelength);
+igraph_error_t igraph_community_infomap(
+        const igraph_t *graph,
+        const igraph_vector_t *edge_weights,
+        const igraph_vector_t *vertex_weights,
+        igraph_int_t nb_trials,
+        igraph_bool_t is_regularized,
+        igraph_real_t regularization_strength,
+        igraph_vector_int_t *membership,
+        igraph_real_t *codelength);
 </pre></div>
 <p>
 </p>
@@ -3749,34 +4173,51 @@ igraph_error_t igraph_community_infomap(const igraph_t * graph,
 
 Implementation of the Infomap community detection algorithm of
 Martin Rosvall and Carl T. Bergstrom. This algorithm takes edge directions
-into account.
+into account. For more details, see the visualization of the math and the
+map generator at <a class="ulink" href="https://www.mapequation.org" target="_top">https://www.mapequation.org</a>.
 
 </p>
 <p>
-For more details, see the visualization of the math and the map generator
-at <a class="ulink" href="https://www.mapequation.org" target="_top">https://www.mapequation.org</a> . The original paper describing the algorithm
-is: M. Rosvall and C. T. Bergstrom, Maps of information flow reveal community
-structure in complex networks, PNAS 105, 1118 (2008)
-(<a class="ulink" href="https://dx.doi.org/10.1073/pnas.0706851105" target="_top">https://dx.doi.org/10.1073/pnas.0706851105</a>, <a class="ulink" href="https://arxiv.org/abs/0707.0609" target="_top">https://arxiv.org/abs/0707.0609</a>).
-A more detailed paper about the algorithm is: M. Rosvall, D. Axelsson, and
-C. T. Bergstrom, The map equation, Eur. Phys. J. Special Topics 178, 13 (2009).
-(<a class="ulink" href="https://dx.doi.org/10.1140/epjst/e2010-01179-1" target="_top">https://dx.doi.org/10.1140/epjst/e2010-01179-1</a>, <a class="ulink" href="https://arxiv.org/abs/0906.1405" target="_top">https://arxiv.org/abs/0906.1405</a>)
+Infomap is based on a random walker model similar to PageRank: the walker
+either chooses out-edges to follow with probabilities proportional to edge
+weights, or teleports to a random vertex with probability 0.15. Vertex weights
+can be given to control the probability of choosing different vertices as
+the target of the teleportation. In addition, Infomap can be regularized to
+account for potential missing links.
 
 </p>
 <p>
-The original C++ implementation of Martin Rosvall is used,
-see <a class="ulink" href="http://www.tp.umu.se/~rosvall/downloads/infomap_undir.tgz" target="_top">http://www.tp.umu.se/~rosvall/downloads/infomap_undir.tgz</a> .
-Integration in igraph was done by Emmanuel Navarro (who is grateful to
-Martin Rosvall and Carl T. Bergstrom for providing this source code).
-
-</p>
-<p>
-Note that the graph must not contain isolated vertices.
+As of igraph 1.0, the Infomap library written by Daniel Edler, Anton Holmgren
+and Martin Rosvall is used. See <a class="ulink" href="https://github.com/mapequation/infomap/" target="_top">https://github.com/mapequation/infomap/</a>.
 
 </p>
 <p>
 If you want to specify a random seed (as in the original
 implementation) you can use <a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator."><code class="function">igraph_rng_seed()</code></a>.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+M. Rosvall and C. T. Bergstrom:
+Maps of information flow reveal community structure in complex networks,
+PNAS 105, 1118 (2008).
+<a class="ulink" href="https://dx.doi.org/10.1073/pnas.0706851105" target="_top">https://dx.doi.org/10.1073/pnas.0706851105</a>, <a class="ulink" href="https://arxiv.org/abs/0707.0609" target="_top">https://arxiv.org/abs/0707.0609</a>
+
+</p>
+<p>
+M. Rosvall, D. Axelsson, and C. T. Bergstrom:
+The map equation,
+Eur. Phys. J. Special Topics 178, 13 (2009).
+<a class="ulink" href="https://dx.doi.org/10.1140/epjst/e2010-01179-1" target="_top">https://dx.doi.org/10.1140/epjst/e2010-01179-1</a>, <a class="ulink" href="https://arxiv.org/abs/0906.1405" target="_top">https://arxiv.org/abs/0906.1405</a>
+
+</p>
+<p>
+Smiljanić, Jelena, Daniel Edler, and Martin Rosvall: Mapping Flows on
+Sparse Networks with Missing Links. Phys Rev E 102 (1–1): 012302 (2020).
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.102.012302" target="_top">https://doi.org/10.1103/PhysRevE.102.012302</a>, <a class="ulink" href="https://arxiv.org/abs/2106.14798" target="_top">https://arxiv.org/abs/2106.14798</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -3794,7 +4235,7 @@ implementation) you can use <a class="link" href="igraph-Random.html#igraph_rng_
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>e_weights</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>edge_weights</code></em>:</span></p></td>
 <td><p>
   Numeric vector giving the weights of the edges.
     The random walker will favour edges with high weights over
@@ -3805,36 +4246,51 @@ implementation) you can use <a class="link" href="igraph-Random.html#igraph_rng_
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>v_weights</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>vertex_weights</code></em>:</span></p></td>
 <td><p>
   Numeric vector giving the weights of the vertices.
     Vertices with higher weights are favoured by the random walker
-    when it needs to "teleport" to a new node after getting stuck in
-    a sink node (i.e. a node with no outbound edges). The probability
-    of picking a vertex when the random walker teleports is directly
-    proportional to the weight of the vertex. If this argument is <code class="constant">NULL</code>
-    then all vertices will have equal weights. Weights are expected
-    to be positive.
+    when it teleports to a new vertex. The probability of picking a vertex
+    when the random walker teleports is directly proportional to the weight
+    of the vertex. If this argument is <code class="constant">NULL</code> then all vertices will have
+    equal weights. Weights are expected to be positive.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>nb_trials</code></em>:</span></p></td>
 <td><p>
   The number of attempts to partition the network
-    (can be any integer value equal or larger than 1).
+    (can be any integer value equal to or larger than 1).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>is_regularized</code></em>:</span></p></td>
+<td><p>
+  If true, adds a fully connected Bayesian prior network
+    to avoid overfitting due to missing links.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>regularization_strength</code></em>:</span></p></td>
+<td><p>
+  Adjust relative strength of the Bayesian prior
+    network used for regularization. This multiplies the default strength, a
+    parameter of 1 hence uses the default regularization strength. Ignored
+    when <em class="parameter"><code>is_regularized</code></em> is set to <code class="constant">false</code>.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>membership</code></em>:</span></p></td>
 <td><p>
   Pointer to a vector. The membership vector is
-   stored here.
+    stored here. <code class="constant">NULL</code> means that the caller is not interested in the
+    membership vector.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>codelength</code></em>:</span></p></td>
 <td><p>
-  Pointer to a real. If not NULL the code length of the
+  Pointer to a real. If not <code class="constant">NULL</code> the code length of the
     partition is stored here.
 </p></td>
 </tr>
@@ -3885,7 +4341,7 @@ Time complexity: TODO.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_community_voronoi"></a>10.1. <code class="function">igraph_community_voronoi</code> —  Finds communities using Voronoi partitioning.</h3></div></div></div>
-<a class="indexterm" name="id-1.25.14.2.2"></a><p>
+<a class="indexterm" name="id-1.26.14.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_community_voronoi(
@@ -3910,7 +4366,7 @@ major version of igraph. Use it at your own risk.</p>
 </div>
 <p>This function finds communities using a Voronoi partitioning of vertices based
 on the given edge lengths divided by the edge clustering coefficient
-(<a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>). The generator vertices are chosen to be those with the
+(<a class="link" href="igraph-Structural.html#igraph_ecc" title="17.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>). The generator vertices are chosen to be those with the
 largest local relative density within a radius <em class="parameter"><code>r</code></em>, with the local relative
 density of a vertex defined as
 <code class="literal">s m / (m + k)</code>, where <code class="constant">s</code> is the strength of the vertex,
@@ -4027,7 +4483,7 @@ Scientific Reports 14, 8124 (2024)
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.28. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>, <a class="link" href="igraph-Structural.html#igraph_ecc" title="16.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>.
+  <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.28. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>, <a class="link" href="igraph-Structural.html#igraph_ecc" title="17.5. igraph_ecc — Edge clustering coefficient of some edges."><code class="function">igraph_ecc()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -4040,7 +4496,7 @@ Time complexity: TODO.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Separators.html"><b>← Chapter 23. Vertex separators</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Graphlets.html"><b>Chapter 25. Graphlets →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Separators.html"><b>← Chapter 24. Vertex separators</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Graphlets.html"><b>Chapter 26. Graphlets →</b></a></td>
 </tr></table>
 {% endraw %}

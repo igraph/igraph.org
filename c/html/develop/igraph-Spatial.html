@@ -1,0 +1,479 @@
+---
+layout: c-manual
+title: igraph Reference Manual
+mainheader: igraph Reference Manual
+lead: For using the igraph C library
+vmenu: true
+doctype: html/
+langversion: develop
+---
+
+{% raw %}
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Bipartite.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Operators.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Spatial"></a>Chapter 14. Spatial graphs</h1></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Spatial.html#spatial-helpers">1. Metrics</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#spatial-generators">2. Spatial graph generators</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#spatial-properties">3. Properties of spatial graphs</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#nongraph-spatial">4. Non-graph related spatial processing</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="spatial-helpers"></a>1. Metrics</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Spatial.html#igraph_metric_t">1.1. <code class="function">igraph_metric_t</code> —  Metric functions for use with spatial computation.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_metric_t"></a>1.1. <code class="function">igraph_metric_t</code> —  Metric functions for use with spatial computation.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.2.2.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef enum {
+    IGRAPH_METRIC_EUCLIDEAN = 0,
+    IGRAPH_METRIC_L2 = IGRAPH_METRIC_EUCLIDEAN,
+    IGRAPH_METRIC_MANHATTAN = 1,
+    IGRAPH_METRIC_L1 = IGRAPH_METRIC_MANHATTAN
+} igraph_metric_t;
+</pre>
+<p>
+</p>
+<p>
+
+
+</p>
+<p><b>Values: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_METRIC_EUCLIDEAN</code>:</span></p></td>
+<td><p>
+  The Euclidean distance, i.e. L2 metric.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_METRIC_MANHATTAN</code>:</span></p></td>
+<td><p>
+  The Manhattan distance, i.e. L1 metric.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="spatial-generators"></a>2. Spatial graph generators</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_delaunay_graph">2.1. <code class="function">igraph_delaunay_graph</code> —  Computes the Delaunay graph of a spatial point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_nearest_neighbor_graph">2.2. <code class="function">igraph_nearest_neighbor_graph</code> —  Computes the nearest neighbor graph for a spatial point set.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_delaunay_graph"></a>2.1. <code class="function">igraph_delaunay_graph</code> —  Computes the Delaunay graph of a spatial point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_delaunay_graph(igraph_t *graph, const igraph_matrix_t *points);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function constructs the graph corresponding to the Delaunay triangulation
+of an n-dimensional spatial point set.
+
+</p>
+<p>
+The current implementation uses Qhull.
+
+</p>
+<p>
+Reference:
+
+</p>
+<p>
+Barber, C. Bradford, David P. Dobkin, and Hannu Huhdanpaa.
+The Quickhull Algorithm for Convex Hulls.
+ACM Transactions on Mathematical Software 22, no. 4 (1996): 469–83.
+<a class="ulink" href="https://doi.org/10.1145/235815.235821" target="_top">https://doi.org/10.1145/235815.235821</a>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  A matrix containing the points that will be used to create the graph.
+    Each row is a point, dimensionality is inferred from the column count.
+    There must not be duplicate points.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: According to Theorem 3.2 in the Qhull paper,
+O(n log n) for d &lt;= 3 and O(n^floor(d/2) / floor(d/2)!) where
+n is the number of points and d is the dimensionality of the point set.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_nearest_neighbor_graph"></a>2.2. <code class="function">igraph_nearest_neighbor_graph</code> —  Computes the nearest neighbor graph for a spatial point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_nearest_neighbor_graph(igraph_t *graph,
+        const igraph_matrix_t *points,
+        igraph_metric_t metric,
+        igraph_int_t k,
+        igraph_real_t cutoff,
+        igraph_bool_t directed);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+This function constructs the <em class="parameter"><code>k</code></em> nearest neighbor graph of a given point
+set. Each point is connected to at most <em class="parameter"><code>k</code></em> spatial neighbors within a
+radius of <em class="parameter"><code>cutoff</code></em>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  A matrix containing the points that will be used to create
+   the graph. Each row is a point, dimensionality is inferred from the
+   column count.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>metric</code></em>:</span></p></td>
+<td><p>
+  The distance metric to use. See <a class="link" href="igraph-Spatial.html#igraph_metric_t" title="1.1. igraph_metric_t — Metric functions for use with spatial computation."><code class="function">igraph_metric_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>k</code></em>:</span></p></td>
+<td><p>
+  At most how many neighbors will be added for each vertex, set to
+   a negative value to ignore.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>cutoff</code></em>:</span></p></td>
+<td><p>
+  Maximum distance at which connections will be made, set to a
+   negative value or <code class="constant">IGRAPH_INFINITY</code> to ignore.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>directed</code></em>:</span></p></td>
+<td><p>
+  Whether to create a directed graph.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n log(n)) where n is the number of points.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="spatial-properties"></a>3. Properties of spatial graphs</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Spatial.html#igraph_spatial_edge_lengths">3.1. <code class="function">igraph_spatial_edge_lengths</code> —  Edge lengths based on spatial vertex coordinates.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_spatial_edge_lengths"></a>3.1. <code class="function">igraph_spatial_edge_lengths</code> —  Edge lengths based on spatial vertex coordinates.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.4.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_spatial_edge_lengths(
+        const igraph_t *graph,
+        igraph_vector_t *lengths,
+        const igraph_matrix_t *points,
+        igraph_metric_t metric);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The length of each edge is computed based on spatial coordinates. The length
+can be employed by several igraph functions, such as <a class="link" href="igraph-Structural.html#igraph_voronoi" title="3.28. igraph_voronoi — Voronoi partitioning of a graph."><code class="function">igraph_voronoi()</code></a>,
+<a class="link" href="igraph-Structural.html#igraph_betweenness" title="11.3. igraph_betweenness — Betweenness centrality of some vertices."><code class="function">igraph_betweenness()</code></a>, <a class="link" href="igraph-Structural.html#igraph_closeness" title="11.1. igraph_closeness — Closeness centrality calculations for some vertices."><code class="function">igraph_closeness()</code></a> and others.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph whose edge lengths are to be computed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>lengths</code></em>:</span></p></td>
+<td><p>
+  An initialized vector. Length will be stored here, in the
+   order of edge IDs. It will be resized as needed.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  A matrix of vertex coordinates. Each row contains the
+   coordinates of the corresponding vertex, in the order of vertex IDs.
+   Arbitrary dimensional point sets are supported.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>metric</code></em>:</span></p></td>
+<td><p>
+  The distance metric to use. See <a class="link" href="igraph-Spatial.html#igraph_metric_t" title="1.1. igraph_metric_t — Metric functions for use with spatial computation."><code class="function">igraph_metric_t</code></a> for
+   valid values.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Spatial.html#igraph_nearest_neighbor_graph" title="2.2. igraph_nearest_neighbor_graph — Computes the nearest neighbor graph for a spatial point set."><code class="function">igraph_nearest_neighbor_graph()</code></a> computes a k nearest neighbor graph
+and <a class="link" href="igraph-Spatial.html#igraph_delaunay_graph" title="2.1. igraph_delaunay_graph — Computes the Delaunay graph of a spatial point set."><code class="function">igraph_delaunay_graph()</code></a> computes a Delaunay graph based on a set of
+spatial points.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E| d) where |E| is the number of edges and d is the
+dimensionality of the point set.
+ 
+</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="nongraph-spatial"></a>4. Non-graph related spatial processing</h2></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Spatial.html#igraph_convex_hull_2d">4.1. <code class="function">igraph_convex_hull_2d</code> —  Determines the convex hull of a given set of points in the 2D plane.</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_convex_hull_2d"></a>4.1. <code class="function">igraph_convex_hull_2d</code> —  Determines the convex hull of a given set of points in the 2D plane.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.5.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_convex_hull_2d(
+        const igraph_matrix_t *data,
+        igraph_vector_int_t *resverts,
+        igraph_matrix_t *rescoords);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+The convex hull is determined by the Graham scan algorithm.
+See the following reference for details:
+
+</p>
+<p>
+Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford
+Stein. Introduction to Algorithms, Second Edition. MIT Press and
+McGraw-Hill, 2001. ISBN 0262032937. Pages 949-955 of section 33.3:
+Finding the convex hull.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>data</code></em>:</span></p></td>
+<td><p>
+  vector containing the coordinates. The length of the
+       vector must be even, since it contains X-Y coordinate pairs.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>resverts</code></em>:</span></p></td>
+<td><p>
+  the vector containing the result, e.g. the vector of
+       vertex indices used as the corners of the convex hull. Supply
+       <code class="constant">NULL</code> here if you are only interested in the coordinates of
+       the convex hull corners.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>rescoords</code></em>:</span></p></td>
+<td><p>
+  the matrix containing the coordinates of the selected
+       corner vertices. Supply <code class="constant">NULL</code> here if you are only interested in
+       the vertex indices.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(n log(n)) where n is the number of vertices.
+ 
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Bipartite.html"><b>← Chapter 13. Bipartite, i.e. two-mode graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Operators.html"><b>Chapter 15. Graph operators →</b></a></td>
+</tr></table>
+{% endraw %}

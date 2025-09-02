@@ -24,7 +24,10 @@ langversion: master
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Coloring.html#igraph_vertex_coloring_greedy">1. <code class="function">igraph_vertex_coloring_greedy</code> —  Computes a vertex coloring using a greedy algorithm.</a></span></dt>
 <dt><span class="section"><a href="igraph-Coloring.html#igraph_coloring_greedy_t">2. <code class="function">igraph_coloring_greedy_t</code> —  Ordering heuristics for greedy graph coloring.</a></span></dt>
-<dt><span class="section"><a href="igraph-Coloring.html#igraph_is_perfect">3. <code class="function">igraph_is_perfect</code> —  Checks if the graph is perfect.</a></span></dt>
+<dt><span class="section"><a href="igraph-Coloring.html#igraph_is_vertex_coloring">3. <code class="function">igraph_is_vertex_coloring</code> —  Checks whether a vertex coloring is valid.</a></span></dt>
+<dt><span class="section"><a href="igraph-Coloring.html#igraph_is_bipartite_coloring">4. <code class="function">igraph_is_bipartite_coloring</code> —  Checks whether a bipartite vertex coloring is valid.</a></span></dt>
+<dt><span class="section"><a href="igraph-Coloring.html#igraph_is_edge_coloring">5. <code class="function">igraph_is_edge_coloring</code> —  Checks whether an edge coloring is valid.</a></span></dt>
+<dt><span class="section"><a href="igraph-Coloring.html#igraph_is_perfect">6. <code class="function">igraph_is_perfect</code> —  Checks if the graph is perfect.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -100,15 +103,33 @@ Colors are represented by non-negative integers 0, 1, 2, ...
 <p>
 
 </p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_is_vertex_coloring() to check if a coloring is valid, i.e. if all
+edges connect vertices of different colors.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.19.2.9.1"></a><p class="title"><b>Example 18.1.  File <code class="code">examples/simple/igraph_coloring.c</code></b></p>
+<a name="id-1.19.2.11.1"></a><p class="title"><b>Example 18.1.  File <code class="code">examples/simple/coloring.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph;
     igraph_vector_int_t colors;
+    igraph_bool_t valid_coloring;
 
     <span class="emphasis"><em>/* Setting a seed makes the result of erdos_renyi_game_gnm deterministic. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
@@ -122,18 +143,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;colors, 0);
     <span class="strong"><strong><a class="link" href="igraph-Coloring.html#igraph_vertex_coloring_greedy" title="1. igraph_vertex_coloring_greedy — Computes a vertex coloring using a greedy algorithm.">igraph_vertex_coloring_greedy</a></strong></span>(&amp;graph, &amp;colors, IGRAPH_COLORING_GREEDY_COLORED_NEIGHBORS);
 
+
     <span class="emphasis"><em>/* Verify that the colouring is valid, i.e. no two adjacent vertices have the same colour. */</em></span>
-    {
-        igraph_integer_t i;
-        <span class="emphasis"><em>/* Store the edge count to avoid the overhead from igraph_ecount in the for loop. */</em></span>
-        igraph_integer_t no_of_edges = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;graph);
-        <span class="strong"><strong>for</strong></span> (i = 0; i &lt; no_of_edges; ++i) {
-            <span class="strong"><strong>if</strong></span> ( <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(colors)[ <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;graph, i) ] == <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(colors)[ <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;graph, i) ]  ) {
-                <span class="strong"><strong>printf</strong></span>("Inconsistent coloring! Vertices %" IGRAPH_PRId " and %" IGRAPH_PRId " are adjacent but have the same color.\n",
-                       <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;graph, i), <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;graph, i));
-                <span class="strong"><strong>abort</strong></span>();
-            }
-        }
+    <span class="strong"><strong><a class="link" href="igraph-Coloring.html#igraph_is_vertex_coloring" title="3. igraph_is_vertex_coloring — Checks whether a vertex coloring is valid.">igraph_is_vertex_coloring</a></strong></span>(&amp;graph, &amp;colors, &amp;valid_coloring);
+
+    <span class="strong"><strong>if</strong></span> (! valid_coloring) {
+        <span class="strong"><strong>printf</strong></span>("Inconsistent coloring!\n");
+        <span class="strong"><strong>abort</strong></span>();
     }
 
     <span class="emphasis"><em>/* Destroy data structure when we are done. */</em></span>
@@ -203,8 +219,273 @@ Ordering heuristics for <a class="link" href="igraph-Coloring.html#igraph_vertex
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="igraph_is_perfect"></a>3. <code class="function">igraph_is_perfect</code> —  Checks if the graph is perfect.</h2></div></div></div>
+<a name="igraph_is_vertex_coloring"></a>3. <code class="function">igraph_is_vertex_coloring</code> —  Checks whether a vertex coloring is valid.</h2></div></div></div>
 <a class="indexterm" name="id-1.19.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_is_vertex_coloring(
+        const igraph_t *graph,
+        const igraph_vector_int_t *types,
+        igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function checks whether the given vertex type/color assignment is a valid
+vertex coloring, i.e., no two adjacent vertices have the same color.
+Self-loops are ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  The vertex types/colors as an integer vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean, the result is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E|), linear in the number of edges.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_is_bipartite_coloring"></a>4. <code class="function">igraph_is_bipartite_coloring</code> —  Checks whether a bipartite vertex coloring is valid.</h2></div></div></div>
+<a class="indexterm" name="id-1.19.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_is_bipartite_coloring(
+        const igraph_t *graph,
+        const igraph_vector_bool_t *types,
+        igraph_bool_t *res,
+        igraph_neimode_t *mode);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function checks whether the given vertex type assignment is a valid
+bipartite coloring, i.e., no two adjacent vertices have the same type.
+Additionally, for directed graphs, it determines the mode of edge directions.
+Self-loops are ignored.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  The vertex types as a boolean vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean, the result is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mode</code></em>:</span></p></td>
+<td><p>
+  Pointer to store the edge direction mode. Can be <code class="constant">NULL</code> if not needed.
+  If all edges go from false to true vertices, <code class="constant">IGRAPH_OUT</code> is returned.
+  If all edges go from true to false vertices, <code class="constant">IGRAPH_IN</code> is returned.
+  If edges go in both directions or graph is undirected, <code class="constant">IGRAPH_ALL</code> is returned.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|E|), linear in the number of edges.
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  igraph_is_bipartite() to determine whether a graph is bipartite,
+i.e. 2-colorable, and find such a coloring.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_is_edge_coloring"></a>5. <code class="function">igraph_is_edge_coloring</code> —  Checks whether an edge coloring is valid.</h2></div></div></div>
+<a class="indexterm" name="id-1.19.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_is_edge_coloring(
+        const igraph_t *graph,
+        const igraph_vector_int_t *types,
+        igraph_bool_t *res);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function checks whether the given edge color assignment is a valid
+edge coloring, i.e., no two adjacent edges have the same color.
+
+Note that this function does not consider self-edges (loops) as being
+adjacent to themselves, so graphs with self-loops may still be considered
+to have a valid edge coloring.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The input graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>types</code></em>:</span></p></td>
+<td><p>
+  The edge colors as an integer vector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to a boolean, the result is stored here.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V|*d*log(d)), where d is the maximum degree.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="igraph_is_perfect"></a>6. <code class="function">igraph_is_perfect</code> —  Checks if the graph is perfect.</h2></div></div></div>
+<a class="indexterm" name="id-1.19.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_is_perfect(const igraph_t *graph, igraph_bool_t *perfect);

@@ -10,17 +10,17 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Cycles.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Operators.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Cliques.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Structural.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Visitors"></a>Chapter 15. Graph visitors</h1></div></div></div>
+<a name="igraph-Visitors"></a>Chapter 16. Graph visitors</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Visitors.html#breadth-first-search">1. Breadth-first search</a></span></dt>
 <dt><span class="section"><a href="igraph-Visitors.html#depth-first-search">2. Depth-first search</a></span></dt>
@@ -37,11 +37,11 @@ langversion: develop
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bfs"></a>1.1. <code class="function">igraph_bfs</code> —  Breadth-first search.</h3></div></div></div>
-<a class="indexterm" name="id-1.16.2.2.2"></a><p>
+<a class="indexterm" name="id-1.17.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bfs(const igraph_t *graph,
-               igraph_integer_t root, const igraph_vector_int_t *roots,
+               igraph_int_t root, const igraph_vector_int_t *roots,
                igraph_neimode_t mode, igraph_bool_t unreachable,
                const igraph_vector_int_t *restricted,
                igraph_vector_int_t *order, igraph_vector_int_t *rank,
@@ -226,7 +226,7 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.16.2.2.10.1"></a><p class="title"><b>Example 15.1.  File <code class="code">examples/simple/igraph_bfs.c</code></b></p>
+<a name="id-1.17.2.2.10.1"></a><p class="title"><b>Example 16.1.  File <code class="code">examples/simple/igraph_bfs.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -235,10 +235,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph, ring;
     igraph_vector_int_t order, rank, father, pred, succ, dist;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Create a disjoint union of two rings */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="4.7. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union" title="1.1. igraph_disjoint_union — Creates the union of two disjoint graphs.">igraph_disjoint_union</a></strong></span>(&amp;graph, &amp;ring, &amp;ring);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
 
     <span class="emphasis"><em>/* Initialize the vectors where the result will be stored. Any of these</em></span>
 <span class="emphasis"><em>     * can be omitted and replaced with a null pointer when calling</em></span>
@@ -272,7 +275,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;succ);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;dist);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -284,16 +287,16 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.16.2.2.10.2"></a><p class="title"><b>Example 15.2.  File <code class="code">examples/simple/igraph_bfs_callback.c</code></b></p>
+<a name="id-1.17.2.2.10.2"></a><p class="title"><b>Example 16.2.  File <code class="code">examples/simple/igraph_bfs_callback.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 <a class="link" href="igraph-Error.html#igraph_error_t" title="3.1. igraph_error_t — Return type for functions returning an error code.">igraph_error_t</a> <span class="strong"><strong>bfs_callback</strong></span>(<span class="strong"><strong>const</strong></span> igraph_t *graph,
-                           igraph_integer_t vid,
-                           igraph_integer_t pred,
-                           igraph_integer_t succ,
-                           igraph_integer_t rank,
-                           igraph_integer_t dist,
+                           igraph_int_t vid,
+                           igraph_int_t pred,
+                           igraph_int_t succ,
+                           igraph_int_t rank,
+                           igraph_int_t dist,
                            void *extra) {
     <span class="strong"><strong>IGRAPH_UNUSED</strong></span>(graph);
     <span class="strong"><strong>IGRAPH_UNUSED</strong></span>(pred);
@@ -307,10 +310,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph, ring;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Create a disjoint union of two rings */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="4.7. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;ring, 10, <span class="emphasis"><em>/*directed=*/</em></span> 0, <span class="emphasis"><em>/*mutual=*/</em></span> 0, <span class="emphasis"><em>/*circular=*/</em></span> 1);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union" title="1.1. igraph_disjoint_union — Creates the union of two disjoint graphs.">igraph_disjoint_union</a></strong></span>(&amp;graph, &amp;ring, &amp;ring);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;ring);
 
     <span class="emphasis"><em>/* Now call the BFS function */</em></span>
     <span class="strong"><strong>printf</strong></span>("(");
@@ -322,7 +328,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>(" )\n");
 
     <span class="emphasis"><em>/* Cleam up after ourselves */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -338,11 +344,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bfs_simple"></a>1.2. <code class="function">igraph_bfs_simple</code> — Breadth-first search, single-source version</h3></div></div></div>
-<a class="indexterm" name="id-1.16.2.3.2"></a><p>
+<a class="indexterm" name="id-1.17.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_bfs_simple(
-    const igraph_t *graph, igraph_integer_t root, igraph_neimode_t mode,
+    const igraph_t *graph, igraph_int_t root, igraph_neimode_t mode,
     igraph_vector_int_t *order, igraph_vector_int_t *layers,
     igraph_vector_int_t *parents
 );
@@ -445,16 +451,18 @@ edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.16.2.3.8.1"></a><p class="title"><b>Example 15.3.  File <code class="code">examples/simple/igraph_bfs_simple.c</code></b></p>
+<a name="id-1.17.2.3.8.1"></a><p class="title"><b>Example 16.3.  File <code class="code">examples/simple/igraph_bfs_simple.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
     igraph_t g;
     igraph_vector_int_t vids, layers, parents;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 0);
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="4.7. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 0);
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;vids, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;layers, 0);
@@ -466,7 +474,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;layers);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;parents);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;vids);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;layers);
@@ -486,13 +494,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_bfshandler_t"></a>1.3. <code class="function">igraph_bfshandler_t</code> —  Callback type for BFS function.</h3></div></div></div>
-<a class="indexterm" name="id-1.16.2.4.2"></a><pre class="programlisting">
+<a class="indexterm" name="id-1.17.2.4.2"></a><pre class="programlisting">
 typedef igraph_error_t igraph_bfshandler_t(const igraph_t *graph,
-        igraph_integer_t vid,
-        igraph_integer_t pred,
-        igraph_integer_t succ,
-        igraph_integer_t rank,
-        igraph_integer_t dist,
+        igraph_int_t vid,
+        igraph_int_t pred,
+        igraph_int_t succ,
+        igraph_int_t rank,
+        igraph_int_t dist,
         void *extra);
 </pre>
 <p>
@@ -615,10 +623,10 @@ the following arguments:
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_dfs"></a>2.1. <code class="function">igraph_dfs</code> —  Depth-first search.</h3></div></div></div>
-<a class="indexterm" name="id-1.16.3.2.2"></a><p>
+<a class="indexterm" name="id-1.17.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_dfs(const igraph_t *graph, igraph_integer_t root,
+igraph_error_t igraph_dfs(const igraph_t *graph, igraph_int_t root,
                igraph_neimode_t mode, igraph_bool_t unreachable,
                igraph_vector_int_t *order,
                igraph_vector_int_t *order_out, igraph_vector_int_t *parents,
@@ -769,12 +777,12 @@ edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_dfshandler_t"></a>2.2. <code class="function">igraph_dfshandler_t</code> —  Callback type for the DFS function.</h3></div></div></div>
-<a class="indexterm" name="id-1.16.3.3.2"></a><p>
+<a class="indexterm" name="id-1.17.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 typedef igraph_error_t igraph_dfshandler_t(const igraph_t *graph,
-        igraph_integer_t vid,
-        igraph_integer_t dist,
+        igraph_int_t vid,
+        igraph_int_t dist,
         void *extra);
 </pre></div>
 <p>
@@ -874,16 +882,16 @@ completed. These callbacks must be of type <code class="constant">igraph_dfshand
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_random_walk"></a>3.1. <code class="function">igraph_random_walk</code> —  Performs a random walk on a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.16.4.2.2"></a><p>
+<a class="indexterm" name="id-1.17.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_random_walk(const igraph_t *graph,
                        const igraph_vector_t *weights,
                        igraph_vector_int_t *vertices,
                        igraph_vector_int_t *edges,
-                       igraph_integer_t start,
+                       igraph_int_t start,
                        igraph_neimode_t mode,
-                       igraph_integer_t steps,
+                       igraph_int_t steps,
                        igraph_random_walk_stuck_t stuck);
 </pre></div>
 <p>
@@ -1003,7 +1011,7 @@ Time complexity:
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Cycles.html"><b>← Chapter 14. Graph cycles</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Cliques.html"><b>Chapter 16. Cliques and independent vertex sets →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Operators.html"><b>← Chapter 15. Graph operators</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Structural.html"><b>Chapter 17. Structural properties of graphs →</b></a></td>
 </tr></table>
 {% endraw %}

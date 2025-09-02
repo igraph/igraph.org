@@ -10,25 +10,24 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Advanced.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Linalg.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Glossary.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Advanced.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Nongraph"></a>Chapter 32. Non-graph related functions </h1></div></div></div>
+<a name="igraph-Nongraph"></a>Chapter 33. Non-graph related functions </h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Nongraph.html#igraph-version-number">1. igraph version number</a></span></dt>
 <dt><span class="section"><a href="igraph-Nongraph.html#running-mean-of-a-time-series">2. Running mean of a time series</a></span></dt>
 <dt><span class="section"><a href="igraph-Nongraph.html#random-sampling-from-very-long-sequences">3. Random sampling from very long sequences</a></span></dt>
 <dt><span class="section"><a href="igraph-Nongraph.html#random-sampling-of-spatial-points">4. Random sampling of spatial points</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#convex-hull-of-a-set-of-points-on-a-plane">5. Convex hull of a set of points on a plane</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#fitting-powerlaw-distributions-to-empirical-data">6. Fitting power-law distributions to empirical data</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#compare-floats-with-tolerance">7. Comparing floats with a tolerance</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#fitting-powerlaw-distributions-to-empirical-data">5. Fitting power-law distributions to empirical data</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#compare-floats-with-tolerance">6. Comparing floats with a tolerance</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -37,13 +36,13 @@ langversion: develop
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_version"></a>1.1. <code class="function">igraph_version</code> —  The version of the igraph C library.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.2.2.2"></a><p>
+<a class="indexterm" name="id-1.34.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_version(const char **version_string,
                     int *major,
                     int *minor,
-                    int *subminor);
+                    int *patch);
 </pre></div>
 <p>
 </p>
@@ -63,30 +62,32 @@ void igraph_version(const char **version_string,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>version_string</code></em>:</span></p></td>
 <td><p>
-  Pointer to a string pointer. If not null, it
-   is set to the igraph version string, e.g. "0.9.11" or "0.10.0". This
-   string must not be modified or deallocated.
+  Pointer to a string pointer. If not <code class="constant">NULL</code>, it
+   is set to the igraph version string, e.g. "0.10.13", "1.2.0", or
+   "0.10.13-14-g997f59ad7". It consists of three dot-separated numerical
+   parts and potentially of a dash-separated suffix, used in prerelease
+   versions. This string must not be modified or deallocated.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>major</code></em>:</span></p></td>
 <td><p>
-  If not a null pointer, then it is set to the major
-   igraph version. E.g. for version "0.9.11" this is 0.
+  If not a <code class="constant">NULL</code> pointer, then it is set to the major
+   igraph version. E.g. for version "0.10.13" this is 0.
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>minor</code></em>:</span></p></td>
 <td><p>
-  If not a null pointer, then it is set to the minor
-   igraph version. E.g. for version "0.9.11" this is 11.
+  If not a <code class="constant">NULL</code> pointer, then it is set to the minor
+   igraph version. E.g. for version "0.10.13" this is 10.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>subminor</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>patch</code></em>:</span></p></td>
 <td><p>
-  If not a null pointer, then it is set to the
-   subminor igraph version. E.g. for version "0.9.11" this is 11.</p></td>
+  If not a <code class="constant">NULL</code> pointer, then it is set to the
+   subminor igraph version. E.g. for version "0.10.13" this is 13.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -96,16 +97,18 @@ void igraph_version(const char **version_string,
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.33.2.2.6.1"></a><p class="title"><b>Example 32.1.  File <code class="code">examples/simple/igraph_version.c</code></b></p>
+<a name="id-1.34.2.2.6.1"></a><p class="title"><b>Example 33.1.  File <code class="code">examples/simple/igraph_version.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;string.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
     char tmp[100];
     <span class="strong"><strong>const</strong></span> char *string;
     int major, minor, subminor;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_version" title="1.1. igraph_version — The version of the igraph C library.">igraph_version</a></strong></span>(&amp;string, &amp;major, &amp;minor, &amp;subminor);
     <span class="strong"><strong>snprintf</strong></span>(tmp, <span class="strong"><strong>sizeof</strong></span>(tmp), "%i.%i.%i", major, minor, subminor);
@@ -133,11 +136,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_running_mean"></a>2.1. <code class="function">igraph_running_mean</code> —  Calculates the running mean of a vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.3.2.2"></a><p>
+<a class="indexterm" name="id-1.34.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_running_mean(const igraph_vector_t *data, igraph_vector_t *res,
-                        igraph_integer_t binwidth);
+                        igraph_int_t binwidth);
 </pre></div>
 <p>
 </p>
@@ -213,11 +216,11 @@ the data vector.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_random_sample"></a>3.1. <code class="function">igraph_random_sample</code> —  Generates an increasing random sequence of integers.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.4.2.2"></a><p>
+<a class="indexterm" name="id-1.34.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_random_sample(igraph_vector_int_t *res, igraph_integer_t l, igraph_integer_t h,
-                         igraph_integer_t length);
+igraph_error_t igraph_random_sample(igraph_vector_int_t *res, igraph_int_t l, igraph_int_t h,
+                         igraph_int_t length);
 </pre></div>
 <p>
 </p>
@@ -309,19 +312,19 @@ running time is O(length).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.33.4.2.10.1"></a><p class="title"><b>Example 32.2.  File <code class="code">examples/simple/igraph_random_sample.c</code></b></p>
+<a name="id-1.34.4.2.10.1"></a><p class="title"><b>Example 33.2.  File <code class="code">examples/simple/igraph_random_sample.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t V;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;V, 0);
-
     <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_random_sample" title="3.1. igraph_random_sample — Generates an increasing random sequence of integers.">igraph_random_sample</a></strong></span>(&amp;V, 0, 100, 5);
-
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;V);
-
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;V);
 }
 </pre>
@@ -345,11 +348,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_rng_sample_sphere_surface"></a>4.1. <code class="function">igraph_rng_sample_sphere_surface</code> —  Sample points uniformly from the surface of a sphere.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.5.2.2"></a><p>
+<a class="indexterm" name="id-1.34.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rng_sample_sphere_surface(
-    igraph_rng_t* rng, igraph_integer_t dim, igraph_integer_t n, igraph_real_t radius,
+    igraph_rng_t* rng, igraph_int_t dim, igraph_int_t n, igraph_real_t radius,
     igraph_bool_t positive, igraph_matrix_t *res
 );
 </pre></div>
@@ -452,11 +455,11 @@ generating a standard normal random number.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_rng_sample_sphere_volume"></a>4.2. <code class="function">igraph_rng_sample_sphere_volume</code> —  Sample points uniformly from the volume of a sphere.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.5.3.2"></a><p>
+<a class="indexterm" name="id-1.34.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rng_sample_sphere_volume(
-    igraph_rng_t* rng, igraph_integer_t dim, igraph_integer_t n, igraph_real_t radius,
+    igraph_rng_t* rng, igraph_int_t dim, igraph_int_t n, igraph_real_t radius,
     igraph_bool_t positive, igraph_matrix_t *res
 );
 </pre></div>
@@ -559,11 +562,11 @@ generating a standard normal random number.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_rng_sample_dirichlet"></a>4.3. <code class="function">igraph_rng_sample_dirichlet</code> —  Sample points from a Dirichlet distribution.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.5.4.2"></a><p>
+<a class="indexterm" name="id-1.34.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_rng_sample_dirichlet(
-    igraph_rng_t* rng, igraph_integer_t n, const igraph_vector_t *alpha,
+    igraph_rng_t* rng, igraph_int_t n, const igraph_vector_t *alpha,
     igraph_matrix_t *res
 );
 </pre></div>
@@ -655,108 +658,16 @@ latent vectors.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="convex-hull-of-a-set-of-points-on-a-plane"></a>5. Convex hull of a set of points on a plane</h2></div></div></div>
-<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Nongraph.html#igraph_convex_hull">5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane.</a></span></dt></dl></div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_convex_hull"></a>5.1. <code class="function">igraph_convex_hull</code> —  Determines the convex hull of a given set of points in the 2D plane.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.6.2.2"></a><p>
-</p>
-<div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_convex_hull(
-    const igraph_matrix_t *data, igraph_vector_int_t *resverts,
-    igraph_matrix_t *rescoords
-);
-</pre></div>
-<p>
-</p>
-<p>
-
-
-
-
-</p>
-<p>
-The convex hull is determined by the Graham scan algorithm.
-See the following reference for details:
-
-</p>
-<p>
-Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford
-Stein. Introduction to Algorithms, Second Edition. MIT Press and
-McGraw-Hill, 2001. ISBN 0262032937. Pages 949-955 of section 33.3:
-Finding the convex hull.
-
-</p>
-<p><b>Arguments: </b>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em>:</span></p></td>
-<td><p>
-  vector containing the coordinates. The length of the
-       vector must be even, since it contains X-Y coordinate pairs.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>resverts</code></em>:</span></p></td>
-<td><p>
-  the vector containing the result, e.g. the vector of
-       vertex indices used as the corners of the convex hull. Supply
-       <code class="constant">NULL</code> here if you are only interested in the coordinates of
-       the convex hull corners.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>rescoords</code></em>:</span></p></td>
-<td><p>
-  the matrix containing the coordinates of the selected
-       corner vertices. Supply <code class="constant">NULL</code> here if you are only interested in
-       the vertex indices.
-</p></td>
-</tr>
-</tbody>
-</table></div>
-<p>
-</p>
-<p><b>Returns: </b></p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
-<td><p>
-  Error code:
-        <code class="constant">IGRAPH_ENOMEM</code>: not enough memory
-  </p></td>
-</tr></tbody>
-</table></div>
-<p>
-
-Time complexity: O(n log(n)) where n is the number of vertices.
- 
-</p>
-</div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="fitting-powerlaw-distributions-to-empirical-data"></a>6. Fitting power-law distributions to empirical data</h2></div></div></div>
+<a name="fitting-powerlaw-distributions-to-empirical-data"></a>5. Fitting power-law distributions to empirical data</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_plfit_result_t">6.1. <code class="function">igraph_plfit_result_t</code> —  Result of fitting a power-law distribution to a vector.</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_power_law_fit">6.2. <code class="function">igraph_power_law_fit</code> —  Fits a power-law distribution to a vector of numbers.</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_plfit_result_calculate_p_value">6.3. <code class="function">igraph_plfit_result_calculate_p_value</code> —  Calculates the p-value of a fitted power-law model.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_plfit_result_t">5.1. <code class="function">igraph_plfit_result_t</code> —  Result of fitting a power-law distribution to a vector.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_power_law_fit">5.2. <code class="function">igraph_power_law_fit</code> —  Fits a power-law distribution to a vector of numbers.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_plfit_result_calculate_p_value">5.3. <code class="function">igraph_plfit_result_calculate_p_value</code> —  Calculates the p-value of a fitted power-law model.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_plfit_result_t"></a>6.1. <code class="function">igraph_plfit_result_t</code> —  Result of fitting a power-law distribution to a vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.7.2.2"></a><p>
+<a name="igraph_plfit_result_t"></a>5.1. <code class="function">igraph_plfit_result_t</code> —  Result of fitting a power-law distribution to a vector.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.6.2.2"></a><p>
 </p>
 <pre class="programlisting">
 typedef struct igraph_plfit_result_t {
@@ -772,7 +683,7 @@ typedef struct igraph_plfit_result_t {
 </p>
 <p>
 </p>
-<p>This data structure contains the result of <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="6.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit()</code></a>,
+<p>This data structure contains the result of <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="5.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit()</code></a>,
 which tries to fit a power-law distribution to a vector of numbers. The
 structure contains the following members:
 
@@ -844,8 +755,8 @@ structure contains the following members:
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_power_law_fit"></a>6.2. <code class="function">igraph_power_law_fit</code> —  Fits a power-law distribution to a vector of numbers.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.7.3.2"></a><p>
+<a name="igraph_power_law_fit"></a>5.2. <code class="function">igraph_power_law_fit</code> —  Fits a power-law distribution to a vector of numbers.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_power_law_fit(
@@ -904,17 +815,17 @@ distributions in empirical data. SIAM Review 51(4):661-703, 2009.
             not the probability density function or the cumulative
             distribution function. For example, if you wish to fit
             a power-law to the degrees of a graph, you can use the output of
-            <a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree</code></a> directly as an input argument to
-            <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="6.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit</code></a>
+            <a class="link" href="igraph-Basic.html#igraph_degree" title="5.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree</code></a> directly as an input argument to
+            <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="5.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit</code></a>
 </p></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
 <td><p>
-  the result of the fitting algorithm. See <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_t" title="6.1. igraph_plfit_result_t — Result of fitting a power-law distribution to a vector."><code class="function">igraph_plfit_result_t</code></a>
+  the result of the fitting algorithm. See <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_t" title="5.1. igraph_plfit_result_t — Result of fitting a power-law distribution to a vector."><code class="function">igraph_plfit_result_t</code></a>
             for more details. Note that the p-value of the fit is <span class="emphasis"><em>not</em></span>
             calculated by default as it is time-consuming; you need to call
-            <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_calculate_p_value" title="6.3. igraph_plfit_result_calculate_p_value — Calculates the p-value of a fitted power-law model."><code class="function">igraph_plfit_result_calculate_p_value()</code></a> to calculate the
+            <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_calculate_p_value" title="5.3. igraph_plfit_result_calculate_p_value — Calculates the p-value of a fitted power-law model."><code class="function">igraph_plfit_result_calculate_p_value()</code></a> to calculate the
             p-value itself
 </p></td>
 </tr>
@@ -973,21 +884,24 @@ samples in the input vector (although it should be faster in practice).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.33.7.3.10.3"></a><p class="title"><b>Example 32.3.  File <code class="code">examples/simple/igraph_power_law_fit.c</code></b></p>
+<a name="id-1.34.6.3.10.3"></a><p class="title"><b>Example 33.3.  File <code class="code">examples/simple/igraph_power_law_fit.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> degree;
-    <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_t" title="6.1. igraph_plfit_result_t — Result of fitting a power-law distribution to a vector.">igraph_plfit_result_t</a> model;
+    <a class="link" href="igraph-Nongraph.html#igraph_plfit_result_t" title="5.1. igraph_plfit_result_t — Result of fitting a power-law distribution to a vector.">igraph_plfit_result_t</a> model;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="emphasis"><em>/* Seed random number generator to ensure reproducibility. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_seed" title="3.3. igraph_rng_seed — Seeds a random number generator.">igraph_rng_seed</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Random.html#igraph_rng_default" title="2.1. igraph_rng_default — Query the default random number generator.">igraph_rng_default</a></strong></span>(), 42);
 
     <span class="emphasis"><em>/* Generate a BA network; degree distribution is supposed to be a power-law</em></span>
 <span class="emphasis"><em>     * if the graph is large enough */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_barabasi_game" title="2.2. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(
+    <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_barabasi_game" title="2.1. igraph_barabasi_game — Generates a graph based on the Barabási-Albert model.">igraph_barabasi_game</a></strong></span>(
         &amp;g, 10000, <span class="emphasis"><em>/*power=*/</em></span> 1, <span class="emphasis"><em>/*m=*/</em></span> 2,
         <span class="emphasis"><em>/* outseq= */</em></span> 0, <span class="emphasis"><em>/* outpref= */</em></span> 0, <span class="emphasis"><em>/*A=*/</em></span> 1,
         IGRAPH_UNDIRECTED, IGRAPH_BARABASI_BAG,
@@ -997,10 +911,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="emphasis"><em>/* Get the vertex degrees. We use igraph_strength() because it stores its</em></span>
 <span class="emphasis"><em>     * result in an igraph_vector_t */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;degree, 0);
-    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="10.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;g, &amp;degree, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_NO_LOOPS, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Structural.html#igraph_strength" title="11.11. igraph_strength — Strength of the vertices, also called weighted vertex degree.">igraph_strength</a></strong></span>(&amp;g, &amp;degree, <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version).">igraph_vss_all</a></strong></span>(), IGRAPH_ALL, IGRAPH_NO_LOOPS, 0);
 
     <span class="emphasis"><em>/* Fit a power-law to the degrees */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="6.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers.">igraph_power_law_fit</a></strong></span>(
+    <span class="strong"><strong><a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="5.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers.">igraph_power_law_fit</a></strong></span>(
         &amp;degree, &amp;model, <span class="emphasis"><em>/* xmin = */</em></span> -1,
         <span class="emphasis"><em>/* force_continuous = */</em></span> 0
     );
@@ -1013,7 +927,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>printf</strong></span>("log-likelihood = %.5f\n", model.L);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;degree);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1028,8 +942,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_plfit_result_calculate_p_value"></a>6.3. <code class="function">igraph_plfit_result_calculate_p_value</code> —  Calculates the p-value of a fitted power-law model.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.7.4.2"></a><p>
+<a name="igraph_plfit_result_calculate_p_value"></a>5.3. <code class="function">igraph_plfit_result_calculate_p_value</code> —  Calculates the p-value of a fitted power-law model.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.6.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_plfit_result_calculate_p_value(
@@ -1085,7 +999,7 @@ environment variable to 1.
 <tr>
 <td><p><span class="term"><em class="parameter"><code>model</code></em>:</span></p></td>
 <td><p>
-  The fitted power-law model from the <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="6.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit()</code></a>
+  The fitted power-law model from the <a class="link" href="igraph-Nongraph.html#igraph_power_law_fit" title="5.2. igraph_power_law_fit — Fits a power-law distribution to a vector of numbers."><code class="function">igraph_power_law_fit()</code></a>
        function
 </p></td>
 </tr>
@@ -1126,16 +1040,16 @@ environment variable to 1.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="compare-floats-with-tolerance"></a>7. Comparing floats with a tolerance</h2></div></div></div>
+<a name="compare-floats-with-tolerance"></a>6. Comparing floats with a tolerance</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_cmp_epsilon">7.1. <code class="function">igraph_cmp_epsilon</code> —  Compare two double-precision floats with a tolerance.</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_almost_equals">7.2. <code class="function">igraph_almost_equals</code> —  Compare two double-precision floats with a tolerance.</a></span></dt>
-<dt><span class="section"><a href="igraph-Nongraph.html#igraph_complex_almost_equals">7.3. <code class="function">igraph_complex_almost_equals</code> —  Compare two complex numbers with a tolerance.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_cmp_epsilon">6.1. <code class="function">igraph_cmp_epsilon</code> —  Compare two double-precision floats with a tolerance.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_almost_equals">6.2. <code class="function">igraph_almost_equals</code> —  Compare two double-precision floats with a tolerance.</a></span></dt>
+<dt><span class="section"><a href="igraph-Nongraph.html#igraph_complex_almost_equals">6.3. <code class="function">igraph_complex_almost_equals</code> —  Compare two complex numbers with a tolerance.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_cmp_epsilon"></a>7.1. <code class="function">igraph_cmp_epsilon</code> —  Compare two double-precision floats with a tolerance.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.8.2.2"></a><p>
+<a name="igraph_cmp_epsilon"></a>6.1. <code class="function">igraph_cmp_epsilon</code> —  Compare two double-precision floats with a tolerance.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 int igraph_cmp_epsilon(double a, double b, double eps);
@@ -1219,8 +1133,8 @@ negative infinity with any tolerance.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_almost_equals"></a>7.2. <code class="function">igraph_almost_equals</code> —  Compare two double-precision floats with a tolerance.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.8.3.2"></a><p>
+<a name="igraph_almost_equals"></a>6.2. <code class="function">igraph_almost_equals</code> —  Compare two double-precision floats with a tolerance.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_almost_equals(double a, double b, double eps);
@@ -1288,8 +1202,8 @@ to each other with a given level of tolerance on the relative error.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_complex_almost_equals"></a>7.3. <code class="function">igraph_complex_almost_equals</code> —  Compare two complex numbers with a tolerance.</h3></div></div></div>
-<a class="indexterm" name="id-1.33.8.4.2"></a><p>
+<a name="igraph_complex_almost_equals"></a>6.3. <code class="function">igraph_complex_almost_equals</code> —  Compare two complex numbers with a tolerance.</h3></div></div></div>
+<a class="indexterm" name="id-1.34.7.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_complex_almost_equals(igraph_complex_t a,
@@ -1360,7 +1274,7 @@ to each other with a given level of tolerance on the relative error.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Advanced.html"><b>← Chapter 31. Advanced igraph programming</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Glossary.html"><b>Chapter 33. Glossary →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Linalg.html"><b>← Chapter 32. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Advanced.html"><b>Chapter 34. Advanced igraph programming →</b></a></td>
 </tr></table>
 {% endraw %}

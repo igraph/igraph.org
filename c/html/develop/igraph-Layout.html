@@ -10,17 +10,17 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Motifs.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Embedding.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Foreign.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Processes.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Layout"></a>Chapter 20. Generating layouts for graph drawing</h1></div></div></div>
+<a name="igraph-Layout"></a>Chapter 29. Generating layouts for graph drawing</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Layout.html#two-d-layout-generators">1. 2D layout generators</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#layouts-for-trees-and-acyclic-graphs">2. Layouts for trees and acyclic graphs</a></span></dt>
@@ -31,7 +31,7 @@ langversion: develop
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="two-d-layout-generators"></a>1. 2D layout generators</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random">1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniform randomly on a plane.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random">1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniformly randomly within a square.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_circle">1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle in arbitrary order.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_star">1.3. <code class="function">igraph_layout_star</code> —  Generates a star-like layout.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid">1.4. <code class="function">igraph_layout_grid</code> —  Places the vertices on a regular grid on the plane.</a></span></dt>
@@ -53,8 +53,8 @@ and return an <span class="type">igraph_matrix_t</span>, in which each row gives
 coordinates of a vertex.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_random"></a>1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniform randomly on a plane.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.4.2"></a><p>
+<a name="igraph_layout_random"></a>1.1. <code class="function">igraph_layout_random</code> —  Places the vertices uniformly randomly within a square.</h3></div></div></div>
+<a class="indexterm" name="id-1.30.2.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_random(const igraph_t *graph, igraph_matrix_t *res);
@@ -65,6 +65,9 @@ igraph_error_t igraph_layout_random(const igraph_t *graph, igraph_matrix_t *res)
 
 
 
+
+Vertex coordinates range from -1 to 1, and are placed in two columns
+of a matrix, with a row for each vertex.
 
 </p>
 <p><b>Arguments: </b>
@@ -101,22 +104,20 @@ igraph_error_t igraph_layout_random(const igraph_t *graph, igraph_matrix_t *res)
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. The current implementation always returns with
-success.
+  Error code.
   </p></td>
 </tr></tbody>
 </table></div>
 <p>
 
-Time complexity: O(|V|), the
-number of vertices.
+Time complexity: O(|V|), the number of vertices.
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_circle"></a>1.2. <code class="function">igraph_layout_circle</code> —  Places the vertices uniformly on a circle in arbitrary order.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.5.2"></a><p>
+<a class="indexterm" name="id-1.30.2.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_circle(const igraph_t *graph, igraph_matrix_t *res,
@@ -186,11 +187,11 @@ Time complexity: O(|V|), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_star"></a>1.3. <code class="function">igraph_layout_star</code> —  Generates a star-like layout.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.6.2"></a><p>
+<a class="indexterm" name="id-1.30.2.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_star(const igraph_t *graph, igraph_matrix_t *res,
-                       igraph_integer_t center, const igraph_vector_int_t *order);
+                       igraph_int_t center, const igraph_vector_int_t *order);
 </pre></div>
 <p>
 </p>
@@ -279,10 +280,10 @@ Time complexity: O(|V|), linear in the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_grid"></a>1.4. <code class="function">igraph_layout_grid</code> —  Places the vertices on a regular grid on the plane.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.7.2"></a><p>
+<a class="indexterm" name="id-1.30.2.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_layout_grid(const igraph_t *graph, igraph_matrix_t *res, igraph_integer_t width);
+igraph_error_t igraph_layout_grid(const igraph_t *graph, igraph_matrix_t *res, igraph_int_t width);
 </pre></div>
 <p>
 </p>
@@ -348,11 +349,11 @@ Time complexity: O(|V|), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_graphopt"></a>1.5. <code class="function">igraph_layout_graphopt</code> —  Optimizes vertex layout via the graphopt algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.8.2"></a><p>
+<a class="indexterm" name="id-1.30.2.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_graphopt(const igraph_t *graph, igraph_matrix_t *res,
-                           igraph_integer_t niter,
+                           igraph_int_t niter,
                            igraph_real_t node_charge, igraph_real_t node_mass,
                            igraph_real_t spring_length,
                            igraph_real_t spring_constant,
@@ -493,13 +494,13 @@ of edges. If <em class="parameter"><code>node_charge</code></em> is zero then it
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_bipartite"></a>1.6. <code class="function">igraph_layout_bipartite</code> — Simple layout for bipartite graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.9.2"></a><p>
+<a class="indexterm" name="id-1.30.2.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_bipartite(const igraph_t *graph,
                             const igraph_vector_bool_t *types,
                             igraph_matrix_t *res, igraph_real_t hgap,
-                            igraph_real_t vgap, igraph_integer_t maxiter);
+                            igraph_real_t vgap, igraph_int_t maxiter);
 </pre></div>
 <p>
 </p>
@@ -630,32 +631,32 @@ The layout is calculated by an <a class="link" href="igraph-Layout.html#igraph_l
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_layout_drl_options_t"></a>1.7.1. <code class="function">igraph_layout_drl_options_t</code> — Parameters for the DrL layout generator</h4></div></div></div>
-<a class="indexterm" name="id-1.21.2.10.5.2"></a><p>
+<a class="indexterm" name="id-1.30.2.10.5.2"></a><p>
 </p>
 <pre class="programlisting">
 typedef struct igraph_layout_drl_options_t {
     igraph_real_t    edge_cut;
-    igraph_integer_t init_iterations;
+    igraph_int_t init_iterations;
     igraph_real_t    init_temperature;
     igraph_real_t    init_attraction;
     igraph_real_t    init_damping_mult;
-    igraph_integer_t liquid_iterations;
+    igraph_int_t liquid_iterations;
     igraph_real_t    liquid_temperature;
     igraph_real_t    liquid_attraction;
     igraph_real_t    liquid_damping_mult;
-    igraph_integer_t expansion_iterations;
+    igraph_int_t expansion_iterations;
     igraph_real_t    expansion_temperature;
     igraph_real_t    expansion_attraction;
     igraph_real_t    expansion_damping_mult;
-    igraph_integer_t cooldown_iterations;
+    igraph_int_t cooldown_iterations;
     igraph_real_t    cooldown_temperature;
     igraph_real_t    cooldown_attraction;
     igraph_real_t    cooldown_damping_mult;
-    igraph_integer_t crunch_iterations;
+    igraph_int_t crunch_iterations;
     igraph_real_t    crunch_temperature;
     igraph_real_t    crunch_attraction;
     igraph_real_t    crunch_damping_mult;
-    igraph_integer_t simmer_iterations;
+    igraph_int_t simmer_iterations;
     igraph_real_t    simmer_temperature;
     igraph_real_t    simmer_attraction;
     igraph_real_t    simmer_damping_mult;
@@ -836,7 +837,7 @@ typedef struct igraph_layout_drl_options_t {
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_layout_drl_default_t"></a>1.7.2. <code class="function">igraph_layout_drl_default_t</code> — Predefined parameter templates for the DrL layout generator</h4></div></div></div>
-<a class="indexterm" name="id-1.21.2.10.6.2"></a><p>
+<a class="indexterm" name="id-1.30.2.10.6.2"></a><p>
 </p>
 <pre class="programlisting">
 typedef enum { IGRAPH_LAYOUT_DRL_DEFAULT = 0,
@@ -902,7 +903,7 @@ These can then be modified according to the user's needs.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_layout_drl_options_init"></a>1.7.3. <code class="function">igraph_layout_drl_options_init</code> — Initialize parameters for the DrL layout generator</h4></div></div></div>
-<a class="indexterm" name="id-1.21.2.10.7.2"></a><p>
+<a class="indexterm" name="id-1.30.2.10.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_drl_options_init(igraph_layout_drl_options_t *options,
@@ -967,7 +968,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_layout_drl"></a>1.7.4. <code class="function">igraph_layout_drl</code> — The DrL layout generator</h4></div></div></div>
-<a class="indexterm" name="id-1.21.2.10.8.2"></a><p>
+<a class="indexterm" name="id-1.30.2.10.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_drl(const igraph_t *graph, igraph_matrix_t *res,
@@ -1053,7 +1054,7 @@ Time complexity: ???.
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="igraph_layout_drl_3d"></a>1.7.5. <code class="function">igraph_layout_drl_3d</code> — The DrL layout generator, 3d version.</h4></div></div></div>
-<a class="indexterm" name="id-1.21.2.10.9.2"></a><p>
+<a class="indexterm" name="id-1.30.2.10.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_drl_3d(const igraph_t *graph, igraph_matrix_t *res,
@@ -1160,13 +1161,13 @@ Time complexity: ???.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_fruchterman_reingold"></a>1.8. <code class="function">igraph_layout_fruchterman_reingold</code> —  Places the vertices on a plane according to the Fruchterman-Reingold algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.11.2"></a><p>
+<a class="indexterm" name="id-1.30.2.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_fruchterman_reingold(const igraph_t *graph,
                                        igraph_matrix_t *res,
                                        igraph_bool_t use_seed,
-                                       igraph_integer_t niter,
+                                       igraph_int_t niter,
                                        igraph_real_t start_temp,
                                        igraph_layout_grid_t grid,
                                        const igraph_vector_t *weights,
@@ -1337,11 +1338,11 @@ vertices in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_kamada_kawai"></a>1.9. <code class="function">igraph_layout_kamada_kawai</code> —  Places the vertices on a plane according to the Kamada-Kawai algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.12.2"></a><p>
+<a class="indexterm" name="id-1.30.2.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_kamada_kawai(const igraph_t *graph, igraph_matrix_t *res,
-                               igraph_bool_t use_seed, igraph_integer_t maxiter,
+                               igraph_bool_t use_seed, igraph_int_t maxiter,
                                igraph_real_t epsilon, igraph_real_t kkconst,
                                const igraph_vector_t *weights,
                                const igraph_vector_t *minx, const igraph_vector_t *maxx,
@@ -1512,11 +1513,11 @@ graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_gem"></a>1.10. <code class="function">igraph_layout_gem</code> —  Layout graph according to GEM algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.13.2"></a><p>
+<a class="indexterm" name="id-1.30.2.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_gem(const igraph_t *graph, igraph_matrix_t *res,
-                      igraph_bool_t use_seed, igraph_integer_t maxiter,
+                      igraph_bool_t use_seed, igraph_int_t maxiter,
                       igraph_real_t temp_max, igraph_real_t temp_min,
                       igraph_real_t temp_init);
 </pre></div>
@@ -1623,12 +1624,12 @@ performed.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_davidson_harel"></a>1.11. <code class="function">igraph_layout_davidson_harel</code> —  Davidson-Harel layout algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.14.2"></a><p>
+<a class="indexterm" name="id-1.30.2.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_davidson_harel(const igraph_t *graph, igraph_matrix_t *res,
-                                 igraph_bool_t use_seed, igraph_integer_t maxiter,
-                                 igraph_integer_t fineiter, igraph_real_t cool_fact,
+                                 igraph_bool_t use_seed, igraph_int_t maxiter,
+                                 igraph_int_t fineiter, igraph_real_t cool_fact,
                                  igraph_real_t weight_node_dist, igraph_real_t weight_border,
                                  igraph_real_t weight_edge_lengths,
                                  igraph_real_t weight_edge_crossings,
@@ -1785,11 +1786,11 @@ components of the energy function are set to zero.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_mds"></a>1.12. <code class="function">igraph_layout_mds</code> —  Place the vertices on a plane using multidimensional scaling.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.15.2"></a><p>
+<a class="indexterm" name="id-1.30.2.15.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_mds(const igraph_t *graph, igraph_matrix_t *res,
-                      const igraph_matrix_t *dist, igraph_integer_t dim);
+                      const igraph_matrix_t *dist, igraph_int_t dim);
 </pre></div>
 <p>
 </p>
@@ -1893,14 +1894,14 @@ Time complexity: usually around O(|V|^2 dim).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_lgl"></a>1.13. <code class="function">igraph_layout_lgl</code> —  Force based layout algorithm for large graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.2.16.2"></a><p>
+<a class="indexterm" name="id-1.30.2.16.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_lgl(const igraph_t *graph, igraph_matrix_t *res,
-                      igraph_integer_t maxit, igraph_real_t maxdelta,
+                      igraph_int_t maxit, igraph_real_t maxdelta,
                       igraph_real_t area, igraph_real_t coolexp,
                       igraph_real_t repulserad, igraph_real_t cellsize,
-                      igraph_integer_t proot);
+                      igraph_int_t proot);
 </pre></div>
 <p>
 </p>
@@ -2040,7 +2041,7 @@ in the same grid cell.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_reingold_tilford"></a>2.1. <code class="function">igraph_layout_reingold_tilford</code> —  Reingold-Tilford layout for tree graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.2.2"></a><p>
+<a class="indexterm" name="id-1.30.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_reingold_tilford(const igraph_t *graph,
@@ -2170,30 +2171,29 @@ Added in version 0.2.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.21.3.2.13.1"></a><p class="title"><b>Example 20.1.  File <code class="code">examples/simple/igraph_layout_reingold_tilford.c</code></b></p>
+<a name="id-1.30.3.2.13.1"></a><p class="title"><b>Example 29.1.  File <code class="code">examples/simple/igraph_layout_reingold_tilford.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;math.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
     igraph_t g;
     FILE *f;
     igraph_matrix_t coords;
-    <span class="emphasis"><em>/* igraph_integer_t i, n; */</em></span>
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     f = <span class="strong"><strong>fopen</strong></span>("igraph_layout_reingold_tilford.in", "r");
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_read_graph_edgelist" title="1.1. igraph_read_graph_edgelist — Reads an edge list from a file and creates a graph.">igraph_read_graph_edgelist</a></strong></span>(&amp;g, f, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong>fclose</strong></span>(f);
+
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_init" title="3.2.1. igraph_matrix_init — Initializes a matrix.">igraph_matrix_init</a></strong></span>(&amp;coords, 0, 0);
     <span class="strong"><strong><a class="link" href="igraph-Layout.html#igraph_layout_reingold_tilford" title="2.1. igraph_layout_reingold_tilford — Reingold-Tilford layout for tree graphs.">igraph_layout_reingold_tilford</a></strong></span>(&amp;g, &amp;coords, IGRAPH_IN, 0, 0);
-
-    <span class="emphasis"><em>/*n=igraph_vcount(&amp;g);</em></span>
-<span class="emphasis"><em>    for (i=0; i&lt;n; i++) {</em></span>
-<span class="emphasis"><em>      printf("%6.3f %6.3f\n", MATRIX(coords, i, 0), MATRIX(coords, i, 1));</em></span>
-<span class="emphasis"><em>    }*/</em></span>
-
+    <span class="strong"><strong>igraph_matrix_print</strong></span>(&amp;coords);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_matrix_destroy" title="3.2.4. igraph_matrix_destroy — Destroys a matrix object.">igraph_matrix_destroy</a></strong></span>(&amp;coords);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
     <span class="strong"><strong>return</strong></span> 0;
 }
 </pre>
@@ -2208,7 +2208,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_reingold_tilford_circular"></a>2.2. <code class="function">igraph_layout_reingold_tilford_circular</code> —  Circular Reingold-Tilford layout for trees.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.3.2"></a><p>
+<a class="indexterm" name="id-1.30.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_reingold_tilford_circular(const igraph_t *graph,
@@ -2323,7 +2323,7 @@ the tree is drawn in a circular way, with the root vertex in the center.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_roots_for_tree_layout"></a>2.3. <code class="function">igraph_roots_for_tree_layout</code> —  Roots suitable for a nice tree layout.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.4.2"></a><p>
+<a class="indexterm" name="id-1.30.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_roots_for_tree_layout(
@@ -2442,13 +2442,14 @@ Time complexity: depends on the heuristic.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_sugiyama"></a>2.4. <code class="function">igraph_layout_sugiyama</code> —  Sugiyama layout algorithm for layered directed acyclic graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.5.2"></a><p>
+<a class="indexterm" name="id-1.30.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_layout_sugiyama(const igraph_t *graph, igraph_matrix_t *res,
-                           igraph_t *extd_graph, igraph_vector_int_t *extd_to_orig_eids,
-                           const igraph_vector_int_t* layers, igraph_real_t hgap, igraph_real_t vgap,
-                           igraph_integer_t maxiter, const igraph_vector_t *weights);
+igraph_error_t igraph_layout_sugiyama(
+    const igraph_t *graph, igraph_matrix_t *res, igraph_matrix_list_t *routing,
+    const igraph_vector_int_t* layers, igraph_real_t hgap, igraph_real_t vgap,
+    igraph_int_t maxiter, const igraph_vector_t *weights
+);
 </pre></div>
 <p>
 </p>
@@ -2475,15 +2476,13 @@ guarantee on the quality of the layout in such cases.
 </p>
 <p>
 The Sugiyama layout may introduce "bends" on the edges in order to obtain a
-visually more pleasing layout. This is achieved by adding dummy nodes to
-edges spanning more than one layer. The resulting layout assigns coordinates
-not only to the nodes of the original graph but also to the dummy nodes.
-The layout algorithm will also return the extended graph with the dummy nodes.
-An edge in the original graph may either be mapped to a single edge in the
-extended graph or a <span class="emphasis"><em>path</em></span> that starts and ends in the original
-source and target vertex and passes through multiple dummy vertices. In
-such cases, the user may also request the mapping of the edges of the extended
-graph back to the edges of the original graph.
+visually more pleasing layout. The additional control points of the edges are
+returned in a separate list of matrices, one matrix per edge in the original
+graph. If an edge requires no additional control points, the corresponding
+matrix will be empty, otherwise the matrix will contain the coordinates of
+the control points, one point per row. When drawing the graph, edges should
+be drawn in a way that the curve representing the edge passes through the
+control points.
 
 </p>
 <p>
@@ -2510,31 +2509,21 @@ Cybernetics 11(2):109-125, 1981.
 <td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
 <td><p>
   Pointer to an initialized matrix object. This will contain
-             the result and will be resized as needed. The first |V| rows
-             of the layout will contain the coordinates of the original graph,
-             the remaining rows contain the positions of the dummy nodes.
-             Therefore, you can use the result both with <em class="parameter"><code>graph</code></em> or with
-             <em class="parameter"><code>extended_graph</code></em>.
+             the result and will be resized as needed. The coordinates of the
+             vertices in the layout will be stored in the rows of the matrix,
+             one row per vertex.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>extd_graph</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>routing</code></em>:</span></p></td>
 <td><p>
-  Pointer to an uninitialized graph object or <code class="constant">NULL</code>.
-                  The extended graph with the added dummy nodes will be
-                  returned here. In this graph, each edge points downwards
-                  to lower layers, spans exactly one layer and the first
-                  |V| vertices coincide with the vertices of the
-                  original graph.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>extd_to_orig_eids</code></em>:</span></p></td>
-<td><p>
-  Pointer to a vector or <code class="constant">NULL</code>. If not <code class="constant">NULL</code>, the
-                         mapping from the edge IDs of the extended graph back
-                         to the edge IDs of the original graph will be stored
-                         here.
+  Pointer to an uninitialized list of matrices or <code class="constant">NULL</code>.
+               When not <code class="constant">NULL</code>, the list will be resized as needed such
+               that there will be one matrix for each edge of the graph,
+               and the matrix will hold the additional control points that
+               the edge must pass through, starting from the source vertex
+               of the edge and ending at the target vertex. The matrix will
+               have zero rows if an edge does not require control points.
 </p></td>
 </tr>
 <tr>
@@ -2597,7 +2586,7 @@ Cybernetics 11(2):109-125, 1981.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_umap"></a>2.5. <code class="function">igraph_layout_umap</code> —  Layout using Uniform Manifold Approximation and Projection (UMAP).</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.6.2"></a><p>
+<a class="indexterm" name="id-1.30.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_umap(const igraph_t *graph,
@@ -2605,7 +2594,7 @@ igraph_error_t igraph_layout_umap(const igraph_t *graph,
                                   igraph_bool_t use_seed,
                                   const igraph_vector_t *distances,
                                   igraph_real_t min_dist,
-                                  igraph_integer_t epochs,
+                                  igraph_int_t epochs,
                                   igraph_bool_t distances_are_weights);
 </pre></div>
 <p>
@@ -2760,7 +2749,7 @@ UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction (202
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_umap_compute_weights"></a>2.6. <code class="function">igraph_layout_umap_compute_weights</code> —  Compute weights for a UMAP layout starting from distances.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.3.7.2"></a><p>
+<a class="indexterm" name="id-1.30.3.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_umap_compute_weights(
@@ -2907,7 +2896,7 @@ UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction (202
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="three-d-layout-generators"></a>3. 3D layout generators</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random_3d">3.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniform randomly in a cube.</a></span></dt>
+<dt><span class="section"><a href="igraph-Layout.html#igraph_layout_random_3d">3.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniformly randomly in a cube.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_sphere">3.2. <code class="function">igraph_layout_sphere</code> —  Places vertices (more or less) uniformly on a sphere.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_grid_3d">3.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</a></span></dt>
 <dt><span class="section"><a href="igraph-Layout.html#igraph_layout_fruchterman_reingold_3d">3.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</a></span></dt>
@@ -2916,8 +2905,8 @@ UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction (202
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_layout_random_3d"></a>3.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniform randomly in a cube.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.2.2"></a><p>
+<a name="igraph_layout_random_3d"></a>3.1. <code class="function">igraph_layout_random_3d</code> —  Places the vertices uniformly randomly in a cube.</h3></div></div></div>
+<a class="indexterm" name="id-1.30.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_random_3d(const igraph_t *graph, igraph_matrix_t *res);
@@ -2928,9 +2917,7 @@ igraph_error_t igraph_layout_random_3d(const igraph_t *graph, igraph_matrix_t *r
 
 
 
-</p>
-<p>
-Vertex coordinates range from -1 to 1, and are placed in 3 columns
+Vertex coordinates range from -1 to 1, and are placed in three columns
 of a matrix, with a row for each vertex.
 
 </p>
@@ -2968,8 +2955,7 @@ resized to hold the result.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  Error code. The current implementation always returns with
-success.
+  Error code.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2985,7 +2971,7 @@ Time complexity: O(|V|), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_sphere"></a>3.2. <code class="function">igraph_layout_sphere</code> —  Places vertices (more or less) uniformly on a sphere.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.3.2"></a><p>
+<a class="indexterm" name="id-1.30.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_sphere(const igraph_t *graph, igraph_matrix_t *res);
@@ -3062,11 +3048,11 @@ Time complexity: O(|V|), the number of vertices in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_grid_3d"></a>3.3. <code class="function">igraph_layout_grid_3d</code> —  Places the vertices on a regular grid in the 3D space.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.4.2"></a><p>
+<a class="indexterm" name="id-1.30.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_grid_3d(const igraph_t *graph, igraph_matrix_t *res,
-                          igraph_integer_t width, igraph_integer_t height);
+                          igraph_int_t width, igraph_int_t height);
 </pre></div>
 <p>
 </p>
@@ -3139,13 +3125,13 @@ Time complexity: O(|V|), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_fruchterman_reingold_3d"></a>3.4. <code class="function">igraph_layout_fruchterman_reingold_3d</code> —  3D Fruchterman-Reingold algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.5.2"></a><p>
+<a class="indexterm" name="id-1.30.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_fruchterman_reingold_3d(const igraph_t *graph,
         igraph_matrix_t *res,
         igraph_bool_t use_seed,
-        igraph_integer_t niter,
+        igraph_int_t niter,
         igraph_real_t start_temp,
         const igraph_vector_t *weights,
         const igraph_vector_t *minx,
@@ -3297,11 +3283,11 @@ vertices in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_kamada_kawai_3d"></a>3.5. <code class="function">igraph_layout_kamada_kawai_3d</code> —  3D version of the Kamada-Kawai layout generator.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.6.2"></a><p>
+<a class="indexterm" name="id-1.30.4.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_kamada_kawai_3d(const igraph_t *graph, igraph_matrix_t *res,
-                                  igraph_bool_t use_seed, igraph_integer_t maxiter,
+                                  igraph_bool_t use_seed, igraph_int_t maxiter,
                                   igraph_real_t epsilon, igraph_real_t kkconst,
                                   const igraph_vector_t *weights,
                                   const igraph_vector_t *minx, const igraph_vector_t *maxx,
@@ -3462,7 +3448,7 @@ graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_umap_3d"></a>3.6. <code class="function">igraph_layout_umap_3d</code> —  3D layout using UMAP.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.4.7.2"></a><p>
+<a class="indexterm" name="id-1.30.4.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
@@ -3470,7 +3456,7 @@ igraph_error_t igraph_layout_umap_3d(const igraph_t *graph,
                                      igraph_bool_t use_seed,
                                      const igraph_vector_t *distances,
                                      igraph_real_t min_dist,
-                                     igraph_integer_t epochs,
+                                     igraph_int_t epochs,
                                      igraph_bool_t distances_are_weights);
 </pre></div>
 <p>
@@ -3601,7 +3587,7 @@ major version of igraph. Use it at your own risk.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_merge_dla"></a>4.1. <code class="function">igraph_layout_merge_dla</code> —  Merges multiple layouts by using a DLA algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.5.2.2"></a><p>
+<a class="indexterm" name="id-1.30.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_merge_dla(
@@ -3615,14 +3601,7 @@ igraph_error_t igraph_layout_merge_dla(
 
 
 
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p>First each layout is covered by a circle. Then the layout of the
+First each layout is covered by a circle. Then the layout of the
 largest graph is placed at the origin. Then the other layouts are
 placed by the DLA algorithm, larger ones first and smaller ones
 last.
@@ -3686,7 +3665,7 @@ Time complexity: TODO.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_layout_align"></a>4.2. <code class="function">igraph_layout_align</code> —  Aligns a graph layout with the coordinate axes.</h3></div></div></div>
-<a class="indexterm" name="id-1.21.5.3.2"></a><p>
+<a class="indexterm" name="id-1.30.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_layout_align(const igraph_t *graph, igraph_matrix_t *layout);
@@ -3698,14 +3677,7 @@ igraph_error_t igraph_layout_align(const igraph_t *graph, igraph_matrix_t *layou
 
 
 
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p>This function centers a vertex layout on the coordinate system origin and
+This function centers a vertex layout on the coordinate system origin and
 rotates the layout to achieve a visually pleasing alignment with the coordinate
 axes. Doing this is particularly useful with force-directed layouts such as
 <a class="link" href="igraph-Layout.html#igraph_layout_fruchterman_reingold" title="1.8. igraph_layout_fruchterman_reingold — Places the vertices on a plane according to the Fruchterman-Reingold algorithm."><code class="function">igraph_layout_fruchterman_reingold()</code></a>. Layouts in arbitrary dimensional
@@ -3759,7 +3731,7 @@ Time complexity: O(|E| + |V|), linear in the number of edges and vertices.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Motifs.html"><b>← Chapter 19. Graph motifs, dyad census and triad census</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Foreign.html"><b>Chapter 21. Reading and writing graphs from and to files →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Embedding.html"><b>← Chapter 28. Embedding of graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Processes.html"><b>Chapter 30. Processes on graphs →</b></a></td>
 </tr></table>
 {% endraw %}

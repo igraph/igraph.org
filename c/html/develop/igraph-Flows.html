@@ -10,7 +10,7 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Foreign.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Coloring.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
@@ -20,7 +20,7 @@ langversion: develop
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Flows"></a>Chapter 22. Maximum flows, minimum cuts and related measures</h1></div></div></div>
+<a name="igraph-Flows"></a>Chapter 23. Maximum flows, minimum cuts and related measures</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Flows.html#maximum-flows">1. Maximum flows</a></span></dt>
 <dt><span class="section"><a href="igraph-Flows.html#cuts-and-minimum-cuts">2. Cuts and minimum cuts</a></span></dt>
@@ -41,13 +41,13 @@ langversion: develop
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_maxflow"></a>1.1. <code class="function">igraph_maxflow</code> —  Maximum network flow between a pair of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.2.2.2"></a><p>
+<a class="indexterm" name="id-1.24.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_maxflow(const igraph_t *graph, igraph_real_t *value,
                               igraph_vector_t *flow, igraph_vector_int_t *cut,
                               igraph_vector_int_t *partition, igraph_vector_int_t *partition2,
-                              igraph_integer_t source, igraph_integer_t target,
+                              igraph_int_t source, igraph_int_t target,
                               const igraph_vector_t *capacity,
                               igraph_maxflow_stats_t *stats);
 </pre></div>
@@ -218,7 +218,7 @@ properties based on the maximum flow.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.2.2.11.1"></a><p class="title"><b>Example 22.1.  File <code class="code">examples/simple/flow.c</code></b></p>
+<a name="id-1.24.2.2.11.1"></a><p class="title"><b>Example 23.1.  File <code class="code">examples/simple/flow.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -227,9 +227,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_real_t flow;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> capacity;
-    igraph_integer_t source, target;
+    igraph_int_t source, target;
     FILE *infile;
     <a class="link" href="igraph-Flows.html#igraph_maxflow_stats_t" title="1.4. igraph_maxflow_stats_t — Data structure holding statistics from the push-relabel maximum flow solver.">igraph_maxflow_stats_t</a> stats;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_init" title="2.2.1. igraph_vector_init — Initializes a vector object (constructor).">igraph_vector_init</a></strong></span>(&amp;capacity, 0);
 
@@ -244,7 +247,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>if</strong></span> (flow != 8207) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
     <span class="emphasis"><em>/***************/</em></span>
 
     <span class="emphasis"><em>/*   /\***************\/ */</em></span>
@@ -311,11 +314,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.2.2.11.2"></a><p class="title"><b>Example 22.2.  File <code class="code">examples/simple/flow2.c</code></b></p>
+<a name="id-1.24.2.2.11.2"></a><p class="title"><b>Example 23.2.  File <code class="code">examples/simple/flow2.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     igraph_t g;
     igraph_real_t flow_value;
@@ -323,10 +327,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> capacity;
     igraph_vector_int_t partition, partition2;
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> flow;
-    igraph_integer_t i;
+    igraph_int_t i;
     <a class="link" href="igraph-Flows.html#igraph_maxflow_stats_t" title="1.4. igraph_maxflow_stats_t — Data structure holding statistics from the push-relabel maximum flow solver.">igraph_maxflow_stats_t</a> stats;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED,
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED,
                  0, 1, 1, 2, 2, 3, 0, 5, 5, 4, 4, 3, 3, 0, -1);
     <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;capacity, -1, 3, 1, 2, 10, 1, 3, 2, -1);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;cut, 0);
@@ -337,7 +344,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Flows.html#igraph_maxflow" title="1.1. igraph_maxflow — Maximum network flow between a pair of vertices.">igraph_maxflow</a></strong></span>(&amp;g, &amp;flow_value, &amp;flow, &amp;cut, &amp;partition, &amp;partition2,
                    <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 2, &amp;capacity, &amp;stats);
 
-    igraph_integer_t nc = <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;cut);
+    igraph_int_t nc = <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;cut);
     <span class="strong"><strong>printf</strong></span>("flow value: %g\n", (double) flow_value);
     <span class="strong"><strong>printf</strong></span>("flow: ");
     <span class="strong"><strong>igraph_vector_print</strong></span>(&amp;flow);
@@ -347,9 +354,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;partition2);
     <span class="strong"><strong>printf</strong></span>("edges in the cut: ");
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; nc; i++) {
-        igraph_integer_t edge = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(cut)[i];
-        igraph_integer_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;g, edge);
-        igraph_integer_t to  = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;g, edge);
+        igraph_int_t edge = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(cut)[i];
+        igraph_int_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="5.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;g, edge);
+        igraph_int_t to  = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="5.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;g, edge);
         <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "-%" IGRAPH_PRId " (%g), ", from, to, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(capacity)[edge]);
     }
     <span class="strong"><strong>printf</strong></span>("\n");
@@ -359,7 +366,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;partition);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;capacity);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;flow);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -375,11 +382,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_maxflow_value"></a>1.2. <code class="function">igraph_maxflow_value</code> —  Maximum flow in a network with the push/relabel algorithm.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.2.3.2"></a><p>
+<a class="indexterm" name="id-1.24.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_maxflow_value(const igraph_t *graph, igraph_real_t *value,
-                                    igraph_integer_t source, igraph_integer_t target,
+                                    igraph_int_t source, igraph_int_t target,
                                     const igraph_vector_t *capacity,
                                     igraph_maxflow_stats_t *stats);
 </pre></div>
@@ -515,11 +522,11 @@ properties based on the maximum flow.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_dominator_tree"></a>1.3. <code class="function">igraph_dominator_tree</code> —  Calculates the dominator tree of a flowgraph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.2.4.2"></a><p>
+<a class="indexterm" name="id-1.24.2.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_dominator_tree(const igraph_t *graph,
-                                     igraph_integer_t root,
+                                     igraph_int_t root,
                                      igraph_vector_int_t *dom,
                                      igraph_t *domtree,
                                      igraph_vector_int_t *leftout,
@@ -639,7 +646,7 @@ function.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.2.4.9.1"></a><p class="title"><b>Example 22.3.  File <code class="code">examples/simple/dominator_tree.c</code></b></p>
+<a name="id-1.24.2.4.9.1"></a><p class="title"><b>Example 23.3.  File <code class="code">examples/simple/dominator_tree.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -649,10 +656,13 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t dom;
     igraph_vector_int_t leftout;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;dom, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;leftout, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED,
                  0, 9,
                  1, 0, 1, 2,
                  2, 3, 2, 7,
@@ -671,8 +681,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;dom);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;leftout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;domtree);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;domtree);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -688,9 +698,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_maxflow_stats_t"></a>1.4. <code class="function">igraph_maxflow_stats_t</code> —  Data structure holding statistics from the push-relabel maximum flow solver.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.2.5.2"></a><pre class="programlisting">
+<a class="indexterm" name="id-1.24.2.5.2"></a><pre class="programlisting">
 typedef struct {
-    igraph_integer_t nopush, norelabel, nogap, nogapnodes, nobfs;
+    igraph_int_t nopush, norelabel, nogap, nogapnodes, nobfs;
 </pre>
 <p>
 
@@ -761,13 +771,13 @@ typedef struct {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_st_mincut"></a>2.1. <code class="function">igraph_st_mincut</code> —  Minimum cut between a source and a target vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.2.2"></a><p>
+<a class="indexterm" name="id-1.24.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_st_mincut(const igraph_t *graph, igraph_real_t *value,
                                 igraph_vector_int_t *cut, igraph_vector_int_t *partition,
                                 igraph_vector_int_t *partition2,
-                                igraph_integer_t source, igraph_integer_t target,
+                                igraph_int_t source, igraph_int_t target,
                                 const igraph_vector_t *capacity);
 </pre></div>
 <p>
@@ -893,11 +903,11 @@ Time complexity: see <a class="link" href="igraph-Flows.html#igraph_maxflow" tit
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_st_mincut_value"></a>2.2. <code class="function">igraph_st_mincut_value</code> —  The minimum s-t cut in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.3.2"></a><p>
+<a class="indexterm" name="id-1.24.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_st_mincut_value(const igraph_t *graph, igraph_real_t *value,
-                                      igraph_integer_t source, igraph_integer_t target,
+                                      igraph_int_t source, igraph_int_t target,
                                       const igraph_vector_t *capacity);
 </pre></div>
 <p>
@@ -985,14 +995,14 @@ Time complexity: O(|V|^3), see also the discussion for <a class="link" href="igr
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_all_st_cuts"></a>2.3. <code class="function">igraph_all_st_cuts</code> — List all edge-cuts between two vertices in a directed graph</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.4.2"></a><p>
+<a class="indexterm" name="id-1.24.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_all_st_cuts(const igraph_t *graph,
                                   igraph_vector_int_list_t *cuts,
                                   igraph_vector_int_list_t *partition1s,
-                                  igraph_integer_t source,
-                                  igraph_integer_t target);
+                                  igraph_int_t source,
+                                  igraph_int_t target);
 </pre></div>
 <p>
 </p>
@@ -1078,14 +1088,14 @@ vertices, |E| is the number of edges, and n is the number of cuts.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_all_st_mincuts"></a>2.4. <code class="function">igraph_all_st_mincuts</code> —  All minimum s-t cuts of a directed graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.5.2"></a><p>
+<a class="indexterm" name="id-1.24.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_all_st_mincuts(const igraph_t *graph, igraph_real_t *value,
                                      igraph_vector_int_list_t *cuts,
                                      igraph_vector_int_list_t *partition1s,
-                                     igraph_integer_t source,
-                                     igraph_integer_t target,
+                                     igraph_int_t source,
+                                     igraph_int_t target,
                                      const igraph_vector_t *capacity);
 </pre></div>
 <p>
@@ -1188,7 +1198,7 @@ O(F) is the time complexity of the maximum flow algorithm, see <a class="link" h
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.3.5.8.2"></a><p class="title"><b>Example 22.4.  File <code class="code">examples/simple/igraph_all_st_mincuts.c</code></b></p>
+<a name="id-1.24.3.5.8.2"></a><p class="title"><b>Example 23.4.  File <code class="code">examples/simple/igraph_all_st_mincuts.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1199,7 +1209,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_list_t cuts;
     igraph_real_t value;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED,
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED,
                  0, 1, 1, 2, 2, 3, 3, 4,
                  -1);
 
@@ -1209,7 +1222,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
                           <span class="emphasis"><em>/*source=*/</em></span> 0, <span class="emphasis"><em>/*target=*/</em></span> 4,
                           <span class="emphasis"><em>/*capacity=*/</em></span> 0);
 
-    igraph_integer_t i, e, m, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;partitions);
+    igraph_int_t i, e, m, n = <span class="strong"><strong>igraph_vector_int_list_size</strong></span>(&amp;partitions);
     <span class="strong"><strong>printf</strong></span>("Found %" IGRAPH_PRId " cuts, value: %g\n", n, value);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
         igraph_vector_int_t *vec = <span class="strong"><strong>igraph_vector_int_list_get_ptr</strong></span>(&amp;partitions, i);
@@ -1220,7 +1233,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
             <span class="strong"><strong>printf</strong></span>("Cut %" IGRAPH_PRId ":\n", i);
             m = <span class="strong"><strong>igraph_vector_int_size</strong></span>(vec2);
             <span class="strong"><strong>for</strong></span> (e = 0; e &lt; m; e++) {
-                igraph_integer_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]), to = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]);
+                igraph_int_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="5.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]), to = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="5.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>(&amp;g, <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*vec2)[e]);
                 <span class="strong"><strong>printf</strong></span>("  %" IGRAPH_PRId " -&gt; %" IGRAPH_PRId "\n", from, to);
             }
         }
@@ -1229,7 +1242,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;partitions);
     <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;cuts);
     <span class="strong"><strong>printf</strong></span>("\n");
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1245,7 +1258,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_mincut"></a>2.5. <code class="function">igraph_mincut</code> —  Calculates the minimum cut in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.6.2"></a><p>
+<a class="indexterm" name="id-1.24.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_mincut(const igraph_t *graph,
@@ -1378,7 +1391,7 @@ edges respectively.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.3.6.12.2"></a><p class="title"><b>Example 22.5.  File <code class="code">examples/simple/igraph_mincut.c</code></b></p>
+<a name="id-1.24.3.6.12.2"></a><p class="title"><b>Example 23.5.  File <code class="code">examples/simple/igraph_mincut.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1388,8 +1401,8 @@ int <span class="strong"><strong>print_mincut</strong></span>(<span class="stron
                  <span class="strong"><strong>const</strong></span> igraph_vector_int_t *cut,
                  <span class="strong"><strong>const</strong></span> <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *capacity) {
 
-    igraph_integer_t i, nc = <span class="strong"><strong>igraph_vector_int_size</strong></span>(cut);
-    igraph_bool_t directed = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(graph);
+    igraph_int_t i, nc = <span class="strong"><strong>igraph_vector_int_size</strong></span>(cut);
+    igraph_bool_t directed = <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="5.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(graph);
 
     <span class="strong"><strong>printf</strong></span>("mincut value: %g\n", (double) value);
     <span class="strong"><strong>printf</strong></span>("first partition:  ");
@@ -1398,11 +1411,11 @@ int <span class="strong"><strong>print_mincut</strong></span>(<span class="stron
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(partition2);
     <span class="strong"><strong>printf</strong></span>("edges in the cut: ");
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; nc; i++) {
-        igraph_integer_t edge = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*cut)[i];
-        igraph_integer_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="4.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(graph, edge);
-        igraph_integer_t to  = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="4.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>  (graph, edge);
+        igraph_int_t edge = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*cut)[i];
+        igraph_int_t from = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_FROM" title="5.2.6. IGRAPH_FROM — The source vertex of an edge.">IGRAPH_FROM</a></strong></span>(graph, edge);
+        igraph_int_t to  = <span class="strong"><strong><a class="link" href="igraph-Basic.html#IGRAPH_TO" title="5.2.7. IGRAPH_TO — The target vertex of an edge.">IGRAPH_TO</a></strong></span>  (graph, edge);
         <span class="strong"><strong>if</strong></span> (!directed &amp;&amp; from &gt; to) {
-            igraph_integer_t tmp = from;
+            igraph_int_t tmp = from;
             from = to;
             to = tmp;
         }
@@ -1420,13 +1433,16 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> weights;
     igraph_real_t value;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;partition, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;partition2, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;cut, 0);
 
     <span class="emphasis"><em>/* -------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
                  0, 1, 0, 4, 1, 2, 1, 4, 1, 5, 2, 3, 2, 6, 3, 6, 3, 7, 4, 5, 5, 6, 6, 7,
                  -1);
     <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;weights, -1, 2, 3, 3, 2, 2, 4, 2, 2, 2, 3, 1, 3, -1);
@@ -1435,11 +1451,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>print_mincut</strong></span>(&amp;g, value, &amp;partition, &amp;partition2, &amp;cut, &amp;weights);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* -------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 6, IGRAPH_DIRECTED,
                  0, 1, 1, 2, 2, 3, 0, 5, 5, 4, 4, 3, 3, 0, -1);
     <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;weights, -1, 3, 1, 2, 10, 1, 3, 2, -1);
 
@@ -1447,11 +1463,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>print_mincut</strong></span>(&amp;g, value, &amp;partition, &amp;partition2, &amp;cut, &amp;weights);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* -------------------------------------------- */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 5, IGRAPH_DIRECTED,
                  4, 3, 3, 2, 2, 1, 1, 0,
                  -1);
     <span class="strong"><strong>igraph_vector_init_int_end</strong></span>(&amp;weights, -1, 1, 1, 1, 1, -1);
@@ -1459,7 +1475,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>print_mincut</strong></span>(&amp;g, value, &amp;partition, &amp;partition2, &amp;cut, &amp;weights);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_destroy" title="2.2.5. igraph_vector_destroy — Destroys a vector object.">igraph_vector_destroy</a></strong></span>(&amp;weights);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* -------------------------------------------- */</em></span>
 
@@ -1481,7 +1497,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_mincut_value"></a>2.6. <code class="function">igraph_mincut_value</code> —  The minimum edge cut in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.7.2"></a><p>
+<a class="indexterm" name="id-1.24.3.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_mincut_value(const igraph_t *graph, igraph_real_t *res,
@@ -1583,7 +1599,7 @@ documentation of <a class="link" href="igraph-Flows.html#igraph_maxflow_value" t
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_gomory_hu_tree"></a>2.7. <code class="function">igraph_gomory_hu_tree</code> —  Gomory-Hu tree of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.3.8.2"></a><p>
+<a class="indexterm" name="id-1.24.3.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_gomory_hu_tree(const igraph_t *graph,
@@ -1714,13 +1730,13 @@ O(|V|^3).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_st_edge_connectivity"></a>3.1. <code class="function">igraph_st_edge_connectivity</code> —  Edge connectivity of a pair of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.4.2.2"></a><p>
+<a class="indexterm" name="id-1.24.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_st_edge_connectivity(const igraph_t *graph,
-                                           igraph_integer_t *res,
-                                           igraph_integer_t source,
-                                           igraph_integer_t target);
+                                           igraph_int_t *res,
+                                           igraph_int_t source,
+                                           igraph_int_t target);
 </pre></div>
 <p>
 </p>
@@ -1813,11 +1829,11 @@ Time complexity: O(|V|^3).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_edge_connectivity"></a>3.2. <code class="function">igraph_edge_connectivity</code> —  The minimum edge connectivity in a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.4.3.2"></a><p>
+<a class="indexterm" name="id-1.24.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_edge_connectivity(const igraph_t *graph,
-                                        igraph_integer_t *res,
+                                        igraph_int_t *res,
                                         igraph_bool_t checks);
 </pre></div>
 <p>
@@ -1914,14 +1930,14 @@ documentation of <a class="link" href="igraph-Flows.html#igraph_maxflow_value" t
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_st_vertex_connectivity"></a>3.3. <code class="function">igraph_st_vertex_connectivity</code> —  The vertex connectivity of a pair of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.4.4.2"></a><p>
+<a class="indexterm" name="id-1.24.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_st_vertex_connectivity(
         const igraph_t *graph,
-        igraph_integer_t *res,
-        igraph_integer_t source,
-        igraph_integer_t target,
+        igraph_int_t *res,
+        igraph_int_t source,
+        igraph_int_t target,
         igraph_vconn_nei_t neighbors);
 </pre></div>
 <p>
@@ -2036,11 +2052,11 @@ Time complexity: O(|V|^3), but see the discussion at <a class="link" href="igrap
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vertex_connectivity"></a>3.4. <code class="function">igraph_vertex_connectivity</code> —  The vertex connectivity of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.4.5.2"></a><p>
+<a class="indexterm" name="id-1.24.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vertex_connectivity(
-        const igraph_t *graph, igraph_integer_t *res,
+        const igraph_t *graph, igraph_int_t *res,
         igraph_bool_t checks);
 </pre></div>
 <p>
@@ -2144,13 +2160,13 @@ and <a class="link" href="igraph-Flows.html#igraph_edge_connectivity" title="3.2
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_edge_disjoint_paths"></a>4.1. <code class="function">igraph_edge_disjoint_paths</code> —  The maximum number of edge-disjoint paths between two vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.5.2.2"></a><p>
+<a class="indexterm" name="id-1.24.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_edge_disjoint_paths(const igraph_t *graph,
-                                          igraph_integer_t *res,
-                                          igraph_integer_t source,
-                                          igraph_integer_t target);
+                                          igraph_int_t *res,
+                                          igraph_int_t source,
+                                          igraph_int_t target);
 </pre></div>
 <p>
 </p>
@@ -2243,13 +2259,13 @@ Time complexity: O(|V|^3), but see the discussion at <a class="link" href="igrap
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vertex_disjoint_paths"></a>4.2. <code class="function">igraph_vertex_disjoint_paths</code> —  Maximum number of vertex-disjoint paths between two vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.5.3.2"></a><p>
+<a class="indexterm" name="id-1.24.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vertex_disjoint_paths(const igraph_t *graph,
-                                            igraph_integer_t *res,
-                                            igraph_integer_t source,
-                                            igraph_integer_t target);
+                                            igraph_int_t *res,
+                                            igraph_int_t source,
+                                            igraph_int_t target);
 </pre></div>
 <p>
 </p>
@@ -2355,11 +2371,11 @@ Time complexity: O(|V|^3).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_adhesion"></a>5.1. <code class="function">igraph_adhesion</code> —  Graph adhesion, this is (almost) the same as edge connectivity.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.6.2.2"></a><p>
+<a class="indexterm" name="id-1.24.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_adhesion(const igraph_t *graph,
-                               igraph_integer_t *res,
+                               igraph_int_t *res,
                                igraph_bool_t checks);
 </pre></div>
 <p>
@@ -2452,11 +2468,11 @@ documentation of <a class="link" href="igraph-Flows.html#igraph_maxflow_value" t
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_cohesion"></a>5.2. <code class="function">igraph_cohesion</code> —  Graph cohesion, this is the same as vertex connectivity.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.6.3.2"></a><p>
+<a class="indexterm" name="id-1.24.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_cohesion(const igraph_t *graph,
-                               igraph_integer_t *res,
+                               igraph_int_t *res,
                                igraph_bool_t checks);
 </pre></div>
 <p>
@@ -2554,7 +2570,7 @@ practice it is more like O(|V|^2), see <a class="link" href="igraph-Flows.html#i
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_cohesive_blocks"></a>6.1. <code class="function">igraph_cohesive_blocks</code> —  Identifies the hierarchical cohesive block structure of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.23.7.2.2"></a><p>
+<a class="indexterm" name="id-1.24.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_cohesive_blocks(const igraph_t *graph,
@@ -2608,7 +2624,7 @@ groups. American Sociological Review, 68(1):103--127, Feb 2003.
 <td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
 <td><p>
   The input graph. It must be undirected and simple. See
-   <a class="link" href="igraph-Structural.html#igraph_is_simple" title="19.1. igraph_is_simple — Decides whether the input graph is a simple graph."><code class="function">igraph_is_simple()</code></a>.
+   <a class="link" href="igraph-Structural.html#igraph_is_simple" title="20.1. igraph_is_simple — Decides whether the input graph is a simple graph."><code class="function">igraph_is_simple()</code></a>.
 </p></td>
 </tr>
 <tr>
@@ -2671,7 +2687,7 @@ Time complexity: TODO.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.23.7.2.11.1"></a><p class="title"><b>Example 22.6.  File <code class="code">examples/simple/cohesive_blocks.c</code></b></p>
+<a name="id-1.24.7.2.11.1"></a><p class="title"><b>Example 23.6.  File <code class="code">examples/simple/cohesive_blocks.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2681,9 +2697,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t cohesion;
     igraph_vector_int_t parent;
     igraph_t block_tree;
-    igraph_integer_t i;
+    igraph_int_t i;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="1.27. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "zachary");
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_famous" title="8.1. igraph_famous — Create a famous graph by simply providing its name.">igraph_famous</a></strong></span>(&amp;g, "zachary");
     <span class="strong"><strong>igraph_vector_int_list_init</strong></span>(&amp;blocks, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;cohesion, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;parent, 0);
@@ -2707,9 +2726,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_list_destroy</strong></span>(&amp;blocks);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;cohesion);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;parent);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;block_tree);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;block_tree);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2725,7 +2744,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Foreign.html"><b>← Chapter 21. Reading and writing graphs from and to files</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Separators.html"><b>Chapter 23. Vertex separators →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Coloring.html"><b>← Chapter 22. Graph coloring</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Separators.html"><b>Chapter 24. Vertex separators →</b></a></td>
 </tr></table>
 {% endraw %}

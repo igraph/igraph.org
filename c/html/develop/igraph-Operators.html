@@ -10,17 +10,17 @@ langversion: develop
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Embedding.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Spatial.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
-            </a><a accesskey="n" class="btn btn-light" href="igraph-Arpack.html"><i class="fa fa-chevron-right"></i>
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Visitors.html"><i class="fa fa-chevron-right"></i>
               Next
             </a>
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Operators"></a>Chapter 28. Graph operators</h1></div></div></div>
+<a name="igraph-Operators"></a>Chapter 15. Graph operators</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Operators.html#union-and-intersection">1. Union and intersection</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#other-setlike-operators">2. Other set-like operators</a></span></dt>
@@ -41,7 +41,7 @@ langversion: develop
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_disjoint_union"></a>1.1. <code class="function">igraph_disjoint_union</code> —  Creates the union of two disjoint graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.2.2"></a><p>
+<a class="indexterm" name="id-1.16.2.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_disjoint_union(igraph_t *res,
@@ -148,7 +148,7 @@ Time complexity: O(|V1|+|V2|+|E1|+|E2|).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.2.2.13.1"></a><p class="title"><b>Example 28.1.  File <code class="code">examples/simple/igraph_disjoint_union.c</code></b></p>
+<a name="id-1.16.2.2.13.1"></a><p class="title"><b>Example 15.1.  File <code class="code">examples/simple/igraph_disjoint_union.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -156,36 +156,39 @@ Time complexity: O(|V1|+|V2|+|E1|+|E2|).
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t left, right, uni;
     igraph_vector_ptr_t glist;
-    igraph_integer_t i, n;
+    igraph_int_t i, n;
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;left, 4, IGRAPH_UNDIRECTED, 0,1, 1,2, 2,2, 2,3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;right, 5, IGRAPH_UNDIRECTED, 0,1, 1,2, 2,2, 2,4, -1);
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;left, 4, IGRAPH_UNDIRECTED, 0,1, 1,2, 2,2, 2,3, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;right, 5, IGRAPH_UNDIRECTED, 0,1, 1,2, 2,2, 2,4, -1);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union" title="1.1. igraph_disjoint_union — Creates the union of two disjoint graphs.">igraph_disjoint_union</a></strong></span>(&amp;uni, &amp;left, &amp;right);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;uni, stdout);
     <span class="strong"><strong>printf</strong></span>("\n");
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
 
     <span class="emphasis"><em>/* Empty graph list; the result is the directed null graph. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.17.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;glist, 0);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_disjoint_union_many" title="1.2. igraph_disjoint_union_many — The disjoint union of many graphs.">igraph_disjoint_union_many</a></strong></span>(&amp;uni, &amp;glist);
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;uni) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;uni) != 0) {
+    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="5.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;uni) || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;uni) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.17.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;glist);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
 
     <span class="emphasis"><em>/* Non-empty graph list. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.17.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;glist, 10);
     n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.17.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;glist);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
         <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i] = <span class="strong"><strong>calloc</strong></span>(1, <span class="strong"><strong>sizeof</strong></span>(igraph_t));
-        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i], 2, IGRAPH_DIRECTED, 0,1, 1,0, -1);
+        <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i], 2, IGRAPH_DIRECTED, 0,1, 1,0, -1);
     }
-    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;uni)) {
+    <span class="strong"><strong>if</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="5.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;uni)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
 
@@ -196,11 +199,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="emphasis"><em>/* Destroy and free the graph list. */</em></span>
     n = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_size" title="2.17.6. igraph_vector_ptr_size — Gives the number of elements in the pointer vector.">igraph_vector_ptr_size</a></strong></span>(&amp;glist);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; n; i++) {
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i]);
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i]);
         <span class="strong"><strong>free</strong></span>(<span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[i]);
     }
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.17.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;glist);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -216,7 +219,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_disjoint_union_many"></a>1.2. <code class="function">igraph_disjoint_union_many</code> —  The disjoint union of many graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.3.2"></a><p>
+<a class="indexterm" name="id-1.16.2.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_disjoint_union_many(igraph_t *res,
@@ -316,7 +319,7 @@ of edges in the result.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_join"></a>1.3. <code class="function">igraph_join</code> —  Creates the join of two disjoint graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.4.2"></a><p>
+<a class="indexterm" name="id-1.16.2.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_join(igraph_t *res,
@@ -329,14 +332,7 @@ igraph_error_t igraph_join(igraph_t *res,
 
 
 
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p>First the vertices of the second graph will be relabeled with new
+First the vertices of the second graph will be relabeled with new
 vertex IDs to have two disjoint sets of vertex IDs, then the union
 of the two graphs will be formed. Finally, the vertces from the
 first graph will have edges added to each vertex from the second.
@@ -420,7 +416,7 @@ Time complexity: O(|V1|*|V2|+|E1|+|E2|).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_union"></a>1.4. <code class="function">igraph_union</code> —  Calculates the union of two graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.5.2"></a><p>
+<a class="indexterm" name="id-1.16.2.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_union(
@@ -535,7 +531,7 @@ vertices, |E| the number of edges in the result graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.2.5.12.1"></a><p class="title"><b>Example 28.2.  File <code class="code">examples/simple/igraph_union.c</code></b></p>
+<a name="id-1.16.2.5.12.1"></a><p class="title"><b>Example 15.2.  File <code class="code">examples/simple/igraph_union.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 <span class="strong"><strong>#include</strong></span> &lt;stdio.h&gt;
@@ -544,14 +540,17 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t left, right, uni;
     igraph_vector_int_t edge_map1, edge_map2;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edge_map1, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edge_map2, 0);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;left, 4, IGRAPH_DIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;left, 4, IGRAPH_DIRECTED,
                  0,1, 1,2, 2,2, 2,3, 2,3, 3,2,
                  -1);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;right, 6, IGRAPH_DIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;right, 6, IGRAPH_DIRECTED,
                  0,1, 1,2, 2,2, 2,3, 5,2,
                  -1);
 
@@ -560,9 +559,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edge_map1);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edge_map2);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;uni);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edge_map2);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edge_map1);
@@ -581,7 +580,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_union_many"></a>1.5. <code class="function">igraph_union_many</code> —  Creates the union of many graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.6.2"></a><p>
+<a class="indexterm" name="id-1.16.2.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_union_many(
@@ -691,7 +690,7 @@ in largest graph and |E| is the number of edges in the result graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_intersection"></a>1.6. <code class="function">igraph_intersection</code> —  Collect the common edges from two graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.7.2"></a><p>
+<a class="indexterm" name="id-1.16.2.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_intersection(
@@ -807,14 +806,14 @@ containing less vertices is considered smaller.)
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.2.7.12.1"></a><p class="title"><b>Example 28.3.  File <code class="code">examples/simple/igraph_intersection.c</code></b></p>
+<a name="id-1.16.2.7.12.1"></a><p class="title"><b>Example 15.3.  File <code class="code">examples/simple/igraph_intersection.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 void <span class="strong"><strong>print_vector</strong></span>(<a class="link" href="igraph-Data-structures.html#igraph_vector_t" title="2.1.  About igraph_vector_t objects">igraph_vector_t</a> *v) {
-    igraph_integer_t i, l = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — The size of the vector.">igraph_vector_size</a></strong></span>(v);
+    igraph_int_t i, l = <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_size" title="2.11.2. igraph_vector_size — The size of the vector.">igraph_vector_size</a></strong></span>(v);
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; l; i++) {
-        <span class="strong"><strong>printf</strong></span>(" %" IGRAPH_PRId "", (igraph_integer_t) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i]);
+        <span class="strong"><strong>printf</strong></span>(" %" IGRAPH_PRId "", (igraph_int_t) <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(*v)[i]);
     }
     <span class="strong"><strong>printf</strong></span>("\n");
 }
@@ -827,12 +826,15 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g1, g2, g3;
     igraph_vector_int_t edge_map1, edge_map2;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;left, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;left, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 1, 0, 5, 4, 1, 2, 3, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;right, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;right, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;edge_map1, 0);
@@ -847,54 +849,54 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;edge_map2);
     <span class="strong"><strong>printf</strong></span>("---\n");
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;left);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;right);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edge_map1);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;edge_map2);
 
     <span class="emphasis"><em>/* empty graph list */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.17.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;glist, 0);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_intersection_many" title="1.7. igraph_intersection_many — The intersection of more than two graphs.">igraph_intersection_many</a></strong></span>(&amp;isec, &amp;glist, 0);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;isec) != 0 || !<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="4.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;isec)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;isec) != 0 || !<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_is_directed" title="5.2.3. igraph_is_directed — Is this a directed graph?">igraph_is_directed</a></strong></span>(&amp;isec)) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.17.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;glist);
 
     <span class="emphasis"><em>/* graph list with an empty graph */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.17.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;glist, 3);
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g3, 10, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g3, 10, IGRAPH_DIRECTED);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[0] = &amp;g1;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[1] = &amp;g2;
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[2] = &amp;g3;
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_intersection_many" title="1.7. igraph_intersection_many — The intersection of more than two graphs.">igraph_intersection_many</a></strong></span>(&amp;isec, &amp;glist, 0);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;isec) != 0 || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;isec) != 10) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;isec) != 0 || <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;isec) != 10) {
         <span class="strong"><strong>return</strong></span> 2;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g3);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g3);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.17.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;glist);
 
     <span class="emphasis"><em>/* "proper" graph list */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_init" title="2.17.1. igraph_vector_ptr_init — Initialize a pointer vector (constructor).">igraph_vector_ptr_init</a></strong></span>(&amp;glist, 3);
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, 3, 2, 4, 5, 6, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 2, 3, 1, 0, 1, 2, 3, 2, 4, 5, 6, 5, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g3, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g3, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[0] = &amp;g1;
@@ -902,10 +904,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#VECTOR" title="2.4.1. VECTOR — Accessing an element of a vector.">VECTOR</a></strong></span>(glist)[2] = &amp;g3;
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_intersection_many" title="1.7. igraph_intersection_many — The intersection of more than two graphs.">igraph_intersection_many</a></strong></span>(&amp;isec, &amp;glist, 0);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;isec, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g3);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g3);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;isec);
     <span class="strong"><strong><a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy" title="2.17.3. igraph_vector_ptr_destroy — Destroys a pointer vector.">igraph_vector_ptr_destroy</a></strong></span>(&amp;glist);
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -922,7 +924,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_intersection_many"></a>1.7. <code class="function">igraph_intersection_many</code> —  The intersection of more than two graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.2.8.2"></a><p>
+<a class="indexterm" name="id-1.16.2.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_intersection_many(
@@ -1044,7 +1046,7 @@ the less vertices).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_difference"></a>2.1. <code class="function">igraph_difference</code> —  Calculates the difference of two graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.3.2.2"></a><p>
+<a class="indexterm" name="id-1.16.3.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_difference(igraph_t *res,
@@ -1131,120 +1133,122 @@ number of edges in the result graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.3.2.10.1"></a><p class="title"><b>Example 28.4.  File <code class="code">examples/simple/igraph_difference.c</code></b></p>
+<a name="id-1.16.3.2.10.1"></a><p class="title"><b>Example 15.4.  File <code class="code">examples/simple/igraph_difference.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-
     igraph_t orig, sub, diff;
     igraph_vector_int_t v;
+
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
 
     <span class="emphasis"><em>/* Subtract from itself */</em></span>
     <span class="strong"><strong>printf</strong></span>("subtract itself\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 1, 4, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;orig);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != 0 ||
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != 0 ||
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
         <span class="strong"><strong>return</strong></span> 1;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
 
     <span class="emphasis"><em>/* Same for undirected graph */</em></span>
     <span class="strong"><strong>printf</strong></span>("subtract itself, undirected\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 1, 4, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 1, 0, 1, 2, 2, 1, 4, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;sub);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != 0 ||
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != 0 ||
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
         <span class="strong"><strong>return</strong></span> 2;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
 
     <span class="emphasis"><em>/* Subtract the empty graph */</em></span>
     <span class="strong"><strong>printf</strong></span>("subtract empty\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 1, 4, 5, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;sub, 3, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;sub, 3, IGRAPH_DIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;sub);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;orig) ||
-        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;orig) ||
+        <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;diff) != <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;orig)) {
         <span class="strong"><strong>return</strong></span> 3;
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
 
     <span class="emphasis"><em>/* A `real' example */</em></span>
     <span class="strong"><strong>printf</strong></span>("real example\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 1, 4, 5, 8, 9, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 5, 4, 2, 1, 6, 7, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;sub);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
 
     <span class="emphasis"><em>/* undirected version */</em></span>
     <span class="strong"><strong>printf</strong></span>("real example, undirected\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 1, 4, 5, 8, 9, 8, 10, 8, 13, 8, 11, 8, 12, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 5, 4, 2, 1, 6, 7, 8, 10, 8, 13, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;sub);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
 
     <span class="emphasis"><em>/* undirected version with loop edge, tests Github issue #597 */</em></span>
     <span class="strong"><strong>printf</strong></span>("Github issue #597, undirected\n");
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;orig, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 2, 3, 3, 4, 4, 0, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;sub, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_difference" title="2.1. igraph_difference — Calculates the difference of two graphs.">igraph_difference</a></strong></span>(&amp;diff, &amp;orig, &amp;sub);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;diff, stdout);
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;diff);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;orig);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;sub);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1260,7 +1264,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_complementer"></a>2.2. <code class="function">igraph_complementer</code> —  Creates the complementer of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.3.3.2"></a><p>
+<a class="indexterm" name="id-1.16.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_complementer(igraph_t *res, const igraph_t *graph,
@@ -1343,7 +1347,7 @@ and |E2| in the complementer graph.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.3.3.10.1"></a><p class="title"><b>Example 28.5.  File <code class="code">examples/simple/igraph_complementer.c</code></b></p>
+<a name="id-1.16.3.3.10.1"></a><p class="title"><b>Example 15.5.  File <code class="code">examples/simple/igraph_complementer.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1351,41 +1355,44 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g1, g2;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* complementer of the empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* the same without loops */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* complementer of the full graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED, IGRAPH_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g2) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g2) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* complementer of the full graph, results loops only */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
@@ -1394,40 +1401,40 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <span class="emphasis"><em>     *************/</em></span>
 
     <span class="emphasis"><em>/* complementer of the empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* the same without loops */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* complementer of the full graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED, IGRAPH_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g2) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g2) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>printf</strong></span>("---\n");
 
     <span class="emphasis"><em>/* complementer of the full graph, results loops only */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_complementer" title="2.2. igraph_complementer — Creates the complementer of a graph.">igraph_complementer</a></strong></span>(&amp;g2, &amp;g1, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g2, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1443,7 +1450,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_compose"></a>2.3. <code class="function">igraph_compose</code> —  Calculates the composition of two graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.3.4.2"></a><p>
+<a class="indexterm" name="id-1.16.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_compose(igraph_t *res,
@@ -1545,7 +1552,7 @@ graphs.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.3.4.10.1"></a><p class="title"><b>Example 28.6.  File <code class="code">examples/simple/igraph_compose.c</code></b></p>
+<a name="id-1.16.3.4.10.1"></a><p class="title"><b>Example 15.6.  File <code class="code">examples/simple/igraph_compose.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1555,86 +1562,89 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vector_int_t v;
     igraph_vector_int_t map1, map2;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map1, 0);
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;map2, 0);
 
     <span class="emphasis"><em>/* composition with the empty graph */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g2, 5, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g2, 5, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g1, &amp;g2, &amp;map1, &amp;map2);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map1) != 0 || <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map2) != 0) {
         <span class="strong"><strong>return</strong></span> 11;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g2, &amp;g1, &amp;map1, &amp;map2);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
         <span class="strong"><strong>return</strong></span> 2;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map1) != 0 || <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map2) != 0) {
         <span class="strong"><strong>return</strong></span> 12;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="emphasis"><em>/* same but undirected */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g2, 5, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g1, 5, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g2, 5, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g1, &amp;g2, &amp;map1, &amp;map2);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
         <span class="strong"><strong>return</strong></span> 1;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map1) != 0 || <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map2) != 0) {
         <span class="strong"><strong>return</strong></span> 11;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g2, &amp;g1, &amp;map1, &amp;map2);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;res) != 0) {
         <span class="strong"><strong>return</strong></span> 2;
     }
     <span class="strong"><strong>if</strong></span> (<span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map1) != 0 || <span class="strong"><strong>igraph_vector_int_size</strong></span>(&amp;map2) != 0) {
         <span class="strong"><strong>return</strong></span> 12;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="emphasis"><em>/* proper directed graph */</em></span>
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 5, 6, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 2, 4, 5, 6, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_DIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g1, &amp;g2, &amp;map1, &amp;map2);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;res, stdout);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;map1);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;map2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="emphasis"><em>/* undirected graph */</em></span>
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 1, 2, 5, 6, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g1, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong>igraph_vector_int_init_int_end</strong></span>(&amp;v, -1, 0, 1, 0, 4, 5, 6, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_UNDIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g2, &amp;v, 0, IGRAPH_UNDIRECTED);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;v);
 
     <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_compose" title="2.3. igraph_compose — Calculates the composition of two graphs.">igraph_compose</a></strong></span>(&amp;res, &amp;g1, &amp;g2, &amp;map1, &amp;map2);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;res, stdout);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;map1);
     <span class="strong"><strong>igraph_vector_int_print</strong></span>(&amp;map2);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;res);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g1);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g2);
 
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;map2);
     <span class="strong"><strong>igraph_vector_int_destroy</strong></span>(&amp;map1);
@@ -1657,24 +1667,25 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Operators.html#igraph_connect_neighborhood">3.1. <code class="function">igraph_connect_neighborhood</code> —  Connects each vertex to its neighborhood.</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#igraph_contract_vertices">3.2. <code class="function">igraph_contract_vertices</code> —  Replace multiple vertices with a single one.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_graph_power">3.3. <code class="function">igraph_graph_power</code> —  The kth power of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_graph_power">3.3. <code class="function">igraph_graph_power</code> —  The k-th power of a graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Operators.html#igraph_product">3.4. <code class="function">igraph_product</code> —  The graph product of two graphs, according to the chosen product type.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph">3.5. <code class="function">igraph_induced_subgraph</code> —  Creates a subgraph induced by the specified vertices.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph_map">3.6. <code class="function">igraph_induced_subgraph_map</code> —  Creates an induced subraph and returns the mapping from the original.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph_edges">3.7. <code class="function">igraph_induced_subgraph_edges</code> —  The edges contained within an induced sugraph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_linegraph">3.8. <code class="function">igraph_linegraph</code> —  Create the line graph of a graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_mycielskian">3.9. <code class="function">igraph_mycielskian</code> —  Generate the Mycielskian of a graph with <em class="parameter"><code>k</code></em> iterations.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_simplify">3.10. <code class="function">igraph_simplify</code> —  Removes loop and/or multiple edges from the graph.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_subgraph_from_edges">3.11. <code class="function">igraph_subgraph_from_edges</code> —  Creates a subgraph with the specified edges and their endpoints.</a></span></dt>
-<dt><span class="section"><a href="igraph-Operators.html#igraph_reverse_edges">3.12. <code class="function">igraph_reverse_edges</code> —  Reverses some edges of a directed graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_rooted_product">3.5. <code class="function">igraph_rooted_product</code> —  The rooted graph product of two graphs.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph">3.6. <code class="function">igraph_induced_subgraph</code> —  Creates a subgraph induced by the specified vertices.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph_map">3.7. <code class="function">igraph_induced_subgraph_map</code> —  Creates an induced subraph and returns the mapping from the original.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_induced_subgraph_edges">3.8. <code class="function">igraph_induced_subgraph_edges</code> —  The edges contained within an induced sugraph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_linegraph">3.9. <code class="function">igraph_linegraph</code> —  Create the line graph of a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_mycielskian">3.10. <code class="function">igraph_mycielskian</code> —  Generate the Mycielskian of a graph with <em class="parameter"><code>k</code></em> iterations.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_simplify">3.11. <code class="function">igraph_simplify</code> —  Removes loop and/or multiple edges from the graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_subgraph_from_edges">3.12. <code class="function">igraph_subgraph_from_edges</code> —  Creates a subgraph with the specified edges and their endpoints.</a></span></dt>
+<dt><span class="section"><a href="igraph-Operators.html#igraph_reverse_edges">3.13. <code class="function">igraph_reverse_edges</code> —  Reverses some edges of a directed graph.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_connect_neighborhood"></a>3.1. <code class="function">igraph_connect_neighborhood</code> —  Connects each vertex to its neighborhood.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.2.2"></a><p>
+<a class="indexterm" name="id-1.16.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_connect_neighborhood(igraph_t *graph, igraph_integer_t order,
+igraph_error_t igraph_connect_neighborhood(igraph_t *graph, igraph_int_t order,
                                 igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -1690,7 +1701,7 @@ to all vertices reachable by at most <em class="parameter"><code>order</code></e
 </p>
 <p>
 Note that the input graph is modified in place, no
-new graph is created. Call <a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a> if you want to keep
+new graph is created. Call <a class="link" href="igraph-Basic.html#igraph_copy" title="5.1.3. igraph_copy — Creates an exact (deep) copy of a graph."><code class="function">igraph_copy()</code></a> if you want to keep
 the original graph as well.
 
 </p>
@@ -1761,8 +1772,8 @@ undirected (A,B) edge will be added in this case.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_graph_power" title="3.3. igraph_graph_power — The kth power of a graph."><code class="function">igraph_graph_power()</code></a> to compute the kth power of a graph;
-<a class="link" href="igraph-Generators.html#igraph_square_lattice" title="1.11. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> uses this function to connect the
+  <a class="link" href="igraph-Operators.html#igraph_graph_power" title="3.3. igraph_graph_power — The k-th power of a graph."><code class="function">igraph_graph_power()</code></a> to compute the kth power of a graph;
+<a class="link" href="igraph-Generators.html#igraph_square_lattice" title="4.4. igraph_square_lattice — Arbitrary dimensional square lattices."><code class="function">igraph_square_lattice()</code></a> uses this function to connect the
 neighborhood of the vertices.
   </p></td>
 </tr></tbody>
@@ -1777,7 +1788,7 @@ graph, d is the average degree and k is the <em class="parameter"><code>order</c
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_contract_vertices"></a>3.2. <code class="function">igraph_contract_vertices</code> —  Replace multiple vertices with a single one.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.3.2"></a><p>
+<a class="indexterm" name="id-1.16.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_contract_vertices(igraph_t *graph,
@@ -1796,7 +1807,7 @@ to groups of vertices in the input graph. No edges are removed,
 thus the modified graph will typically have self-loops
 (corresponding to in-group edges) and multi-edges
 (corresponding to multiple connections between two groups).
-Use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to eliminate self-loops and
+Use <a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph."><code class="function">igraph_simplify()</code></a> to eliminate self-loops and
 merge multi-edges.
 
 </p>
@@ -1860,7 +1871,7 @@ or vertices plus edges.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.4.3.8.1"></a><p class="title"><b>Example 28.7.  File <code class="code">examples/simple/igraph_contract_vertices.c</code></b></p>
+<a name="id-1.16.4.3.8.1"></a><p class="title"><b>Example 15.7.  File <code class="code">examples/simple/igraph_contract_vertices.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1884,18 +1895,18 @@ or vertices plus edges.
 
     <span class="emphasis"><em>/* To compute the condensation, we simply contract strongly connected components.</em></span>
 <span class="emphasis"><em>     * Since igraph_contract_vertices() modifies graphs in-place, we make a copy first. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="5.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
 
     <span class="emphasis"><em>/* Since we are not done creating the condensation yet, we add 'cond' to the</em></span>
 <span class="emphasis"><em>     * "finally" stack, so that it will be destroyed if an error occurs. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
 
     <span class="emphasis"><em>/* Contract strongly connected components. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_contract_vertices" title="3.2. igraph_contract_vertices — Replace multiple vertices with a single one.">igraph_contract_vertices</a></strong></span>(cond, &amp;membership, NULL));
 
     <span class="emphasis"><em>/* igraph_contract_vertices() preserves all edges, some of which become</em></span>
 <span class="emphasis"><em>     * parallel edges or self-loops after the contraction. We simplify these. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
 
     <span class="emphasis"><em>/* Data structures that are no longer needed must be explicitly destroyed.</em></span>
 <span class="emphasis"><em>     * If they were added to the "finally" stack, they must be removed explicitly,</em></span>
@@ -1912,16 +1923,19 @@ or vertices plus edges.
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph, cond;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Create a random directed graph with mean degree 2 and compute its condensation. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnm" title="1.1. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE);
     <span class="strong"><strong>condensation</strong></span>(&amp;graph, &amp;cond);
 
-    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
+    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;cond, stdout);
 
     <span class="emphasis"><em>/* Destroy data structures that are no longer needed. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1936,12 +1950,12 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_graph_power"></a>3.3. <code class="function">igraph_graph_power</code> —  The kth power of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.4.2"></a><p>
+<a name="igraph_graph_power"></a>3.3. <code class="function">igraph_graph_power</code> —  The k-th power of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_graph_power(const igraph_t *graph, igraph_t *res,
-                                  igraph_integer_t order, igraph_bool_t directed);
+                                  igraph_int_t order, igraph_bool_t directed);
 </pre></div>
 <p>
 </p>
@@ -1949,14 +1963,7 @@ igraph_error_t igraph_graph_power(const igraph_t *graph, igraph_t *res,
 
 
 
-</p>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p>This function is experimental and its signature is not considered final yet.
-We reserve the right to change the function signature without changing the
-major version of igraph. Use it at your own risk.</p>
-</div>
-<p>The kth power of a graph G is a simple graph where vertex <code class="constant">u</code> is connected to
+The k-th power of a graph G is a simple graph where vertex <code class="constant">u</code> is connected to
 <code class="constant">v</code> by a single edge if <code class="constant">v</code> is reachable from <code class="constant">u</code> in G within at most k steps.
 By convention, the zeroth power of a graph has no edges. The first power is
 identical to the original graph, except that multiple edges and self-loops
@@ -2050,7 +2057,7 @@ graph, d is the average degree and k is the <em class="parameter"><code>order</c
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_product"></a>3.4. <code class="function">igraph_product</code> —  The graph product of two graphs, according to the chosen product type.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.5.2"></a><p>
+<a class="indexterm" name="id-1.16.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_product(igraph_t *res,
@@ -2075,7 +2082,7 @@ major version of igraph. Use it at your own risk.</p>
 product concept selected by the <em class="parameter"><code>type</code></em> parameter. The two graphs must be of
 the same type, either directed or undirected. If a product of an undirected
 and a directed graph is required, convert one of them to the appropriate type
-using <a class="link" href="igraph-Structural.html#igraph_to_directed" title="17.1. igraph_to_directed — Convert an undirected graph to a directed one."><code class="function">igraph_to_directed()</code></a> or <a class="link" href="igraph-Structural.html#igraph_to_undirected" title="17.2. igraph_to_undirected — Convert a directed graph to an undirected one."><code class="function">igraph_to_undirected()</code></a>.
+using <a class="link" href="igraph-Structural.html#igraph_to_directed" title="18.1. igraph_to_directed — Convert an undirected graph to a directed one."><code class="function">igraph_to_directed()</code></a> or <a class="link" href="igraph-Structural.html#igraph_to_undirected" title="18.2. igraph_to_undirected — Convert a directed graph to an undirected one."><code class="function">igraph_to_undirected()</code></a>.
 
 </p>
 <p>
@@ -2193,9 +2200,35 @@ a connection from <code class="constant">u</code> to <code class="constant">v</c
 
     </p>
 <p>
-    Time Complexity: O(|V1| |V2| + |E1| |E2|)
+    Time complexity: O(|V1| |V2| + |E1| |E2|)
     where |V1| and |V2| are the number of vertices, and
     |E1| and |E2| are the number of edges of the operands.
+
+    
+</p>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_PRODUCT_MODULAR</code></span></p></td>
+<td>
+<p>
+
+    Computes the modular product of two graphs. In the product graph,
+    there is a connection from <code class="literal">(u1, v1)</code> to <code class="literal">(u2, v2)</code>
+    if and only if
+    <code class="literal">u1 ~ u2</code> and <code class="literal">v1 ~ v2</code> or
+    <code class="literal">NOT (u1 ~ u2)</code> and <code class="literal">NOT (v1 ~ v2)</code>.
+    The modular product requires both graphs to be simple.
+    Thus, the number of edges in the product is
+    <code class="literal">|E1| |E2| + |E1'| |E2'|</code> in the directed case and
+    <code class="literal">2 |E1| |E2| + 2 |E1'| |E2'|</code> in the undirected case.
+
+    </p>
+<p>
+    Time complexity: O(|V1| |V2| + |E1| |E2| + |E1'| |E2'|)
+    where |V1| and |V2| are the number of vertices,
+    |E1| and |E2| are the number of edges of the operands, and
+    |E1'| and |E2'| are the number of edges of their complement.
 
 </p>
 </td>
@@ -2208,9 +2241,9 @@ a connection from <code class="constant">u</code> to <code class="constant">v</c
 <p>
 Reference:
 
-  * </p>
+</p>
 <p>
-Richar Hammack, Wilfried Imrich, and Sandi Klavžar (2011).
+Richard Hammack, Wilfried Imrich, and Sandi Klavžar (2011).
 Handbook of Product Graphs (2nd ed.). CRC Press.
 <a class="ulink" href="https://doi.org/10.1201/b10959" target="_top">https://doi.org/10.1201/b10959</a>
 
@@ -2269,13 +2302,152 @@ Handbook of Product Graphs (2nd ed.). CRC Press.
 </tr></tbody>
 </table></div>
 <p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Operators.html#igraph_rooted_product" title="3.5. igraph_rooted_product — The rooted graph product of two graphs."><code class="function">igraph_rooted_product()</code></a> for the rooted product.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
  
 </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_induced_subgraph"></a>3.5. <code class="function">igraph_induced_subgraph</code> —  Creates a subgraph induced by the specified vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.6.2"></a><p>
+<a name="igraph_rooted_product"></a>3.5. <code class="function">igraph_rooted_product</code> —  The rooted graph product of two graphs.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_rooted_product(igraph_t *res,
+                                     const igraph_t *g1,
+                                     const igraph_t *g2,
+                                     const igraph_int_t root);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function computes the rooted product of two graphs. The two graphs
+must be of the same type, either directed or undirected. If a product of
+an undirected and a directed graph is required, convert one of them to the
+appropriate type using <a class="link" href="igraph-Structural.html#igraph_to_directed" title="18.1. igraph_to_directed — Convert an undirected graph to a directed one."><code class="function">igraph_to_directed()</code></a> or <a class="link" href="igraph-Structural.html#igraph_to_undirected" title="18.2. igraph_to_undirected — Convert a directed graph to an undirected one."><code class="function">igraph_to_undirected()</code></a>.
+
+</p>
+<p>
+The vertex IDs in the product graph related to the IDs in the operands in
+the same convention as in <a class="link" href="igraph-Operators.html#igraph_product" title="3.4. igraph_product — The graph product of two graphs, according to the chosen product type."><code class="function">igraph_product()</code></a>.
+
+</p>
+<p>
+In the rooted product graph of G and H, with root vertex ID <em class="parameter"><code>root</code></em> in H,
+there is a connection from <code class="literal">(u1, v1)</code> to <code class="literal">(u2, v2)</code>
+if and only if
+<code class="literal">u1 = u2</code> and <code class="literal">v1 ~ v2</code> or
+<code class="literal">u1 ~ u2</code> and <code class="literal">v1 = v2 = root</code>.
+Thus, the number of edges in the product graph is
+<code class="literal">|V1| |E2| + |E1|</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized graph object. The product graph will
+  be stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>g1</code></em>:</span></p></td>
+<td><p>
+  The first operand graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>g2</code></em>:</span></p></td>
+<td><p>
+  The second operand graph. It must have the same directedness as <em class="parameter"><code>g1</code></em>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>root</code></em>:</span></p></td>
+<td><p>
+  The root vertex id of the second graph.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code:
+        <code class="constant">IGRAPH_EINVAL</code> if the specified <em class="parameter"><code>type</code></em> is unsupported or the input
+        graphs <em class="parameter"><code>g1</code></em> and <em class="parameter"><code>g2</code></em> are incompatible for the requested product.
+        <code class="constant">IGRAPH_EINVVID</code> if invalid vertex ID passed as <em class="parameter"><code>root</code></em>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Operators.html#igraph_product" title="3.4. igraph_product — The graph product of two graphs, according to the chosen product type."><code class="function">igraph_product()</code></a> for other types of graph products.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(|V1| |V2| + |V1| |E2| + |E1|)
+where |V1| and |V2| are the number of vertices, and
+|E1| and |E2| are the number of edges of the operands.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_induced_subgraph"></a>3.6. <code class="function">igraph_induced_subgraph</code> —  Creates a subgraph induced by the specified vertices.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_induced_subgraph(const igraph_t *graph, igraph_t *res,
@@ -2293,7 +2465,7 @@ This function collects the specified vertices and all edges between
 them to a new graph. As vertex IDs are always contiguos integers starting
 at zero, the IDs in the created subgraph will be different from the IDs in
 the original graph. To get the mappings between them, use
-<a class="link" href="igraph-Operators.html#igraph_induced_subgraph_map" title="3.6. igraph_induced_subgraph_map — Creates an induced subraph and returns the mapping from the original."><code class="function">igraph_induced_subgraph_map()</code></a>
+<a class="link" href="igraph-Operators.html#igraph_induced_subgraph_map" title="3.7. igraph_induced_subgraph_map — Creates an induced subraph and returns the mapping from the original."><code class="function">igraph_induced_subgraph_map()</code></a>
 
 </p>
 <p><b>Arguments: </b>
@@ -2315,7 +2487,7 @@ the original graph. To get the mappings between them, use
 <td><p>
   The subgraph, another graph object will be stored here,
        do <span class="emphasis"><em>not</em></span> initialize this object before calling this
-       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
+       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
        it any more.
 </p></td>
 </tr>
@@ -2388,9 +2560,9 @@ edges in the original graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Operators.html#igraph_induced_subgraph_map" title="3.6. igraph_induced_subgraph_map — Creates an induced subraph and returns the mapping from the original."><code class="function">igraph_induced_subgraph_map()</code></a> to also retrieve the vertex ID
+  <a class="link" href="igraph-Operators.html#igraph_induced_subgraph_map" title="3.7. igraph_induced_subgraph_map — Creates an induced subraph and returns the mapping from the original."><code class="function">igraph_induced_subgraph_map()</code></a> to also retrieve the vertex ID
 mapping between the graph and the extracted subgraph;
-<a class="link" href="igraph-Basic.html#igraph_delete_vertices" title="4.3.5. igraph_delete_vertices — Removes some vertices (with all their edges) from the graph."><code class="function">igraph_delete_vertices()</code></a> to delete the specified set of
+<a class="link" href="igraph-Basic.html#igraph_delete_vertices" title="5.3.5. igraph_delete_vertices — Removes some vertices (with all their edges) from the graph."><code class="function">igraph_delete_vertices()</code></a> to delete the specified set of
 vertices from a graph, the opposite of this function.
   </p></td>
 </tr></tbody>
@@ -2401,8 +2573,8 @@ vertices from a graph, the opposite of this function.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_induced_subgraph_map"></a>3.6. <code class="function">igraph_induced_subgraph_map</code> —  Creates an induced subraph and returns the mapping from the original.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.7.2"></a><p>
+<a name="igraph_induced_subgraph_map"></a>3.7. <code class="function">igraph_induced_subgraph_map</code> —  Creates an induced subraph and returns the mapping from the original.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_induced_subgraph_map(const igraph_t *graph, igraph_t *res,
@@ -2444,7 +2616,7 @@ extracted subgraphs are returned in <em class="parameter"><code>map</code></em> 
 <td><p>
   The subgraph, another graph object will be stored here,
        do <span class="emphasis"><em>not</em></span> initialize this object before calling this
-       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
+       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
        it any more.
 </p></td>
 </tr>
@@ -2528,7 +2700,7 @@ edges in the original graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Basic.html#igraph_delete_vertices" title="4.3.5. igraph_delete_vertices — Removes some vertices (with all their edges) from the graph."><code class="function">igraph_delete_vertices()</code></a> to delete the specified set of
+  <a class="link" href="igraph-Basic.html#igraph_delete_vertices" title="5.3.5. igraph_delete_vertices — Removes some vertices (with all their edges) from the graph."><code class="function">igraph_delete_vertices()</code></a> to delete the specified set of
 vertices from a graph, the opposite of this function.
   </p></td>
 </tr></tbody>
@@ -2539,8 +2711,8 @@ vertices from a graph, the opposite of this function.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_induced_subgraph_edges"></a>3.7. <code class="function">igraph_induced_subgraph_edges</code> —  The edges contained within an induced sugraph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.8.2"></a><p>
+<a name="igraph_induced_subgraph_edges"></a>3.8. <code class="function">igraph_induced_subgraph_edges</code> —  The edges contained within an induced sugraph.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_induced_subgraph_edges(const igraph_t *graph, igraph_vs_t vids, igraph_vector_int_t *edges);
@@ -2608,8 +2780,8 @@ and mv is the sum of degrees of vertices in <em class="parameter"><code>vids</co
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_linegraph"></a>3.8. <code class="function">igraph_linegraph</code> —  Create the line graph of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.9.2"></a><p>
+<a name="igraph_linegraph"></a>3.9. <code class="function">igraph_linegraph</code> —  Create the line graph of a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_linegraph(const igraph_t *graph, igraph_t *linegraph);
@@ -2696,11 +2868,11 @@ Time complexity: O(|V|+|E|), the number of edges plus the number of vertices.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_mycielskian"></a>3.9. <code class="function">igraph_mycielskian</code> —  Generate the Mycielskian of a graph with <em class="parameter"><code>k</code></em> iterations.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.10.2"></a><p>
+<a name="igraph_mycielskian"></a>3.10. <code class="function">igraph_mycielskian</code> —  Generate the Mycielskian of a graph with <em class="parameter"><code>k</code></em> iterations.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_mycielskian(const igraph_t *graph, igraph_t *res, igraph_integer_t k);
+igraph_error_t igraph_mycielskian(const igraph_t *graph, igraph_t *res, igraph_int_t k);
 </pre></div>
 <p>
 </p>
@@ -2708,7 +2880,14 @@ igraph_error_t igraph_mycielskian(const igraph_t *graph, igraph_t *res, igraph_i
 
 
 
-The Mycielskian of a graph is a larger graph formed using a construction due
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The Mycielskian of a graph is a larger graph formed using a construction due
 to Jan Mycielski that increases the chromatic number by one while preserving
 the triangle-free property. The Mycielski construction can be used to create
 triangle-free graphs with an arbitrarily large chromatic number.
@@ -2772,7 +2951,7 @@ The Mycielskian of the singleton graph is the two-path.
 
 This ensures that iterative applications of the construction, starting from
 the null or singleton graph, always yields connected graphs. In fact these
-are the Mycielski graphs that <a class="link" href="igraph-Generators.html#igraph_mycielski_graph" title="1.30. igraph_mycielski_graph — The Mycielski graph of order k."><code class="function">igraph_mycielski_graph()</code></a> produces.
+are the Mycielski graphs that <a class="link" href="igraph-Generators.html#igraph_mycielski_graph" title="9.4. igraph_mycielski_graph — The Mycielski graph of order k."><code class="function">igraph_mycielski_graph()</code></a> produces.
 
 </p>
 <p>
@@ -2846,7 +3025,7 @@ graph, respectively.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Generators.html#igraph_mycielski_graph" title="1.30. igraph_mycielski_graph — The Mycielski graph of order k."><code class="function">igraph_mycielski_graph()</code></a>.
+  <a class="link" href="igraph-Generators.html#igraph_mycielski_graph" title="9.4. igraph_mycielski_graph — The Mycielski graph of order k."><code class="function">igraph_mycielski_graph()</code></a>.
   </p></td>
 </tr></tbody>
 </table></div>
@@ -2859,8 +3038,8 @@ edge counts, respectively.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_simplify"></a>3.10. <code class="function">igraph_simplify</code> —  Removes loop and/or multiple edges from the graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.11.2"></a><p>
+<a name="igraph_simplify"></a>3.11. <code class="function">igraph_simplify</code> —  Removes loop and/or multiple edges from the graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_simplify(igraph_t *graph,
@@ -2939,7 +3118,7 @@ Time complexity: O(|V|+|E|).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.29.4.11.8.1"></a><p class="title"><b>Example 28.8.  File <code class="code">examples/simple/igraph_simplify.c</code></b></p>
+<a name="id-1.16.4.12.8.1"></a><p class="title"><b>Example 15.8.  File <code class="code">examples/simple/igraph_simplify.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -2947,66 +3126,69 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Multiple edges */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
         <span class="strong"><strong>return</strong></span> 1;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Loop edges*/</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 0, 1, 1, 2, 2, 1, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 0, 1, 1, 2, 2, 1, 2, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 0, 1, 1, 2, 2, 1, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 0, 0, 1, 1, 2, 2, 1, 2, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* Loop &amp; multiple edges */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> false, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 2, 2, 2, 2, 2, 2, 3, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> false, <span class="emphasis"><em>/* remove_loops */</em></span> true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 2, 2, 2, 2, 2, 2, 3, 2, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> false, <span class="emphasis"><em>/* remove_loops */</em></span> true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 3, 3, 3, 3, 3, 4, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> false, <span class="emphasis"><em>/* remove_loops */</em></span> true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED, 3, 3, 3, 3, 3, 4, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, <span class="emphasis"><em>/* remove_multiple */</em></span> false, <span class="emphasis"><em>/* remove_loops */</em></span> true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_DIRECTED, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, -1);
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;g, stdout);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="1.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_small" title="2.2. igraph_small — Shorthand to create a small graph, giving the edges as arguments.">igraph_small</a></strong></span>(&amp;g, 0, IGRAPH_UNDIRECTED,
                  2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2, 3, 2, -1);
-    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
-    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="4.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
+    <span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(&amp;g, true, true, <span class="emphasis"><em>/*edge_comb=*/</em></span> NULL);
+    <span class="strong"><strong>if</strong></span> (<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_ecount" title="5.2.2. igraph_ecount — The number of edges in a graph.">igraph_ecount</a></strong></span>(&amp;g) != 1) {
         <span class="strong"><strong>return</strong></span> 2;
     }
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -3021,8 +3203,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_subgraph_from_edges"></a>3.11. <code class="function">igraph_subgraph_from_edges</code> —  Creates a subgraph with the specified edges and their endpoints.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.12.2"></a><p>
+<a name="igraph_subgraph_from_edges"></a>3.12. <code class="function">igraph_subgraph_from_edges</code> —  Creates a subgraph with the specified edges and their endpoints.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_subgraph_from_edges(
@@ -3065,7 +3247,7 @@ in the original graph. Vertex IDs will also be reassigned if
 <td><p>
   The subgraph, another graph object will be stored here,
        do <span class="emphasis"><em>not</em></span> initialize this object before calling this
-       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
+       function, and call <a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object."><code class="function">igraph_destroy()</code></a> on it if you don't need
        it any more.
 </p></td>
 </tr>
@@ -3118,7 +3300,7 @@ edges in the original graph.
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
 <td><p>
-  <a class="link" href="igraph-Basic.html#igraph_delete_edges" title="4.3.4. igraph_delete_edges — Removes edges from a graph."><code class="function">igraph_delete_edges()</code></a> to delete the specified set of
+  <a class="link" href="igraph-Basic.html#igraph_delete_edges" title="5.3.4. igraph_delete_edges — Removes edges from a graph."><code class="function">igraph_delete_edges()</code></a> to delete the specified set of
 edges from a graph, the opposite of this function.
   </p></td>
 </tr></tbody>
@@ -3129,8 +3311,8 @@ edges from a graph, the opposite of this function.
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="igraph_reverse_edges"></a>3.12. <code class="function">igraph_reverse_edges</code> —  Reverses some edges of a directed graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.29.4.13.2"></a><p>
+<a name="igraph_reverse_edges"></a>3.13. <code class="function">igraph_reverse_edges</code> —  Reverses some edges of a directed graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.16.4.14.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_reverse_edges(igraph_t *graph, const igraph_es_t eids);
@@ -3199,7 +3381,7 @@ O(|E|) where |E| is the number of edges in the graph.
 </div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Embedding.html"><b>← Chapter 27. Embedding of graphs</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Arpack.html"><b>Chapter 29. Using BLAS, LAPACK and ARPACK for igraph matrices and graphs →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Spatial.html"><b>← Chapter 14. Spatial graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Visitors.html"><b>Chapter 16. Graph visitors →</b></a></td>
 </tr></table>
 {% endraw %}

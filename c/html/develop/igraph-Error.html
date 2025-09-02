@@ -243,7 +243,7 @@ typedef enum {
     IGRAPH_DIVERGED          = 14,
     IGRAPH_EARPACK           = 15,
     /* ARPACK error codes from 15 to 36 were moved to igraph_arpack_error_t in 1.0 */
-    IGRAPH_ENEGLOOP          = 37,
+    IGRAPH_ENEGCYCLE         = 37,
     IGRAPH_EINTERNAL         = 38,
     /* ARPACK error codes from 39 to 41 were moved to igraph_arpack_error_t in 1.0 */
     /* IGRAPH_EDIVZERO          = 42, */   /* removed in 1.0 */
@@ -374,9 +374,9 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ENEGLOOP</code>:</span></p></td>
+<td><p><span class="term"><code class="constant">IGRAPH_ENEGCYCLE</code>:</span></p></td>
 <td><p>
-  Negative loop detected while calculating shortest paths.
+  Negative cycle detected while calculating shortest paths.
 </p></td>
 </tr>
 <tr>
@@ -1612,18 +1612,18 @@ restore the error handler before they return.
 
     <span class="emphasis"><em>/* To compute the condensation, we simply contract strongly connected components.</em></span>
 <span class="emphasis"><em>     * Since igraph_contract_vertices() modifies graphs in-place, we make a copy first. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="5.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
 
     <span class="emphasis"><em>/* Since we are not done creating the condensation yet, we add 'cond' to the</em></span>
 <span class="emphasis"><em>     * "finally" stack, so that it will be destroyed if an error occurs. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
 
     <span class="emphasis"><em>/* Contract strongly connected components. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_contract_vertices" title="3.2. igraph_contract_vertices — Replace multiple vertices with a single one.">igraph_contract_vertices</a></strong></span>(cond, &amp;membership, NULL));
 
     <span class="emphasis"><em>/* igraph_contract_vertices() preserves all edges, some of which become</em></span>
 <span class="emphasis"><em>     * parallel edges or self-loops after the contraction. We simplify these. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.10. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_simplify" title="3.11. igraph_simplify — Removes loop and/or multiple edges from the graph.">igraph_simplify</a></strong></span>(cond, <span class="emphasis"><em>/* remove_multiple */</em></span> true, <span class="emphasis"><em>/* remove_loops */</em></span> true, NULL));
 
     <span class="emphasis"><em>/* Data structures that are no longer needed must be explicitly destroyed.</em></span>
 <span class="emphasis"><em>     * If they were added to the "finally" stack, they must be removed explicitly,</em></span>
@@ -1640,16 +1640,19 @@ restore the error handler before they return.
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph, cond;
 
+    <span class="emphasis"><em>/* Initialize the library. */</em></span>
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+
     <span class="emphasis"><em>/* Create a random directed graph with mean degree 2 and compute its condensation. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE);
+    <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnm" title="1.1. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE);
     <span class="strong"><strong>condensation</strong></span>(&amp;graph, &amp;cond);
 
-    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
+    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;cond, stdout);
 
     <span class="emphasis"><em>/* Destroy data structures that are no longer needed. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
