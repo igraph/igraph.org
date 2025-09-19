@@ -5,7 +5,7 @@ mainheader: igraph Reference Manual
 lead: For using the igraph C library
 vmenu: true
 doctype: html/
-langversion: develop
+langversion: 0.10.17
 ---
 
 {% raw %}
@@ -233,35 +233,58 @@ typedef enum {
     IGRAPH_PARSEERROR        = 3,
     IGRAPH_EINVAL            = 4,
     IGRAPH_EXISTS            = 5,
-    /* IGRAPH_EINVEVECTOR       = 6, */   /* removed in 1.0 */
+    IGRAPH_EINVEVECTOR       = 6,
     IGRAPH_EINVVID           = 7,
-    IGRAPH_EINVEID           = 8,         /* used to be IGRAPH_NONSQUARE before 1.0 */
+    IGRAPH_NONSQUARE         = 8,
     IGRAPH_EINVMODE          = 9,
     IGRAPH_EFILE             = 10,
     IGRAPH_UNIMPLEMENTED     = 12,
     IGRAPH_INTERRUPTED       = 13,
     IGRAPH_DIVERGED          = 14,
-    IGRAPH_EARPACK           = 15,
-    /* ARPACK error codes from 15 to 36 were moved to igraph_arpack_error_t in 1.0 */
+    IGRAPH_ARPACK_PROD       = 15,   /* unused, reserved */
+    IGRAPH_ARPACK_NPOS       = 16,
+    IGRAPH_ARPACK_NEVNPOS    = 17,
+    IGRAPH_ARPACK_NCVSMALL   = 18,
+    IGRAPH_ARPACK_NONPOSI    = 19,
+    IGRAPH_ARPACK_WHICHINV   = 20,
+    IGRAPH_ARPACK_BMATINV    = 21,
+    IGRAPH_ARPACK_WORKLSMALL = 22,
+    IGRAPH_ARPACK_TRIDERR    = 23,
+    IGRAPH_ARPACK_ZEROSTART  = 24,
+    IGRAPH_ARPACK_MODEINV    = 25,
+    IGRAPH_ARPACK_MODEBMAT   = 26,
+    IGRAPH_ARPACK_ISHIFT     = 27,
+    IGRAPH_ARPACK_NEVBE      = 28,
+    IGRAPH_ARPACK_NOFACT     = 29,
+    IGRAPH_ARPACK_FAILED     = 30,
+    IGRAPH_ARPACK_HOWMNY     = 31,
+    IGRAPH_ARPACK_HOWMNYS    = 32,
+    IGRAPH_ARPACK_EVDIFF     = 33,
+    IGRAPH_ARPACK_SHUR       = 34,
+    IGRAPH_ARPACK_LAPACK     = 35,
+    IGRAPH_ARPACK_UNKNOWN    = 36,
     IGRAPH_ENEGCYCLE         = 37,
+    IGRAPH_ENEGLOOP IGRAPH_DEPRECATED_ENUMVAL = IGRAPH_ENEGCYCLE,
     IGRAPH_EINTERNAL         = 38,
-    /* ARPACK error codes from 39 to 41 were moved to igraph_arpack_error_t in 1.0 */
-    /* IGRAPH_EDIVZERO          = 42, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_EBOUND        = 43, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_EROOT         = 44, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_ENOPFS        = 45, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_ENODFS        = 46, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_EFAIL         = 47, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_EMIPGAP       = 48, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_ETMLIM        = 49, */   /* removed in 1.0 */
-    /* IGRAPH_GLP_ESTOP         = 50, */   /* removed in 1.0 */
-    /* IGRAPH_EATTRIBUTES       = 51, */   /* removed in 1.0 */
+    IGRAPH_ARPACK_MAXIT      = 39,
+    IGRAPH_ARPACK_NOSHIFT    = 40,
+    IGRAPH_ARPACK_REORDER    = 41,
+    IGRAPH_EDIVZERO          = 42,
+    IGRAPH_GLP_EBOUND        = 43,
+    IGRAPH_GLP_EROOT         = 44,
+    IGRAPH_GLP_ENOPFS        = 45,
+    IGRAPH_GLP_ENODFS        = 46,
+    IGRAPH_GLP_EFAIL         = 47,
+    IGRAPH_GLP_EMIPGAP       = 48,
+    IGRAPH_GLP_ETMLIM        = 49,
+    IGRAPH_GLP_ESTOP         = 50,
+    IGRAPH_EATTRIBUTES       = 51,
     IGRAPH_EATTRCOMBINE      = 52,
-    /* IGRAPH_ELAPACK           = 53, */   /* removed in 1.0 */
-    /* IGRAPH_EDRL              = 54, */   /* deprecated in 0.10.2, removed in 1.0 */
+    IGRAPH_ELAPACK           = 53,
+    IGRAPH_EDRL IGRAPH_DEPRECATED_ENUMVAL = 54,
     IGRAPH_EOVERFLOW         = 55,
-    /* IGRAPH_EGLP              = 56, */   /* removed in 1.0 */
-    /* IGRAPH_CPUTIME           = 57, */   /* removed in 1.0 */
+    IGRAPH_EGLP              = 56,
+    IGRAPH_CPUTIME           = 57,
     IGRAPH_EUNDERFLOW        = 58,
     IGRAPH_ERWSTUCK          = 59,
     IGRAPH_STOP              = 60,
@@ -328,15 +351,23 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EINVEVECTOR</code>:</span></p></td>
+<td><p>
+  Invalid vector of vertex IDs. A vertex ID
+   is either negative or bigger than the number of vertices minus one.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><code class="constant">IGRAPH_EINVVID</code>:</span></p></td>
 <td><p>
   Invalid vertex ID, negative or too big.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">IGRAPH_EINVEID</code>:</span></p></td>
+<td><p><span class="term"><code class="constant">IGRAPH_NONSQUARE</code>:</span></p></td>
 <td><p>
-  Invalid edge ID, negative or too big.
+  A non-square matrix was received while a
+   square matrix was expected.
 </p></td>
 </tr>
 <tr>
@@ -366,11 +397,135 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><code class="constant">IGRAPH_ARPACK</code>:</span></p></td>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_PROD</code>:</span></p></td>
 <td><p>
-  An error happened inside a calculation implemented
-  in ARPACK. The calculation involved is most likely an eigenvector-related
-  calculation.
+  Matrix-vector product failed (not used any more).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NPOS</code>:</span></p></td>
+<td><p>
+  N must be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVNPOS</code>:</span></p></td>
+<td><p>
+  NEV must be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NCVSMALL</code>:</span></p></td>
+<td><p>
+  NCV must be bigger.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NONPOSI</code>:</span></p></td>
+<td><p>
+  Maximum number of iterations should be positive.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WHICHINV</code>:</span></p></td>
+<td><p>
+  Invalid WHICH parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_BMATINV</code>:</span></p></td>
+<td><p>
+  Invalid BMAT parameter.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_WORKLSMALL</code>:</span></p></td>
+<td><p>
+  WORKL is too small.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_TRIDERR</code>:</span></p></td>
+<td><p>
+  LAPACK error in tridiagonal eigenvalue calculation.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ZEROSTART</code>:</span></p></td>
+<td><p>
+  Starting vector is zero.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEINV</code>:</span></p></td>
+<td><p>
+  MODE is invalid.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_MODEBMAT</code>:</span></p></td>
+<td><p>
+  MODE and BMAT are not compatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_ISHIFT</code>:</span></p></td>
+<td><p>
+  ISHIFT must be 0 or 1.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NEVBE</code>:</span></p></td>
+<td><p>
+  NEV and WHICH='BE' are incompatible.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_NOFACT</code>:</span></p></td>
+<td><p>
+  Could not build an Arnoldi factorization.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_FAILED</code>:</span></p></td>
+<td><p>
+  No eigenvalues to sufficient accuracy.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNY</code>:</span></p></td>
+<td><p>
+  HOWMNY is invalid.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_HOWMNYS</code>:</span></p></td>
+<td><p>
+  HOWMNY='S' is not implemented.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_EVDIFF</code>:</span></p></td>
+<td><p>
+  Different number of converged Ritz values.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_SHUR</code>:</span></p></td>
+<td><p>
+  Error from calculation of a real Schur form.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_LAPACK</code>:</span></p></td>
+<td><p>
+  LAPACK (dtrevc) error for calculating eigenvectors.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ARPACK_UNKNOWN</code>:</span></p></td>
+<td><p>
+  Unknown ARPACK error.
 </p></td>
 </tr>
 <tr>
@@ -386,6 +541,68 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EDIVZERO</code>:</span></p></td>
+<td><p>
+  Big integer division by zero.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EBOUND</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EBOUND).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EROOT</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EROOT).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ENOPFS</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ENOPFS).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ENODFS</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ENODFS).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EFAIL</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EFAIL).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_EMIPGAP</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_EMIPGAP).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ETMLIM</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ETMLIM).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_GLP_ESTOP</code>:</span></p></td>
+<td><p>
+  GLPK error (GLP_ESTOP).
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EATTRIBUTES</code>:</span></p></td>
+<td><p>
+  Attribute handler error. The user is not
+  expected to find this; it is signalled if some igraph function is
+  not using the attribute handler interface properly.
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><code class="constant">IGRAPH_EATTRCOMBINE</code>:</span></p></td>
 <td><p>
   Unimplemented attribute combination
@@ -393,9 +610,34 @@ and the function causing the error never returns.
 </p></td>
 </tr>
 <tr>
+<td><p><span class="term"><code class="constant">IGRAPH_ELAPACK</code>:</span></p></td>
+<td><p>
+  A LAPACK call resulted in an error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EDRL</code>:</span></p></td>
+<td><p>
+  Internal error in the DrL layout generator; not used
+  any more (replaced by IGRAPH_EINTERNAL).
+</p></td>
+</tr>
+<tr>
 <td><p><span class="term"><code class="constant">IGRAPH_EOVERFLOW</code>:</span></p></td>
 <td><p>
   Integer or double overflow.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_EGLP</code>:</span></p></td>
+<td><p>
+  Internal GLPK error.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">IGRAPH_CPUTIME</code>:</span></p></td>
+<td><p>
+  CPU time exceeded.
 </p></td>
 </tr>
 <tr>
@@ -1612,11 +1854,11 @@ restore the error handler before they return.
 
     <span class="emphasis"><em>/* To compute the condensation, we simply contract strongly connected components.</em></span>
 <span class="emphasis"><em>     * Since igraph_contract_vertices() modifies graphs in-place, we make a copy first. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="5.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_copy" title="4.1.3. igraph_copy — Creates an exact (deep) copy of a graph.">igraph_copy</a></strong></span>(cond, graph));
 
     <span class="emphasis"><em>/* Since we are not done creating the condensation yet, we add 'cond' to the</em></span>
 <span class="emphasis"><em>     * "finally" stack, so that it will be destroyed if an error occurs. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
+    <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_FINALLY" title="5.3.1. IGRAPH_FINALLY — Registers an object for deallocation.">IGRAPH_FINALLY</a></strong></span>(<a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a>, cond);
 
     <span class="emphasis"><em>/* Contract strongly connected components. */</em></span>
     <span class="strong"><strong><a class="link" href="igraph-Error.html#IGRAPH_CHECK" title="5.2.5. IGRAPH_CHECK — Checks the return value of a function call.">IGRAPH_CHECK</a></strong></span>(<span class="strong"><strong><a class="link" href="igraph-Operators.html#igraph_contract_vertices" title="3.2. igraph_contract_vertices — Replace multiple vertices with a single one.">igraph_contract_vertices</a></strong></span>(cond, &amp;membership, NULL));
@@ -1640,19 +1882,16 @@ restore the error handler before they return.
 int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t graph, cond;
 
-    <span class="emphasis"><em>/* Initialize the library. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
-
     <span class="emphasis"><em>/* Create a random directed graph with mean degree 2 and compute its condensation. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnm" title="1.1. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_SIMPLE_SW, IGRAPH_EDGE_UNLABELED);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_erdos_renyi_game_gnm" title="2.3. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(&amp;graph, 100, 200, IGRAPH_DIRECTED, IGRAPH_NO_LOOPS);
     <span class="strong"><strong>condensation</strong></span>(&amp;graph, &amp;cond);
 
-    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="5.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
+    <span class="strong"><strong>printf</strong></span>("Number of vertices in the condensation: %" IGRAPH_PRId "\n", <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_vcount" title="4.2.1. igraph_vcount — The number of vertices in a graph.">igraph_vcount</a></strong></span>(&amp;cond));
     <span class="strong"><strong><a class="link" href="igraph-Foreign.html#igraph_write_graph_edgelist" title="1.2. igraph_write_graph_edgelist — Writes the edge list of a graph to a file.">igraph_write_graph_edgelist</a></strong></span>(&amp;cond, stdout);
 
     <span class="emphasis"><em>/* Destroy data structures that are no longer needed. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;graph);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;cond);
 
     <span class="strong"><strong>return</strong></span> 0;
 }

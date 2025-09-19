@@ -83,6 +83,11 @@ typedef enum {
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Spatial.html#igraph_delaunay_graph">2.1. <code class="function">igraph_delaunay_graph</code> —  Computes the Delaunay graph of a spatial point set.</a></span></dt>
 <dt><span class="section"><a href="igraph-Spatial.html#igraph_nearest_neighbor_graph">2.2. <code class="function">igraph_nearest_neighbor_graph</code> —  Computes the nearest neighbor graph for a spatial point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_gabriel_graph">2.3. <code class="function">igraph_gabriel_graph</code> —  The Gabriel graph of a point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_relative_neighborhood_graph">2.4. <code class="function">igraph_relative_neighborhood_graph</code> —  The relative neighborhood graph of a point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_lune_beta_skeleton">2.5. <code class="function">igraph_lune_beta_skeleton</code> —  The lune based β-skeleton of a spatial point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_circle_beta_skeleton">2.6. <code class="function">igraph_circle_beta_skeleton</code> —  The circle based β-skeleton of a 2D spatial point set.</a></span></dt>
+<dt><span class="section"><a href="igraph-Spatial.html#igraph_beta_weighted_gabriel_graph">2.7. <code class="function">igraph_beta_weighted_gabriel_graph</code> —  A Gabriel graph, with edges weighted by the β value at which it disappears.</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -190,7 +195,14 @@ igraph_error_t igraph_nearest_neighbor_graph(igraph_t *graph,
 
 
 
-This function constructs the <em class="parameter"><code>k</code></em> nearest neighbor graph of a given point
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function constructs the <em class="parameter"><code>k</code></em> nearest neighbor graph of a given point
 set. Each point is connected to at most <em class="parameter"><code>k</code></em> spatial neighbors within a
 radius of <em class="parameter"><code>cutoff</code></em>.
 
@@ -263,6 +275,491 @@ radius of <em class="parameter"><code>cutoff</code></em>.
 <p>
 
 Time complexity: O(n log(n)) where n is the number of points.
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_gabriel_graph"></a>2.3. <code class="function">igraph_gabriel_graph</code> —  The Gabriel graph of a point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_gabriel_graph(igraph_t *graph, const igraph_matrix_t *points);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>In the Gabriel graph of a point set, two points A and B are connected if
+there is no other point C within the closed ball of which AB is a diameter.
+The Gabriel graph is connected, and in 2D it is planar. igraph supports
+computing the Gabriel graph of arbitrary dimensional point sets.
+
+</p>
+<p>
+The Gabriel graph is a special case of lune-based and circle-based β-skeletons
+with <code class="literal">β=1</code>.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph to be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  The point set that will be used. Each row is a point,
+   dimensionality is inferred from column count.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error Code.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The Gabriel graph is a special case of
+    <a class="link" href="igraph-Spatial.html#igraph_lune_beta_skeleton" title="2.5. igraph_lune_beta_skeleton — The lune based β-skeleton of a spatial point set."><code class="function">igraph_lune_beta_skeleton()</code></a> and <a class="link" href="igraph-Spatial.html#igraph_circle_beta_skeleton" title="2.6. igraph_circle_beta_skeleton — The circle based β-skeleton of a 2D spatial point set."><code class="function">igraph_circle_beta_skeleton()</code></a>
+    where <code class="literal">β = 1</code>.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time Complexity: Around O(n^floor(d/2) log n), where n is the number of points
+and d is the dimensionality of the point set.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_relative_neighborhood_graph"></a>2.4. <code class="function">igraph_relative_neighborhood_graph</code> —  The relative neighborhood graph of a point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_relative_neighborhood_graph(igraph_t *graph, const igraph_matrix_t *points);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>The relative neighborhood graph is constructed from a set of points in space.
+Two points A and B are connected if and only if there is no other point C so
+that AC &lt; AB and BC &lt; AB, with the inequalities being strict.
+
+</p>
+<p>
+Most authors define the relative neighborhood graph to coincide with a
+lune-based β-skeleton for <code class="literal">β = 2</code>. In igraph, there is a subtle
+difference: the <code class="literal">β = 2</code> skeleton connects points A and B when there
+is no point C so that AC &lt;= AB and BC &lt;= AB. Therefore, three points
+forming an equilateral triangle are connected in the relative neighborhood graph,
+but disconnected in the <code class="literal">β = 2</code> skeleton.
+
+</p>
+<p>
+With these definitions, the relative neighborhood graph is always connected,
+while the <code class="literal">β = 2</code> skeleton is always triangle-free.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  The point set that will be used, each row is a point.
+    Dimensionality is inferred from the column number.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Spatial.html#igraph_lune_beta_skeleton" title="2.5. igraph_lune_beta_skeleton — The lune based β-skeleton of a spatial point set."><code class="function">igraph_lune_beta_skeleton()</code></a> to compute the lune based β-skeleton
+for <code class="literal">β = 2</code> or other β values.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time Complexity: Around O(n^floor(d/2) log n), where n is the number of points
+and d is the dimensionality of the point set.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_lune_beta_skeleton"></a>2.5. <code class="function">igraph_lune_beta_skeleton</code> —  The lune based β-skeleton of a spatial point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.6.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_lune_beta_skeleton(igraph_t *graph, const igraph_matrix_t *points, igraph_real_t beta);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function constructs the lune-based β-skeleton of an n-dimensional
+spatial point set.
+
+</p>
+<p>
+A larger β results in a larger region, and a sparser graph.
+Values of β &lt; 1 are only supported in 2D, and are considerably slower.
+
+</p>
+<p>
+The Gabriel graph is a special case of beta skeleton where <code class="literal">β = 1</code>.
+
+</p>
+<p>
+The Relative Neighborhood graph is a special case of beta skeleton where
+β approaches
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  A matrix containing the points that will be used to create the
+    graph. Each row is a point, dimensionality is inferred from the column count.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time Complexity: Around O(n^floor(d/2) log n), where n is the number of points
+and d is the dimensionality of the point set.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_circle_beta_skeleton"></a>2.6. <code class="function">igraph_circle_beta_skeleton</code> —  The circle based β-skeleton of a 2D spatial point set.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.7.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_circle_beta_skeleton(igraph_t *graph, const igraph_matrix_t *points, igraph_real_t beta);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function constructs the circle based β-skeleton of a 2D spatial point set.
+
+</p>
+<p>
+A larger <em class="parameter"><code>beta</code></em> value results in a larger region, and a sparser graph.
+Values of beta &lt; 1 are considerably slower
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  An n-by-2 matrix containing the points that will be used to
+   create the graph. Each row is a point.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
+<td><p>
+  A positive real value used to parameterize the graph.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time Complexity: Around O(n^floor(d/2) log n), where n is the number of points
+and d is the dimensionality of the point set.
+
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_beta_weighted_gabriel_graph"></a>2.7. <code class="function">igraph_beta_weighted_gabriel_graph</code> —  A Gabriel graph, with edges weighted by the β value at which it disappears.</h3></div></div></div>
+<a class="indexterm" name="id-1.15.3.8.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_beta_weighted_gabriel_graph(
+    igraph_t *graph,
+    igraph_vector_t *weights,
+    const igraph_matrix_t *points,
+    igraph_real_t max_beta);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>This function is experimental and its signature is not considered final yet.
+We reserve the right to change the function signature without changing the
+major version of igraph. Use it at your own risk.</p>
+</div>
+<p>This function generates a Gabriel graph, and for each edge of this graph it
+computes the threshold β value at which the edge ceases to be part of the
+lune-based β-skeleton. For edges that continue to be part of β-skeletons
+for arbitrarily large β, <code class="constant">IGRAPH_INFINITΥ</code> is returned.
+
+</p>
+<p>
+The <em class="parameter"><code>max_beta</code></em> cutoff parameter controls the largest β value to consider
+For edges that persist above this β value, <code class="constant">IGRAPH_INFINITΥ</code> is returned.
+This parameter serves to improve performance: the smaller this cutoff,
+the faster the computation. Pass <code class="constant">IGRAPH_INFINITY</code> to use no cutoff.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  A pointer to the graph that will be created.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>weights</code></em>:</span></p></td>
+<td><p>
+  Will contain the edge weights corresponding to the edge
+   indices from the graph.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>points</code></em>:</span></p></td>
+<td><p>
+  A matrix containing the points that will be used.
+   Each row is a point, dimensionality is inferred from the column count.
+   There must be no duplicate points.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_beta</code></em>:</span></p></td>
+<td><p>
+  Maximum value of beta to search to, higher values will be
+   represented as <code class="constant">IGRAPH_INFINITY</code>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Spatial.html#igraph_lune_beta_skeleton" title="2.5. igraph_lune_beta_skeleton — The lune based β-skeleton of a spatial point set."><code class="function">igraph_lune_beta_skeleton()</code></a> or <a class="link" href="igraph-Spatial.html#igraph_circle_beta_skeleton" title="2.6. igraph_circle_beta_skeleton — The circle based β-skeleton of a 2D spatial point set."><code class="function">igraph_circle_beta_skeleton()</code></a>
+to generate a graph with a given value of beta; <a class="link" href="igraph-Spatial.html#igraph_gabriel_graph" title="2.3. igraph_gabriel_graph — The Gabriel graph of a point set."><code class="function">igraph_gabriel_graph()</code></a>
+to only generate a Gabriel graph, without edge weights.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+
+Time Complexity: Around O(n^floor(d/2) log n), where n is the number of points
+and d is the dimensionality of the point set. Though large values of max_beta
+can cause long run times if there are edges that disappear only at large betas.
+
  
 </p>
 </div>

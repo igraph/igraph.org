@@ -51,16 +51,42 @@ fixed degrees, etc.)</p>
 <dt><span class="section"><a href="igraph-Games.html#igraph_correlated_game">1.9. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</a></span></dt>
 <dt><span class="section"><a href="igraph-Games.html#igraph_correlated_pair_game">1.10. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</a></span></dt>
 </dl></div>
+<p>
+There are two classic random graph models referred to as the Erdős-Rényi
+random graph, or sometimes simply <span class="emphasis"><em>the</em></span> random graph. Both fix the vertex
+count n, but while the G(n,m) model prescribes precisely m edges, the G(n,p)
+model connects all vertex pairs independently with probability p. While
+these models look superficially different, when n is large they behave in
+a similar manner. G(n,m) graphs have a density of exactly
+<code class="literal">p = m / m_max</code>, while G(n,p) graphs have <code class="literal">m = p m_max</code>
+edges on <span class="emphasis"><em>average,</em></span> where <code class="constant">m_max</code> is the number of vertex pairs. Indeed,
+these two models turns out to be two sides of the same coin: both can be
+understood as maximum entropy models with a constraint on the number of
+edges. The G(n,m) is obtained from a sharp constraint, while G(n,p) from
+an average constraint (soft constraint).
+</p>
+<p>
+The maximum entropy framework allows for rigorous generalizations of these
+models to various scenarios, of which igraph supports many, such as models
+defined over directed graphs, bipartite graphs, multigraphs, or even over
+edge-labelled graphs. Constraining edge counts between various subsets of
+vertices yields further families of related models, such as
+<a class="link" href="igraph-Games.html#igraph_sbm_game" title="1.4. igraph_sbm_game — Sample from a stochastic block model."><code class="function">igraph_sbm_game()</code></a> (given connection probabilities between categories)
+or <a class="link" href="igraph-Games.html#igraph_degree_sequence_game" title="4.1. igraph_degree_sequence_game — Generates a random graph with a given degree sequence."><code class="function">igraph_degree_sequence_game()</code></a> (given incident edge counts, i.e.
+degrees, for each vertex).
+</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_erdos_renyi_game_gnm"></a>1.1. <code class="function">igraph_erdos_renyi_game_gnm</code> —  Generates a random (Erdős-Rényi) graph with a fixed number of edges.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.2.2"></a><p>
+<a class="indexterm" name="id-1.13.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_erdos_renyi_game_gnm(
-    igraph_t *graph, igraph_int_t n, igraph_int_t m,
-    igraph_bool_t directed, igraph_bool_t loops, igraph_bool_t multiple
-);
+        igraph_t *graph,
+        igraph_int_t n, igraph_int_t m,
+        igraph_bool_t directed,
+        igraph_edge_type_sw_t allowed_edge_types,
+        igraph_bool_t edge_labeled);
 </pre></div>
 <p>
 </p>
@@ -106,16 +132,20 @@ and <em class="parameter"><code>m</code></em> edges is generated uniformly at ra
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>allowed_edge_types</code></em>:</span></p></td>
 <td><p>
-  Whether to generate self-loops.
+  Controls whether multi-edges and self-loops
+    are generated. See <a class="link" href="igraph-Games.html#igraph_edge_type_sw_t" title="7.1. igraph_edge_type_sw_t — What types of non-simple edges to allow?"><code class="function">igraph_edge_type_sw_t</code></a>.
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>edge_labeled</code></em>:</span></p></td>
 <td><p>
-  Whether it is allowed to generate more than one edge between
-   the same pair of vertices.
+  If true, the sampling is done uniformly from the set
+    of ordered edge lists. See <a class="link" href="igraph-Games.html#igraph_iea_game" title="1.3. igraph_iea_game — Generates a random multigraph through independent edge assignment."><code class="function">igraph_iea_game()</code></a> for more information.
+    Set this to <code class="constant">false</code> to select the classic Erdős-Rényi model.
+    The constants <code class="constant">IGRAPH_EDGE_UNLABELED</code> and <code class="constant">IGRAPH_EDGE_LABELED</code>
+    may be used instead of <code class="constant">false</code> and <code class="constant">true</code> for better readability.
 </p></td>
 </tr>
 </tbody>
@@ -168,7 +198,7 @@ commonly used random graph models.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.3.2.10.1"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/igraph_erdos_renyi_game_gnm.c</code></b></p>
+<a name="id-1.13.3.4.10.1"></a><p class="title"><b>Example 12.1.  File <code class="code">examples/simple/igraph_erdos_renyi_game_gnm.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -184,9 +214,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="emphasis"><em>/* Sample a graph from the Erdős-Rényi G(n,m) model */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnm" title="1.1. igraph_erdos_renyi_game_gnm — Generates a random (Erdős-Rényi) graph with a fixed number of edges.">igraph_erdos_renyi_game_gnm</a></strong></span>(
-        &amp;graph, <span class="emphasis"><em>/* n= */</em></span> 100, <span class="emphasis"><em>/* m= */</em></span> 100,
-        IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS, IGRAPH_NO_MULTIPLE
-    );
+            &amp;graph, <span class="emphasis"><em>/* n= */</em></span> 100, <span class="emphasis"><em>/* m= */</em></span> 100,
+            IGRAPH_UNDIRECTED, IGRAPH_SIMPLE_SW, IGRAPH_EDGE_UNLABELED);
 
     <span class="emphasis"><em>/* Compute the fraction of vertices contained within the largest connected component */</em></span>
 
@@ -217,13 +246,15 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_erdos_renyi_game_gnp"></a>1.2. <code class="function">igraph_erdos_renyi_game_gnp</code> —  Generates a random (Erdős-Rényi) graph with fixed edge probabilities.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.3.2"></a><p>
+<a class="indexterm" name="id-1.13.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_erdos_renyi_game_gnp(
-    igraph_t *graph, igraph_int_t n, igraph_real_t p,
-    igraph_bool_t directed, igraph_bool_t loops
-);
+        igraph_t *graph,
+        igraph_int_t n, igraph_real_t p,
+        igraph_bool_t directed,
+        igraph_edge_type_sw_t allowed_edge_types,
+        igraph_bool_t edge_labeled);
 </pre></div>
 <p>
 </p>
@@ -236,17 +267,51 @@ In the <code class="literal">G(n, p)</code> Erdős-Rényi model, also known as t
 or Bernoulli random graph, a graph with <em class="parameter"><code>n</code></em> vertices is generated such that
 every possible edge is included in the graph independently with probability
 <em class="parameter"><code>p</code></em>. This is equivalent to a maximum entropy random graph model model with
-a constraint on the <span class="emphasis"><em>expected</em></span> edge count. Setting <code class="literal">p = 1/2</code>
-generates all graphs on <em class="parameter"><code>n</code></em> vertices with the same probability.
+a constraint on the <span class="emphasis"><em>expected</em></span> edge count. The maximum entropy view allows
+for extending the model to multigraphs, as discussed by Park and Newman (2004),
+section III.D. In this case, <em class="parameter"><code>p</code></em> is interpreted as the expected number of
+edges between any vertex pair.
 
 </p>
 <p>
-The expected mean degree of the graph is approximately <code class="literal">p n</code>;
-set <code class="literal">p = k/n</code> when a mean degree of approximately <code class="constant">k</code> is
-desired. More precisely, the expected mean degree is <code class="literal">p(n-1)</code>
-in (undirected or directed) graphs without self-loops,
+Setting <code class="literal">p = 1/2</code> and <code class="literal">multiple = false</code> generates all
+graphs without multi-edges on <em class="parameter"><code>n</code></em> vertices with the same probability.
+
+</p>
+<p>
+For both simple and multigraphs, the expected mean degree of the graph is
+approximately <code class="literal">p n</code>; set <code class="literal">p = k/n</code> when a mean degree
+of approximately <code class="constant">k</code> is desired. More precisely, the expected mean degree is
+<code class="literal">p(n-1)</code> in (undirected or directed) graphs without self-loops,
 <code class="literal">p(n+1)</code> in undirected graphs with self-loops, and
 <code class="literal">p n</code> in directed graphs with self-loops.
+
+</p>
+<p>
+When generating multigraphs, the distribution of the edge multiplicities is
+geometric, i.e. the probability of finding <code class="constant">m</code> edges between two vertices
+is <code class="literal">q (1-q)^m</code>, where <code class="literal">q = 1 / (1+p)</code>.
+
+</p>
+<p>
+This function uses the sequential geometric sampling technique described in
+Batagelj and Brandes (2005), with a modification to handle multigraphs.
+
+</p>
+<p>
+References:
+
+</p>
+<p>
+J. Park and M. E. J. Newman: "Statistical Mechanics of Networks".
+Phys. Rev. E 70, 066117 (2004).
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.70.066117" target="_top">https://doi.org/10.1103/PhysRevE.70.066117</a>
+
+</p>
+<p>
+V. Batagelj and U. Brandes: "Efficient Generation of Large Random Networks".
+Phys. Rev. E 71, 036113 (2005).
+<a class="ulink" href="https://doi.org/10.1103/PhysRevE.71.036113" target="_top">https://doi.org/10.1103/PhysRevE.71.036113</a>
 
 </p>
 <p><b>Arguments: </b>
@@ -272,7 +337,9 @@ in (undirected or directed) graphs without self-loops,
 <tr>
 <td><p><span class="term"><em class="parameter"><code>p</code></em>:</span></p></td>
 <td><p>
-  The probability of the existence of an edge in the graph.
+  The expected number of edges between any vertex pair.
+   When multi-edges are disallowed, this is equivalent to the probability
+   of having a connection between any two vertices.
 </p></td>
 </tr>
 <tr>
@@ -282,9 +349,20 @@ in (undirected or directed) graphs without self-loops,
 </p></td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
+<td><p><span class="term"><em class="parameter"><code>allowed_edge_types</code></em>:</span></p></td>
 <td><p>
-  Whether to generate self-loops.
+  Controls whether multi-edges and self-loops
+    are generated. See <a class="link" href="igraph-Games.html#igraph_edge_type_sw_t" title="7.1. igraph_edge_type_sw_t — What types of non-simple edges to allow?"><code class="function">igraph_edge_type_sw_t</code></a>.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>edge_labeled</code></em>:</span></p></td>
+<td><p>
+  If true, the model is defined over the set of ordered
+    edge lists, i.e. over the set of edge-labeled graphs. Set it to
+    <code class="constant">false</code> to select the classic Erdős-Rényi model.
+    The constants <code class="constant">IGRAPH_EDGE_UNLABELED</code> and <code class="constant">IGRAPH_EDGE_LABELED</code>
+    may be used instead of <code class="constant">false</code> and <code class="constant">true</code> for better readability.
 </p></td>
 </tr>
 </tbody>
@@ -335,7 +413,7 @@ bipartite version of this model; <a class="link" href="igraph-Games.html#igraph_
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.13.3.3.11.1"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/igraph_erdos_renyi_game_gnp.c</code></b></p>
+<a name="id-1.13.3.5.17.1"></a><p class="title"><b>Example 12.2.  File <code class="code">examples/simple/igraph_erdos_renyi_game_gnp.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -351,9 +429,8 @@ int <span class="strong"><strong>main</strong></span>(void) {
     <span class="emphasis"><em>/* Sample a graph from the Erdős-Rényi G(n,p) model */</em></span>
 
     <span class="strong"><strong><a class="link" href="igraph-Games.html#igraph_erdos_renyi_game_gnp" title="1.2. igraph_erdos_renyi_game_gnp — Generates a random (Erdős-Rényi) graph with fixed edge probabilities.">igraph_erdos_renyi_game_gnp</a></strong></span>(
-        &amp;graph, <span class="emphasis"><em>/* n= */</em></span> 100, <span class="emphasis"><em>/* p= */</em></span> 0.01,
-        IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS
-    );
+            &amp;graph, <span class="emphasis"><em>/* n= */</em></span> 100, <span class="emphasis"><em>/* p= */</em></span> 0.01,
+            IGRAPH_UNDIRECTED, IGRAPH_SIMPLE_SW, IGRAPH_EDGE_UNLABELED);
 
     <span class="emphasis"><em>/* Compute the fraction of vertices contained within the largest connected component */</em></span>
 
@@ -384,7 +461,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_iea_game"></a>1.3. <code class="function">igraph_iea_game</code> —  Generates a random multigraph through independent edge assignment.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.4.2"></a><p>
+<a class="indexterm" name="id-1.13.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_iea_game(
@@ -529,7 +606,7 @@ a given number of vertices and edges.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_sbm_game"></a>1.4. <code class="function">igraph_sbm_game</code> —  Sample from a stochastic block model.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.5.2"></a><p>
+<a class="indexterm" name="id-1.13.3.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_sbm_game(
@@ -658,7 +735,7 @@ groups.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_hsbm_game"></a>1.5. <code class="function">igraph_hsbm_game</code> —  Hierarchical stochastic block model.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.6.2"></a><p>
+<a class="indexterm" name="id-1.13.3.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hsbm_game(igraph_t *graph, igraph_int_t n,
@@ -765,7 +842,7 @@ stochastic block model.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_hsbm_list_game"></a>1.6. <code class="function">igraph_hsbm_list_game</code> —  Hierarchical stochastic block model, more general version.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.7.2"></a><p>
+<a class="indexterm" name="id-1.13.3.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_hsbm_list_game(igraph_t *graph, igraph_int_t n,
@@ -873,7 +950,7 @@ stochastic block model.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_preference_game"></a>1.7. <code class="function">igraph_preference_game</code> —  Generates a graph with vertex types and connection preferences.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.8.2"></a><p>
+<a class="indexterm" name="id-1.13.3.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_preference_game(igraph_t *graph, igraph_int_t nodes,
@@ -1028,7 +1105,7 @@ number of vertices plus the number of edges in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_asymmetric_preference_game"></a>1.8. <code class="function">igraph_asymmetric_preference_game</code> —  Generates a graph with asymmetric vertex types and connection preferences.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.9.2"></a><p>
+<a class="indexterm" name="id-1.13.3.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_asymmetric_preference_game(igraph_t *graph, igraph_int_t nodes,
@@ -1171,7 +1248,7 @@ number of vertices plus the number of edges in the graph.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_correlated_game"></a>1.9. <code class="function">igraph_correlated_game</code> —  Generates a random graph correlated to an existing graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.10.2"></a><p>
+<a class="indexterm" name="id-1.13.3.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_correlated_game(const igraph_t *old_graph, igraph_t *new_graph,
@@ -1272,7 +1349,7 @@ of correlated random graphs in one go.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_correlated_pair_game"></a>1.10. <code class="function">igraph_correlated_pair_game</code> —  Generates pairs of correlated random graphs.</h3></div></div></div>
-<a class="indexterm" name="id-1.13.3.11.2"></a><p>
+<a class="indexterm" name="id-1.13.3.13.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_correlated_pair_game(igraph_t *graph1, igraph_t *graph2,
@@ -3556,7 +3633,7 @@ Time complexity: O(|V|+|E|) if <code class="constant">multiple</code> is true, o
 <a class="indexterm" name="id-1.13.6.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_rewire(igraph_t *graph, igraph_int_t n, igraph_edge_type_sw_t allowed_edge_types);
+igraph_error_t igraph_rewire(igraph_t *graph, igraph_int_t n, igraph_edge_type_sw_t allowed_edge_types, igraph_rewiring_stats_t *stats);
 </pre></div>
 <p>
 </p>
@@ -3633,8 +3710,15 @@ constraints specified by <em class="parameter"><code>mode</code></em>.
 </tbody>
 </table></div>
 <p>
-   Multigraphs are not yet supported.</p>
+   Multigraphs are not yet supported.
+</p>
 </td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stats</code></em>:</span></p></td>
+<td><p>
+  Counts of the number of different operations
+       performed by the algorithm are stored here.</p></td>
 </tr>
 </tbody>
 </table></div>

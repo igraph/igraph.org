@@ -5,12 +5,12 @@ mainheader: igraph Reference Manual
 lead: For using the igraph C library
 vmenu: true
 doctype: html/
-langversion: develop
+langversion: 0.10.17
 ---
 
 {% raw %}
 <div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
-<a accesskey="p" class="btn btn-light" href="igraph-Random.html"><i class="fa fa-chevron-left"></i>
+<a accesskey="p" class="btn btn-light" href="igraph-Spatial-Games.html"><i class="fa fa-chevron-left"></i>
               Previous
             </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
               Home
@@ -20,7 +20,7 @@ langversion: develop
 </div></div>
 <div class="chapter">
 <div class="titlepage"><div><div><h1 class="title">
-<a name="igraph-Iterators"></a>Chapter 9. Vertex and edge selectors and sequences, iterators</h1></div></div></div>
+<a name="igraph-Iterators"></a>Chapter 11. Vertex and edge selectors and sequences, iterators</h1></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="igraph-Iterators.html#about-iterators">1.  About selectors, iterators</a></span></dt>
 <dt><span class="section"><a href="igraph-Iterators.html#vertex-selector-constructors">2. Vertex selector constructors</a></span></dt>
@@ -31,6 +31,7 @@ langversion: develop
 <dt><span class="section"><a href="igraph-Iterators.html#immediate-edge-selectors">7. Immediate edge selectors</a></span></dt>
 <dt><span class="section"><a href="igraph-Iterators.html#generic-edge-selector-operations">8. Generic edge selector operations</a></span></dt>
 <dt><span class="section"><a href="igraph-Iterators.html#edge-iterators">9. Edge iterators</a></span></dt>
+<dt><span class="section"><a href="igraph-Iterators.html#deprecated-vertex-edge-selectors">10. Deprecated functions</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -62,7 +63,7 @@ vertices.</p>
 <p>Some vertex selectors have <span class="emphasis"><em>immediate</em></span> versions. These have the
 prefix <code class="constant">igraph_vss</code> instead of <code class="constant">igraph_vs</code>, e.g. <a class="link" href="igraph-Iterators.html#igraph_vss_all" title="4.1. igraph_vss_all — All vertices of a graph (immediate version)."><code class="function">igraph_vss_all()</code></a>
 instead of <a class="link" href="igraph-Iterators.html#igraph_vs_all" title="2.1. igraph_vs_all — Vertex set, all vertices of a graph."><code class="function">igraph_vs_all()</code></a>. The immediate versions are to be used in
-the parameter list of the igraph functions, such as <a class="link" href="igraph-Basic.html#igraph_degree" title="5.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>.
+the parameter list of the igraph functions, such as <a class="link" href="igraph-Basic.html#igraph_degree" title="4.2.14. igraph_degree — The degree of some vertices in a graph."><code class="function">igraph_degree()</code></a>.
 These functions are not associated with any <span class="type">igraph_vs_t</span> object, so
 they have no separate constructors and destructors
 (destroy functions).</p>
@@ -87,7 +88,7 @@ destroyed with <a class="link" href="igraph-Iterators.html#igraph_vs_destroy" ti
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_all"></a>2.1. <code class="function">igraph_vs_all</code> —  Vertex set, all vertices of a graph.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.3.2"></a><p>
+<a class="indexterm" name="id-1.12.3.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_all(igraph_vs_t *vs);
@@ -157,13 +158,11 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_adj"></a>2.2. <code class="function">igraph_vs_adj</code> —  Adjacent vertices of a vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.4.2"></a><p>
+<a class="indexterm" name="id-1.12.3.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vs_adj(
-    igraph_vs_t *vs, igraph_int_t vid, igraph_neimode_t mode,
-    igraph_loops_t loops, igraph_bool_t multiple
-);
+igraph_error_t igraph_vs_adj(igraph_vs_t *vs,
+                  igraph_integer_t vid, igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -245,30 +244,9 @@ ID order, as of igraph version 0.4.
 </p>
 </td>
 </tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
-<td><p>
-  Whether to include the vertex itself in the neighborhood if the
-       vertex has a loop edge. If <code class="constant">IGRAPH_NO_LOOPS</code>, loop edges are
-       excluded. If <code class="constant">IGRAPH_LOOPS_ONCE</code>, the vertex is included in its own
-       neighborhood once for every loop edge that it has. If
-       <code class="constant">IGRAPH_LOOPS_TWICE</code>, the vertex is included twice in its own
-       neighborhood for every loop edge that it has, but only if the graph is
-       undirected or <em class="parameter"><code>mode</code></em> is set to <code class="constant">IGRAPH_ALL</code>.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>multiple</code></em>:</span></p></td>
-<td><p>
-  Whether to include multiple edges. If <code class="constant">IGRAPH_NO_MULTIPLE</code>,
-       multiple edges are not included in the neighborhood. If
-       <code class="constant">IGRAPH_MULTIPLE</code>, multiple edges are included in the neighborhood.</p></td>
-</tr>
 </tbody>
 </table></div>
 <p>
-
-
 </p>
 <p><b>Returns: </b></p>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -307,10 +285,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_nonadj"></a>2.3. <code class="function">igraph_vs_nonadj</code> —  Non-adjacent vertices of a vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.5.2"></a><p>
+<a class="indexterm" name="id-1.12.3.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vs_nonadj(igraph_vs_t *vs, igraph_int_t vid,
+igraph_error_t igraph_vs_nonadj(igraph_vs_t *vs, igraph_integer_t vid,
                      igraph_neimode_t mode);
 </pre></div>
 <p>
@@ -435,7 +413,7 @@ Time complexity: O(1).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.3.5.10.1"></a><p class="title"><b>Example 9.1.  File <code class="code">examples/simple/igraph_vs_nonadj.c</code></b></p>
+<a name="id-1.12.3.5.10.1"></a><p class="title"><b>Example 11.1.  File <code class="code">examples/simple/igraph_vs_nonadj.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -444,13 +422,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_t g;
     igraph_vs_t vs;
     igraph_vit_t vit;
-    igraph_int_t size;
-
-    <span class="emphasis"><em>/* Initialize the library. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+    igraph_integer_t size;
 
     <span class="emphasis"><em>/* empty graph, all vertices */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="5.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_empty" title="4.1.1. igraph_empty — Creates an empty graph with some vertices and no edges.">igraph_empty</a></strong></span>(&amp;g, 10, IGRAPH_DIRECTED);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_nonadj" title="2.3. igraph_vs_nonadj — Non-adjacent vertices of a vertex.">igraph_vs_nonadj</a></strong></span>(&amp;vs, 0, IGRAPH_ALL);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_size" title="3.4. igraph_vs_size — Returns the size of the vertex selector.">igraph_vs_size</a></strong></span>(&amp;g, &amp;vs, &amp;size);
     <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId " ", size);
@@ -463,10 +438,10 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_destroy" title="5.2. igraph_vit_destroy — Destroys a vertex iterator.">igraph_vit_destroy</a></strong></span>(&amp;vit);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* full graph, no vertices */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="7.1. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, IGRAPH_LOOPS);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_full" title="1.21. igraph_full — Creates a full graph (complete graph).">igraph_full</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, IGRAPH_LOOPS);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_nonadj" title="2.3. igraph_vs_nonadj — Non-adjacent vertices of a vertex.">igraph_vs_nonadj</a></strong></span>(&amp;vs, 0, IGRAPH_ALL);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_create" title="5.1. igraph_vit_create — Creates a vertex iterator from a vertex selector.">igraph_vit_create</a></strong></span>(&amp;g, vs, &amp;vit);
     <span class="strong"><strong>while</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Iterators.html#IGRAPH_VIT_END" title="5.5. IGRAPH_VIT_END — Are we at the end?">IGRAPH_VIT_END</a></strong></span>(vit)) {
@@ -477,7 +452,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_destroy" title="5.2. igraph_vit_destroy — Destroys a vertex iterator.">igraph_vit_destroy</a></strong></span>(&amp;vit);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
 
     <span class="strong"><strong>return</strong></span> 0;
@@ -494,7 +469,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_none"></a>2.4. <code class="function">igraph_vs_none</code> —  Empty vertex set.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.6.2"></a><p>
+<a class="indexterm" name="id-1.12.3.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_none(igraph_vs_t *vs);
@@ -561,10 +536,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_1"></a>2.5. <code class="function">igraph_vs_1</code> —  Vertex set with a single vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.7.2"></a><p>
+<a class="indexterm" name="id-1.12.3.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vs_1(igraph_vs_t *vs, igraph_int_t vid);
+igraph_error_t igraph_vs_1(igraph_vs_t *vs, igraph_integer_t vid);
 </pre></div>
 <p>
 </p>
@@ -636,7 +611,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_vector"></a>2.6. <code class="function">igraph_vs_vector</code> —  Vertex set based on a vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.8.2"></a><p>
+<a class="indexterm" name="id-1.12.3.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_vector(igraph_vs_t *vs,
@@ -718,27 +693,23 @@ Time complexity: O(1).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.3.8.10.1"></a><p class="title"><b>Example 9.2.  File <code class="code">examples/simple/igraph_vs_vector.c</code></b></p>
+<a name="id-1.12.3.8.10.1"></a><p class="title"><b>Example 11.2.  File <code class="code">examples/simple/igraph_vs_vector.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
 
     igraph_t g;
-    igraph_int_t edges_array[] = { 0, 1, 1, 2, 2, 2, 2, 3, 2, 4, 3, 4 };
-    igraph_vector_int_t edges =
-        <span class="strong"><strong>igraph_vector_int_view</strong></span>(edges_array, <span class="strong"><strong>sizeof</strong></span>(edges_array) / <span class="strong"><strong>sizeof</strong></span>(edges_array[0]));
+    igraph_vector_int_t v = IGRAPH_VECTOR_NULL;
+    igraph_integer_t edges[] = { 0, 1, 1, 2, 2, 2, 2, 3, 2, 4, 3, 4 };
     igraph_vector_int_t v2;
-    igraph_int_t i;
+    igraph_integer_t i;
     igraph_vit_t vit;
     igraph_vs_t vs;
-    igraph_int_t size;
+    igraph_integer_t size;
 
-    <span class="emphasis"><em>/* Initialize the library. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
-
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="2.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;edges, 0, IGRAPH_DIRECTED);
+    <span class="strong"><strong>igraph_vector_int_view</strong></span>(&amp;v, edges, <span class="strong"><strong>sizeof</strong></span>(edges) / <span class="strong"><strong>sizeof</strong></span>(igraph_integer_t));
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_create" title="1.1. igraph_create — Creates a graph with the specified edges.">igraph_create</a></strong></span>(&amp;g, &amp;v, 0, IGRAPH_DIRECTED);
 
     <span class="emphasis"><em>/* Create iterator based on a vector (view) */</em></span>
     <span class="strong"><strong>igraph_vector_int_init</strong></span>(&amp;v2, 6);
@@ -782,7 +753,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="emphasis"><em>/* Clean up */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -798,7 +769,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_vector_small"></a>2.7. <code class="function">igraph_vs_vector_small</code> —  Create a vertex set by giving its elements.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.9.2"></a><p>
+<a class="indexterm" name="id-1.12.3.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_vector_small(igraph_vs_t *vs, ...);
@@ -884,7 +855,7 @@ Time complexity: O(n), the number of vertex IDs supplied.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_vector_copy"></a>2.8. <code class="function">igraph_vs_vector_copy</code> —  Vertex set based on a vector, with copying.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.10.2"></a><p>
+<a class="indexterm" name="id-1.12.3.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_vector_copy(igraph_vs_t *vs, const igraph_vector_int_t *v);
@@ -966,10 +937,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_range"></a>2.9. <code class="function">igraph_vs_range</code> —  Vertex set, an interval of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.3.11.2"></a><p>
+<a class="indexterm" name="id-1.12.3.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_vs_range(igraph_vs_t *vs, igraph_int_t start, igraph_int_t end);
+igraph_error_t igraph_vs_range(igraph_vs_t *vs, igraph_integer_t start, igraph_integer_t end);
 </pre></div>
 <p>
 </p>
@@ -1048,7 +1019,7 @@ Time complexity: O(1).
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.3.11.10.1"></a><p class="title"><b>Example 9.3.  File <code class="code">examples/simple/igraph_vs_range.c</code></b></p>
+<a name="id-1.12.3.11.10.1"></a><p class="title"><b>Example 11.3.  File <code class="code">examples/simple/igraph_vs_range.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
@@ -1057,12 +1028,9 @@ int <span class="strong"><strong>main</strong></span>(void) {
     igraph_vs_t vs;
     igraph_vit_t vit;
     igraph_t g;
-    igraph_int_t size;
+    igraph_integer_t size;
 
-    <span class="emphasis"><em>/* Initialize the library. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
-
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="4.7. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 1);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_range" title="2.9. igraph_vs_range — Vertex set, an interval of vertices.">igraph_vs_range</a></strong></span>(&amp;vs, 0, 10);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_create" title="5.1. igraph_vit_create — Creates a vertex iterator from a vertex selector.">igraph_vit_create</a></strong></span>(&amp;g, vs, &amp;vit);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_size" title="3.4. igraph_vs_size — Returns the size of the vertex selector.">igraph_vs_size</a></strong></span>(&amp;g, &amp;vs, &amp;size);
@@ -1076,7 +1044,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_destroy" title="5.2. igraph_vit_destroy — Destroys a vertex iterator.">igraph_vit_destroy</a></strong></span>(&amp;vit);
     <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -1103,7 +1071,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_copy"></a>3.1. <code class="function">igraph_vs_copy</code> —  Creates a copy of a vertex selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.2.2"></a><p>
+<a class="indexterm" name="id-1.12.4.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_copy(igraph_vs_t* dest, const igraph_vs_t* src);
@@ -1159,7 +1127,7 @@ igraph_error_t igraph_vs_copy(igraph_vs_t* dest, const igraph_vs_t* src);
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_destroy"></a>3.2. <code class="function">igraph_vs_destroy</code> —  Destroy a vertex set.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.3.2"></a><p>
+<a class="indexterm" name="id-1.12.4.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vs_destroy(igraph_vs_t *vs);
@@ -1200,7 +1168,7 @@ Time complexity: operating system dependent, usually O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_is_all"></a>3.3. <code class="function">igraph_vs_is_all</code> —  Check whether all vertices are included.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.4.2"></a><p>
+<a class="indexterm" name="id-1.12.4.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_vs_is_all(const igraph_vs_t *vs);
@@ -1257,11 +1225,11 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_size"></a>3.4. <code class="function">igraph_vs_size</code> —  Returns the size of the vertex selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.5.2"></a><p>
+<a class="indexterm" name="id-1.12.4.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vs_size(const igraph_t *graph, const igraph_vs_t *vs,
-                   igraph_int_t *result);
+                   igraph_integer_t *result);
 </pre></div>
 <p>
 </p>
@@ -1323,7 +1291,7 @@ yield when it is iterated over.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vs_type"></a>3.5. <code class="function">igraph_vs_type</code> —  Returns the type of the vertex selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.4.6.2"></a><p>
+<a class="indexterm" name="id-1.12.4.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_vs_type_t igraph_vs_type(const igraph_vs_t *vs);
@@ -1350,7 +1318,7 @@ igraph_vs_type_t igraph_vs_type(const igraph_vs_t *vs);
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vss_all"></a>4.1. <code class="function">igraph_vss_all</code> —  All vertices of a graph (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.2.2"></a><p>
+<a class="indexterm" name="id-1.12.5.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_vs_t igraph_vss_all(void);
@@ -1403,7 +1371,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vss_none"></a>4.2. <code class="function">igraph_vss_none</code> —  Empty vertex set (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.3.2"></a><p>
+<a class="indexterm" name="id-1.12.5.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_vs_t igraph_vss_none(void);
@@ -1454,10 +1422,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vss_1"></a>4.3. <code class="function">igraph_vss_1</code> —  Vertex set with a single vertex (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.4.2"></a><p>
+<a class="indexterm" name="id-1.12.5.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_vs_t igraph_vss_1(igraph_int_t vid);
+igraph_vs_t igraph_vss_1(igraph_integer_t vid);
 </pre></div>
 <p>
 </p>
@@ -1521,7 +1489,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vss_vector"></a>4.4. <code class="function">igraph_vss_vector</code> —  Vertex set based on a vector (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.5.2"></a><p>
+<a class="indexterm" name="id-1.12.5.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_vs_t igraph_vss_vector(const igraph_vector_int_t *v);
@@ -1589,10 +1557,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vss_range"></a>4.5. <code class="function">igraph_vss_range</code> —  An interval of vertices (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.5.6.2"></a><p>
+<a class="indexterm" name="id-1.12.5.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_vs_t igraph_vss_range(igraph_int_t start, igraph_int_t end);
+igraph_vs_t igraph_vss_range(igraph_integer_t start, igraph_integer_t end);
 </pre></div>
 <p>
 </p>
@@ -1678,7 +1646,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vit_create"></a>5.1. <code class="function">igraph_vit_create</code> —  Creates a vertex iterator from a vertex selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.2.2"></a><p>
+<a class="indexterm" name="id-1.12.6.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_vit_create(const igraph_t *graph, igraph_vs_t vs, igraph_vit_t *vit);
@@ -1774,7 +1742,7 @@ number of vertex IDs to be included in the iterator. O(|V|) for
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_vit_destroy"></a>5.2. <code class="function">igraph_vit_destroy</code> —  Destroys a vertex iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.3.2"></a><p>
+<a class="indexterm" name="id-1.12.6.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_vit_destroy(const igraph_vit_t *vit);
@@ -1862,7 +1830,7 @@ igraph_vs_destroy(&amp;vs);
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_VIT_NEXT"></a>5.4. <code class="function">IGRAPH_VIT_NEXT</code> —  Next vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.5.2"></a><p>
+<a class="indexterm" name="id-1.12.6.5.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VIT_NEXT(vit)
@@ -1898,7 +1866,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_VIT_END"></a>5.5. <code class="function">IGRAPH_VIT_END</code> —  Are we at the end?</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.6.2"></a><p>
+<a class="indexterm" name="id-1.12.6.6.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VIT_END(vit)
@@ -1949,7 +1917,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_VIT_SIZE"></a>5.6. <code class="function">IGRAPH_VIT_SIZE</code> —  Size of a vertex iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.7.2"></a><p>
+<a class="indexterm" name="id-1.12.6.7.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VIT_SIZE(vit)
@@ -1999,7 +1967,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_VIT_RESET"></a>5.7. <code class="function">IGRAPH_VIT_RESET</code> —  Reset a vertex iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.8.2"></a><p>
+<a class="indexterm" name="id-1.12.6.8.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VIT_RESET(vit)
@@ -2035,7 +2003,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_VIT_GET"></a>5.8. <code class="function">IGRAPH_VIT_GET</code> —  Query the current position.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.6.9.2"></a><p>
+<a class="indexterm" name="id-1.12.6.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_VIT_GET(vit)
@@ -2103,7 +2071,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_all"></a>6.1. <code class="function">igraph_es_all</code> —  Edge set, all edges.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.2.2"></a><p>
+<a class="indexterm" name="id-1.12.7.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_all(igraph_es_t *es,
@@ -2217,13 +2185,11 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_incident"></a>6.2. <code class="function">igraph_es_incident</code> —  Edges incident on a given vertex.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.3.2"></a><p>
+<a class="indexterm" name="id-1.12.7.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_es_incident(
-    igraph_es_t *es, igraph_int_t vid, igraph_neimode_t mode,
-    igraph_loops_t loops
-);
+igraph_error_t igraph_es_incident(igraph_es_t *es,
+                       igraph_integer_t vid, igraph_neimode_t mode);
 </pre></div>
 <p>
 </p>
@@ -2261,16 +2227,6 @@ igraph_error_t igraph_es_incident(
        <code class="constant">IGRAPH_OUT</code>, outgoing edges;
        <code class="constant">IGRAPH_IN</code>, incoming edges;
        <code class="constant">IGRAPH_ALL</code>, all edges.
-</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>loops</code></em>:</span></p></td>
-<td><p>
-  Whether to include loop edges in the result. If
-       <code class="constant">IGRAPH_NO_LOOPS</code>, loop edges are excluded. If <code class="constant">IGRAPH_LOOPS_ONCE</code>,
-       loop edges are included once. If <code class="constant">IGRAPH_LOOPS_TWICE</code>, loop edges
-       are included twice, but only if the graph is undirected or <em class="parameter"><code>mode</code></em> is
-       set to <code class="constant">IGRAPH_ALL</code>.
 </p></td>
 </tr>
 </tbody>
@@ -2314,7 +2270,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_none"></a>6.3. <code class="function">igraph_es_none</code> —  Empty edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.4.2"></a><p>
+<a class="indexterm" name="id-1.12.7.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_none(igraph_es_t *es);
@@ -2380,10 +2336,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_1"></a>6.4. <code class="function">igraph_es_1</code> —  Edge selector containing a single edge.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.5.2"></a><p>
+<a class="indexterm" name="id-1.12.7.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_es_1(igraph_es_t *es, igraph_int_t eid);
+igraph_error_t igraph_es_1(igraph_es_t *es, igraph_integer_t eid);
 </pre></div>
 <p>
 </p>
@@ -2453,11 +2409,11 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_all_between"></a>6.5. <code class="function">igraph_es_all_between</code> —  Edge selector, all edge IDs between a pair of vertices.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.6.2"></a><p>
+<a class="indexterm" name="id-1.12.7.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_all_between(
-    igraph_es_t *es, igraph_int_t from, igraph_int_t to,
+    igraph_es_t *es, igraph_integer_t from, igraph_integer_t to,
     igraph_bool_t directed
 );
 </pre></div>
@@ -2545,7 +2501,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_vector"></a>6.6. <code class="function">igraph_es_vector</code> —  Handle a vector as an edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.7.2"></a><p>
+<a class="indexterm" name="id-1.12.7.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_vector(igraph_es_t *es, const igraph_vector_int_t *v);
@@ -2624,10 +2580,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_range"></a>6.7. <code class="function">igraph_es_range</code> —  Edge selector, a sequence of edge IDs.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.8.2"></a><p>
+<a class="indexterm" name="id-1.12.7.8.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_error_t igraph_es_range(igraph_es_t *es, igraph_int_t start, igraph_int_t end);
+igraph_error_t igraph_es_range(igraph_es_t *es, igraph_integer_t start, igraph_integer_t end);
 </pre></div>
 <p>
 </p>
@@ -2708,7 +2664,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_pairs"></a>6.8. <code class="function">igraph_es_pairs</code> —  Edge selector, multiple edges defined by their endpoints in a vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.9.2"></a><p>
+<a class="indexterm" name="id-1.12.7.9.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_pairs(igraph_es_t *es, const igraph_vector_int_t *v,
@@ -2793,21 +2749,19 @@ Time complexity: O(n), the number of edges being selected.
 </p>
 <div class="hideshow" onClick="toggle(this, event)">
 <div class="example">
-<a name="id-1.10.7.9.10.1"></a><p class="title"><b>Example 9.4.  File <code class="code">examples/simple/igraph_es_pairs.c</code></b></p>
+<a name="id-1.12.7.9.10.1"></a><p class="title"><b>Example 11.4.  File <code class="code">examples/simple/igraph_es_pairs.c</code></b></p>
 <div class="example-contents">
 <pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
 
 int <span class="strong"><strong>main</strong></span>(void) {
-    igraph_t g;
-    igraph_int_t i;
-    igraph_int_t size;
 
-    <span class="emphasis"><em>/* Initialize the library. */</em></span>
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_setup" title="4.1. igraph_setup — Initializes the igraph library.">igraph_setup</a></strong></span>();
+    igraph_t g;
+    igraph_integer_t i;
+    igraph_integer_t size;
 
     <span class="emphasis"><em>/* DIRECTED */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="4.1. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_OUT, 0);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 100; i++) {
         igraph_es_t es;
@@ -2829,11 +2783,11 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object.">igraph_es_destroy</a></strong></span>(&amp;es);
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="emphasis"><em>/* UNDIRECTED */</em></span>
 
-    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="4.1. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, 0);
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_star" title="1.8. igraph_star — Creates a star graph, every vertex connects only to the center.">igraph_star</a></strong></span>(&amp;g, 10, IGRAPH_STAR_UNDIRECTED, 0);
 
     <span class="strong"><strong>for</strong></span> (i = 0; i &lt; 100; i++) {
         igraph_es_t es;
@@ -2850,7 +2804,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
         <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object.">igraph_es_destroy</a></strong></span>(&amp;es);
     }
 
-    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="5.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
 
     <span class="strong"><strong>return</strong></span> 0;
 }
@@ -2866,7 +2820,7 @@ int <span class="strong"><strong>main</strong></span>(void) {
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_pairs_small"></a>6.9. <code class="function">igraph_es_pairs_small</code> —  Edge selector, multiple edges defined by their endpoints as arguments.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.10.2"></a><p>
+<a class="indexterm" name="id-1.12.7.10.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_pairs_small(igraph_es_t *es, igraph_bool_t directed, int first, ...);
@@ -2961,7 +2915,7 @@ Time complexity: O(n), the number of edges being selected.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_path"></a>6.10. <code class="function">igraph_es_path</code> —  Edge selector, edge IDs on a path.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.11.2"></a><p>
+<a class="indexterm" name="id-1.12.7.11.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_path(igraph_es_t *es, const igraph_vector_int_t *v,
@@ -3047,7 +3001,7 @@ Time complexity: O(n), the number of vertices.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_vector_copy"></a>6.11. <code class="function">igraph_es_vector_copy</code> —  Edge set, based on a vector, with copying.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.7.12.2"></a><p>
+<a class="indexterm" name="id-1.12.7.12.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_vector_copy(igraph_es_t *es, const igraph_vector_int_t *v);
@@ -3140,7 +3094,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_ess_all"></a>7.1. <code class="function">igraph_ess_all</code> —  Edge set, all edges (immediate version).</h3></div></div></div>
-<a class="indexterm" name="id-1.10.8.2.2"></a><p>
+<a class="indexterm" name="id-1.12.8.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_es_t igraph_ess_all(igraph_edgeorder_type_t order);
@@ -3208,7 +3162,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_ess_none"></a>7.2. <code class="function">igraph_ess_none</code> —  Immediate empty edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.8.3.2"></a><p>
+<a class="indexterm" name="id-1.12.8.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_es_t igraph_ess_none(void);
@@ -3261,10 +3215,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_ess_1"></a>7.3. <code class="function">igraph_ess_1</code> —  Immediate version of the single edge edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.8.4.2"></a><p>
+<a class="indexterm" name="id-1.12.8.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_es_t igraph_ess_1(igraph_int_t eid);
+igraph_es_t igraph_ess_1(igraph_integer_t eid);
 </pre></div>
 <p>
 </p>
@@ -3326,7 +3280,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_ess_vector"></a>7.4. <code class="function">igraph_ess_vector</code> —  Immediate vector view edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.8.5.2"></a><p>
+<a class="indexterm" name="id-1.12.8.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_es_t igraph_ess_vector(const igraph_vector_int_t *v);
@@ -3394,10 +3348,10 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_ess_range"></a>7.5. <code class="function">igraph_ess_range</code> —  Immediate version of the sequence edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.8.6.2"></a><p>
+<a class="indexterm" name="id-1.12.8.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
-igraph_es_t igraph_ess_range(igraph_int_t start, igraph_int_t end);
+igraph_es_t igraph_ess_range(igraph_integer_t start, igraph_integer_t end);
 </pre></div>
 <p>
 </p>
@@ -3479,7 +3433,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_as_vector"></a>8.1. <code class="function">igraph_es_as_vector</code> —  Transform edge selector into vector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.2.2"></a><p>
+<a class="indexterm" name="id-1.12.9.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_as_vector(const igraph_t *graph, igraph_es_t es,
@@ -3550,7 +3504,7 @@ Time complexity: O(n), the number of edges in the selector.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_copy"></a>8.2. <code class="function">igraph_es_copy</code> —  Creates a copy of an edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.3.2"></a><p>
+<a class="indexterm" name="id-1.12.9.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_copy(igraph_es_t* dest, const igraph_es_t* src);
@@ -3622,7 +3576,7 @@ igraph_error_t igraph_es_copy(igraph_es_t* dest, const igraph_es_t* src);
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_destroy"></a>8.3. <code class="function">igraph_es_destroy</code> —  Destroys an edge selector object.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.4.2"></a><p>
+<a class="indexterm" name="id-1.12.9.4.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_es_destroy(igraph_es_t *es);
@@ -3661,7 +3615,7 @@ Time complexity: operating system dependent, usually O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_is_all"></a>8.4. <code class="function">igraph_es_is_all</code> —  Check whether an edge selector includes all edges.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.5.2"></a><p>
+<a class="indexterm" name="id-1.12.9.5.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_bool_t igraph_es_is_all(const igraph_es_t *es);
@@ -3711,11 +3665,11 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_size"></a>8.5. <code class="function">igraph_es_size</code> —  Returns the size of the edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.6.2"></a><p>
+<a class="indexterm" name="id-1.12.9.6.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_es_size(const igraph_t *graph, const igraph_es_t *es,
-                   igraph_int_t *result);
+                   igraph_integer_t *result);
 </pre></div>
 <p>
 </p>
@@ -3777,7 +3731,7 @@ yield when it is iterated over.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_es_type"></a>8.6. <code class="function">igraph_es_type</code> —  Returns the type of the edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.9.7.2"></a><p>
+<a class="indexterm" name="id-1.12.9.7.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_es_type_t igraph_es_type(const igraph_es_t *es);
@@ -3807,7 +3761,7 @@ igraph_es_type_t igraph_es_type(const igraph_es_t *es);
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_eit_create"></a>9.1. <code class="function">igraph_eit_create</code> —  Creates an edge iterator from an edge selector.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.2.2"></a><p>
+<a class="indexterm" name="id-1.12.10.2.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 igraph_error_t igraph_eit_create(const igraph_t *graph, igraph_es_t es, igraph_eit_t *eit);
@@ -3901,7 +3855,7 @@ incident edges of the vertex.
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="igraph_eit_destroy"></a>9.2. <code class="function">igraph_eit_destroy</code> —  Destroys an edge iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.3.2"></a><p>
+<a class="indexterm" name="id-1.12.10.3.2"></a><p>
 </p>
 <div class="informalexample"><pre class="programlisting">
 void igraph_eit_destroy(const igraph_eit_t *eit);
@@ -3962,7 +3916,7 @@ current edge.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_EIT_NEXT"></a>9.4. <code class="function">IGRAPH_EIT_NEXT</code> —  Next edge.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.5.2"></a><p>
+<a class="indexterm" name="id-1.12.10.5.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_EIT_NEXT(eit)
@@ -3998,7 +3952,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_EIT_END"></a>9.5. <code class="function">IGRAPH_EIT_END</code> —  Are we at the end?</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.6.2"></a><p>
+<a class="indexterm" name="id-1.12.10.6.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_EIT_END(eit)
@@ -4049,7 +4003,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_EIT_SIZE"></a>9.6. <code class="function">IGRAPH_EIT_SIZE</code> —  Number of edges in the iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.7.2"></a><p>
+<a class="indexterm" name="id-1.12.10.7.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_EIT_SIZE(eit)
@@ -4099,7 +4053,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_EIT_RESET"></a>9.7. <code class="function">IGRAPH_EIT_RESET</code> —  Reset an edge iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.8.2"></a><p>
+<a class="indexterm" name="id-1.12.10.8.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_EIT_RESET(eit)
@@ -4135,7 +4089,7 @@ Time complexity: O(1).
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="IGRAPH_EIT_GET"></a>9.8. <code class="function">IGRAPH_EIT_GET</code> —  Query an edge iterator.</h3></div></div></div>
-<a class="indexterm" name="id-1.10.10.9.2"></a><p>
+<a class="indexterm" name="id-1.12.10.9.2"></a><p>
 </p>
 <pre class="programlisting">
 #define IGRAPH_EIT_GET(eit)
@@ -4183,9 +4137,403 @@ Time complexity: O(1).
 </p>
 </div>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="deprecated-vertex-edge-selectors"></a>10. Deprecated functions</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Iterators.html#igraph_es_seq">10.1. <code class="function">igraph_es_seq</code> —  Edge selector, a sequence of edge IDs, with inclusive endpoints (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Iterators.html#igraph_ess_seq">10.2. <code class="function">igraph_ess_seq</code> —  Immediate version of the sequence edge selector, with inclusive endpoints.</a></span></dt>
+<dt><span class="section"><a href="igraph-Iterators.html#igraph_vs_seq">10.3. <code class="function">igraph_vs_seq</code> —  Vertex set, an interval of vertices with inclusive endpoints (deprecated).</a></span></dt>
+<dt><span class="section"><a href="igraph-Iterators.html#igraph_vss_seq">10.4. <code class="function">igraph_vss_seq</code> —  An interval of vertices with inclusive endpoints (immediate version, deprecated).</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_es_seq"></a>10.1. <code class="function">igraph_es_seq</code> —  Edge selector, a sequence of edge IDs, with inclusive endpoints (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.12.11.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_es_seq(igraph_es_t *es, igraph_integer_t from, igraph_integer_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+All edge IDs between <em class="parameter"><code>from</code></em> and <em class="parameter"><code>to</code></em> (inclusive) will be
+included in the edge selection.
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Iterators.html#igraph_es_range" title="6.7. igraph_es_range — Edge selector, a sequence of edge IDs."><code class="function">igraph_es_range()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>es</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized edge selector object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  The first edge ID to be included.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  The last edge ID to be included.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Iterators.html#igraph_ess_seq" title="10.2. igraph_ess_seq — Immediate version of the sequence edge selector, with inclusive endpoints."><code class="function">igraph_ess_seq()</code></a>, <a class="link" href="igraph-Iterators.html#igraph_es_destroy" title="8.3. igraph_es_destroy — Destroys an edge selector object."><code class="function">igraph_es_destroy()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_ess_seq"></a>10.2. <code class="function">igraph_ess_seq</code> —  Immediate version of the sequence edge selector, with inclusive endpoints.</h3></div></div></div>
+<a class="indexterm" name="id-1.12.11.3.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_es_t igraph_ess_seq(igraph_integer_t from, igraph_integer_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Iterators.html#igraph_ess_range" title="7.5. igraph_ess_range — Immediate version of the sequence edge selector."><code class="function">igraph_ess_range()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  The first edge ID to include.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  The last edge ID to include.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  The initialized edge selector.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Iterators.html#igraph_es_seq" title="10.1. igraph_es_seq — Edge selector, a sequence of edge IDs, with inclusive endpoints (deprecated)."><code class="function">igraph_es_seq()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_vs_seq"></a>10.3. <code class="function">igraph_vs_seq</code> —  Vertex set, an interval of vertices with inclusive endpoints (deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.12.11.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_vs_seq(igraph_vs_t *vs, igraph_integer_t from, igraph_integer_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+Creates a vertex selector containing all vertices with vertex ID
+equal to or bigger than <em class="parameter"><code>from</code></em> and equal to or smaller than <em class="parameter"><code>to</code></em>.
+Note that both endpoints are inclusive, contrary to C conventions.
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Iterators.html#igraph_vs_range" title="2.9. igraph_vs_range — Vertex set, an interval of vertices."><code class="function">igraph_vs_range()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>vs</code></em>:</span></p></td>
+<td><p>
+  Pointer to an uninitialized vertex selector object.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  The first vertex ID to be included in the vertex selector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  The last vertex ID to be included in the vertex selector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Iterators.html#igraph_vs_range" title="2.9. igraph_vs_range — Vertex set, an interval of vertices."><code class="function">igraph_vs_range()</code></a>, <a class="link" href="igraph-Iterators.html#igraph_vss_seq" title="10.4. igraph_vss_seq — An interval of vertices with inclusive endpoints (immediate version, deprecated)."><code class="function">igraph_vss_seq()</code></a>, <a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set."><code class="function">igraph_vs_destroy()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+
+</p>
+<div class="hideshow" onClick="toggle(this, event)">
+<div class="example">
+<a name="id-1.12.11.4.12.1"></a><p class="title"><b>Example 11.5.  File <code class="code">examples/simple/igraph_vs_range.c</code></b></p>
+<div class="example-contents">
+<pre class="programlisting"><span class="strong"><strong>#include</strong></span> &lt;igraph.h&gt;
+
+int <span class="strong"><strong>main</strong></span>(void) {
+
+    igraph_vs_t vs;
+    igraph_vit_t vit;
+    igraph_t g;
+    igraph_integer_t size;
+
+    <span class="strong"><strong><a class="link" href="igraph-Generators.html#igraph_ring" title="1.14. igraph_ring — Creates a cycle graph or a path graph.">igraph_ring</a></strong></span>(&amp;g, 10, IGRAPH_UNDIRECTED, 0, 1);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_range" title="2.9. igraph_vs_range — Vertex set, an interval of vertices.">igraph_vs_range</a></strong></span>(&amp;vs, 0, 10);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_create" title="5.1. igraph_vit_create — Creates a vertex iterator from a vertex selector.">igraph_vit_create</a></strong></span>(&amp;g, vs, &amp;vit);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_size" title="3.4. igraph_vs_size — Returns the size of the vertex selector.">igraph_vs_size</a></strong></span>(&amp;g, &amp;vs, &amp;size);
+    <span class="strong"><strong>printf</strong></span>("%" IGRAPH_PRId "", size);
+
+    <span class="strong"><strong>while</strong></span> (!<span class="strong"><strong><a class="link" href="igraph-Iterators.html#IGRAPH_VIT_END" title="5.5. IGRAPH_VIT_END — Are we at the end?">IGRAPH_VIT_END</a></strong></span>(vit)) {
+        <span class="strong"><strong>printf</strong></span>(" %" IGRAPH_PRId "", <span class="strong"><strong><a class="link" href="igraph-Iterators.html#IGRAPH_VIT_GET" title="5.8. IGRAPH_VIT_GET — Query the current position.">IGRAPH_VIT_GET</a></strong></span>(vit));
+        <span class="strong"><strong><a class="link" href="igraph-Iterators.html#IGRAPH_VIT_NEXT" title="5.4. IGRAPH_VIT_NEXT — Next vertex.">IGRAPH_VIT_NEXT</a></strong></span>(vit);
+    }
+    <span class="strong"><strong>printf</strong></span>("\n");
+
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vit_destroy" title="5.2. igraph_vit_destroy — Destroys a vertex iterator.">igraph_vit_destroy</a></strong></span>(&amp;vit);
+    <span class="strong"><strong><a class="link" href="igraph-Iterators.html#igraph_vs_destroy" title="3.2. igraph_vs_destroy — Destroy a vertex set.">igraph_vs_destroy</a></strong></span>(&amp;vs);
+    <span class="strong"><strong><a class="link" href="igraph-Basic.html#igraph_destroy" title="4.1.4. igraph_destroy — Frees the memory allocated for a graph object.">igraph_destroy</a></strong></span>(&amp;g);
+
+    <span class="strong"><strong>return</strong></span> 0;
+}
+</pre>
+<p></p>
+</div>
+</div>
+<br class="example-break">
+</div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_vss_seq"></a>10.4. <code class="function">igraph_vss_seq</code> —  An interval of vertices with inclusive endpoints (immediate version, deprecated).</h3></div></div></div>
+<a class="indexterm" name="id-1.12.11.5.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_vs_t igraph_vss_seq(igraph_integer_t from, igraph_integer_t to);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The immediate version of <a class="link" href="igraph-Iterators.html#igraph_vs_seq" title="10.3. igraph_vs_seq — Vertex set, an interval of vertices with inclusive endpoints (deprecated)."><code class="function">igraph_vs_seq()</code></a>.
+
+</p>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p>Deprecated since version 0.10.0. Please do not use this function in new
+code; use <a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version)."><code class="function">igraph_vss_range()</code></a>
+instead.</p>
+</div>
+<p>
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>from</code></em>:</span></p></td>
+<td><p>
+  The first vertex ID to be included in the vertex selector.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>to</code></em>:</span></p></td>
+<td><p>
+  The last vertex ID to be included in the vertex selector.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+
+  </p></td>
+</tr></tbody>
+</table></div>
+<p></p>
+<p><b>See also: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  <a class="link" href="igraph-Iterators.html#igraph_vss_range" title="4.5. igraph_vss_range — An interval of vertices (immediate version)."><code class="function">igraph_vss_range()</code></a>, <a class="link" href="igraph-Iterators.html#igraph_vs_seq" title="10.3. igraph_vs_seq — Vertex set, an interval of vertices with inclusive endpoints (deprecated)."><code class="function">igraph_vs_seq()</code></a>
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(1).
+ 
+</p>
+</div>
+</div>
 </div>
 <table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
-<td align="left"><a accesskey="p" href="igraph-Random.html"><b>← Chapter 8. Random numbers</b></a></td>
-<td align="right"><a accesskey="n" href="igraph-Attributes.html"><b>Chapter 10. Graph, vertex and edge attributes →</b></a></td>
+<td align="left"><a accesskey="p" href="igraph-Spatial-Games.html"><b>← Chapter 10. Games on graphs</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Attributes.html"><b>Chapter 12. Graph, vertex and edge attributes →</b></a></td>
 </tr></table>
 {% endraw %}
