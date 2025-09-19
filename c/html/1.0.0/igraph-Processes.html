@@ -1,0 +1,234 @@
+---
+layout: c-manual
+title: igraph Reference Manual
+mainheader: igraph Reference Manual
+lead: For using the igraph C library
+vmenu: true
+doctype: html/
+langversion: 1.0.0
+---
+
+{% raw %}
+<div class="navigation-header mb-4" width="100%" summary="Navigation header"><div class="btn-group">
+<a accesskey="p" class="btn btn-light" href="igraph-Layout.html"><i class="fa fa-chevron-left"></i>
+              Previous
+            </a><a accesskey="h" class="btn btn-light" href="index.html"><i class="fa fa-home"></i>
+              Home
+            </a><a accesskey="n" class="btn btn-light" href="igraph-Foreign.html"><i class="fa fa-chevron-right"></i>
+              Next
+            </a>
+</div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="igraph-Processes"></a>Chapter 30. Processes on graphs</h1></div></div></div>
+<div class="toc"><dl class="toc"><dt><span class="section"><a href="igraph-Processes.html#epidemic-models">1. Epidemic models</a></span></dt></dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="epidemic-models"></a>1. Epidemic models</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="igraph-Processes.html#igraph_sir">1.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</a></span></dt>
+<dt><span class="section"><a href="igraph-Processes.html#igraph_sir_t">1.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</a></span></dt>
+<dt><span class="section"><a href="igraph-Processes.html#igraph_sir_destroy">1.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_sir"></a>1.1. <code class="function">igraph_sir</code> —  Performs a number of SIR epidemics model runs on a graph.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.2.2.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+igraph_error_t igraph_sir(const igraph_t *graph, igraph_real_t beta,
+               igraph_real_t gamma, igraph_int_t no_sim,
+               igraph_vector_ptr_t *result);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+The SIR model is a simple model from epidemiology. The individuals
+of the population might be in three states: susceptible, infected
+and recovered. Recovered people are assumed to be immune to the
+disease. Susceptibles become infected with a rate that depends on
+their number of infected neighbors. Infected people become recovered
+with a constant rate. See these parameters below.
+
+</p>
+<p>
+This function runs multiple simulations, all starting with a
+single uniformly randomly chosen infected individual. A simulation
+is stopped when no infected individuals are left.
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em>:</span></p></td>
+<td><p>
+  The graph to perform the model on. For directed graphs
+       edge directions are ignored and a warning is given.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>beta</code></em>:</span></p></td>
+<td><p>
+  The rate of infection of an individual that is
+       susceptible and has a single infected neighbor.
+       The infection rate of a susceptible individual with n
+       infected neighbors is n times beta. Formally
+       this is the rate parameter of an exponential distribution.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gamma</code></em>:</span></p></td>
+<td><p>
+  The rate of recovery of an infected individual.
+       Formally, this is the rate parameter of an exponential
+       distribution.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>no_sim</code></em>:</span></p></td>
+<td><p>
+  The number of simulation runs to perform.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>result</code></em>:</span></p></td>
+<td><p>
+  The result of the simulation is stored here,
+       in a list of <a class="link" href="igraph-Processes.html#igraph_sir_t" title="1.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> objects. To deallocate
+       memory, the user needs to call <a class="link" href="igraph-Processes.html#igraph_sir_destroy" title="1.3. igraph_sir_destroy — Deallocates memory associated with a SIR simulation run."><code class="function">igraph_sir_destroy</code></a> on
+       each element, before destroying the pointer vector itself
+       using <a class="link" href="igraph-Data-structures.html#igraph_vector_ptr_destroy_all" title="2.17.5. igraph_vector_ptr_destroy_all — Frees all the elements and destroys the pointer vector."><code class="function">igraph_vector_ptr_destroy_all()</code></a>.
+</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p><b>Returns: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code></code></em></span></p></td>
+<td><p>
+  Error code.
+  </p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+Time complexity: O(no_sim * (|V| + |E| log(|V|))).
+ 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_sir_t"></a>1.2. <code class="function">igraph_sir_t</code> —  The result of one SIR model simulation.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.2.3.2"></a><p>
+</p>
+<pre class="programlisting">
+typedef struct igraph_sir_t {
+    igraph_vector_t times;
+    igraph_vector_int_t no_s, no_i, no_r;
+} igraph_sir_t;
+</pre>
+<p>
+</p>
+<p>
+</p>
+<p>Data structure to store the results of one simulation
+of the SIR (susceptible-infected-recovered) model on a graph.
+
+It has the following members. They are all (real or integer)
+vectors, and they are of the same length.
+
+</p>
+<p><b>Values: </b></p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="constant">times</code>:</span></p></td>
+<td><p>
+  A vector, the times of the events are stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_s</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of susceptibles in
+             each time step is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_i</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of infected individuals
+             at each time step, is stored here.
+</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="constant">no_r</code>:</span></p></td>
+<td><p>
+  An integer vector, the number of recovered individuals
+             is stored here at each time step.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p> 
+</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="igraph_sir_destroy"></a>1.3. <code class="function">igraph_sir_destroy</code> —  Deallocates memory associated with a SIR simulation run.</h3></div></div></div>
+<a class="indexterm" name="id-1.31.2.4.2"></a><p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+void igraph_sir_destroy(igraph_sir_t *sir);
+</pre></div>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p><b>Arguments: </b>
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>sir</code></em>:</span></p></td>
+<td><p>
+  The <a class="link" href="igraph-Processes.html#igraph_sir_t" title="1.2. igraph_sir_t — The result of one SIR model simulation."><code class="function">igraph_sir_t</code></a> object storing the simulation.</p></td>
+</tr></tbody>
+</table></div>
+<p>
+
+ 
+</p>
+</div>
+</div>
+</div>
+<table class="navigation-footer" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="igraph-Layout.html"><b>← Chapter 29. Generating layouts for graph drawing</b></a></td>
+<td align="right"><a accesskey="n" href="igraph-Foreign.html"><b>Chapter 31. Reading and writing graphs from and to files →</b></a></td>
+</tr></table>
+{% endraw %}
