@@ -5,7 +5,8 @@ CFOLDER=${1}
 CVERSIONS=${2}
 
 CFOLDER_ABS=$(realpath $CFOLDER)
-IFS=' '; read -ra CVERSIONS <<< $CVERSIONS
+IFS=' '
+read -ra CVERSIONS <<<$CVERSIONS
 
 ROOT_ABS=$(pwd)
 
@@ -17,7 +18,7 @@ mkdir -p build/doc/pdf
 for i in "${!CVERSIONS[@]}"; do
   version=${CVERSIONS[$i]}
 
-  if [ "${version}" != "master" -a "${version}" != "develop" ]; then
+  if [ "${version}" != "main" -a "${version}" != "develop" ]; then
     SKIP=0
     if [ -f "${ROOT_ABS}/c/html/${version}/index.html" -a -d "${ROOT_ABS}/c/pdf/${version}" ]; then
       SKIP=1
@@ -34,8 +35,8 @@ for i in "${!CVERSIONS[@]}"; do
   echo "Building version: $version"
 
   git checkout $version
-  if [ "${version}" = "master" -o "${version}" = "develop" ]; then
-    # 'master' and 'develop' are "moving targets", we need to pull
+  if [ "${version}" = "main" -o "${version}" = "develop" ]; then
+    # 'main' and 'develop' are "moving targets", we need to pull
     git pull
   fi
 
